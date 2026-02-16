@@ -94,6 +94,21 @@ import { useModal, useToast } from '@/composables/useNotification'
 const { confirm } = useModal()
 const toast = useToast()
 
+const getApiErrorMessage = (error, fallbackMessage) => {
+  const data = error?.response?.data
+  if (!data) return fallbackMessage
+  if (typeof data === 'string') return data
+  if (typeof data?.message === 'string' && data.message.trim()) return data.message
+  if (typeof data?.error === 'string' && data.error.trim()) return data.error
+  if (data?.errors && typeof data.errors === 'object') {
+    const firstKey = Object.keys(data.errors)[0]
+    const firstVal = firstKey ? data.errors[firstKey] : null
+    if (Array.isArray(firstVal) && typeof firstVal[0] === 'string' && firstVal[0].trim()) return firstVal[0]
+    if (typeof firstVal === 'string' && firstVal.trim()) return firstVal
+  }
+  return fallbackMessage
+}
+
 const categories = ['Geography','Math','Science','History','IT']
 const questions = ref([])
 const tests = ref([])
@@ -111,14 +126,32 @@ const editingIndex = ref(null)
 const editingItem = computed(() => editingIndex.value!==null ? tests.value[editingIndex.value] : null)
 const openCreate = () => { editingIndex.value=null; showCreate.value=true }
 const closeCreate = () => { showCreate.value=false }
-const toSnake = (obj) => ({
-  ...obj,
-  schedule_at: obj.scheduleAt,
-  start_time: obj.startTime,
-  end_time: obj.endTime,
-  is_active: obj.isActive,
-  question_ids: obj.questionIds,
-})
+const toApiDateTime = (value) => {
+  if (!value || typeof value !== 'string') return value
+  if (/[zZ]$/.test(value) || /[+-]\d{2}:\d{2}$/.test(value)) return value
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toISOString()
+}
+const toSnake = (obj) => {
+  const scheduleAt = obj?.scheduleAt ?? obj?.schedule_at
+  const startTime = obj?.startTime ?? obj?.start_time
+  const endTime = obj?.endTime ?? obj?.end_time
+  const isActive = obj?.isActive ?? obj?.is_active
+  const questionIds = obj?.questionIds ?? obj?.question_ids
+
+  return {
+    name: obj?.name,
+    description: obj?.description ?? null,
+    category: obj?.category,
+    duration: obj?.duration,
+    schedule_at: toApiDateTime(scheduleAt),
+    start_time: toApiDateTime(startTime),
+    end_time: toApiDateTime(endTime),
+    is_active: isActive,
+    question_ids: questionIds,
+  }
+}
 const mapTest = (item) => ({
   ...item,
   scheduleAt: item.schedule_at,
@@ -142,7 +175,7 @@ const saveTest = async (payload) => {
     showCreate.value=false
     await load()
   } catch (error) {
-    toast.error('Error', 'Failed to save test. Please try again.')
+    toast.error('Error', getApiErrorMessage(error, 'Failed to save test. Please try again.'))
   }
 }
 const edit = (i) => { 
@@ -166,12 +199,23 @@ const remove = async (i) => {
       toast.success('Test Deleted', 'The test has been deleted successfully.')
       await load()
     } catch (error) {
-      toast.error('Error', 'Failed to delete test. Please try again.')
+      toast.error('Error', getApiErrorMessage(error, 'Failed to delete test. Please try again.'))
     }
   }
 }
 
-const formatDate = (d) => new Date(d).toLocaleString()
+const formatDate = (d) => {
+  const date = new Date(d)
+  if (Number.isNaN(date.getTime())) return ''
+  return new Intl.DateTimeFormat('id-ID', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(date)
+}
 
 const load = async () => {
   try {
@@ -180,7 +224,7 @@ const load = async () => {
     const tRes = await window.axios.get('/api/tests')
     tests.value = Array.isArray(tRes.data) ? tRes.data.map(mapTest) : []
   } catch (error) {
-    toast.error('Error', 'Failed to load data. Please refresh the page.')
+    toast.error('Error', getApiErrorMessage(error, 'Failed to load data. Please refresh the page.'))
   }
 }
 
@@ -195,7 +239,7 @@ const saveAssign = async (payload) => {
     showAssign.value=false
     await load()
   } catch (error) {
-    toast.error('Error', 'Gagal menyimpan assignment.')
+    toast.error('Error', getApiErrorMessage(error, 'Gagal menyimpan assignment.'))
   }
 }
 </script>

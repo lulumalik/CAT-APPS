@@ -80,14 +80,25 @@ const props = defineProps({
 })
 const emit = defineEmits(['close','submit'])
 
+const toLocalDatetimeInputValue = (value) => {
+  const date = value instanceof Date ? value : new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const yyyy = date.getFullYear()
+  const mm = String(date.getMonth() + 1).padStart(2, '0')
+  const dd = String(date.getDate()).padStart(2, '0')
+  const hh = String(date.getHours()).padStart(2, '0')
+  const mi = String(date.getMinutes()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd}T${hh}:${mi}`
+}
+
 const base = () => ({ 
   name: '', 
   description: '', 
   category: '', 
   duration: 30, 
-  scheduleAt: new Date().toISOString().slice(0,16),
-  startTime: new Date().toISOString().slice(0,16),
-  endTime: new Date(Date.now() + 3600000).toISOString().slice(0,16), // 1 hour from now
+  scheduleAt: toLocalDatetimeInputValue(new Date()),
+  startTime: toLocalDatetimeInputValue(new Date()),
+  endTime: toLocalDatetimeInputValue(new Date(Date.now() + 3600000)),
   isActive: false,
   questionIds: []
 })
@@ -97,7 +108,18 @@ const togglePicker = () => {}
 const selectedCount = computed(() => 0)
 
 watch(() => props.initial, (val) => {
-  Object.assign(form, val ? JSON.parse(JSON.stringify(val)) : base())
+  if (!val) {
+    Object.assign(form, base())
+    return
+  }
+
+  const next = JSON.parse(JSON.stringify(val))
+  next.scheduleAt = toLocalDatetimeInputValue(val.scheduleAt ?? val.schedule_at)
+  next.startTime = toLocalDatetimeInputValue(val.startTime ?? val.start_time)
+  next.endTime = toLocalDatetimeInputValue(val.endTime ?? val.end_time)
+  next.isActive = val.isActive ?? val.is_active ?? false
+  next.questionIds = Array.isArray(val.questionIds ?? val.question_ids) ? (val.questionIds ?? val.question_ids) : (next.questionIds ?? [])
+  Object.assign(form, next)
 }, { immediate: true })
 
 const submit = () => {

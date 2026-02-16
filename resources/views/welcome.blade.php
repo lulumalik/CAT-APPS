@@ -20,7 +20,7 @@
             </style>
         @endif
     </head>
-    <body class="bg-bg text-text flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
+    <body class="bg-bg text-text min-h-screen p-6 lg:p-8">
         <div id="app"></div>
     </body>
 </html>

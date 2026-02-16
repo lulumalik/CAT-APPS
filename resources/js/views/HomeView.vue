@@ -18,8 +18,8 @@
       </div>
     </section>
 
-    <section id="features" class="relative py-24">
-      <img :src="arrowUrl" alt="arrow" class="absolute -top-32 right-0 w-4/12 z-10 -rotate-60" />
+    <section id="features" class="relative p-24">
+      <img :src="arrowUrl" alt="arrow" class="absolute -top-64 -right-12 w-4/12 z-10 -rotate-60" />
       <div class="mx-auto relative z-20" style="max-width: 60vw;">
         <h2 class="text-3xl font-semibold text-center">Why Choose Our Platform?</h2>
         <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -35,6 +35,27 @@
             desc="Get immediate feedback on your performance with detailed explanations." />
           <FeatureCard icon="🎓" iconClass="bg-pink-100 text-pink-600" title="Expert Content"
             desc="Questions designed by subject matter experts ensuring quality and relevance." />
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-white">
+      <div class="mx-auto" style="max-width: 60vw;">
+        <div class="border-t border-gray-200 pt-24 mx-auto max-w-3xl text-center">
+          <h2 class="text-3xl font-semibold">Contact Us</h2>
+          <p class="mt-3 text-muted">
+            Punya pertanyaan tentang akun, jadwal ujian, atau kerja sama institusi? Tim CAT Platform siap membantu.
+            Hubungi kami melalui WhatsApp untuk respons cepat.
+          </p>
+          <div class="mt-6">
+            <a href="https://wa.me/6285124156748" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-green-600 text-white hover:bg-green-700">
+              <span class="w-6 h-6 grid place-items-center rounded-full bg-white">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="w-4 h-4" />
+              </span>
+              <span>WhatsApp</span>
+              <span class="opacity-90">(+62) 851-2415-6748</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>

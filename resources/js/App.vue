@@ -1,7 +1,9 @@
 <template>
-  <div class="min-h-screen bg-bg text-text overflow-x-hidden">
+  <div class="container-default">
     <StickyHeader v-if="!isTestRunnerPage && !isLoginPage && !isSignupPage" />
-    <router-view />
+    <div style="overflow-x: hidden !important;">
+      <router-view />
+    </div>
     
     <!-- Global Modal -->
     <Modal
@@ -49,6 +51,7 @@ const { toasts, removeToast } = useToast()
 const isTestRunnerPage = computed(() => route.name === 'quick-test')
 const isLoginPage = computed(() => route.name === 'login')
 const isSignupPage = computed(() => route.name === 'signup')
+const isRankingPage = computed(() => route.name === 'rankings')
 
 onMounted(() => {
   // Try to fetch user on app load

@@ -84,7 +84,15 @@ const categoryOptions = computed(() => {
 })
 const filtered = computed(() => {
   const allow = mapCategories(category.value || props.test?.category)
-  return props.questions.filter(q => 
+  const seenIds = new Set()
+  const uniqueQuestions = []
+  for (const q of props.questions) {
+    if (q?.id == null) continue
+    if (seenIds.has(q.id)) continue
+    seenIds.add(q.id)
+    uniqueQuestions.push(q)
+  }
+  return uniqueQuestions.filter(q => 
     allow.includes(q.category) &&
     (!difficulty.value || q.difficulty === difficulty.value)
   )
@@ -102,7 +110,8 @@ function mapCategories(cat) {
 }
 
 watch(() => props.test, (t) => {
-  selected.value = Array.isArray(t?.questionIds) ? [...t.questionIds] : []
+  const ids = Array.isArray(t?.questionIds) ? t.questionIds : (Array.isArray(t?.question_ids) ? t.question_ids : [])
+  selected.value = Array.from(new Set(ids))
   active.value = !!t?.isActive
   category.value = t?.category || ''
   difficulty.value = ''
@@ -111,7 +120,7 @@ watch(() => props.test, (t) => {
 const submit = () => {
   emit('submit', {
     ...props.test,
-    questionIds: [...selected.value],
+    questionIds: Array.from(new Set(selected.value)),
     isActive: selected.value.length > 0 ? !!active.value : false,
   })
 }

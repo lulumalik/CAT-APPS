@@ -20,7 +20,16 @@
     color: var(--color-text);
 }
 
+.container-main { 
+    margin: 0 auto;
+    width:50vw !important;
+}
+.container-default {
+    margin: 0 auto;
+    width: 80vw !important;
+    align-items: start;
+}
+
 @layer utilities {
   .ui-card { @apply rounded-xl bg-white border border-gray-200 shadow-sm p-6 md:p-8; }
-  .container-main { @apply mx-auto px-4 max-w-4xl; }
 }
