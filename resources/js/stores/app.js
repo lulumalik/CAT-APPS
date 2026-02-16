@@ -57,5 +57,20 @@ export const useAppStore = defineStore('app', {
         return false;
       }
     },
+    async register(payload) {
+      try {
+        const response = await axios.post('/api/register', payload)
+        if (response.data.success) {
+          this.setUser(response.data.user)
+          return { success: true }
+        }
+        return { success: false, message: response.data.message }
+      } catch (error) {
+        return {
+          success: false,
+          message: error.response?.data?.message || 'Registration failed'
+        }
+      }
+    },
   },
 });

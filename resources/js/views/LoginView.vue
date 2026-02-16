@@ -5,7 +5,9 @@
     </div>
     <div class="container-main">
       <div class="ui-card mx-auto max-w-md">
-        <div class="w-12 h-12 mx-auto grid place-items-center rounded-full bg-brand/15 text-brand">🎓</div>
+        <div class="w-12 h-12 mx-auto grid place-items-center rounded-full bg-brand/15">
+          <img :src="logoUrl" alt="CAT Apps" class="w-8 h-8 object-cover" />
+        </div>
         <h1 class="mt-4 text-center text-2xl font-semibold">Welcome Back</h1>
         <p class="mt-1 text-center text-muted">Login to access your dashboard</p>
 
@@ -36,7 +38,7 @@
 
         <div class="mt-6 text-center text-sm">
           <span>Don't have an account?</span>
-          <a href="#" class="ml-1 text-brand">Sign up</a>
+          <router-link to="/signup" class="ml-1 text-brand">Sign up</router-link>
         </div>
       </div>
     </div>
@@ -48,6 +50,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { useToast } from '@/composables/useNotification'
+const logoUrl = new URL('../../assets/logo.png', import.meta.url).href
 
 const email = ref('')
 const password = ref('')

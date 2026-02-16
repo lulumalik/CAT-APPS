@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen bg-bg text-text">
-    <StickyHeader v-if="!isTestRunnerPage && !isLoginPage" />
+  <div class="min-h-screen bg-bg text-text overflow-x-hidden">
+    <StickyHeader v-if="!isTestRunnerPage && !isLoginPage && !isSignupPage" />
     <router-view />
     
     <!-- Global Modal -->
@@ -48,10 +48,14 @@ const { toasts, removeToast } = useToast()
 
 const isTestRunnerPage = computed(() => route.name === 'quick-test')
 const isLoginPage = computed(() => route.name === 'login')
+const isSignupPage = computed(() => route.name === 'signup')
 
 onMounted(() => {
   // Try to fetch user on app load
   store.fetchUser()
+  if (typeof document !== 'undefined') {
+    document.title = 'CAT - APPS'
+  }
 })
 </script>
 

@@ -2,7 +2,9 @@
   <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-gray-200 w-screen">
     <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <div class="w-6 h-6 grid place-items-center rounded-full bg-brand/15 text-brand">🎓</div>
+        <div class="w-6 h-6">
+          <img :src="logoUrl" alt="CAT Apps" class="w-6 h-6 rounded-full object-cover" />
+        </div>
         <span class="font-semibold">CAT Platform</span>
       </div>
       <nav class="flex items-center gap-4">
@@ -38,6 +40,7 @@ import { useAppStore } from '@/stores/app'
 const store = useAppStore()
 const router = useRouter()
 const { role, user, isAuthenticated } = storeToRefs(store)
+const logoUrl = new URL('../../assets/logo.png', import.meta.url).href
 
 const handleLogout = async () => {
   await store.logout()

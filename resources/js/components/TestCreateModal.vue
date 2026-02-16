@@ -1,12 +1,12 @@
 <template>
   <div class="fixed inset-0 z-50">
     <div class="absolute inset-0 bg-black/30" @click="$emit('close')"></div>
-    <div class="relative mx-auto mt-16 max-w-2xl rounded-xl bg-white p-6 shadow-xl">
+    <div class="relative mx-auto mt-16 max-w-2xl max-h-[80vh] overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold">Create New Test</h2>
         <button class="px-3 py-1 rounded-md" @click="$emit('close')">✕</button>
       </div>
-      <p class="text-muted">Create a new test by selecting questions from your question bank</p>
+      <p class="text-muted">Buat test terlebih dahulu. Pertanyaan akan ditambahkan setelah test dibuat, kemudian Anda bisa mengaktifkannya agar terlihat oleh user.</p>
 
       <form class="mt-4 space-y-4" @submit.prevent="submit">
         <div>
@@ -38,10 +38,7 @@
             <label class="text-sm">Schedule Date *</label>
             <input v-model="form.scheduleAt" type="datetime-local" class="mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2" />
           </div>
-          <div>
-            <label class="text-sm">Questions ({{ selectedCount }} selected) *</label>
-            <button type="button" class="mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-left" @click="togglePicker">Select Questions</button>
-          </div>
+          <div></div>
         </div>
 
         <!-- Start and End Time -->
@@ -59,25 +56,10 @@
               <p class="text-xs text-muted mt-1">Test will end at this time</p>
             </div>
           </div>
-          <div class="mt-3">
-            <label class="inline-flex items-center gap-2 text-sm">
-              <input v-model="form.isActive" type="checkbox" class="rounded" />
-              <span>Active (visible to users)</span>
-            </label>
-          </div>
+          <div class="mt-3 text-xs text-muted">Status aktif akan tersedia setelah Anda menambahkan pertanyaan ke test.</div>
         </div>
 
-        <div v-if="showPicker" class="rounded-lg border border-gray-200 p-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <label v-for="q in questions" :key="q.id" class="flex items-start gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 cursor-pointer">
-              <input type="checkbox" :value="q.id" v-model="form.questionIds" />
-              <div>
-                <div class="font-medium">{{ q.question }}</div>
-                <div class="text-sm text-muted">{{ q.category }} • {{ q.difficulty }}</div>
-              </div>
-            </label>
-          </div>
-        </div>
+        <div></div>
 
         <div class="flex items-center justify-end gap-3 mt-4">
           <button type="button" class="px-4 py-2 rounded-md border border-gray-200" @click="$emit('close')">Cancel</button>
@@ -106,13 +88,13 @@ const base = () => ({
   scheduleAt: new Date().toISOString().slice(0,16),
   startTime: new Date().toISOString().slice(0,16),
   endTime: new Date(Date.now() + 3600000).toISOString().slice(0,16), // 1 hour from now
-  isActive: true,
-  questionIds: [] 
+  isActive: false,
+  questionIds: []
 })
 const form = reactive(base())
 const showPicker = ref(false)
-const togglePicker = () => showPicker.value = !showPicker.value
-const selectedCount = computed(() => form.questionIds.length)
+const togglePicker = () => {}
+const selectedCount = computed(() => 0)
 
 watch(() => props.initial, (val) => {
   Object.assign(form, val ? JSON.parse(JSON.stringify(val)) : base())

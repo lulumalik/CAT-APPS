@@ -7,6 +7,17 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Install Apps
+$env:PHP_INI_SCAN_DIR = "d:\Project\CAT-APPS\php-additional-ini"; composer install
+
+cd $env:USERPROFILE\scoop\apps\mariadb\current\bin
+net start MariaDB
+
+jalanin apps
+$env:PHP_INI_SCAN_DIR = "d:\Project\CAT-APPS\php-additional-ini"
+php -S 127.0.0.1:9000 -t public
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
+import SignupView from '@/views/SignupView.vue';
 import DashboardView from '@/views/DashboardView.vue';
 import QuestionBankView from '@/views/QuestionBankView.vue';
 import TestsView from '@/views/TestsView.vue';
@@ -11,6 +12,7 @@ import { useAppStore } from '@/stores/app';
 const routes = [
   { path: '/', name: 'home', component: HomeView },
   { path: '/login', name: 'login', component: LoginView },
+  { path: '/signup', name: 'signup', component: SignupView },
   { path: '/dashboard', name: 'dashboard', component: DashboardView, meta: { requiresAuth: true } },
   { path: '/question-bank', name: 'question-bank', component: QuestionBankView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/tests', name: 'tests', component: TestsView, meta: { requiresAuth: true, requiresAdmin: true } },
@@ -39,7 +41,7 @@ router.beforeEach((to, from, next) => {
   }
   
   // If user is authenticated and trying to access login page, redirect to dashboard
-  if (to.name === 'login' && store.isAuthenticated) {
+  if ((to.name === 'login' || to.name === 'signup') && store.isAuthenticated) {
     next({ name: 'dashboard' });
     return;
   }

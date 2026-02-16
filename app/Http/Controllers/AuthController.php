@@ -9,6 +9,34 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
+            'role' => 'user',
+        ]);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return response()->json([
+            'success' => true,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+            ]
+        ], 201);
+    }
     public function login(Request $request)
     {
         $request->validate([

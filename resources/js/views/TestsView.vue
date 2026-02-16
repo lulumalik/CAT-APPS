@@ -81,12 +81,14 @@
     </div>
 
     <TestCreateModal v-if="showCreate" :questions="questions" :categories="categories" :initial="editingItem" @close="closeCreate" @submit="saveTest" />
+    <TestAssignQuestionsModal v-if="showAssign" :questions="questions" :test="assignTarget" @close="closeAssign" @submit="saveAssign" />
   </main>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import TestCreateModal from '@/components/TestCreateModal.vue'
+import TestAssignQuestionsModal from '@/components/TestAssignQuestionsModal.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 
 const { confirm } = useModal()
@@ -103,19 +105,39 @@ const activeCount = computed(() => tests.value.filter(isActive).length)
 const upcoming = computed(() => tests.value.filter(t => !isActive(t)).sort((a,b)=> new Date(a.scheduleAt)-new Date(b.scheduleAt)))
 
 const showCreate = ref(false)
+const showAssign = ref(false)
+const assignTarget = ref(null)
 const editingIndex = ref(null)
 const editingItem = computed(() => editingIndex.value!==null ? tests.value[editingIndex.value] : null)
 const openCreate = () => { editingIndex.value=null; showCreate.value=true }
 const closeCreate = () => { showCreate.value=false }
+const toSnake = (obj) => ({
+  ...obj,
+  schedule_at: obj.scheduleAt,
+  start_time: obj.startTime,
+  end_time: obj.endTime,
+  is_active: obj.isActive,
+  question_ids: obj.questionIds,
+})
+const mapTest = (item) => ({
+  ...item,
+  scheduleAt: item.schedule_at,
+  startTime: item.start_time,
+  endTime: item.end_time,
+  isActive: !!item.is_active,
+  questionIds: Array.isArray(item.question_ids) ? item.question_ids : [],
+})
 const saveTest = async (payload) => {
   try {
     if (editingIndex.value!==null) {
       const id = tests.value[editingIndex.value].id
-      await window.axios.put(`/api/tests/${id}`, payload)
+      await window.axios.put(`/api/tests/${id}`, toSnake(payload))
       toast.success('Test Updated', 'The test has been updated successfully.')
     } else {
-      await window.axios.post('/api/tests', payload)
-      toast.success('Test Created', 'New test has been created successfully.')
+      const res = await window.axios.post('/api/tests', toSnake(payload))
+      toast.success('Test Created', 'Test dibuat. Silakan tambahkan pertanyaan.')
+      assignTarget.value = res.data
+      showAssign.value = true
     }
     showCreate.value=false
     await load()
@@ -123,7 +145,11 @@ const saveTest = async (payload) => {
     toast.error('Error', 'Failed to save test. Please try again.')
   }
 }
-const edit = (i) => { editingIndex.value=i; showCreate.value=true }
+const edit = (i) => { 
+  editingIndex.value=i; 
+  assignTarget.value = tests.value[i]
+  showAssign.value = true 
+}
 const remove = async (i) => { 
   const testName = tests.value[i].name
   const confirmed = await confirm(
@@ -152,13 +178,26 @@ const load = async () => {
     const qRes = await window.axios.get('/api/questions')
     questions.value = qRes.data.items
     const tRes = await window.axios.get('/api/tests')
-    tests.value = tRes.data
+    tests.value = Array.isArray(tRes.data) ? tRes.data.map(mapTest) : []
   } catch (error) {
     toast.error('Error', 'Failed to load data. Please refresh the page.')
   }
 }
 
 onMounted(load)
+
+const closeAssign = () => { showAssign.value=false; assignTarget.value=null }
+const saveAssign = async (payload) => {
+  try {
+    const id = payload.id
+    await window.axios.put(`/api/tests/${id}`, toSnake(payload))
+    toast.success('Assigned', 'Pertanyaan telah ditambahkan ke test.')
+    showAssign.value=false
+    await load()
+  } catch (error) {
+    toast.error('Error', 'Gagal menyimpan assignment.')
+  }
+}
 </script>
 
 <style scoped>
