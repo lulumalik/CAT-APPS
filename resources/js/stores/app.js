@@ -7,6 +7,7 @@ export const useAppStore = defineStore('app', {
     role: 'guest',
     user: null,
     isAuthenticated: false,
+    isAuthChecked: false,
   }),
   actions: {
     increment() {
@@ -27,9 +28,13 @@ export const useAppStore = defineStore('app', {
           this.setUser(response.data.user);
           return true;
         }
+        this.setUser(null);
+        return false;
       } catch (error) {
         this.setUser(null);
         return false;
+      } finally {
+        this.isAuthChecked = true;
       }
     },
     async login(credentials) {
@@ -37,6 +42,7 @@ export const useAppStore = defineStore('app', {
         const response = await axios.post('/api/login', credentials);
         if (response.data.success) {
           this.setUser(response.data.user);
+          this.isAuthChecked = true;
           return { success: true };
         }
         return { success: false, message: response.data.message };
@@ -51,6 +57,7 @@ export const useAppStore = defineStore('app', {
       try {
         await axios.post('/api/logout');
         this.setUser(null);
+        this.isAuthChecked = true;
         return true;
       } catch (error) {
         console.error('Logout error:', error);

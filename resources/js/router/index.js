@@ -27,8 +27,13 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const store = useAppStore();
+  
+  // Try to fetch user on first load if not authenticated
+  if (!store.isAuthenticated && !store.isAuthChecked) {
+    await store.fetchUser();
+  }
   
   // Check if route requires authentication
   if (to.meta.requiresAuth && !store.isAuthenticated) {
