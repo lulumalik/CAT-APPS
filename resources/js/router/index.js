@@ -5,6 +5,7 @@ import SignupView from '@/views/SignupView.vue';
 import DashboardView from '@/views/DashboardView.vue';
 import QuestionBankView from '@/views/QuestionBankView.vue';
 import TestsView from '@/views/TestsView.vue';
+import UserManagementView from '@/views/UserManagementView.vue';
 import RankingsView from '@/views/RankingsView.vue';
 import TestRunnerView from '@/views/TestRunnerView.vue';
 import { useAppStore } from '@/stores/app';
@@ -16,6 +17,7 @@ const routes = [
   { path: '/dashboard', name: 'dashboard', component: DashboardView, meta: { requiresAuth: true } },
   { path: '/question-bank', name: 'question-bank', component: QuestionBankView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/tests', name: 'tests', component: TestsView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/users', name: 'users', component: UserManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/rankings', name: 'rankings', component: RankingsView },
   { path: '/quick-test/:id', name: 'quick-test', component: TestRunnerView, meta: { requiresAuth: true } },
 ];

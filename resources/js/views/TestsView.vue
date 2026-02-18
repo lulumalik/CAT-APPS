@@ -20,7 +20,29 @@
     </div>
 
     <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2">
+      <!-- Skeleton Loader -->
+      <div v-if="loading" class="lg:col-span-2 space-y-4">
+        <div v-for="n in 3" :key="n" class="ui-card animate-pulse">
+          <div class="flex justify-between mb-4">
+            <div class="space-y-2">
+              <div class="h-6 w-48 bg-gray-200 rounded"></div>
+              <div class="h-4 w-64 bg-gray-200 rounded"></div>
+            </div>
+            <div class="space-y-1">
+              <div class="h-4 w-24 bg-gray-200 rounded ml-auto"></div>
+              <div class="h-4 w-20 bg-gray-200 rounded ml-auto"></div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+            <div class="h-8 bg-gray-200 rounded"></div>
+            <div class="h-8 bg-gray-200 rounded"></div>
+            <div class="h-8 bg-gray-200 rounded"></div>
+            <div class="h-8 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="lg:col-span-2">
         <div v-if="filtered.length===0" class="ui-card text-center">
           <div class="text-6xl">🗎</div>
           <div class="mt-2 font-medium">No tests found</div>
@@ -112,6 +134,7 @@ const getApiErrorMessage = (error, fallbackMessage) => {
 const categories = ['Geography','Math','Science','History','IT']
 const questions = ref([])
 const tests = ref([])
+const loading = ref(false)
 const assignments = 0
 const search = ref('')
 const filtered = computed(() => tests.value.filter(t => !search.value || t.name.toLowerCase().includes(search.value.toLowerCase())))
@@ -218,6 +241,7 @@ const formatDate = (d) => {
 }
 
 const load = async () => {
+  loading.value = true
   try {
     const qRes = await window.axios.get('/api/questions')
     questions.value = qRes.data.items
@@ -225,6 +249,8 @@ const load = async () => {
     tests.value = Array.isArray(tRes.data) ? tRes.data.map(mapTest) : []
   } catch (error) {
     toast.error('Error', getApiErrorMessage(error, 'Failed to load data. Please refresh the page.'))
+  } finally {
+    loading.value = false
   }
 }
 

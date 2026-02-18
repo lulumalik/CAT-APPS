@@ -23,7 +23,7 @@
         </span>
       </div>
 
-      <div class="pr-24">
+      <div class="pr-0 md:pr-24">
         <h3 class="text-lg font-semibold text-text">{{ test.name }}</h3>
         <p v-if="test.description" class="text-sm text-muted mt-1">{{ test.description }}</p>
         

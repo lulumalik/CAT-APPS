@@ -1,7 +1,7 @@
 <template>
-  <div class="fixed inset-0 z-50">
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-black/30" @click="$emit('close')"></div>
-    <div class="relative mx-auto mt-16 max-w-2xl max-h-[80vh] overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
+    <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold">Create New Test</h2>
         <button class="px-3 py-1 rounded-md" @click="$emit('close')">✕</button>

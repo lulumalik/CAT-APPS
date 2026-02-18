@@ -22,14 +22,26 @@
 
 .container-main { 
     margin: 0 auto;
-    width:50vw !important;
+    width: 100%;
+    max-width: 1200px;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 .container-default {
     margin: 0 auto;
-    width: 80vw !important;
+    width: 100%;
+    max-width: 1600px;
+    padding-left: 1rem;
+    padding-right: 1rem;
     align-items: start;
 }
 
 @layer utilities {
   .ui-card { @apply rounded-xl bg-white border border-gray-200 shadow-sm p-6 md:p-8; }
+}
+
+@media screen and (max-width: 480px) {
+    .container-default {
+        padding: 0px !important;
+    }
 }

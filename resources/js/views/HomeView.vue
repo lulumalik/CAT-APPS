@@ -1,26 +1,26 @@
 <template>
   <main>
-    <section class="relative flex items-center" style="height:calc(100vh - 100px);" :style="heroStyle">
+    <section class="relative flex items-center min-h-[calc(100vh-80px)] md:min-h-[calc(100vh-100px)]" :style="heroStyle">
       <div class="absolute inset-0"></div>
-      <div class="mx-auto w-full text-center max-w-3xl">
+      <div class="mx-auto w-full text-center max-w-3xl p-6">
         <div
           class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gray-200 bg-white text-sm text-brand/90">
           <span class="w-4 h-4 grid place-items-center rounded-full bg-brand/15 text-brand"><span class="relative bottom-0.5">◎</span></span>
           <span>Next-Gen Assessment Platform</span>
         </div>
-        <h1 class="mt-6 text-4xl md:text-5xl font-bold text-white">
+        <h1 class="mt-6 text-2xl md:text-5xl font-bold text-white">
           Master Your Skills with Computer Assisted Testing
         </h1>
-        <p class="mt-4 text-lg text-white max-w-3xl mx-auto">
+        <p class="mt-4 text-sm md:text-lg text-white max-w-3xl mx-auto">
           Experience adaptive testing that adjusts to your skill level in real-time. Track progress, compete with peers,
           and achieve excellence.
         </p>
       </div>
     </section>
 
-    <section id="features" class="relative p-24">
-      <img :src="arrowUrl" alt="arrow" class="absolute -top-64 -right-12 w-4/12 z-10 -rotate-60" />
-      <div class="mx-auto relative z-20" style="max-width: 60vw;">
+    <section id="features" class="relative px-4 py-16 md:p-24">
+      <img :src="arrowUrl" alt="arrow" class="hidden lg:block absolute -top-64 -right-12 w-4/12 z-10 -rotate-60" />
+      <div class="mx-auto relative z-20 container-main">
         <h2 class="text-3xl font-semibold text-center">Why Choose Our Platform?</h2>
         <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <FeatureCard icon="🧠" iconClass="bg-blue-100 text-blue-600" title="Adaptive Testing"
@@ -39,8 +39,8 @@
       </div>
     </section>
 
-    <section id="contact" class="py-24 bg-white">
-      <div class="mx-auto" style="max-width: 60vw;">
+    <section id="contact" class="py-16 md:py-24 bg-white">
+      <div class="mx-auto container-main">
         <div class="border-t border-gray-200 pt-24 mx-auto max-w-3xl text-center">
           <h2 class="text-3xl font-semibold">Contact Us</h2>
           <p class="mt-3 text-muted">

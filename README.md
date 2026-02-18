@@ -13,9 +13,20 @@ $env:PHP_INI_SCAN_DIR = "d:\Project\CAT-APPS\php-additional-ini"; composer insta
 cd $env:USERPROFILE\scoop\apps\mariadb\current\bin
 net start MariaDB
 
-jalanin apps
-$env:PHP_INI_SCAN_DIR = "d:\Project\CAT-APPS\php-additional-ini"
-php -S 127.0.0.1:9000 -t public
+jalanin apps dev
+docker compose --profile dev up -d --build db-dev app-dev nginx-dev vite
+
+jalanin apps prod
+- Build aset sekali:
+```
+docker compose --profile prod run 
+--rm vite-build
+```
+- Jalankan DB, app, dan nginx:
+```
+docker compose --profile prod up -d 
+db app nginx
+```
 
 
 ## About Laravel

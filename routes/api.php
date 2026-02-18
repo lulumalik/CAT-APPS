@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TestDefinitionController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 // Auth routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -32,4 +33,6 @@ Route::middleware('role:admin')->group(function () {
     Route::post('/tests', [TestDefinitionController::class, 'store']);
     Route::put('/tests/{test}', [TestDefinitionController::class, 'update']);
     Route::delete('/tests/{test}', [TestDefinitionController::class, 'destroy']);
+
+    Route::apiResource('users', UserController::class);
 });

@@ -110,7 +110,7 @@
         <aside class="lg:col-span-1">
           <div class="ui-card sticky top-6">
             <h3 class="font-semibold mb-4">Question Navigator</h3>
-            <div class="grid grid-cols-5 gap-2">
+            <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2">
               <button 
                 v-for="(q, i) in questions" 
                 :key="i" 
