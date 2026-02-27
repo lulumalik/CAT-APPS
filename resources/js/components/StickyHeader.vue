@@ -17,14 +17,19 @@
       <nav class="hidden md:flex items-center gap-4 text-sm">
         <template v-if="isAuthenticated">
           <router-link to="/dashboard" class="text-muted hover:text-text">Dashboard</router-link>
-          <template v-if="role==='admin'">
+          <template v-if="['admin', 'mentor'].includes(role)">
             <router-link to="/question-bank" class="text-muted hover:text-text">Question Bank</router-link>
             <router-link to="/tests" class="text-muted hover:text-text">Tests</router-link>
+          </template>
+          <template v-if="role==='admin'">
             <router-link to="/users" class="text-muted hover:text-text">Users</router-link>
           </template>
           <router-link to="/rankings" class="text-muted hover:text-text">Rankings</router-link>
           <div class="flex items-center gap-3 ml-2 pl-3 border-l border-gray-200">
-            <span class="text-muted">{{ user?.name || user?.email }}</span>
+            <div class="flex flex-col items-end leading-tight">
+              <span class="text-muted">{{ user?.name || user?.email }}</span>
+              <span class="text-xs text-gray-500 capitalize font-medium">{{ user?.role }}</span>
+            </div>
             <button @click="handleLogout" class="px-4 py-1.5 rounded-md border border-gray-200 bg-white hover:bg-gray-50">
               Logout
             </button>
@@ -43,9 +48,11 @@
       <nav class="flex flex-col p-4 space-y-3">
         <template v-if="isAuthenticated">
           <router-link to="/dashboard" class="block py-2 text-muted hover:text-text" @click="isMenuOpen = false">Dashboard</router-link>
-          <template v-if="role==='admin'">
+          <template v-if="['admin', 'mentor'].includes(role)">
             <router-link to="/question-bank" class="block py-2 text-muted hover:text-text" @click="isMenuOpen = false">Question Bank</router-link>
             <router-link to="/tests" class="block py-2 text-muted hover:text-text" @click="isMenuOpen = false">Tests</router-link>
+          </template>
+          <template v-if="role==='admin'">
             <router-link to="/users" class="block py-2 text-muted hover:text-text" @click="isMenuOpen = false">Users</router-link>
           </template>
           <router-link to="/rankings" class="block py-2 text-muted hover:text-text" @click="isMenuOpen = false">Rankings</router-link>

@@ -13,19 +13,19 @@ $env:PHP_INI_SCAN_DIR = "d:\Project\CAT-APPS\php-additional-ini"; composer insta
 cd $env:USERPROFILE\scoop\apps\mariadb\current\bin
 net start MariaDB
 
+# Pastikan MariaDB berjalan di host dan Nginx (jika ada) dikonfigurasi untuk proxy ke port 9000.
+
 jalanin apps dev
-docker compose --profile dev up -d --build db-dev app-dev nginx-dev vite
+docker compose --profile dev up -d --build app-dev vite
 
 jalanin apps prod
 - Build aset sekali:
 ```
-docker compose --profile prod run 
---rm vite-build
+docker compose --profile prod run --rm vite-build
 ```
-- Jalankan DB, app, dan nginx:
+- Jalankan app:
 ```
-docker compose --profile prod up -d 
-db app nginx
+docker compose --profile prod up -d app
 ```
 
 

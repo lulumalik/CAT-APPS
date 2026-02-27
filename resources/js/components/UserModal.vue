@@ -23,6 +23,7 @@
           <label class="text-sm">Role *</label>
           <select v-model="form.role" class="mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2">
             <option value="user">User</option>
+            <option value="mentor">Mentor</option>
             <option value="admin">Admin</option>
           </select>
         </div>

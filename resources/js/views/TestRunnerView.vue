@@ -46,11 +46,14 @@
 
             <div class="mb-6">
               <h2 class="text-sm text-muted mb-1">Question {{ index + 1 }} of {{ questions.length }}</h2>
+              <div v-if="current.image" class="mb-4">
+                  <img :src="current.image" class="max-h-64 object-contain rounded border" />
+              </div>
               <p class="text-xl font-medium leading-relaxed">{{ current.question }}</p>
             </div>
 
             <!-- Options -->
-            <div class="space-y-3">
+            <div v-if="current.type === 'multiple_choice' || !current.type" class="space-y-3">
               <div 
                 v-for="opt in current.options" 
                 :key="opt.key" 
@@ -73,6 +76,17 @@
                 </span>
                 <span class="text-base">{{ opt.label }}</span>
               </div>
+            </div>
+
+            <!-- Essay Input -->
+            <div v-else-if="current.type === 'essay'" class="space-y-3">
+                <textarea 
+                    v-model="answers[index]" 
+                    rows="6" 
+                    placeholder="Type your answer here..."
+                    class="w-full rounded-md border border-gray-200 p-4 focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+                    :disabled="!canSubmit"
+                ></textarea>
             </div>
 
             <!-- Navigation Buttons -->

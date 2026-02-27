@@ -28,13 +28,31 @@ class QuestionController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $rules = [
             'question' => 'required|string',
             'category' => 'required|string',
             'difficulty' => 'required|string',
-            'options' => 'required|array|size:4',
-            'correct' => 'required|string|in:A,B,C,D',
-        ]);
+            'type' => 'required|in:multiple_choice,essay',
+            'image' => 'nullable|image|max:2048',
+        ];
+
+        if ($request->input('type') === 'multiple_choice') {
+            $rules['options'] = 'required|array|size:4';
+            $rules['correct'] = 'required|string|in:A,B,C,D';
+        }
+
+        $data = $request->validate($rules);
+
+        if ($request->hasFile('image')) {
+             $path = $request->file('image')->store('questions', 'public');
+             $data['image'] = '/storage/' . $path;
+        }
+
+        if ($request->input('type') === 'essay') {
+            $data['options'] = [];
+            $data['correct'] = '';
+        }
+
         $data['created_by'] = optional($request->user())->id;
         $item = Question::create($data);
         return response()->json($item, 201);
@@ -42,13 +60,31 @@ class QuestionController extends Controller
 
     public function update(Request $request, Question $question)
     {
-        $data = $request->validate([
+        $rules = [
             'question' => 'required|string',
             'category' => 'required|string',
             'difficulty' => 'required|string',
-            'options' => 'required|array|size:4',
-            'correct' => 'required|string|in:A,B,C,D',
-        ]);
+            'type' => 'required|in:multiple_choice,essay',
+            'image' => 'nullable|image|max:2048',
+        ];
+
+        if ($request->input('type') === 'multiple_choice') {
+            $rules['options'] = 'required|array|size:4';
+            $rules['correct'] = 'required|string|in:A,B,C,D';
+        }
+
+        $data = $request->validate($rules);
+
+        if ($request->hasFile('image')) {
+             $path = $request->file('image')->store('questions', 'public');
+             $data['image'] = '/storage/' . $path;
+        }
+
+        if ($request->input('type') === 'essay') {
+            $data['options'] = [];
+            $data['correct'] = '';
+        }
+
         $question->update($data);
         return response()->json($question);
     }

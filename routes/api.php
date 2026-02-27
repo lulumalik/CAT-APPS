@@ -24,6 +24,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('role:admin')->group(function () {
+    Route::apiResource('users', UserController::class);
+});
+
+Route::middleware('role:admin,mentor')->group(function () {
     Route::get('/questions', [QuestionController::class, 'index']);
     Route::post('/questions', [QuestionController::class, 'store']);
     Route::put('/questions/{question}', [QuestionController::class, 'update']);
@@ -34,5 +38,6 @@ Route::middleware('role:admin')->group(function () {
     Route::put('/tests/{test}', [TestDefinitionController::class, 'update']);
     Route::delete('/tests/{test}', [TestDefinitionController::class, 'destroy']);
 
-    Route::apiResource('users', UserController::class);
+    Route::get('/tests/{test}/submissions', [TestDefinitionController::class, 'testSubmissions']);
+    Route::put('/submissions/{submission}', [TestDefinitionController::class, 'updateSubmission']);
 });

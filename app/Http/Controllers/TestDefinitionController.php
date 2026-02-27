@@ -32,6 +32,12 @@ class TestDefinitionController extends Controller
     public function index(Request $request)
     {
         $q = TestDefinition::query();
+        
+        $user = $request->user();
+        if ($user && $user->role === 'mentor') {
+            $q->where('created_by', $user->id);
+        }
+
         if ($search = $request->string('search')->toString()) {
             $q->where('name', 'like', "%$search%");
         }
@@ -74,6 +80,11 @@ class TestDefinitionController extends Controller
 
     public function update(Request $request, TestDefinition $test)
     {
+        $user = $request->user();
+        if ($user && $user->role === 'mentor' && $test->created_by !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $this->normalizeRequest($request);
         $data = $request->validate([
             'name' => 'required|string',
@@ -105,8 +116,13 @@ class TestDefinitionController extends Controller
         return response()->json($test);
     }
 
-    public function destroy(TestDefinition $test)
+    public function destroy(Request $request, TestDefinition $test)
     {
+        $user = $request->user();
+        if ($user && $user->role === 'mentor' && $test->created_by !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $test->delete();
         return response()->noContent();
     }
@@ -181,7 +197,7 @@ class TestDefinitionController extends Controller
         $questions = $test->questions;
         foreach ($data['answers'] as $questionId => $userAnswer) {
             $question = $questions->firstWhere('id', $questionId);
-            if ($question && $question->correct == $userAnswer) {
+            if ($question && $question->type === 'multiple_choice' && $question->correct == $userAnswer) {
                 $score++;
             }
         }
@@ -209,8 +225,10 @@ class TestDefinitionController extends Controller
             ->where('user_id', $user->id)
             ->orderByDesc('submitted_at')
             ->get();
+        
         $items = $subs->map(function ($s) {
             $t = $s->testDefinition;
+            if (!$t) return null;
             $total = is_array($t->question_ids) ? count($t->question_ids) : ($t->questions ? $t->questions->count() : 0);
             $pct = $total > 0 ? round(($s->score / $total) * 100, 1) : 0;
             return [
@@ -224,14 +242,44 @@ class TestDefinitionController extends Controller
                 'percentage' => $pct,
                 'submitted_at' => $s->submitted_at,
             ];
-        });
+        })->filter();
+
         $avg = $items->count() ? round($items->avg('percentage'), 1) : 0;
         return response()->json([
-            'items' => $items,
+            'items' => $items->values(),
             'stats' => [
                 'completed' => $items->count(),
                 'average' => $avg,
             ],
         ]);
+    }
+
+    public function testSubmissions(Request $request, TestDefinition $test)
+    {
+        $user = $request->user();
+        if ($user->role === 'mentor' && $test->created_by !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $submissions = $test->submissions()->with('user')->orderByDesc('submitted_at')->get();
+        return response()->json($submissions);
+    }
+
+    public function updateSubmission(Request $request, $id)
+    {
+        $submission = TestSubmission::findOrFail($id);
+        $test = $submission->testDefinition;
+        $user = $request->user();
+        
+        if ($user->role === 'mentor' && $test->created_by !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $data = $request->validate([
+            'score' => 'required|integer|min:0',
+        ]);
+
+        $submission->update($data);
+        return response()->json($submission);
     }
 }

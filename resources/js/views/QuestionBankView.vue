@@ -148,17 +148,41 @@ const edit = (i) => { editingIndex.value = i; showModal.value = true }
 const closeModal = () => { showModal.value = false }
 const onSubmit = async (payload) => {
   try {
-    if (editingIndex.value!==null) {
+    const formData = new FormData()
+    formData.append('question', payload.question)
+    formData.append('category', payload.category)
+    formData.append('difficulty', payload.difficulty)
+    formData.append('type', payload.type || 'multiple_choice')
+    
+    if (payload.image instanceof File) {
+        formData.append('image', payload.image)
+    }
+
+    if (payload.type === 'multiple_choice' || !payload.type) {
+        payload.options.forEach((opt, idx) => {
+            formData.append(`options[${idx}][key]`, opt.key)
+            formData.append(`options[${idx}][label]`, opt.label)
+        })
+        formData.append('correct', payload.correct)
+    }
+
+    if (editingIndex.value !== null) {
       const id = items.value[editingIndex.value].id
-      await window.axios.put(`/api/questions/${id}`, payload)
+      formData.append('_method', 'PUT')
+      await window.axios.post(`/api/questions/${id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+      })
       toast.success('Question Updated', 'The question has been updated successfully.')
     } else {
-      await window.axios.post('/api/questions', payload)
+      await window.axios.post('/api/questions', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+      })
       toast.success('Question Added', 'New question has been added to the bank.')
     }
     showModal.value = false
     await load()
   } catch (error) {
+    console.error(error)
     toast.error('Error', 'Failed to save question. Please try again.')
   }
 }

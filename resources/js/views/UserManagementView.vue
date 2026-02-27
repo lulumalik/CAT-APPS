@@ -5,7 +5,10 @@
         <h1 class="text-3xl font-semibold">User Management</h1>
         <p class="text-muted">Manage users and roles.</p>
       </div>
-      <button class="px-4 py-2 rounded-md bg-navy text-white cursor-pointer" @click="openAdd">Add User</button>
+      <div class="flex gap-2">
+        <input v-model="searchQuery" @input="handleSearch" type="text" placeholder="Search name or email..." class="border rounded px-3 py-2" />
+        <button class="px-4 py-2 rounded-md bg-navy text-white cursor-pointer" @click="openAdd">Add User</button>
+      </div>
     </div>
 
     <!-- Loading Skeleton -->
@@ -34,8 +37,12 @@
                 <div class="text-sm text-gray-500">{{ user.email }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                      :class="user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full capitalize"
+                      :class="{
+                        'bg-purple-100 text-purple-800': user.role === 'admin',
+                        'bg-blue-100 text-blue-800': user.role === 'mentor',
+                        'bg-green-100 text-green-800': user.role === 'user'
+                      }">
                   {{ user.role }}
                 </span>
               </td>
@@ -77,9 +84,23 @@ const currentPageUrl = ref('/api/users')
 const showModal = ref(false)
 const editingUser = ref(null)
 
+const searchQuery = ref('')
+let searchTimeout = null
+
+const handleSearch = () => {
+  if (searchTimeout) clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => {
+    loadUsers('/api/users?search=' + searchQuery.value)
+  }, 300)
+}
+
 const loadUsers = async (url = '/api/users') => {
   loading.value = true
   try {
+    // Ensure search query is appended if not already present in url
+    if (!url.includes('search=') && searchQuery.value) {
+        url += (url.includes('?') ? '&' : '?') + 'search=' + searchQuery.value;
+    }
     const { data } = await window.axios.get(url)
     users.value = data.data
     nextPage.value = data.next_page_url

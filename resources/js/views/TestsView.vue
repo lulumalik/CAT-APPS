@@ -83,6 +83,7 @@
             </div>
           </div>
           <div class="mt-4 flex items-center justify-end gap-2">
+            <button class="px-3 py-1 rounded-md border border-gray-200 cursor-pointer" @click="viewSubmissions(t)">Submissions</button>
             <button class="px-3 py-1 rounded-md border border-gray-200 cursor-pointer" @click="edit(i)">Edit</button>
             <button class="px-3 py-1 rounded-md border border-red-200 text-red-600 cursor-pointer" @click="remove(i)">Delete</button>
           </div>
@@ -104,6 +105,7 @@
 
     <TestCreateModal v-if="showCreate" :questions="questions" :categories="categories" :initial="editingItem" @close="closeCreate" @submit="saveTest" />
     <TestAssignQuestionsModal v-if="showAssign" :questions="questions" :test="assignTarget" @close="closeAssign" @submit="saveAssign" />
+    <SubmissionsModal v-if="showSubmissions" :test="selectedTest" :questions="questions" @close="showSubmissions = false" />
   </main>
 </template>
 
@@ -111,6 +113,7 @@
 import { ref, computed, onMounted } from 'vue'
 import TestCreateModal from '@/components/TestCreateModal.vue'
 import TestAssignQuestionsModal from '@/components/TestAssignQuestionsModal.vue'
+import SubmissionsModal from '@/components/SubmissionsModal.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 
 const { confirm } = useModal()
@@ -144,11 +147,17 @@ const upcoming = computed(() => tests.value.filter(t => !isActive(t)).sort((a,b)
 
 const showCreate = ref(false)
 const showAssign = ref(false)
+const showSubmissions = ref(false)
+const selectedTest = ref(null)
 const assignTarget = ref(null)
 const editingIndex = ref(null)
 const editingItem = computed(() => editingIndex.value!==null ? tests.value[editingIndex.value] : null)
 const openCreate = () => { editingIndex.value=null; showCreate.value=true }
 const closeCreate = () => { showCreate.value=false }
+const viewSubmissions = (test) => {
+    selectedTest.value = test
+    showSubmissions.value = true
+}
 const toApiDateTime = (value) => {
   if (!value || typeof value !== 'string') return value
   if (/[zZ]$/.test(value) || /[+-]\d{2}:\d{2}$/.test(value)) return value
