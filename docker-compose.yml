@@ -20,7 +20,6 @@ services:
       DB_DATABASE: cat_apps
       DB_USERNAME: cat_user
       DB_PASSWORD: secret
-    profiles: ["prod"]
 
   nginx:
     image: nginx:latest
