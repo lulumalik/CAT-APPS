@@ -25,7 +25,7 @@ docker compose --profile prod run --rm vite-build
 ```
 - Jalankan app:
 ```
-docker compose --profile prod up -d app
+docker compose --profile prod up -d nginx app
 ```
 
 
