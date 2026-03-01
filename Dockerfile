@@ -30,6 +30,9 @@ WORKDIR /var/www/html
 # Copy project
 COPY . .
 
+# Install composer dependencies
+RUN composer install --no-dev --optimize-autoloader
+
 # Permission Laravel
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
