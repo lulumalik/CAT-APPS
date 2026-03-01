@@ -5,23 +5,23 @@
         v-if="show"
         class="fixed top-4 right-4 z-50 max-w-sm w-full"
       >
-        <div class="bg-white rounded-xl shadow-2xl border-2 overflow-hidden transform transition-all" :class="borderClass">
-          <div class="flex items-start gap-4 p-4">
+        <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 overflow-hidden transform transition-all">
+          <div class="flex items-start gap-4 p-5">
             <!-- Icon -->
-            <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-xl" :class="iconBgClass">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm" :class="iconBgClass">
               {{ icon }}
             </div>
 
             <!-- Content -->
-            <div class="flex-1 min-w-0">
+            <div class="flex-1 min-w-0 pt-0.5">
               <h4 class="font-semibold text-gray-900 mb-1">{{ title }}</h4>
-              <p class="text-sm text-gray-600">{{ message }}</p>
+              <p class="text-sm text-gray-500 leading-relaxed">{{ message }}</p>
             </div>
 
             <!-- Close Button -->
             <button
               @click="$emit('close')"
-              class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+              class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer p-1 rounded-full hover:bg-gray-50"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -30,7 +30,7 @@
           </div>
 
           <!-- Progress Bar -->
-          <div v-if="duration" class="h-1 bg-gray-100">
+          <div v-if="duration" class="h-1 bg-gray-50/50">
             <div class="h-full transition-all ease-linear" :class="progressBarClass" :style="{ width: progress + '%' }"></div>
           </div>
         </div>
@@ -83,25 +83,16 @@ const icon = computed(() => {
 
 const iconBgClass = computed(() => {
   switch (props.type) {
-    case 'success': return 'bg-green-100 text-green-600'
+    case 'success': return 'bg-[#9DB359]/10 text-[#9DB359]'
     case 'error': return 'bg-red-100 text-red-600'
     case 'warning': return 'bg-yellow-100 text-yellow-600'
     default: return 'bg-blue-100 text-blue-600'
   }
 })
 
-const borderClass = computed(() => {
-  switch (props.type) {
-    case 'success': return 'border-green-200'
-    case 'error': return 'border-red-200'
-    case 'warning': return 'border-yellow-200'
-    default: return 'border-blue-200'
-  }
-})
-
 const progressBarClass = computed(() => {
   switch (props.type) {
-    case 'success': return 'bg-green-500'
+    case 'success': return 'bg-[#9DB359]'
     case 'error': return 'bg-red-500'
     case 'warning': return 'bg-yellow-500'
     default: return 'bg-blue-500'

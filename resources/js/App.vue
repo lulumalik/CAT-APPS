@@ -1,6 +1,6 @@
 <template>
-  <div class="container-default">
-    <StickyHeader v-if="!isTestRunnerPage && !isLoginPage && !isSignupPage" />
+  <div :class="{'container-default': !isHomePage}" class="bg-[#F9F9F7] min-h-screen font-sans text-[#1A1A1A]">
+    <StickyHeader v-if="!isTestRunnerPage && !isLoginPage && !isSignupPage && !isHomePage" />
     <div style="overflow-x: hidden !important;">
       <router-view />
     </div>
@@ -51,6 +51,7 @@ const { toasts, removeToast } = useToast()
 const isTestRunnerPage = computed(() => route.name === 'quick-test')
 const isLoginPage = computed(() => route.name === 'login')
 const isSignupPage = computed(() => route.name === 'signup')
+const isHomePage = computed(() => route.name === 'home')
 const isRankingPage = computed(() => route.name === 'rankings')
 
 onMounted(() => {

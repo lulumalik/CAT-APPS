@@ -8,11 +8,11 @@ export default defineConfig({
         host: process.env.VITE_HOST || '0.0.0.0',
         hmr: {
             host: process.env.VITE_HMR_HOST || 'localhost',
+            clientPort: 5173,
         },
         watch: {
-            usePolling: process.env.CHOKIDAR_USEPOLLING === 'true',
-            interval: 10,       // Cek setiap 100ms (default biasanya lebih lambat)
-            binaryInterval: 30, // Cek binary setiap 300ms
+            usePolling: true,
+            interval: 100,
         },
     },
     plugins: [

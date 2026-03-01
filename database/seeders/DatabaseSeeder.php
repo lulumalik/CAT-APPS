@@ -17,19 +17,23 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $admin = User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => 'password',
-            'role' => 'admin',
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin',
+                'password' => 'password',
+                'role' => 'admin',
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'User',
-            'email' => 'user@example.com',
-            'password' => 'password',
-            'role' => 'user',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'user@example.com'],
+            [
+                'name' => 'User',
+                'password' => 'password',
+                'role' => 'user',
+            ]
+        );
 
         $this->call([
             QuestionSeeder::class,

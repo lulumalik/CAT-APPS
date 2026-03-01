@@ -18,7 +18,7 @@ services:
       DB_DATABASE: cat_apps
       DB_USERNAME: cat_user
       DB_PASSWORD: secret
-
+    profiles: ["prod"]
   nginx:
     image: nginx:latest
     ports:
@@ -29,6 +29,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - app
+    profiles: ["prod"]
 
   app-dev:
     build: .
@@ -58,6 +59,7 @@ services:
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
+      - /var/www/html/node_modules
     ports:
       - "5173:5173"
     environment:

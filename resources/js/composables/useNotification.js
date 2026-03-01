@@ -75,47 +75,84 @@ export function useModal() {
     })
   }
 
-  const alert = (title, message, confirmText = 'OK') => {
+  const alert = (titleOrOptions, message, confirmText = 'OK') => {
+    if (typeof titleOrOptions === 'object' && titleOrOptions !== null) {
+      return showModal({
+        type: 'alert',
+        confirmText: 'OK',
+        ...titleOrOptions
+      })
+    }
     return showModal({
       type: 'alert',
-      title,
+      title: titleOrOptions,
       message,
       confirmText,
     })
   }
 
-  const confirm = (title, message, confirmText = 'Confirm', cancelText = 'Cancel') => {
+  const confirm = (titleOrOptions, message, confirmText = 'Confirm', cancelText = 'Cancel') => {
+    if (typeof titleOrOptions === 'object' && titleOrOptions !== null) {
+      return showModal({
+        type: 'confirm',
+        confirmText: 'Confirm',
+        cancelText: 'Cancel',
+        ...titleOrOptions
+      })
+    }
     return showModal({
       type: 'confirm',
-      title,
+      title: titleOrOptions,
       message,
       confirmText,
       cancelText,
     })
   }
 
-  const success = (title, message, confirmText = 'OK') => {
+  const success = (titleOrOptions, message, confirmText = 'OK') => {
+    if (typeof titleOrOptions === 'object' && titleOrOptions !== null) {
+      return showModal({
+        type: 'success',
+        confirmText: 'OK',
+        ...titleOrOptions
+      })
+    }
     return showModal({
       type: 'success',
-      title,
+      title: titleOrOptions,
       message,
       confirmText,
     })
   }
 
-  const error = (title, message, confirmText = 'OK') => {
+  const error = (titleOrOptions, message, confirmText = 'OK') => {
+    if (typeof titleOrOptions === 'object' && titleOrOptions !== null) {
+      return showModal({
+        type: 'error',
+        confirmText: 'OK',
+        ...titleOrOptions
+      })
+    }
     return showModal({
       type: 'error',
-      title,
+      title: titleOrOptions,
       message,
       confirmText,
     })
   }
 
-  const warning = (title, message, confirmText = 'OK', cancelText = 'Cancel') => {
+  const warning = (titleOrOptions, message, confirmText = 'OK', cancelText = 'Cancel') => {
+    if (typeof titleOrOptions === 'object' && titleOrOptions !== null) {
+      return showModal({
+        type: 'warning',
+        confirmText: 'OK',
+        cancelText: 'Cancel',
+        ...titleOrOptions
+      })
+    }
     return showModal({
       type: 'warning',
-      title,
+      title: titleOrOptions,
       message,
       confirmText,
       cancelText,
