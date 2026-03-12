@@ -33,7 +33,7 @@ services:
 
   vite-build:
     image: node:20-alpine
-    restart: unless-stopped
+    restart: "no"
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
