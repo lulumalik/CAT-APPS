@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /question-bank
+Disallow: /tests
+Disallow: /users
+Disallow: /quick-test/
+Disallow: /login
+Disallow: /signup
+
+Sitemap: /sitemap.xml

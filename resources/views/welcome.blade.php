@@ -6,6 +6,13 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <meta name="description" content="{{ config('app.name', 'CAT Platform') }} adalah platform Computer Assisted Testing untuk latihan dan ujian online.">
+        <meta name="robots" content="index,follow">
+        <link rel="canonical" href="{{ url()->current() }}">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{{ config('app.name', 'CAT Platform') }}">
+        <meta property="og:description" content="{{ config('app.name', 'CAT Platform') }} adalah platform Computer Assisted Testing untuk latihan dan ujian online.">
+        <meta property="og:url" content="{{ url()->current() }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -22,5 +29,12 @@
     </head>
     <body class="bg-bg text-text min-h-screen md:p-6 lg:p-8">
         <div id="app"></div>
+        <noscript>
+            <main>
+                <h1>{{ config('app.name', 'CAT Platform') }}</h1>
+                <p>Aktifkan JavaScript untuk menggunakan aplikasi. Halaman ini adalah platform Computer Assisted Testing untuk latihan dan ujian online.</p>
+                <p><a href="{{ url('/rankings') }}">Lihat rankings</a></p>
+            </main>
+        </noscript>
     </body>
 </html>

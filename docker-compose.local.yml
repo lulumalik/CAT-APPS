@@ -1,6 +1,7 @@
 services:
   app:
     build: .
+    restart: unless-stopped
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
@@ -24,6 +25,7 @@ services:
 
   vite:
     image: node:20-alpine
+    restart: unless-stopped
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
