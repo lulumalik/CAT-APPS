@@ -1,15 +1,35 @@
 <template>
   <main class="min-h-screen bg-[#F9F9F7] font-sans text-[#1A1A1A] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="absolute top-4 right-4">
+      <div class="flex items-center rounded-full border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <button
+          type="button"
+          class="px-3 py-2 text-xs font-semibold transition-colors"
+          :class="locale === 'id' ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-50'"
+          @click="setLocale('id')"
+        >
+          ID
+        </button>
+        <button
+          type="button"
+          class="px-3 py-2 text-xs font-semibold transition-colors"
+          :class="locale === 'en' ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-50'"
+          @click="setLocale('en')"
+        >
+          EN
+        </button>
+      </div>
+    </div>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
       <router-link to="/" class="flex justify-center items-center gap-2 mb-6 group">
         <img :src="logoUrl" alt="CAT Platform" class="h-10 w-auto transition-transform group-hover:scale-105" />
-        <span class="text-2xl font-bold tracking-tight text-[#1A1A1A]">CAT Platform</span>
+        <span class="text-2xl font-bold tracking-tight text-[#1A1A1A]">{{ t('app.name') }}</span>
       </router-link>
       <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-[#1A1A1A]">
-        Create an account
+        {{ t('auth.signup.title') }}
       </h2>
       <p class="mt-2 text-center text-sm text-gray-600">
-        Sign up to start your assessments
+        {{ t('auth.signup.subtitle') }}
       </p>
     </div>
 
@@ -22,7 +42,7 @@
 
         <form class="space-y-6" @submit.prevent="onSubmit">
           <div>
-            <label for="name" class="block text-sm font-medium text-gray-700 ml-1 mb-1">Full Name</label>
+            <label for="name" class="block text-sm font-medium text-gray-700 ml-1 mb-1">{{ t('auth.signup.nameLabel') }}</label>
             <div class="mt-1">
               <input id="name" v-model="name" name="name" type="text" autocomplete="name" required 
                 class="block w-full appearance-none rounded-xl border border-gray-200 px-4 py-3 placeholder-gray-400 shadow-sm focus:border-[#9DB359] focus:outline-none focus:ring-[#9DB359] sm:text-sm transition-colors" 
@@ -31,7 +51,7 @@
           </div>
 
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 ml-1 mb-1">Email address</label>
+            <label for="email" class="block text-sm font-medium text-gray-700 ml-1 mb-1">{{ t('auth.signup.emailLabel') }}</label>
             <div class="mt-1">
               <input id="email" v-model="email" name="email" type="email" autocomplete="email" required 
                 class="block w-full appearance-none rounded-xl border border-gray-200 px-4 py-3 placeholder-gray-400 shadow-sm focus:border-[#9DB359] focus:outline-none focus:ring-[#9DB359] sm:text-sm transition-colors" 
@@ -40,7 +60,7 @@
           </div>
 
           <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 ml-1 mb-1">Password</label>
+            <label for="password" class="block text-sm font-medium text-gray-700 ml-1 mb-1">{{ t('auth.signup.passwordLabel') }}</label>
             <div class="mt-1">
               <input id="password" v-model="password" name="password" type="password" required 
                 class="block w-full appearance-none rounded-xl border border-gray-200 px-4 py-3 placeholder-gray-400 shadow-sm focus:border-[#9DB359] focus:outline-none focus:ring-[#9DB359] sm:text-sm transition-colors" 
@@ -49,7 +69,7 @@
           </div>
 
           <div>
-            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 ml-1 mb-1">Confirm Password</label>
+            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 ml-1 mb-1">{{ t('auth.signup.confirmPasswordLabel') }}</label>
             <div class="mt-1">
               <input id="password_confirmation" v-model="passwordConfirmation" name="password_confirmation" type="password" required 
                 class="block w-full appearance-none rounded-xl border border-gray-200 px-4 py-3 placeholder-gray-400 shadow-sm focus:border-[#9DB359] focus:outline-none focus:ring-[#9DB359] sm:text-sm transition-colors" 
@@ -60,7 +80,7 @@
           <div>
             <button type="submit" :disabled="loading" 
               class="flex w-full justify-center rounded-full border border-transparent bg-[#9DB359] py-3 px-4 text-sm font-medium text-white shadow-lg shadow-[#9DB359]/20 hover:bg-[#8ca34b] focus:outline-none focus:ring-2 focus:ring-[#9DB359] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.02] active:scale-[0.98]">
-              {{ loading ? 'Creating account...' : 'Sign up' }}
+              {{ loading ? t('auth.signup.submitting') : t('auth.signup.submit') }}
             </button>
           </div>
         </form>
@@ -71,14 +91,14 @@
               <div class="w-full border-t border-gray-200"></div>
             </div>
             <div class="relative flex justify-center text-sm">
-              <span class="bg-white px-2 text-gray-500">Already have an account?</span>
+              <span class="bg-white px-2 text-gray-500">{{ t('auth.signup.haveAccount') }}</span>
             </div>
           </div>
 
           <div class="mt-6">
             <router-link to="/login" 
               class="flex w-full justify-center items-center gap-2 rounded-full border border-gray-200 bg-white py-3 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#9DB359] focus:ring-offset-2 transition-all">
-              Sign in
+              {{ t('auth.signup.signIn') }}
             </router-link>
           </div>
         </div>
@@ -92,6 +112,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { useToast } from '@/composables/useNotification'
+import { useI18n } from '@/composables/useI18n'
 
 const logoUrl = new URL('../../assets/logo.png', import.meta.url).href
 
@@ -104,6 +125,7 @@ const error = ref('')
 const router = useRouter()
 const store = useAppStore()
 const toast = useToast()
+const { t, locale, setLocale } = useI18n()
 
 const onSubmit = async () => {
   loading.value = true
@@ -119,13 +141,13 @@ const onSubmit = async () => {
   loading.value = false
   
   if (result.success) {
-    toast.success('Account Created', 'Welcome! Redirecting to dashboard...')
+    toast.success(t('auth.signup.toastSuccessTitle'), t('auth.signup.toastSuccessMessage'))
     setTimeout(() => {
       router.push('/dashboard')
     }, 1000)
   } else {
-    error.value = result.message || 'Sign up failed. Please check your inputs.'
-    toast.error('Sign Up Failed', result.message || 'Please check your inputs.')
+    error.value = result.message || t('auth.signup.genericFailedMessage')
+    toast.error(t('auth.signup.toastFailedTitle'), result.message || t('auth.signup.genericFailedMessage'))
   }
 }
 </script>

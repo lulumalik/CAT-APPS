@@ -2,7 +2,7 @@
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
     <div v-if="user" class="mb-10 flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold text-[#1A1A1A]">Welcome back, {{ user.name }}!</h1>
+        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('dashboard.welcomeBackName', { name: user.name }) }}</h1>
         <p class="text-gray-500 mt-1 flex items-center gap-2">
           {{ user.email }} 
           <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
@@ -10,19 +10,19 @@
         </p>
       </div>
       <div class="hidden md:block text-right">
-        <div class="text-sm text-gray-500">Today is</div>
-        <div class="font-medium text-[#1A1A1A]">{{ new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</div>
+        <div class="text-sm text-gray-500">{{ t('dashboard.todayIs') }}</div>
+        <div class="font-medium text-[#1A1A1A]">{{ todayLabel }}</div>
       </div>
     </div>
     <div v-else class="mb-10">
-      <h1 class="text-3xl font-bold text-[#1A1A1A]">Welcome back</h1>
+      <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('dashboard.welcomeBack') }}</h1>
     </div>
 
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-8 flex items-center justify-between group hover:border-[#9DB359]/30 transition-colors">
         <div>
           <div class="text-5xl font-bold text-[#9DB359] mb-1">{{ stats.average }}%</div>
-          <div class="text-sm font-medium text-gray-500 uppercase tracking-wide">Average Score</div>
+          <div class="text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('dashboard.averageScore') }}</div>
         </div>
         <div class="w-16 h-16 rounded-full bg-[#9DB359]/10 flex items-center justify-center text-2xl text-[#9DB359]">
           📊
@@ -31,7 +31,7 @@
       <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-8 flex items-center justify-between group hover:border-[#9DB359]/30 transition-colors">
         <div>
           <div class="text-5xl font-bold text-[#1A1A1A] mb-1">{{ stats.completed }}</div>
-          <div class="text-sm font-medium text-gray-500 uppercase tracking-wide">Tests Completed</div>
+          <div class="text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('dashboard.testsCompleted') }}</div>
         </div>
         <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl text-gray-600">
           ✅
@@ -45,11 +45,11 @@
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-bold text-[#1A1A1A] flex items-center gap-2">
             <span class="w-2 h-8 rounded-full bg-[#9DB359]"></span>
-            Incoming Tests
+            {{ t('dashboard.incomingTests') }}
           </h2>
           <button @click="refreshTests" class="text-sm font-medium text-[#9DB359] hover:text-[#8ca34b] cursor-pointer flex items-center gap-1 transition-colors px-3 py-1.5 rounded-full hover:bg-[#9DB359]/10">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin-slow"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
-            Refresh
+            {{ t('common.refresh') }}
           </button>
         </div>
         <IncomingTests ref="incomingTestsRef" />
@@ -60,18 +60,18 @@
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-bold text-[#1A1A1A] flex items-center gap-2">
             <span class="w-2 h-8 rounded-full bg-gray-800"></span>
-            Recent History
+            {{ t('dashboard.recentHistory') }}
           </h2>
           <button @click="fetchHistory" class="text-sm font-medium text-gray-500 hover:text-[#1A1A1A] cursor-pointer flex items-center gap-1 transition-colors px-3 py-1.5 rounded-full hover:bg-gray-100">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
-            Refresh
+            {{ t('common.refresh') }}
           </button>
         </div>
 
         <div v-if="history.length===0" class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-8 text-center min-h-[300px] flex flex-col items-center justify-center">
           <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl mb-4 grayscale opacity-50">🗎</div>
-          <div class="font-bold text-lg text-[#1A1A1A]">No History Yet</div>
-          <div class="text-gray-500 mt-2 text-sm max-w-[200px]">Complete a test to see your score history here</div>
+          <div class="font-bold text-lg text-[#1A1A1A]">{{ t('dashboard.noHistoryTitle') }}</div>
+          <div class="text-gray-500 mt-2 text-sm max-w-[200px]">{{ t('dashboard.noHistoryDescription') }}</div>
         </div>
         
         <div v-else class="space-y-4">
@@ -83,7 +83,7 @@
               </div>
               <div class="text-right">
                 <div class="text-lg font-bold" :class="getScoreColor(item.percentage)">{{ item.score }}</div>
-                <div class="text-[10px] text-gray-400 uppercase tracking-wide">Score</div>
+                <div class="text-[10px] text-gray-400 uppercase tracking-wide">{{ t('common.score') }}</div>
               </div>
             </div>
             
@@ -93,7 +93,7 @@
 
             <div class="flex items-center justify-between text-xs text-gray-400">
               <span>{{ formatDate(item.submitted_at) }}</span>
-              <span class="font-medium text-gray-600">{{ item.percentage }}% Correct</span>
+              <span class="font-medium text-gray-600">{{ t('dashboard.percentCorrect', { pct: item.percentage }) }}</span>
             </div>
           </div>
         </div>
@@ -103,16 +103,28 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAppStore } from '@/stores/app'
 import IncomingTests from '@/components/IncomingTests.vue'
+import { useI18n } from '@/composables/useI18n'
 
 const store = useAppStore()
 const { user } = storeToRefs(store)
 const incomingTestsRef = ref(null)
 const history = ref([])
 const stats = ref({ completed: 0, average: 0 })
+const { t, locale } = useI18n()
+
+const todayLabel = computed(() => {
+  const loc = locale.value === 'en' ? 'en-US' : 'id-ID'
+  return new Date().toLocaleDateString(loc, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+})
 
 const refreshTests = () => {
   if (incomingTestsRef.value && incomingTestsRef.value.fetchTests) {
@@ -123,7 +135,8 @@ const refreshTests = () => {
 const formatDate = (d) => {
   if (!d) return ''
   const dt = new Date(d)
-  return dt.toLocaleDateString('en-US', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  const loc = locale.value === 'en' ? 'en-US' : 'id-ID'
+  return dt.toLocaleDateString(loc, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
 }
 
 const getScoreColor = (percentage) => {

@@ -4,10 +4,10 @@
       <!-- Header -->
       <div class="flex items-center justify-between mb-8">
         <div>
-          <h1 class="text-2xl font-bold text-[#1A1A1A]">{{ testData?.name || 'Computer Assisted Test' }}</h1>
+          <h1 class="text-2xl font-bold text-[#1A1A1A]">{{ testData?.name || t('testRunner.defaultTitle') }}</h1>
           <p class="text-gray-500 mt-1 flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full bg-[#9DB359]"></span>
-            {{ testData?.description || testData?.category || 'Assessment' }}
+            {{ testData?.description || testData?.category || t('testRunner.defaultSubtitle') }}
           </p>
         </div>
         <div class="flex items-center gap-4">
@@ -26,8 +26,8 @@
           <!-- Progress Bar -->
           <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6">
             <div class="flex items-center justify-between mb-3">
-              <span class="text-sm font-medium text-gray-500 uppercase tracking-wide">Progress</span>
-              <span class="text-sm font-bold text-[#1A1A1A]">{{ answeredCount }} <span class="text-gray-400 font-normal">/</span> {{ questions.length }} <span class="text-gray-400 font-normal">answered</span></span>
+              <span class="text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('testRunner.progress') }}</span>
+              <span class="text-sm font-bold text-[#1A1A1A]">{{ answeredCount }} <span class="text-gray-400 font-normal">/</span> {{ questions.length }} <span class="text-gray-400 font-normal">{{ t('testRunner.answered') }}</span></span>
             </div>
             <div class="h-3 rounded-full bg-gray-100 overflow-hidden">
               <div class="h-full rounded-full bg-[#9DB359] transition-all duration-500 ease-out" :style="{ width: progressPct + '%' }"></div>
@@ -46,12 +46,12 @@
                 :class="flags[index] ? 'border-yellow-200 bg-yellow-50 text-yellow-700' : 'border-gray-200 text-gray-500 hover:border-yellow-300 hover:text-yellow-600'"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="flags[index] ? 'currentColor' : 'none'"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
-                {{ flags[index] ? 'Flagged' : 'Flag' }}
+                {{ flags[index] ? t('testRunner.flagged') : t('testRunner.flag') }}
               </button>
             </div>
 
             <div class="mb-8">
-              <h2 class="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">Question {{ index + 1 }}</h2>
+              <h2 class="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">{{ t('testRunner.question', { n: index + 1 }) }}</h2>
               <div v-if="current.image" class="mb-6">
                   <img :src="current.image" class="max-h-80 object-contain rounded-2xl border border-gray-200 shadow-sm" />
               </div>
@@ -94,7 +94,7 @@
                 <textarea 
                     v-model="answers[index]" 
                     rows="8" 
-                    placeholder="Type your answer here..."
+                    :placeholder="t('testRunner.answerPlaceholder')"
                     class="w-full rounded-xl border border-gray-200 p-5 focus:border-[#9DB359] focus:ring-1 focus:ring-[#9DB359] outline-none text-lg resize-none shadow-sm transition-colors"
                     :disabled="!canSubmit"
                 ></textarea>
@@ -108,7 +108,7 @@
                 :disabled="index === 0"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                Previous
+                {{ t('testRunner.previous') }}
               </button>
               
               <button 
@@ -116,7 +116,7 @@
                 class="px-8 py-3 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors font-medium cursor-pointer shadow-lg shadow-black/10 flex items-center gap-2" 
                 @click="next"
               >
-                Next
+                {{ t('testRunner.next') }}
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </button>
               
@@ -126,7 +126,7 @@
                 @click="finishTest"
                 :disabled="!canSubmit"
               >
-                Submit Test
+                {{ t('testRunner.submit') }}
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </button>
             </div>
@@ -138,7 +138,7 @@
           <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 sticky top-24">
             <h3 class="font-bold text-[#1A1A1A] mb-4 flex items-center gap-2">
               <span class="w-1.5 h-6 rounded-full bg-[#9DB359]"></span>
-              Question Navigator
+              {{ t('testRunner.questionNavigator') }}
             </h3>
             
             <div class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-4 gap-3">
@@ -163,19 +163,19 @@
             <div class="mt-8 pt-6 border-t border-gray-50 space-y-3">
               <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
                 <span class="w-3 h-3 rounded-full bg-[#1A1A1A]"></span>
-                Current
+                {{ t('testRunner.legendCurrent') }}
               </div>
               <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
                 <span class="w-3 h-3 rounded-full bg-[#9DB359]/10 border border-[#9DB359]"></span>
-                Answered
+                {{ t('testRunner.legendAnswered') }}
               </div>
               <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
                 <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
-                Flagged
+                {{ t('testRunner.legendFlagged') }}
               </div>
               <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
                 <span class="w-3 h-3 rounded-full bg-gray-50 border border-gray-200"></span>
-                Not Answered
+                {{ t('testRunner.legendUnanswered') }}
               </div>
             </div>
           </div>
@@ -190,12 +190,14 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast, useModal } from '@/composables/useNotification'
 import { useAppStore } from '@/stores/app'
+import { useI18n } from '@/composables/useI18n'
 
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 const { confirm } = useModal()
 const store = useAppStore()
+const { t } = useI18n()
 
 const testId = route.params.id
 const questions = ref([])
@@ -265,10 +267,10 @@ const toggleFlag = (i) => {
 const finishTest = async (force = false) => {
   if (!force) {
     const confirmed = await confirm({
-      title: 'Submit Test',
-      message: `You have answered ${answeredCount.value} of ${questions.value.length} questions. Are you sure you want to submit?`,
-      confirmText: 'Submit Now',
-      cancelText: 'Review'
+      title: t('testRunner.confirmSubmitTitle'),
+      message: `${t('testRunner.confirmSubmitMessage')} (${answeredCount.value}/${questions.value.length})`,
+      confirmText: t('testRunner.confirmSubmitConfirm'),
+      cancelText: t('testRunner.review')
     })
     if (!confirmed) return
   }
@@ -280,7 +282,7 @@ const finishTest = async (force = false) => {
     await window.axios.post(`/api/tests/${testId}/submit`, {
       answers: answers.value
     })
-    toast.success('Test Submitted', 'Your answers have been recorded.')
+    toast.success(t('testRunner.toastSubmittedTitle'), t('testRunner.toastSubmittedMessage'))
     router.push('/dashboard')
   } catch (error) {
     toast.error('Error', 'Failed to submit test')
@@ -298,7 +300,7 @@ onUnmounted(() => {
 
 // Prevent accidental navigation
 window.onbeforeunload = () => {
-  if (canSubmit.value) return "Are you sure you want to leave? Your progress may be lost."
+  if (canSubmit.value) return t('testRunner.leavePrompt')
 }
 </script>
 

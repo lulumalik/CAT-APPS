@@ -5,14 +5,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
-        <meta name="description" content="{{ config('app.name', 'CAT Platform') }} adalah platform Computer Assisted Testing untuk latihan dan ujian online.">
+        <title>CAT Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal</title>
+        <meta name="google-site-verification" content="oHVVXwQv4qB7m3tjr5G0EWAbiVw22JVmC7MLqe0hcFQ" />
+        <meta name="description" content="CAT Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.">
+        <meta name="keywords" content="CAT, Computer Assisted Test, ujian online, tryout, bank soal, CBT, ranking, assessment, evaluasi">
         <meta name="robots" content="index,follow">
+        <meta name="theme-color" content="#9DB359">
         <link rel="canonical" href="{{ url()->current() }}">
         <meta property="og:type" content="website">
-        <meta property="og:title" content="{{ config('app.name', 'CAT Platform') }}">
-        <meta property="og:description" content="{{ config('app.name', 'CAT Platform') }} adalah platform Computer Assisted Testing untuk latihan dan ujian online.">
+        <meta property="og:site_name" content="CAT Platform">
+        <meta property="og:title" content="CAT Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal">
+        <meta property="og:description" content="CAT Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.">
         <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:image" content="{{ url('/favicon.ico') }}">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="CAT Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal">
+        <meta name="twitter:description" content="CAT Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -31,9 +39,19 @@
         <div id="app"></div>
         <noscript>
             <main>
-                <h1>{{ config('app.name', 'CAT Platform') }}</h1>
-                <p>Aktifkan JavaScript untuk menggunakan aplikasi. Halaman ini adalah platform Computer Assisted Testing untuk latihan dan ujian online.</p>
-                <p><a href="{{ url('/rankings') }}">Lihat rankings</a></p>
+                <h1>CAT Platform</h1>
+                <p>Aplikasi Computer Assisted Test (CAT) untuk latihan dan ujian online berbasis waktu.</p>
+                <ul>
+                    <li>Bank soal terpusat dan manajemen pertanyaan</li>
+                    <li>Pembuatan tes dan penjadwalan ujian</li>
+                    <li>Penilaian otomatis dan hasil yang rapi</li>
+                    <li>Leaderboard peringkat peserta</li>
+                </ul>
+                <p>
+                    <a href="{{ url('/login') }}">Masuk</a>
+                    ·
+                    <a href="{{ url('/rankings') }}">Lihat peringkat</a>
+                </p>
             </main>
         </noscript>
     </body>

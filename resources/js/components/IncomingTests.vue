@@ -8,20 +8,20 @@
           class="px-4 py-1.5 rounded-full text-xs font-semibold bg-yellow-50 text-yellow-700 border border-yellow-100 flex items-center gap-1"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-          Locked
+          {{ t('incomingTests.locked') }}
         </span>
         <span 
           v-else-if="test.status === 'ongoing'" 
           class="px-4 py-1.5 rounded-full text-xs font-semibold bg-[#9DB359]/10 text-[#9DB359] border border-[#9DB359]/20 flex items-center gap-1"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          Available
+          {{ t('incomingTests.available') }}
         </span>
         <span 
           v-else 
           class="px-4 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 border border-gray-200"
         >
-          Ended
+          {{ t('incomingTests.ended') }}
         </span>
       </div>
 
@@ -31,15 +31,15 @@
         
         <div class="mt-6 flex flex-wrap gap-6 text-sm">
           <div class="flex items-center gap-2 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-lg">
-            <span class="text-gray-400">Category:</span>
+            <span class="text-gray-400">{{ t('incomingTests.categoryLabel') }}</span>
             <span class="font-semibold capitalize text-[#1A1A1A]">{{ test.category }}</span>
           </div>
           <div class="flex items-center gap-2 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-lg">
-            <span class="text-gray-400">Duration:</span>
+            <span class="text-gray-400">{{ t('incomingTests.durationLabel') }}</span>
             <span class="font-semibold text-[#1A1A1A]">{{ test.duration }} min</span>
           </div>
           <div class="flex items-center gap-2 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-lg">
-            <span class="text-gray-400">Questions:</span>
+            <span class="text-gray-400">{{ t('incomingTests.questionsLabel') }}</span>
             <span class="font-semibold text-[#1A1A1A]">{{ test.question_ids?.length || 0 }}</span>
           </div>
         </div>
@@ -48,11 +48,11 @@
         <div class="mt-6 p-4 rounded-xl bg-gray-50/50 border border-gray-100">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wider">Start Time</div>
+              <div class="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wider">{{ t('incomingTests.startTimeLabel') }}</div>
               <div class="text-sm font-semibold text-[#1A1A1A]">{{ formatDateTime(test.start_time) }}</div>
             </div>
             <div class="text-right">
-              <div class="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wider">End Time</div>
+              <div class="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wider">{{ t('incomingTests.endTimeLabel') }}</div>
               <div class="text-sm font-semibold text-[#1A1A1A]">{{ formatDateTime(test.end_time) }}</div>
             </div>
           </div>
@@ -60,7 +60,7 @@
           <!-- Countdown Timer -->
           <div v-if="test.status === 'upcoming' && countdown[test.id]" class="mt-4 pt-4 border-t border-gray-200/50">
             <div class="text-center">
-              <div class="text-xs text-gray-400 mb-1">Time until start</div>
+              <div class="text-xs text-gray-400 mb-1">{{ t('incomingTests.timeUntilStart') }}</div>
               <div class="text-2xl font-bold text-[#9DB359] font-mono">
                 {{ countdown[test.id] }}
               </div>
@@ -75,7 +75,7 @@
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#9DB359] opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-[#9DB359]"></span>
                 </span>
-                Test is now available!
+                {{ t('incomingTests.testAvailableNow') }}
               </div>
             </div>
           </div>
@@ -88,21 +88,21 @@
             disabled
             class="w-full px-6 py-3 rounded-full bg-gray-100 text-gray-400 font-medium cursor-not-allowed border border-gray-200"
           >
-            Locked
+            {{ t('incomingTests.locked') }}
           </button>
           <router-link
             v-else-if="test.status === 'ongoing'"
             :to="{ name: 'quick-test', params: { id: test.id } }"
             class="block w-full px-6 py-3 rounded-full bg-[#9DB359] text-white text-center font-semibold hover:bg-[#8ca34b] transition-all shadow-lg shadow-[#9DB359]/20 hover:scale-[1.01] active:scale-[0.99]"
           >
-            Start Test Now
+            {{ t('incomingTests.startTestNow') }}
           </router-link>
           <router-link
             v-else
             :to="{ name: 'quick-test', params: { id: test.id } }"
             class="block w-full px-6 py-3 rounded-full bg-[#1A1A1A] text-white text-center font-medium hover:bg-black transition-all shadow-lg shadow-black/10"
           >
-            Review Test (View Only)
+            {{ t('incomingTests.reviewTest') }}
           </router-link>
         </div>
       </div>
@@ -112,12 +112,12 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
+import { useI18n } from '@/composables/useI18n'
 const tests = ref([])
 const countdown = ref({})
 const timerInterval = ref(null)
+
+const { t, locale } = useI18n()
 
 const fetchTests = async () => {
   try {
@@ -131,7 +131,8 @@ const fetchTests = async () => {
 
 const formatDateTime = (dateStr) => {
   if (!dateStr) return '-'
-  return new Date(dateStr).toLocaleString('id-ID', {
+  const loc = locale.value === 'en' ? 'en-US' : 'id-ID'
+  return new Date(dateStr).toLocaleString(loc, {
     weekday: 'short',
     day: 'numeric',
     month: 'short',

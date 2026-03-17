@@ -4,8 +4,8 @@
     <div class="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[2rem] bg-white p-8 shadow-2xl shadow-black/10 border border-gray-100 transform transition-all">
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Assign Questions</h2>
-          <p class="text-gray-500 mt-1">Pilih soal untuk test ini, lalu tentukan apakah test aktif dan terlihat oleh user.</p>
+          <h2 class="text-2xl font-bold text-gray-900 tracking-tight">{{ t('modals.testAssign.title') }}</h2>
+          <p class="text-gray-500 mt-1">{{ t('modals.testAssign.subtitle') }}</p>
         </div>
         <button class="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600" @click="$emit('close')">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,22 +17,22 @@
       <div class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testAssign.categoryLabel') }}</label>
             <select v-model="category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-2.5 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
               <option v-for="c in categoryOptions" :key="c" :value="c">{{ c }}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testAssign.difficultyLabel') }}</label>
             <select v-model="difficulty" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-2.5 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
-              <option value="">All</option>
+              <option value="">{{ t('modals.testAssign.difficultyAll') }}</option>
               <option value="Easy">Easy</option>
               <option value="Medium">Medium</option>
               <option value="Hard">Hard</option>
             </select>
           </div>
           <div class="flex items-end pb-2">
-            <div class="text-sm text-gray-500 font-medium">Showing <span class="text-gray-900">{{ filtered.length }}</span> items</div>
+            <div class="text-sm text-gray-500 font-medium">{{ t('modals.testAssign.showing', { count: filtered.length }) }}</div>
           </div>
         </div>
 
@@ -51,7 +51,7 @@
               </div>
             </label>
             <div v-if="filtered.length === 0" class="text-center py-8 text-gray-500">
-              No questions found matching your criteria
+              {{ t('modals.testAssign.noneFound') }}
             </div>
           </div>
         </div>
@@ -60,14 +60,14 @@
           <div class="flex items-center gap-4">
             <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
               <input v-model="active" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359]" :disabled="selected.length===0" />
-              <span>Active (visible to users)</span>
+              <span>{{ t('modals.testAssign.activeVisible') }}</span>
             </label>
-            <span v-if="selected.length===0" class="text-xs text-red-500 font-medium">Add at least 1 question to activate test.</span>
+            <span v-if="selected.length===0" class="text-xs text-red-500 font-medium">{{ t('modals.testAssign.needOne') }}</span>
           </div>
 
           <div class="flex items-center gap-3">
-            <button class="px-6 py-2.5 rounded-full text-gray-600 hover:bg-gray-100 font-medium transition-colors" @click="$emit('close')">Cancel</button>
-            <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white font-medium shadow-lg shadow-black/20 hover:bg-black hover:shadow-black/30 transform active:scale-95 transition-all" @click="submit">Save Changes</button>
+            <button class="px-6 py-2.5 rounded-full text-gray-600 hover:bg-gray-100 font-medium transition-colors" @click="$emit('close')">{{ t('modals.testAssign.cancel') }}</button>
+            <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white font-medium shadow-lg shadow-black/20 hover:bg-black hover:shadow-black/30 transform active:scale-95 transition-all" @click="submit">{{ t('modals.testAssign.save') }}</button>
           </div>
         </div>
       </div>
@@ -77,12 +77,14 @@
 
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
   test: { type: Object, required: true },
   questions: { type: Array, default: () => [] },
 })
 const emit = defineEmits(['close','submit'])
+const { t } = useI18n()
 
 const selected = ref([])
 const active = ref(false)
@@ -124,7 +126,7 @@ function mapCategories(cat) {
 watch(() => props.test, (t) => {
   const ids = Array.isArray(t?.questionIds) ? t.questionIds : (Array.isArray(t?.question_ids) ? t.question_ids : [])
   selected.value = Array.from(new Set(ids))
-  active.value = !!t?.isActive
+  active.value = !!(t?.isActive ?? t?.is_active)
   category.value = t?.category || ''
   difficulty.value = ''
 }, { immediate: true })

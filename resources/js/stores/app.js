@@ -8,6 +8,7 @@ export const useAppStore = defineStore('app', {
     user: null,
     isAuthenticated: false,
     isAuthChecked: false,
+    locale: typeof window !== 'undefined' ? (localStorage.getItem('locale') || 'id') : 'id',
   }),
   actions: {
     increment() {
@@ -63,6 +64,15 @@ export const useAppStore = defineStore('app', {
         console.error('Logout error:', error);
         return false;
       }
+    },
+    setLocale(locale) {
+      this.locale = locale === 'en' ? 'en' : 'id';
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('locale', this.locale);
+      }
+    },
+    toggleLocale() {
+      this.setLocale(this.locale === 'id' ? 'en' : 'id');
     },
     async register(payload) {
       try {

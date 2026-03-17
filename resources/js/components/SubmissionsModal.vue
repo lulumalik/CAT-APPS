@@ -4,8 +4,8 @@
     <div class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-[2rem] bg-white p-8 shadow-2xl shadow-black/10 border border-gray-100 transform transition-all">
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Submissions</h2>
-          <p class="text-gray-500 mt-1">Review submissions for {{ test.name }}</p>
+          <h2 class="text-2xl font-bold text-gray-900 tracking-tight">{{ t('modals.submissions.title') }}</h2>
+          <p class="text-gray-500 mt-1">{{ t('modals.submissions.subtitle', { test: test.name }) }}</p>
         </div>
         <button class="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600" @click="$emit('close')">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,10 +23,10 @@
           <table class="min-w-full divide-y divide-gray-100">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">User</th>
-                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Submitted At</th>
-                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Score</th>
-                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
+                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modals.submissions.tableUser') }}</th>
+                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modals.submissions.tableSubmittedAt') }}</th>
+                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modals.submissions.tableScore') }}</th>
+                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modals.submissions.tableActions') }}</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-100">
@@ -35,18 +35,18 @@
                   <div class="font-medium text-gray-900">{{ sub.user.name }}</div>
                   <div class="text-sm text-gray-500">{{ sub.user.email }}</div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ new Date(sub.submitted_at).toLocaleString() }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDateTime(sub.submitted_at) }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="sub.score >= 70 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
                     {{ sub.score }}
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                   <button @click="selectedSubmission = sub" class="text-[#9DB359] hover:text-[#8ca34b] transition-colors">Review</button>
+                   <button @click="selectedSubmission = sub" class="text-[#9DB359] hover:text-[#8ca34b] transition-colors">{{ t('modals.submissions.review') }}</button>
                 </td>
               </tr>
               <tr v-if="submissions.length === 0">
-                <td colspan="4" class="px-6 py-8 text-center text-gray-500">No submissions found</td>
+                <td colspan="4" class="px-6 py-8 text-center text-gray-500">{{ t('modals.submissions.noneFound') }}</td>
               </tr>
             </tbody>
           </table>
@@ -56,8 +56,8 @@
       <!-- Review Section -->
       <div v-if="selectedSubmission" class="mt-8 border-t border-gray-100 pt-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="font-bold text-lg text-gray-900">Review Submission: {{ selectedSubmission.user.name }}</h3>
-          <button @click="selectedSubmission = null" class="text-sm text-gray-500 hover:text-gray-700">Close Review</button>
+          <h3 class="font-bold text-lg text-gray-900">{{ t('modals.submissions.reviewTitle', { name: selectedSubmission.user.name }) }}</h3>
+          <button @click="selectedSubmission = null" class="text-sm text-gray-500 hover:text-gray-700">{{ t('modals.submissions.closeReview') }}</button>
         </div>
         
         <div class="space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
@@ -67,19 +67,19 @@
                     {{ getQuestionText(qId) }}
                 </div>
                 <div class="mt-2 p-3 bg-white rounded-lg border border-gray-100 shadow-sm">
-                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">Answer</span>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">{{ t('modals.submissions.answer') }}</span>
                     <div class="text-gray-700">{{ answer }}</div>
                 </div>
                 <div v-if="getQuestionType(qId) === 'essay'" class="mt-2 flex items-center gap-2">
-                    <span class="px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium">Essay Question</span>
+                    <span class="px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium">{{ t('modals.submissions.essay') }}</span>
                 </div>
             </div>
             
             <div class="sticky bottom-0 bg-white p-4 rounded-xl border border-gray-100 shadow-lg mt-4 flex items-center justify-between">
-                <div class="font-bold text-gray-900">Final Score</div>
+                <div class="font-bold text-gray-900">{{ t('modals.submissions.finalScore') }}</div>
                 <div class="flex items-center gap-3">
                   <input v-model.number="selectedSubmission.score" type="number" class="w-24 rounded-lg border-gray-200 focus:border-[#9DB359] focus:ring-[#9DB359] transition-all" />
-                  <button @click="updateScore(selectedSubmission)" class="bg-[#1A1A1A] text-white px-4 py-2 rounded-full hover:bg-black shadow-lg shadow-black/20 transition-all text-sm font-medium">Update Score</button>
+                  <button @click="updateScore(selectedSubmission)" class="bg-[#1A1A1A] text-white px-4 py-2 rounded-full hover:bg-black shadow-lg shadow-black/20 transition-all text-sm font-medium">{{ t('modals.submissions.updateScore') }}</button>
                 </div>
             </div>
         </div>
@@ -91,6 +91,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useToast } from '@/composables/useNotification'
+import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({ 
     test: Object,
@@ -98,6 +99,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['close'])
 const toast = useToast()
+const { t, locale } = useI18n()
 
 const submissions = ref([])
 const loading = ref(true)
@@ -117,7 +119,7 @@ const loadSubmissions = async () => {
 const updateScore = async (sub) => {
     try {
         await window.axios.put(`/api/submissions/${sub.id}`, { score: sub.score })
-        toast.success('Success', 'Score updated')
+        toast.success('Success', t('modals.submissions.updateScore'))
     } catch (e) {
         toast.error('Error', 'Failed to update score')
     }
@@ -125,12 +127,18 @@ const updateScore = async (sub) => {
 
 const getQuestionText = (id) => {
     const q = props.questions.find(x => x.id == id)
-    return q ? q.question : 'Question not found'
+    return q ? q.question : t('modals.submissions.questionNotFound')
 }
 
 const getQuestionType = (id) => {
     const q = props.questions.find(x => x.id == id)
     return q ? q.type : ''
+}
+
+const formatDateTime = (dateStr) => {
+    if (!dateStr) return ''
+    const loc = locale.value === 'en' ? 'en-US' : 'id-ID'
+    return new Date(dateStr).toLocaleString(loc)
 }
 
 onMounted(loadSubmissions)

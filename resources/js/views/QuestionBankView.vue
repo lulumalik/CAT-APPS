@@ -2,12 +2,12 @@
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="text-3xl font-bold text-[#1A1A1A]">Question Bank</h1>
-        <p class="text-gray-500 mt-1">Manage your test questions library</p>
+        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('questionBank.title') }}</h1>
+        <p class="text-gray-500 mt-1">{{ t('questionBank.subtitle') }}</p>
       </div>
       <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openAdd">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Add Question
+        {{ t('questionBank.addQuestion') }}
       </button>
     </div>
 
@@ -53,37 +53,37 @@
       <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-[#9DB359]/30 transition-colors">
           <div class="text-4xl font-bold text-[#1A1A1A] mb-1 group-hover:text-[#9DB359] transition-colors">{{ total }}</div>
-          <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Questions</div>
+          <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('questionBank.totalQuestions') }}</div>
         </div>
         <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-green-500/30 transition-colors">
           <div class="text-4xl font-bold text-green-600 mb-1">{{ easy }}</div>
-          <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Easy Questions</div>
+          <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('questionBank.easyQuestions') }}</div>
         </div>
         <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-yellow-500/30 transition-colors">
           <div class="text-4xl font-bold text-yellow-500 mb-1">{{ medium }}</div>
-          <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Medium Questions</div>
+          <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('questionBank.mediumQuestions') }}</div>
         </div>
         <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-red-500/30 transition-colors">
           <div class="text-4xl font-bold text-red-500 mb-1">{{ hard }}</div>
-          <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Hard Questions</div>
+          <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('questionBank.hardQuestions') }}</div>
         </div>
       </div>
 
       <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 mt-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="relative">
-            <input v-model="search" type="text" placeholder="Search questions..." class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
+            <input v-model="search" type="text" :placeholder="t('questionBank.searchPlaceholder')" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </div>
           <select v-model="filterCategory" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors appearance-none">
-            <option value="">All Categories</option>
+            <option value="">{{ t('questionBank.allCategories') }}</option>
             <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
           </select>
           <select v-model="filterDifficulty" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors appearance-none">
-            <option value="">All Difficulties</option>
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
+            <option value="">{{ t('questionBank.allDifficulties') }}</option>
+            <option value="Easy">{{ t('modals.question.difficultyEasy') }}</option>
+            <option value="Medium">{{ t('modals.question.difficultyMedium') }}</option>
+            <option value="Hard">{{ t('modals.question.difficultyHard') }}</option>
           </select>
         </div>
       </div>
@@ -97,14 +97,14 @@
               <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100 capitalize">{{ q.type }}</span>
             </div>
             <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button class="px-4 py-1.5 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors" @click="edit(i)">Edit</button>
-              <button class="px-4 py-1.5 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" @click="remove(i)">Delete</button>
+              <button class="px-4 py-1.5 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors" @click="edit(i)">{{ t('common.edit') }}</button>
+              <button class="px-4 py-1.5 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" @click="remove(i)">{{ t('common.delete') }}</button>
             </div>
           </div>
           
           <div class="flex gap-6">
             <div v-if="q.image_url" class="flex-shrink-0">
-               <img :src="q.image_url" alt="Question Image" class="w-32 h-32 object-cover rounded-xl border border-gray-200" />
+               <img :src="q.image_url" :alt="t('questionBank.title')" class="w-32 h-32 object-cover rounded-xl border border-gray-200" />
             </div>
             <div class="flex-grow">
               <h2 class="text-xl font-medium text-[#1A1A1A] leading-relaxed">{{ q.question }}</h2>
@@ -115,7 +115,7 @@
                     <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-medium mr-3" :class="opt.key===q.correct ? 'border-[#9DB359] text-[#9DB359] bg-white' : 'border-gray-300 text-gray-500'">{{ opt.key }}</span>
                     <span :class="opt.key===q.correct ? 'text-[#1A1A1A] font-medium' : 'text-gray-600'">{{ opt.label }}</span>
                   </div>
-                  <span v-if="opt.key===q.correct" class="px-2 py-0.5 rounded-full bg-[#9DB359] text-white text-[10px] font-bold uppercase tracking-wider">Correct</span>
+                  <span v-if="opt.key===q.correct" class="px-2 py-0.5 rounded-full bg-[#9DB359] text-white text-[10px] font-bold uppercase tracking-wider">{{ t('questionBank.correct') }}</span>
                 </div>
               </div>
             </div>
@@ -132,9 +132,11 @@
 import { ref, computed, onMounted } from 'vue'
 import QuestionModal from '@/components/QuestionModal.vue'
 import { useModal, useToast } from '@/composables/useNotification'
+import { useI18n } from '@/composables/useI18n'
 
 const { confirm } = useModal()
 const toast = useToast()
+const { t } = useI18n()
 
 const questions = ref([])
 const loading = ref(false)
@@ -177,7 +179,7 @@ const loadQuestions = async () => {
     const { data } = await window.axios.get('/api/questions')
     questions.value = data.items
   } catch (e) {
-    toast.error('Error', 'Failed to load questions')
+    toast.error('Error', t('questionBank.toastLoadFailed'))
   } finally {
     loading.value = false
   }
@@ -197,9 +199,9 @@ const edit = (i) => {
 
 const remove = async (i) => {
   const confirmed = await confirm({
-    title: 'Delete Question',
-    message: 'Are you sure you want to delete this question?',
-    confirmText: 'Delete',
+    title: t('questionBank.deleteConfirmTitle'),
+    message: t('questionBank.deleteConfirmMessage'),
+    confirmText: t('common.delete'),
     type: 'danger'
   })
   
@@ -208,9 +210,9 @@ const remove = async (i) => {
       const questionToDelete = filtered.value[i]
       await window.axios.delete(`/api/questions/${questionToDelete.id}`)
       questions.value = questions.value.filter(q => q.id !== questionToDelete.id)
-      toast.success('Success', 'Question deleted')
+      toast.success('Success', t('questionBank.toastDeleted'))
     } catch (e) {
-      toast.error('Error', 'Failed to delete question')
+      toast.error('Error', t('questionBank.toastDeleteFailed'))
     }
   }
 }
@@ -228,17 +230,17 @@ const onSubmit = async (formData) => {
       })
       const idx = questions.value.findIndex(q => q.id === editingItem.value.id)
       if (idx !== -1) questions.value[idx] = data.data
-      toast.success('Success', 'Question updated')
+      toast.success('Success', t('questionBank.toastUpdated'))
     } else {
       const { data } = await window.axios.post('/api/questions', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       questions.value.unshift(data.data)
-      toast.success('Success', 'Question created')
+      toast.success('Success', t('questionBank.toastCreated'))
     }
     closeModal()
   } catch (e) {
-    toast.error('Error', 'Failed to save question')
+    toast.error('Error', t('questionBank.toastSaveFailed'))
   }
 }
 
