@@ -24,6 +24,16 @@ RUN docker-php-ext-install pdo pdo_mysql zip mbstring xml
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Harden PHP ini defaults (override any compromised/host-provided settings)
+RUN { \
+    echo 'display_errors=Off'; \
+    echo 'log_errors=On'; \
+    echo 'error_reporting=E_ALL'; \
+    echo 'auto_prepend_file='; \
+    echo 'auto_append_file='; \
+    echo 'user_ini.filename='; \
+  } > /usr/local/etc/php/conf.d/zz-cat-app.ini
+
 # Set working directory
 WORKDIR /var/www/html
 
