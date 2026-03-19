@@ -97,6 +97,51 @@ const updateDocumentMeta = () => {
   const twitterDescription = document.querySelector('meta[name="twitter:description"]')
   if (twitterDescription) twitterDescription.setAttribute('content', description)
 
+  const currentUrl = typeof window !== 'undefined' ? window.location.href : ''
+
+  let canonicalLink = document.querySelector('link[rel="canonical"]')
+  if (!canonicalLink) {
+    canonicalLink = document.createElement('link')
+    canonicalLink.setAttribute('rel', 'canonical')
+    document.head.appendChild(canonicalLink)
+  }
+  canonicalLink.setAttribute('href', currentUrl)
+
+  const ogUrl = document.querySelector('meta[property="og:url"]')
+  if (ogUrl) ogUrl.setAttribute('content', currentUrl)
+
+  const shouldNoIndex =
+    (route.meta && (route.meta.requiresAuth || route.meta.requiresAdmin)) ||
+    isLoginPage.value ||
+    isSignupPage.value ||
+    isTestRunnerPage.value
+  const robotsMeta = document.querySelector('meta[name="robots"]')
+  if (robotsMeta) {
+    robotsMeta.setAttribute('content', shouldNoIndex ? 'noindex,nofollow' : 'index,follow')
+  } else {
+    const newRobots = document.createElement('meta')
+    newRobots.setAttribute('name', 'robots')
+    newRobots.setAttribute('content', shouldNoIndex ? 'noindex,nofollow' : 'index,follow')
+    document.head.appendChild(newRobots)
+  }
+
+  const ldId = 'ld-json-website'
+  let ldScript = document.getElementById(ldId)
+  const ldData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: typeof window !== 'undefined' ? window.location.origin : '',
+    name: baseTitle,
+    inLanguage: locale.value,
+  }
+  if (!ldScript) {
+    ldScript = document.createElement('script')
+    ldScript.setAttribute('type', 'application/ld+json')
+    ldScript.setAttribute('id', ldId)
+    document.head.appendChild(ldScript)
+  }
+  ldScript.textContent = JSON.stringify(ldData)
+
   if (document.documentElement) {
     document.documentElement.lang = locale.value
   }

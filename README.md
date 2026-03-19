@@ -21,7 +21,7 @@ docker compose --profile dev up -d --build app-dev vite
 jalanin apps prod
 - Build aset sekali:
 ```
-docker compose --profile prod run --rm vite-build
+docker compose -f docker-compose.prod.yml up -d --force-recreate app nginx
 ```
 - Jalankan app:
 ```
