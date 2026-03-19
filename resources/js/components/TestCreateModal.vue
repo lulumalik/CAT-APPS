@@ -44,17 +44,14 @@
         <div class="grid grid-cols-2 gap-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.scheduleLabel') }}</label>
-            <div class="flex items-center gap-3">
-              <input v-model="scheduleDate" type="date" class="flex-1 min-w-0 w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" />
-              <div class="flex items-center gap-2">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.hour') }}</span>
-                <select v-model="scheduleHour" class="w-24 rounded-xl border-gray-100 bg-gray-50 px-3 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+            <div class="flex items-center w-full rounded-xl border border-gray-100 bg-gray-50 focus-within:bg-white focus-within:border-gray-200 focus-within:ring-2 focus-within:ring-gray-100 transition-all overflow-hidden">
+              <input v-model="scheduleDate" type="date" class="bg-transparent border-none focus:ring-0 px-4 py-3 flex-1 min-w-[140px] text-gray-700" required />
+              <div class="flex items-center px-3 border-l border-gray-200 gap-1 bg-gray-100/50 h-full">
+                <select v-model="scheduleHour" class="bg-transparent border-none focus:ring-0 text-center font-medium p-0 cursor-pointer hover:text-[#9DB359] text-gray-700">
                   <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
                 </select>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.minute') }}</span>
-                <select v-model="scheduleMinute" class="w-24 rounded-xl border-gray-100 bg-gray-50 px-3 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+                <span class="font-bold text-gray-400">:</span>
+                <select v-model="scheduleMinute" class="bg-transparent border-none focus:ring-0 text-center font-medium p-0 cursor-pointer hover:text-[#9DB359] text-gray-700">
                   <option v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
                 </select>
               </div>
@@ -71,17 +68,14 @@
           <div class="grid grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.startTimeLabel') }}</label>
-              <div class="flex items-center gap-3">
-                <input v-model="startDate" type="date" class="flex-1 min-w-0 w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required />
-                <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.hour') }}</span>
-                  <select v-model="startHour" class="w-24 rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+              <div class="flex items-center w-full rounded-xl border border-blue-100 bg-white focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
+                <input v-model="startDate" type="date" class="bg-transparent border-none focus:ring-0 px-4 py-3 flex-1 min-w-[130px] text-gray-700" :min="scheduleDate" required />
+                <div class="flex items-center px-3 border-l border-blue-100 gap-1 bg-blue-50/30 h-full">
+                  <select v-model="startHour" class="bg-transparent border-none focus:ring-0 text-center font-medium p-0 cursor-pointer hover:text-blue-600 text-gray-700">
                     <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
                   </select>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.minute') }}</span>
-                  <select v-model="startMinute" class="w-24 rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+                  <span class="font-bold text-blue-300">:</span>
+                  <select v-model="startMinute" class="bg-transparent border-none focus:ring-0 text-center font-medium p-0 cursor-pointer hover:text-blue-600 text-gray-700">
                     <option v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
                   </select>
                 </div>
@@ -90,17 +84,14 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.endTimeLabel') }}</label>
-              <div class="flex items-center gap-3">
-                <input v-model="endDate" type="date" class="flex-1 min-w-0 w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required />
-                <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.hour') }}</span>
-                  <select v-model="endHour" class="w-24 rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+              <div class="flex items-center w-full rounded-xl border border-blue-100 bg-white focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
+                <input v-model="endDate" type="date" class="bg-transparent border-none focus:ring-0 px-4 py-3 flex-1 min-w-[130px] text-gray-700" :min="startDate" required />
+                <div class="flex items-center px-3 border-l border-blue-100 gap-1 bg-blue-50/30 h-full">
+                  <select v-model="endHour" class="bg-transparent border-none focus:ring-0 text-center font-medium p-0 cursor-pointer hover:text-blue-600 text-gray-700">
                     <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
                   </select>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.minute') }}</span>
-                  <select v-model="endMinute" class="w-24 rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+                  <span class="font-bold text-blue-300">:</span>
+                  <select v-model="endMinute" class="bg-transparent border-none focus:ring-0 text-center font-medium p-0 cursor-pointer hover:text-blue-600 text-gray-700">
                     <option v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
                   </select>
                 </div>
@@ -132,11 +123,18 @@ const props = defineProps({
 const emit = defineEmits(['close','submit'])
 
 const toJakartaDatetimeInputValue = (value) => {
+  if (!value) return ''
+  
+  // Jika sudah format string "YYYY-MM-DDTHH:mm", biarkan (tidak perlu parse ulang agar tidak geser)
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value.slice(0, 16))) {
+    return value.slice(0, 16)
+  }
+
   const date = value instanceof Date ? value : new Date(value)
   if (Number.isNaN(date.getTime())) return ''
 
   try {
-    const parts = new Intl.DateTimeFormat('id-ID', {
+    const parts = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Asia/Jakarta',
       year: 'numeric',
       month: '2-digit',
@@ -147,7 +145,11 @@ const toJakartaDatetimeInputValue = (value) => {
     }).formatToParts(date)
 
     const byType = Object.fromEntries(parts.filter(p => p.type !== 'literal').map(p => [p.type, p.value]))
-    return `${byType.year}-${byType.month}-${byType.day}T${byType.hour}:${byType.minute}`
+    
+    let hour = byType.hour
+    if (hour === '24') hour = '00'
+
+    return `${byType.year}-${byType.month}-${byType.day}T${hour}:${byType.minute}`
   } catch (e) {
     const yyyy = date.getFullYear()
     const mm = String(date.getMonth() + 1).padStart(2, '0')
@@ -156,6 +158,28 @@ const toJakartaDatetimeInputValue = (value) => {
     const mi = String(date.getMinutes()).padStart(2, '0')
     return `${yyyy}-${mm}-${dd}T${hh}:${mi}`
   }
+}
+
+const addMinutesToString = (datetimeStr, minutes) => {
+  if (!datetimeStr) return ''
+  // Parsing format YYYY-MM-DDTHH:mm
+  const parts = datetimeStr.split('T')
+  if (parts.length !== 2) return datetimeStr
+  
+  const [yyyy, mm, dd] = parts[0].split('-').map(Number)
+  const [hh, mi] = parts[1].split(':').map(Number)
+  
+  // Buat date local supaya tidak geser timezone
+  const d = new Date(yyyy, mm - 1, dd, hh, mi)
+  d.setMinutes(d.getMinutes() + Number(minutes))
+  
+  const ny = d.getFullYear()
+  const nm = String(d.getMonth() + 1).padStart(2, '0')
+  const nd = String(d.getDate()).padStart(2, '0')
+  const nh = String(d.getHours()).padStart(2, '0')
+  const nmi = String(d.getMinutes()).padStart(2, '0')
+  
+  return `${ny}-${nm}-${nd}T${nh}:${nmi}`
 }
 
 const base = () => ({ 
@@ -236,6 +260,19 @@ const endHour = computed({
 const endMinute = computed({
   get: () => getParts(form.endTime).minute,
   set: (v) => setMinutePart('endTime', v),
+})
+
+// Sinkronisasi otomatis antar waktu
+watch(() => form.scheduleAt, (newSchedule) => {
+  if (newSchedule && (!form.startTime || newSchedule > form.startTime)) {
+    form.startTime = newSchedule
+  }
+})
+
+watch([() => form.startTime, () => form.duration], ([newStart, newDuration]) => {
+  if (newStart && newDuration) {
+    form.endTime = addMinutesToString(newStart, newDuration)
+  }
 })
 
 watch(() => props.initial, (val) => {

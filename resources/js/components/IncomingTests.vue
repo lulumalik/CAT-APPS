@@ -122,7 +122,7 @@ const { t } = useI18n()
 const fetchTests = async () => {
   try {
     const { data } = await window.axios.get('/api/incoming-tests')
-    tests.value = data.data
+    tests.value = Array.isArray(data) ? data : (data.data || [])
     updateCountdowns()
   } catch (error) {
     console.error('Failed to fetch tests', error)

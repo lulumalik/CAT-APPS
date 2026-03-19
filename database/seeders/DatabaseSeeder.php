@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Question;
+use App\Models\TestDefinition;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,27 +20,30 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $admin = User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin',
-                'password' => 'password',
+                'password' => Hash::make('password'),
                 'role' => 'admin',
             ]
         );
 
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'user@example.com'],
             [
                 'name' => 'User',
-                'password' => 'password',
+                'password' => Hash::make('password'),
                 'role' => 'user',
             ]
         );
 
-        $this->call([
-            QuestionSeeder::class,
-            TestDefinitionSeeder::class,
-        ]);
+        if (Question::count() === 0) {
+            $this->call([QuestionSeeder::class]);
+        }
+
+        if (TestDefinition::count() === 0) {
+            $this->call([TestDefinitionSeeder::class]);
+        }
     }
 }
