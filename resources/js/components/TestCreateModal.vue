@@ -44,13 +44,17 @@
         <div class="grid grid-cols-2 gap-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.scheduleLabel') }}</label>
-            <div class="grid grid-cols-3 gap-3">
-              <input v-model="scheduleDate" type="date" class="col-span-2 w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" />
-              <div class="grid grid-cols-2 gap-2">
-                <select v-model="scheduleHour" class="w-full rounded-xl border-gray-100 bg-gray-50 px-3 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+            <div class="flex items-center gap-3">
+              <input v-model="scheduleDate" type="date" class="flex-1 min-w-0 w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" />
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.hour') }}</span>
+                <select v-model="scheduleHour" class="w-24 rounded-xl border-gray-100 bg-gray-50 px-3 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
                   <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
                 </select>
-                <select v-model="scheduleMinute" class="w-full rounded-xl border-gray-100 bg-gray-50 px-3 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.minute') }}</span>
+                <select v-model="scheduleMinute" class="w-24 rounded-xl border-gray-100 bg-gray-50 px-3 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
                   <option v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
                 </select>
               </div>
@@ -67,13 +71,17 @@
           <div class="grid grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.startTimeLabel') }}</label>
-              <div class="grid grid-cols-3 gap-3">
-                <input v-model="startDate" type="date" class="col-span-2 w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required />
-                <div class="grid grid-cols-2 gap-2">
-                  <select v-model="startHour" class="w-full rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+              <div class="flex items-center gap-3">
+                <input v-model="startDate" type="date" class="flex-1 min-w-0 w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required />
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.hour') }}</span>
+                  <select v-model="startHour" class="w-24 rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
                     <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
                   </select>
-                  <select v-model="startMinute" class="w-full rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.minute') }}</span>
+                  <select v-model="startMinute" class="w-24 rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
                     <option v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
                   </select>
                 </div>
@@ -82,13 +90,17 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.endTimeLabel') }}</label>
-              <div class="grid grid-cols-3 gap-3">
-                <input v-model="endDate" type="date" class="col-span-2 w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required />
-                <div class="grid grid-cols-2 gap-2">
-                  <select v-model="endHour" class="w-full rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+              <div class="flex items-center gap-3">
+                <input v-model="endDate" type="date" class="flex-1 min-w-0 w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required />
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.hour') }}</span>
+                  <select v-model="endHour" class="w-24 rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
                     <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
                   </select>
-                  <select v-model="endMinute" class="w-full rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">{{ t('common.minute') }}</span>
+                  <select v-model="endMinute" class="w-24 rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
                     <option v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
                   </select>
                 </div>
