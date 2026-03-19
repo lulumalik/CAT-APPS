@@ -68,24 +68,24 @@
           <button class="mt-6 px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors cursor-pointer" @click="openCreate">{{ t('tests.startCreate') }}</button>
         </div>
 
-        <div v-for="(t,i) in filtered" :key="i" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group">
+        <div v-for="(test, i) in filtered" :key="i" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group">
           <div class="flex items-start justify-between mb-4">
             <div>
-              <h2 class="text-xl font-bold text-[#1A1A1A] group-hover:text-[#9DB359] transition-colors">{{ t.name }}</h2>
-              <p class="text-sm text-gray-500 mt-1 leading-relaxed">{{ t.description }}</p>
+              <h2 class="text-xl font-bold text-[#1A1A1A] group-hover:text-[#9DB359] transition-colors">{{ test.name }}</h2>
+              <p class="text-sm text-gray-500 mt-1 leading-relaxed">{{ test.description }}</p>
             </div>
             <div class="text-right">
-              <div v-if="t.start_time" class="text-sm">
+              <div v-if="test.start_time" class="text-sm">
                 <span class="text-gray-400 text-xs uppercase tracking-wide block">{{ t('tests.start') }}</span> 
-                <span class="font-medium text-[#1A1A1A]">{{ formatDate(t.start_time) }}</span>
+                <span class="font-medium text-[#1A1A1A]">{{ formatDate(test.start_time) }}</span>
               </div>
-              <div v-if="t.end_time" class="text-sm mt-1">
+              <div v-if="test.end_time" class="text-sm mt-1">
                 <span class="text-gray-400 text-xs uppercase tracking-wide block">{{ t('tests.end') }}</span> 
-                <span class="font-medium text-[#1A1A1A]">{{ formatDate(t.end_time) }}</span>
+                <span class="font-medium text-[#1A1A1A]">{{ formatDate(test.end_time) }}</span>
               </div>
               <div v-else class="text-sm">
                 <span class="text-gray-400 text-xs uppercase tracking-wide block">{{ t('tests.scheduled') }}</span>
-                <span class="font-medium text-[#1A1A1A]">{{ formatDate(t.schedule_at) }}</span>
+                <span class="font-medium text-[#1A1A1A]">{{ formatDate(test.schedule_at) }}</span>
               </div>
             </div>
           </div>
@@ -93,37 +93,37 @@
           <div class="mt-6 flex flex-wrap gap-3">
             <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
               <span class="text-xs text-gray-400 uppercase font-bold">{{ t('common.category') }}</span>
-              <span class="text-sm font-medium text-gray-700 capitalize">{{ t.category }}</span>
+              <span class="text-sm font-medium text-gray-700 capitalize">{{ test.category }}</span>
             </div>
             <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
               <span class="text-xs text-gray-400 uppercase font-bold">{{ t('common.duration') }}</span>
-              <span class="text-sm font-medium text-gray-700">{{ t.duration }} min</span>
+              <span class="text-sm font-medium text-gray-700">{{ test.duration }} min</span>
             </div>
             <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
               <span class="text-xs text-gray-400 uppercase font-bold">{{ t('common.questions') }}</span>
-              <span class="text-sm font-medium text-gray-700">{{ t.question_ids?.length || 0 }}</span>
+              <span class="text-sm font-medium text-gray-700">{{ test.question_ids?.length || 0 }}</span>
             </div>
             <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
               <span class="text-xs text-gray-400 uppercase font-bold">{{ t('common.status') }}</span>
-              <span v-if="t.status === 'upcoming'" class="text-sm font-medium text-yellow-600 flex items-center gap-1">🔒 {{ t('tests.upcoming') }}</span>
-              <span v-else-if="t.status === 'ongoing'" class="text-sm font-medium text-green-600 flex items-center gap-1">✓ {{ t('tests.ongoing') }}</span>
-              <span v-else-if="t.status === 'ended'" class="text-sm font-medium text-gray-600">{{ t('common.ended') }}</span>
-              <span v-else class="text-sm font-medium text-gray-700">{{ isActive(t) ? t('common.active') : t('common.scheduled') }}</span>
+              <span v-if="test.status === 'upcoming'" class="text-sm font-medium text-yellow-600 flex items-center gap-1">🔒 {{ t('tests.upcoming') }}</span>
+              <span v-else-if="test.status === 'ongoing'" class="text-sm font-medium text-green-600 flex items-center gap-1">✓ {{ t('tests.ongoing') }}</span>
+              <span v-else-if="test.status === 'ended'" class="text-sm font-medium text-gray-600">{{ t('common.ended') }}</span>
+              <span v-else class="text-sm font-medium text-gray-700">{{ isActive(test) ? t('common.active') : t('common.scheduled') }}</span>
             </div>
           </div>
 
           <div class="mt-6 flex items-center justify-end gap-3 pt-6 border-t border-gray-50">
             <button
               class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600"
-              @click="openAssign(t)"
-              :disabled="deletingId === t.id"
+              @click="openAssign(test)"
+              :disabled="deletingId === test.id"
             >
               {{ t('tests.assignQuestions') }}
             </button>
-            <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewSubmissions(t)" :disabled="deletingId === t.id">{{ t('tests.submissions') }}</button>
-            <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="edit(i)" :disabled="deletingId === t.id">{{ t('common.edit') }}</button>
-            <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" @click="remove(i)" :disabled="deletingId === t.id">
-              <span v-if="deletingId === t.id" class="flex items-center gap-2">
+            <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewSubmissions(test)" :disabled="deletingId === test.id">{{ t('tests.submissions') }}</button>
+            <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="edit(i)" :disabled="deletingId === test.id">{{ t('common.edit') }}</button>
+            <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" @click="remove(i)" :disabled="deletingId === test.id">
+              <span v-if="deletingId === test.id" class="flex items-center gap-2">
                 <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

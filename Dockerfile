@@ -40,6 +40,9 @@ WORKDIR /var/www/html
 # Copy project
 COPY . .
 
+# Copy built frontend assets from node build stage
+COPY --from=nodebuild /app/public/build /var/www/html/public/build
+
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
