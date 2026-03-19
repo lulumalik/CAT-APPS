@@ -296,6 +296,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (timer.value) clearInterval(timer.value)
+  window.onbeforeunload = null
 })
 
 // Prevent accidental navigation

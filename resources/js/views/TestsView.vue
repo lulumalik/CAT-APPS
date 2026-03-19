@@ -212,16 +212,31 @@ const isActive = (t) => {
 
 const formatDate = (d) => {
   if (!d) return '-'
-  return new Date(d).toLocaleString('id-ID', { 
-    month: 'short', day: 'numeric', year: 'numeric', 
-    hour: '2-digit', minute: '2-digit',
-    hour12: false
-  })
+  const dt = new Date(d)
+  const opts = {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }
+  try {
+    return dt.toLocaleString('id-ID', { ...opts, timeZone: 'Asia/Jakarta' })
+  } catch (e) {
+    return dt.toLocaleString('id-ID', opts)
+  }
 }
 
 const formatDateShort = (d) => {
   if (!d) return '-'
-  return new Date(d).toLocaleDateString('id-ID', { month: 'short', day: 'numeric' })
+  const dt = new Date(d)
+  const opts = { month: 'short', day: 'numeric' }
+  try {
+    return dt.toLocaleDateString('id-ID', { ...opts, timeZone: 'Asia/Jakarta' })
+  } catch (e) {
+    return dt.toLocaleDateString('id-ID', opts)
+  }
 }
 
 const loadTests = async () => {

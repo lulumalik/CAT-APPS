@@ -99,7 +99,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['close'])
 const toast = useToast()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const submissions = ref([])
 const loading = ref(true)
@@ -137,8 +137,20 @@ const getQuestionType = (id) => {
 
 const formatDateTime = (dateStr) => {
     if (!dateStr) return ''
-    const loc = locale.value === 'en' ? 'en-US' : 'id-ID'
-    return new Date(dateStr).toLocaleString(loc)
+    const dt = new Date(dateStr)
+    const opts = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }
+    try {
+      return dt.toLocaleString('id-ID', { ...opts, timeZone: 'Asia/Jakarta' })
+    } catch (e) {
+      return dt.toLocaleString('id-ID', opts)
+    }
 }
 
 onMounted(loadSubmissions)

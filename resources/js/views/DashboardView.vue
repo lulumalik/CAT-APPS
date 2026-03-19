@@ -114,16 +114,26 @@ const { user } = storeToRefs(store)
 const incomingTestsRef = ref(null)
 const history = ref([])
 const stats = ref({ completed: 0, average: 0 })
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const todayLabel = computed(() => {
-  const loc = locale.value === 'en' ? 'en-US' : 'id-ID'
-  return new Date().toLocaleDateString(loc, {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  const dt = new Date()
+  try {
+    return dt.toLocaleDateString('id-ID', {
+      timeZone: 'Asia/Jakarta',
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  } catch (e) {
+    return dt.toLocaleDateString('id-ID', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  }
 })
 
 const refreshTests = () => {
@@ -135,8 +145,18 @@ const refreshTests = () => {
 const formatDate = (d) => {
   if (!d) return ''
   const dt = new Date(d)
-  const loc = locale.value === 'en' ? 'en-US' : 'id-ID'
-  return dt.toLocaleDateString(loc, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+  const opts = {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }
+  try {
+    return dt.toLocaleString('id-ID', { ...opts, timeZone: 'Asia/Jakarta' })
+  } catch (e) {
+    return dt.toLocaleString('id-ID', opts)
+  }
 }
 
 const getScoreColor = (percentage) => {

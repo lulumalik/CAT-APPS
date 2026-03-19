@@ -117,7 +117,7 @@ const tests = ref([])
 const countdown = ref({})
 const timerInterval = ref(null)
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const fetchTests = async () => {
   try {
@@ -131,16 +131,21 @@ const fetchTests = async () => {
 
 const formatDateTime = (dateStr) => {
   if (!dateStr) return '-'
-  const loc = locale.value === 'en' ? 'en-US' : 'id-ID'
-  return new Date(dateStr).toLocaleString(loc, {
+  const dt = new Date(dateStr)
+  const opts = {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false
-  })
+    hour12: false,
+  }
+  try {
+    return dt.toLocaleString('id-ID', { ...opts, timeZone: 'Asia/Jakarta' })
+  } catch (e) {
+    return dt.toLocaleString('id-ID', opts)
+  }
 }
 
 const updateCountdowns = () => {

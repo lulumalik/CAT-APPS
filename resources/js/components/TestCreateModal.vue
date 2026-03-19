@@ -44,7 +44,17 @@
         <div class="grid grid-cols-2 gap-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.scheduleLabel') }}</label>
-            <input v-model="form.scheduleAt" type="datetime-local" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" lang="id" />
+            <div class="grid grid-cols-3 gap-3">
+              <input v-model="scheduleDate" type="date" class="col-span-2 w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" />
+              <div class="grid grid-cols-2 gap-2">
+                <select v-model="scheduleHour" class="w-full rounded-xl border-gray-100 bg-gray-50 px-3 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+                  <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
+                </select>
+                <select v-model="scheduleMinute" class="w-full rounded-xl border-gray-100 bg-gray-50 px-3 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+                  <option v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div></div>
         </div>
@@ -57,12 +67,32 @@
           <div class="grid grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.startTimeLabel') }}</label>
-              <input v-model="form.startTime" type="datetime-local" class="w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required lang="id" />
+              <div class="grid grid-cols-3 gap-3">
+                <input v-model="startDate" type="date" class="col-span-2 w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required />
+                <div class="grid grid-cols-2 gap-2">
+                  <select v-model="startHour" class="w-full rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+                    <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
+                  </select>
+                  <select v-model="startMinute" class="w-full rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+                    <option v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
+                  </select>
+                </div>
+              </div>
               <p class="text-xs text-gray-500 mt-2">{{ t('modals.testCreate.startTimeHint') }}</p>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.endTimeLabel') }}</label>
-              <input v-model="form.endTime" type="datetime-local" class="w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required lang="id" />
+              <div class="grid grid-cols-3 gap-3">
+                <input v-model="endDate" type="date" class="col-span-2 w-full rounded-xl border-blue-100 bg-white px-4 py-3 focus:border-blue-300 focus:ring-0 transition-all" required />
+                <div class="grid grid-cols-2 gap-2">
+                  <select v-model="endHour" class="w-full rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+                    <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
+                  </select>
+                  <select v-model="endMinute" class="w-full rounded-xl border-blue-100 bg-white px-3 py-3 focus:border-blue-300 focus:ring-0 transition-all">
+                    <option v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
+                  </select>
+                </div>
+              </div>
               <p class="text-xs text-gray-500 mt-2">{{ t('modals.testCreate.endTimeHint') }}</p>
             </div>
           </div>
@@ -79,7 +109,7 @@
 </template>
 
 <script setup>
-import { reactive, computed, watch, ref } from 'vue'
+import { reactive, computed, watch } from 'vue'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
@@ -89,15 +119,31 @@ const props = defineProps({
 })
 const emit = defineEmits(['close','submit'])
 
-const toLocalDatetimeInputValue = (value) => {
+const toJakartaDatetimeInputValue = (value) => {
   const date = value instanceof Date ? value : new Date(value)
   if (Number.isNaN(date.getTime())) return ''
-  const yyyy = date.getFullYear()
-  const mm = String(date.getMonth() + 1).padStart(2, '0')
-  const dd = String(date.getDate()).padStart(2, '0')
-  const hh = String(date.getHours()).padStart(2, '0')
-  const mi = String(date.getMinutes()).padStart(2, '0')
-  return `${yyyy}-${mm}-${dd}T${hh}:${mi}`
+
+  try {
+    const parts = new Intl.DateTimeFormat('id-ID', {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).formatToParts(date)
+
+    const byType = Object.fromEntries(parts.filter(p => p.type !== 'literal').map(p => [p.type, p.value]))
+    return `${byType.year}-${byType.month}-${byType.day}T${byType.hour}:${byType.minute}`
+  } catch (e) {
+    const yyyy = date.getFullYear()
+    const mm = String(date.getMonth() + 1).padStart(2, '0')
+    const dd = String(date.getDate()).padStart(2, '0')
+    const hh = String(date.getHours()).padStart(2, '0')
+    const mi = String(date.getMinutes()).padStart(2, '0')
+    return `${yyyy}-${mm}-${dd}T${hh}:${mi}`
+  }
 }
 
 const base = () => ({ 
@@ -105,18 +151,80 @@ const base = () => ({
   description: '', 
   category: '', 
   duration: 30, 
-  scheduleAt: toLocalDatetimeInputValue(new Date()),
-  startTime: toLocalDatetimeInputValue(new Date()),
-  endTime: toLocalDatetimeInputValue(new Date(Date.now() + 3600000)),
+  scheduleAt: toJakartaDatetimeInputValue(new Date()),
+  startTime: toJakartaDatetimeInputValue(new Date()),
+  endTime: toJakartaDatetimeInputValue(new Date(Date.now() + 3600000)),
   isActive: false,
   questionIds: []
 })
 const form = reactive(base())
-const showPicker = ref(false)
-const togglePicker = () => {}
-const selectedCount = computed(() => 0)
 const isEdit = computed(() => !!props.initial)
 const { t } = useI18n()
+
+const hourOptions = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
+const minuteOptions = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'))
+
+const getParts = (value) => {
+  if (!value || typeof value !== 'string') return { date: '', hour: '00', minute: '00' }
+  const date = value.slice(0, 10)
+  const hour = value.length >= 13 ? value.slice(11, 13) : '00'
+  const minute = value.length >= 16 ? value.slice(14, 16) : '00'
+  return { date, hour, minute }
+}
+
+const setDatePart = (field, date) => {
+  const { hour, minute } = getParts(form[field])
+  form[field] = date ? `${date}T${hour}:${minute}` : ''
+}
+
+const setHourPart = (field, hour) => {
+  const { date, minute } = getParts(form[field])
+  form[field] = date ? `${date}T${hour}:${minute}` : ''
+}
+
+const setMinutePart = (field, minute) => {
+  const { date, hour } = getParts(form[field])
+  form[field] = date ? `${date}T${hour}:${minute}` : ''
+}
+
+const scheduleDate = computed({
+  get: () => getParts(form.scheduleAt).date,
+  set: (v) => setDatePart('scheduleAt', v),
+})
+const scheduleHour = computed({
+  get: () => getParts(form.scheduleAt).hour,
+  set: (v) => setHourPart('scheduleAt', v),
+})
+const scheduleMinute = computed({
+  get: () => getParts(form.scheduleAt).minute,
+  set: (v) => setMinutePart('scheduleAt', v),
+})
+
+const startDate = computed({
+  get: () => getParts(form.startTime).date,
+  set: (v) => setDatePart('startTime', v),
+})
+const startHour = computed({
+  get: () => getParts(form.startTime).hour,
+  set: (v) => setHourPart('startTime', v),
+})
+const startMinute = computed({
+  get: () => getParts(form.startTime).minute,
+  set: (v) => setMinutePart('startTime', v),
+})
+
+const endDate = computed({
+  get: () => getParts(form.endTime).date,
+  set: (v) => setDatePart('endTime', v),
+})
+const endHour = computed({
+  get: () => getParts(form.endTime).hour,
+  set: (v) => setHourPart('endTime', v),
+})
+const endMinute = computed({
+  get: () => getParts(form.endTime).minute,
+  set: (v) => setMinutePart('endTime', v),
+})
 
 watch(() => props.initial, (val) => {
   if (!val) {
@@ -125,9 +233,9 @@ watch(() => props.initial, (val) => {
   }
 
   const next = JSON.parse(JSON.stringify(val))
-  next.scheduleAt = toLocalDatetimeInputValue(val.scheduleAt ?? val.schedule_at)
-  next.startTime = toLocalDatetimeInputValue(val.startTime ?? val.start_time)
-  next.endTime = toLocalDatetimeInputValue(val.endTime ?? val.end_time)
+  next.scheduleAt = toJakartaDatetimeInputValue(val.scheduleAt ?? val.schedule_at)
+  next.startTime = toJakartaDatetimeInputValue(val.startTime ?? val.start_time)
+  next.endTime = toJakartaDatetimeInputValue(val.endTime ?? val.end_time)
   next.isActive = val.isActive ?? val.is_active ?? false
   next.questionIds = Array.isArray(val.questionIds ?? val.question_ids) ? (val.questionIds ?? val.question_ids) : (next.questionIds ?? [])
   Object.assign(form, next)
