@@ -5,22 +5,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>CAT Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal</title>
+        <title>{{ isset($material) ? $material->title . ' - CAT Platform' : 'CAT Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}</title>
         <meta name="google-site-verification" content="oHVVXwQv4qB7m3tjr5G0EWAbiVw22JVmC7MLqe0hcFQ" />
-        <meta name="description" content="CAT Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.">
-        <meta name="keywords" content="CAT, Computer Assisted Test, ujian online, tryout, bank soal, CBT, ranking, assessment, evaluasi">
+        <meta name="description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'CAT Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
+        <meta name="keywords" content="CAT, Computer Assisted Test, ujian online, tryout, bank soal, CBT, ranking, assessment, evaluasi{{ isset($material) && $material->category ? ', ' . $material->category : '' }}">
         <meta name="robots" content="index,follow">
         <meta name="theme-color" content="#9DB359">
         <link rel="canonical" href="{{ url()->current() }}">
-        <meta property="og:type" content="website">
+        <meta property="og:type" content="{{ isset($material) ? 'article' : 'website' }}">
         <meta property="og:site_name" content="CAT Platform">
-        <meta property="og:title" content="CAT Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal">
-        <meta property="og:description" content="CAT Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.">
+        <meta property="og:title" content="{{ isset($material) ? $material->title : 'CAT Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
+        <meta property="og:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'CAT Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image" content="{{ url('/favicon.ico') }}">
         <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="CAT Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal">
-        <meta name="twitter:description" content="CAT Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.">
+        <meta name="twitter:title" content="{{ isset($material) ? $material->title : 'CAT Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
+        <meta name="twitter:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'CAT Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -35,7 +35,7 @@
             </style>
         @endif
     </head>
-    <body class="bg-bg text-text min-h-screen md:p-6 lg:p-8">
+    <body class="text-text bg-[#F9F9F7] min-h-screen md:p-6 lg:p-8">
         <div id="app"></div>
         <noscript>
             <main>

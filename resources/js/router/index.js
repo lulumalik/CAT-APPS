@@ -8,6 +8,9 @@ import TestsView from '@/views/TestsView.vue';
 import UserManagementView from '@/views/UserManagementView.vue';
 import RankingsView from '@/views/RankingsView.vue';
 import TestRunnerView from '@/views/TestRunnerView.vue';
+import MaterialsManageView from '@/views/MaterialsManageView.vue';
+import BlogView from '@/views/BlogView.vue';
+import BlogDetailView from '@/views/BlogDetailView.vue';
 import { useAppStore } from '@/stores/app';
 
 const routes = [
@@ -18,6 +21,9 @@ const routes = [
   { path: '/question-bank', name: 'question-bank', component: QuestionBankView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/tests', name: 'tests', component: TestsView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/users', name: 'users', component: UserManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/materials', name: 'materials', component: MaterialsManageView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/blog', name: 'blog', component: BlogView },
+  { path: '/blog/:slug', name: 'blog-detail', component: BlogDetailView },
   { path: '/rankings', name: 'rankings', component: RankingsView },
   { path: '/quick-test/:id', name: 'quick-test', component: TestRunnerView, meta: { requiresAuth: true } },
 ];

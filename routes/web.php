@@ -18,7 +18,21 @@ Route::get('/sitemap.xml', function () {
             'changefreq' => 'weekly',
             'priority' => '0.6',
         ],
+        [
+            'loc' => url('/blog'),
+            'changefreq' => 'daily',
+            'priority' => '0.8',
+        ],
     ];
+
+    $materials = \App\Models\Material::where('status', 'published')->get();
+    foreach ($materials as $material) {
+        $urls[] = [
+            'loc' => url('/blog/' . $material->slug),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ];
+    }
 
     $lastmod = now()->toDateString();
 
@@ -49,6 +63,11 @@ Route::middleware('role:admin')->group(function () {
     Route::get('/admin/tests', function () {
         return response()->json(['ok' => true]);
     });
+});
+
+Route::get('/blog/{slug}', function ($slug) {
+    $material = \App\Models\Material::where('slug', $slug)->where('status', 'published')->first();
+    return view('welcome', ['material' => $material]);
 });
 
 Route::view('/{any}', 'welcome')->where('any', '.*');

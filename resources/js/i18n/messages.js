@@ -45,6 +45,8 @@ export const messages = {
       login: 'Masuk',
       logout: 'Keluar',
       getStarted: 'Mulai',
+      manageMaterials: 'Kelola Materi',
+      materials: 'Materi',
     },
     home: {
       hero: {
@@ -391,6 +393,8 @@ export const messages = {
       login: 'Login',
       logout: 'Logout',
       getStarted: 'Get Started',
+      manageMaterials: 'Manage Materials',
+      materials: 'Materials',
     },
     home: {
       hero: {

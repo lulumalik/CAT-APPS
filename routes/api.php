@@ -5,6 +5,11 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TestDefinitionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MaterialController;
+
+// Public material routes
+Route::get('/materials/public', [MaterialController::class, 'publicIndex']);
+Route::get('/materials/public/{slug}', [MaterialController::class, 'publicShow']);
 
 // Auth routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -40,4 +45,7 @@ Route::middleware('role:admin,mentor')->group(function () {
 
     Route::get('/tests/{test}/submissions', [TestDefinitionController::class, 'testSubmissions']);
     Route::put('/submissions/{submission}', [TestDefinitionController::class, 'updateSubmission']);
+
+    Route::apiResource('materials', MaterialController::class)->except(['show']);
+    Route::get('/materials/{material}', [MaterialController::class, 'showAdmin']);
 });
