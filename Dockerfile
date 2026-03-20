@@ -33,6 +33,8 @@ RUN { \
     echo 'auto_prepend_file='; \
     echo 'auto_append_file='; \
     echo 'user_ini.filename='; \
+    echo 'allow_url_include=Off'; \
+    echo 'allow_url_fopen=On'; \
   } > /usr/local/etc/php/conf.d/zz-cat-app.ini
 
 # Set working directory
