@@ -2,7 +2,8 @@
 FROM node:20-alpine AS nodebuild
 WORKDIR /app
 COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
-RUN npm install --include=optional
+RUN npm install
+RUN npm install @rollup/rollup-linux-x64-musl -D
 COPY . .
 RUN npm run build
 
