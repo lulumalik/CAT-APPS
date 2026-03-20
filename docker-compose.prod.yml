@@ -39,7 +39,8 @@ services:
       - .:/var/www/html
     command: >
       sh -c "
-      npm ci &&
+      npm install &&
+      npm install @rollup/rollup-linux-x64-musl lightningcss-linux-x64-musl @tailwindcss/oxide-linux-x64-musl -D --force &&
       npm run build
       "
 
