@@ -2,7 +2,7 @@
 FROM node:20-alpine AS nodebuild
 WORKDIR /app
 COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* ./
-RUN npm install
+RUN npm install --include=optional
 COPY . .
 RUN npm run build
 
