@@ -92,7 +92,7 @@
             <!-- Essay Input -->
             <div v-else-if="current.type === 'essay'" class="space-y-3">
                 <textarea 
-                    v-model="answers[index]" 
+                    v-model="answers[current.id]" 
                     rows="8" 
                     :placeholder="t('testRunner.answerPlaceholder')"
                     class="w-full rounded-xl border border-gray-200 p-5 focus:border-[#9DB359] focus:ring-1 focus:ring-[#9DB359] outline-none text-lg resize-none shadow-sm transition-colors"
@@ -150,7 +150,7 @@
                 :class="[
                   index === i 
                     ? 'border-[#1A1A1A] bg-[#1A1A1A] text-white scale-110 shadow-lg' 
-                    : answers[i] 
+                    : answers[q.id] 
                       ? 'border-[#9DB359] bg-[#9DB359]/10 text-[#9DB359]' 
                       : 'border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-300'
                 ]"
@@ -210,7 +210,10 @@ const timer = ref(null)
 const canSubmit = ref(true)
 
 const current = computed(() => questions.value[index.value] || {})
-const selected = (idx) => answers.value[idx]
+const selected = (idx) => {
+  const qId = questions.value[idx]?.id
+  return qId ? answers.value[qId] : null
+}
 
 const answeredCount = computed(() => Object.keys(answers.value).length)
 const progressPct = computed(() => {
@@ -223,10 +226,32 @@ const ss = computed(() => String(timeLeft.value % 60).padStart(2, '0'))
 
 const fetchTest = async () => {
   try {
-    const { data } = await window.axios.get(`/api/tests/${testId}/start`)
-    testData.value = data.test
-    questions.value = data.questions
-    timeLeft.value = data.remaining_time * 60 // minutes to seconds
+    const { data } = await window.axios.get(`/api/tests/${testId}`)
+    
+    if (data.has_submitted) {
+      toast.error('Error', 'You have already submitted this test')
+      router.push('/dashboard')
+      return
+    }
+    
+    if (!data.can_submit) {
+      toast.error('Error', 'Test is not available or has ended')
+      router.push('/dashboard')
+      return
+    }
+
+    testData.value = data
+    questions.value = data.questions || []
+    
+    const now = new Date()
+    const endTime = new Date(data.end_time)
+    let remainingSeconds = Math.floor((endTime - now) / 1000)
+    if (remainingSeconds < 0) remainingSeconds = 0
+    
+    const durationSeconds = (data.duration || 60) * 60
+    
+    timeLeft.value = Math.min(remainingSeconds, durationSeconds)
+    
     startTimer()
   } catch (error) {
     toast.error('Error', 'Failed to start test or test not found')
@@ -245,7 +270,8 @@ const startTimer = () => {
 }
 
 const selectOption = (key) => {
-  answers.value[index.value] = key
+  const qId = questions.value[index.value]?.id
+  if (qId) answers.value[qId] = key
 }
 
 const next = () => {

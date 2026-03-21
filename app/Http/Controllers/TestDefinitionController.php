@@ -189,7 +189,7 @@ class TestDefinitionController extends Controller
         }
 
         $data = $request->validate([
-            'answers' => 'required|array'
+            'answers' => 'present|array'
         ]);
 
         // Hitung score
