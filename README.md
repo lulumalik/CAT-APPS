@@ -27,6 +27,18 @@ docker compose -f docker-compose.prod.yml up -d --force-recreate app nginx
 ```
 docker compose --profile prod up -d nginx app
 ```
+// migrate database
+$env:PHP_INI_SCAN_DIR="c:\Users\HP\work\CAT-APPS\php-additional-ini"
+php artisan native:migrate:fresh --seed
+
+// build dev
+$env:PHP_INI_SCAN_DIR = "c:\Users\HP\work\CAT-APPS\php-additional-ini"
+composer native:dev
+
+// build production
+$env:PHP_INI_SCAN_DIR="c:\Users\HP\work\CAT-APPS\php-additional-ini"
+php artisan native:build win x64 --publish --no-interaction
+
 
 
 ## About Laravel
