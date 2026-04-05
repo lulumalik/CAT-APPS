@@ -26,6 +26,7 @@
             <router-link to="/users" class="text-gray-600 hover:text-[#1A1A1A] transition-colors" active-class="text-[#1A1A1A] font-semibold">{{ t('nav.users') }}</router-link>
           </template>
           <router-link to="/rankings" class="text-gray-600 hover:text-[#1A1A1A] transition-colors" active-class="text-[#1A1A1A] font-semibold">{{ t('nav.rankings') }}</router-link>
+          <router-link to="/lms" class="text-gray-600 hover:text-[#1A1A1A] transition-colors" active-class="text-[#1A1A1A] font-semibold">{{ t('nav.lms') }}</router-link>
           <router-link to="/blog" class="text-gray-600 hover:text-[#1A1A1A] transition-colors" active-class="text-[#1A1A1A] font-semibold">{{ t('nav.materials') }}</router-link>
           <div class="flex items-center rounded-full border border-gray-200 bg-white shadow-sm overflow-hidden">
             <button
@@ -58,6 +59,7 @@
         </template>
         <template v-else>
           <router-link to="/rankings" class="text-gray-600 hover:text-[#1A1A1A] transition-colors">{{ t('nav.rankings') }}</router-link>
+          <router-link to="/lms" class="text-gray-600 hover:text-[#1A1A1A] transition-colors" active-class="text-[#1A1A1A] font-semibold">{{ t('nav.lms') }}</router-link>
           <router-link to="/blog" class="text-gray-600 hover:text-[#1A1A1A] transition-colors" active-class="text-[#1A1A1A] font-semibold">Materi</router-link>
           <div class="flex items-center rounded-full border border-gray-200 bg-white shadow-sm overflow-hidden">
             <button
@@ -117,6 +119,7 @@
             <router-link to="/users" class="block py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1A1A1A] font-medium transition-all" active-class="bg-gray-50 text-[#1A1A1A] font-bold" @click="isMenuOpen = false">{{ t('nav.users') }}</router-link>
           </template>
           <router-link to="/rankings" class="block py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1A1A1A] font-medium transition-all" active-class="bg-gray-50 text-[#1A1A1A] font-bold" @click="isMenuOpen = false">{{ t('nav.rankings') }}</router-link>
+          <router-link to="/lms" class="block py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1A1A1A] font-medium transition-all" active-class="bg-gray-50 text-[#1A1A1A] font-bold" @click="isMenuOpen = false">{{ t('nav.lms') }}</router-link>
           <router-link to="/blog" class="block py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1A1A1A] font-medium transition-all" active-class="bg-gray-50 text-[#1A1A1A] font-bold" @click="isMenuOpen = false">{{ t('nav.materials') }}</router-link>
           <div class="pt-4 mt-2 border-t border-gray-100">
             <div class="px-4 mb-4 text-sm font-bold text-[#1A1A1A]">{{ user?.name || user?.email }}</div>
@@ -127,6 +130,7 @@
         </template>
         <template v-else>
           <router-link to="/rankings" class="block py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1A1A1A] font-medium transition-all" @click="isMenuOpen = false">{{ t('nav.rankings') }}</router-link>
+          <router-link to="/lms" class="block py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1A1A1A] font-medium transition-all" @click="isMenuOpen = false">{{ t('nav.lms') }}</router-link>
           <router-link to="/blog" class="block py-3 px-4 rounded-xl hover:bg-gray-50 text-gray-600 hover:text-[#1A1A1A] font-medium transition-all" @click="isMenuOpen = false">{{ t('nav.materials') }}</router-link>
           <div class="grid grid-cols-2 gap-4 mt-4">
             <router-link to="/login" class="block w-full text-center px-6 py-3 rounded-full border border-gray-200 bg-white hover:bg-gray-50 font-bold text-gray-700 transition-all" @click="isMenuOpen = false">{{ t('nav.login') }}</router-link>

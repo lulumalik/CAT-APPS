@@ -38,6 +38,7 @@ export const messages = {
     nav: {
       home: 'Beranda',
       rankings: 'Peringkat',
+      lms: 'Fitur LMS',
       dashboard: 'Dashboard',
       questionBank: 'Bank Soal',
       tests: 'Tes',
@@ -386,6 +387,7 @@ export const messages = {
     nav: {
       home: 'Home',
       rankings: 'Rankings',
+      lms: 'LMS Features',
       dashboard: 'Dashboard',
       questionBank: 'Question Bank',
       tests: 'Tests',

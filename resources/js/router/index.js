@@ -11,6 +11,7 @@ import TestRunnerView from '@/views/TestRunnerView.vue';
 import MaterialsManageView from '@/views/MaterialsManageView.vue';
 import BlogView from '@/views/BlogView.vue';
 import BlogDetailView from '@/views/BlogDetailView.vue';
+import LmsView from '@/views/LmsView.vue';
 import { useAppStore } from '@/stores/app';
 
 const routes = [
@@ -24,6 +25,7 @@ const routes = [
   { path: '/materials', name: 'materials', component: MaterialsManageView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/blog', name: 'blog', component: BlogView },
   { path: '/blog/:slug', name: 'blog-detail', component: BlogDetailView },
+  { path: '/lms', name: 'lms', component: LmsView, meta: { requiresAuth: true } },
   { path: '/rankings', name: 'rankings', component: RankingsView },
   { path: '/quick-test/:id', name: 'quick-test', component: TestRunnerView, meta: { requiresAuth: true } },
 ];

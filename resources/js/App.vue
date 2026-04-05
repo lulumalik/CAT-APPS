@@ -73,6 +73,7 @@ const updateDocumentMeta = () => {
     'question-bank': 'nav.questionBank',
     tests: 'nav.tests',
     users: 'nav.users',
+    lms: 'nav.lms',
   }
 
   const key = routeTitleKeyByName[route.name] || 'app.name'

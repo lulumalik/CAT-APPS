@@ -7,7 +7,7 @@ RUN npm install @rollup/rollup-linux-x64-musl lightningcss-linux-x64-musl @tailw
 COPY . .
 RUN npm run build
 
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
 # Install dependency system
 RUN apt-get update && apt-get install -y \
@@ -46,6 +46,9 @@ COPY . .
 
 # Copy built frontend assets from node build stage
 COPY --from=nodebuild /app/public/build /var/www/html/public/build
+
+# Mark repository as safe for git inside container
+RUN git config --global --add safe.directory /var/www/html
 
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader

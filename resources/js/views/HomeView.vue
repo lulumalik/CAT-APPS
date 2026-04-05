@@ -10,6 +10,7 @@
       <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
         <router-link to="/" class="text-black font-semibold">{{ t('nav.home') }}</router-link>
         <router-link to="/rankings" class="hover:text-black transition-colors">{{ t('nav.rankings') }}</router-link>
+        <router-link to="/lms" class="hover:text-black transition-colors">{{ t('nav.lms') }}</router-link>
         <router-link to="/blog" class="hover:text-black transition-colors">{{ t('nav.materials') }}</router-link>
         
         <template v-if="isAuthenticated">
