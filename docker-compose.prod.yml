@@ -13,12 +13,12 @@ services:
       APP_DEBUG: "false"
       LOG_CHANNEL: errorlog
       APP_URL: https://cat-platform.web.id
-      DB_CONNECTION: mysql
-      DB_HOST: 172.17.0.1
-      DB_PORT: 3306
-      DB_DATABASE: cat_apps
-      DB_USERNAME: cat_user
-      DB_PASSWORD: secret
+      DB_CONNECTION: pgsql
+      DB_HOST: ep-lucky-firefly-a5ep9avf.aws-us-east-2.pg.laravel.cloud
+      DB_PORT: 5432
+      DB_DATABASE: laravel
+      DB_USERNAME: laravel
+      DB_PASSWORD: npg_wMb6N4HclOEm
 
   nginx:
     image: nginx:latest
