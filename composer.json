@@ -48,6 +48,11 @@
             "@php artisan config:clear --ansi",
             "@php artisan test"
         ],
+        "cloud:deploy": [
+            "@php artisan optimize:clear --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --force --ansi"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
