@@ -12,6 +12,26 @@ Route::get('/materials/public', [MaterialController::class, 'publicIndex']);
 Route::get('/materials/public/{slug}', [MaterialController::class, 'publicShow']);
 
 // Auth routes
+Route::get('/debug-auth', function () {
+    try {
+        $dbStatus = \Illuminate\Support\Facades\DB::connection()->getPdo() ? 'Connected' : 'Failed';
+        $user = \App\Models\User::where('email', 'admin@example.com')->first();
+        if (!$user) {
+            return response()->json(['error' => 'User admin@example.com not found. DB Status: ' . $dbStatus]);
+        }
+        $hashMatch = \Illuminate\Support\Facades\Hash::check('password', $user->password);
+        return response()->json([
+            'db_status' => $dbStatus,
+            'user_found' => true,
+            'password_hash' => $user->password,
+            'hash_match' => $hashMatch,
+            'session_driver' => config('session.driver'),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
+});
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/user', [AuthController::class, 'user']);
