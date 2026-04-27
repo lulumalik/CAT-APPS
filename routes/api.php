@@ -12,6 +12,31 @@ Route::get('/materials/public', [MaterialController::class, 'publicIndex']);
 Route::get('/materials/public/{slug}', [MaterialController::class, 'publicShow']);
 
 // Auth routes
+Route::get('/force-setup', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        
+        // Pastikan admin ada
+        \App\Models\User::updateOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role' => 'admin',
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Database migrated, seeded, and admin user created successfully.',
+            'admin_check' => \App\Models\User::where('email', 'admin@example.com')->exists()
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
+});
+
 Route::get('/debug-auth', function () {
     try {
         $dbStatus = \Illuminate\Support\Facades\DB::connection()->getPdo() ? 'Connected' : 'Failed';
