@@ -51,7 +51,8 @@
         "cloud:deploy": [
             "@php artisan optimize:clear --ansi",
             "@php artisan migrate --force --ansi",
-            "@php artisan db:seed --force --ansi"
+            "@php artisan db:seed --force --ansi",
+            "@php artisan tinker --execute=\"\\App\\Models\\User::updateOrCreate(['email' => 'admin@example.com'], ['name' => 'Admin', 'password' => \\Illuminate\\Support\\Facades\\Hash::make('password'), 'role' => 'admin']);\""
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
