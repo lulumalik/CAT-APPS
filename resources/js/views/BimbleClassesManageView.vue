@@ -35,7 +35,8 @@
           </router-link>
           <span v-else class="text-xs text-gray-400">class id missing</span>
         </div>
-        <p v-if="c.instructor_name" class="text-sm text-gray-600">{{ c.instructor_name }}</p>
+        <p class="text-sm text-gray-600">Pengajar: {{ c.instructor?.name || c.instructor_name || 'Belum dipilih' }}</p>
+        <p class="text-xs text-gray-500">Periode: {{ formatPeriod(c) }}</p>
         <p class="text-xs text-gray-400">{{ t('bimble.students') }}: {{ c.students_count ?? 0 }}</p>
         <button
           type="button"
@@ -63,11 +64,19 @@
           </div>
           <div>
             <label class="text-sm font-medium text-gray-700">{{ t('bimble.instructor') }}</label>
-            <input v-model="form.instructor_name" class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" />
+            <select v-model="form.instructor_id" class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm">
+              <option :value="null">Pilih pengajar</option>
+              <option v-for="instructor in instructorOptions" :key="instructor.id" :value="instructor.id">
+                {{ instructor.name }} ({{ instructor.role }})
+              </option>
+            </select>
           </div>
           <div>
             <label class="text-sm font-medium text-gray-700">{{ t('bimble.period') }}</label>
-            <input v-model="form.academic_period" class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" />
+            <div class="mt-1 grid grid-cols-2 gap-2">
+              <input v-model="form.academic_period_start" type="date" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" />
+              <input v-model="form.academic_period_end" type="date" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" />
+            </div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
             <button type="button" class="px-4 py-2 rounded-full border border-gray-200 text-sm" @click="showCreate = false">{{ t('common.cancel') }}</button>
@@ -163,6 +172,7 @@ const managedClass = ref(null)
 const materialOptions = ref([])
 const testOptions = ref([])
 const studentOptions = ref([])
+const instructorOptions = ref([])
 const studentSearch = ref('')
 
 const programTypes = [
@@ -177,8 +187,9 @@ const programTypes = [
 const form = reactive({
   name: '',
   program_type: 'regular_online',
-  instructor_name: '',
-  academic_period: '',
+  instructor_id: null,
+  academic_period_start: '',
+  academic_period_end: '',
 })
 
 const forms = reactive({
@@ -209,19 +220,33 @@ async function createClass() {
     await axios.post('/api/bimble-classes', {
       name: form.name,
       program_type: form.program_type,
-      instructor_name: form.instructor_name || null,
-      academic_period: form.academic_period || null,
+      instructor_id: form.instructor_id || null,
+      academic_period_start: form.academic_period_start || null,
+      academic_period_end: form.academic_period_end || null,
     })
     showCreate.value = false
     form.name = ''
-    form.instructor_name = ''
-    form.academic_period = ''
+    form.instructor_id = null
+    form.academic_period_start = ''
+    form.academic_period_end = ''
     await load()
     errorMessage.value = ''
   } catch (error) {
     errorMessage.value = error?.response?.data?.message || 'Gagal membuat kelas baru.'
   } finally {
     creating.value = false
+  }
+}
+
+async function loadInstructors() {
+  try {
+    const { data } = await axios.get('/api/bimble-class-instructors')
+    instructorOptions.value = Array.isArray(data) ? data : []
+    if (!form.instructor_id && instructorOptions.value.length === 1) {
+      form.instructor_id = instructorOptions.value[0].id
+    }
+  } catch (error) {
+    instructorOptions.value = []
   }
 }
 
@@ -335,5 +360,17 @@ async function detachTest(testId) {
   }
 }
 
-onMounted(load)
+function formatPeriod(c) {
+  const start = c?.academic_period_start
+  const end = c?.academic_period_end
+  if (start && end) {
+    return `${start} s/d ${end}`
+  }
+
+  return c?.academic_period || 'Belum diatur'
+}
+
+onMounted(async () => {
+  await Promise.all([load(), loadInstructors()])
+})
 </script>

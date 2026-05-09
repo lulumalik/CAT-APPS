@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class BimbleClassController extends Controller
 {
@@ -30,10 +31,13 @@ class BimbleClassController extends Controller
         }
 
         $user = $request->user();
-        $q = BimbleClass::withCount('students');
+        $q = BimbleClass::withCount('students')->with('instructor:id,name,role');
 
         if ($user->role === 'mentor') {
-            $q->where('created_by', $user->id);
+            $q->where(function ($inner) use ($user) {
+                $inner->where('created_by', $user->id)
+                    ->orWhere('instructor_id', $user->id);
+            });
         }
 
         if ($request->filled('search')) {
@@ -50,7 +54,7 @@ class BimbleClassController extends Controller
     {
         $this->authorizeManage($request, $bimbleClass);
 
-        $bimbleClass->load(['students:id,name,email,program_category', 'materials', 'testDefinitions']);
+        $bimbleClass->load(['students:id,name,email,program_category', 'materials', 'testDefinitions', 'instructor:id,name,role']);
 
         return response()->json($bimbleClass);
     }
@@ -60,8 +64,9 @@ class BimbleClassController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'class_code' => 'nullable|string|max:32',
-            'instructor_name' => 'nullable|string|max:255',
-            'academic_period' => 'nullable|string|max:255',
+            'instructor_id' => ['nullable', Rule::exists('users', 'id')->where(fn ($query) => $query->whereIn('role', ['admin', 'mentor']))],
+            'academic_period_start' => 'nullable|date',
+            'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
             'program_type' => 'required|string|in:vip_offline,vip_online,regular_offline,regular_online,bimbingan_online,try_out',
         ]);
@@ -70,11 +75,26 @@ class BimbleClassController extends Controller
             $data['class_code'] = strtoupper(Str::random(8));
         }
 
+        if ($request->user()->role === 'mentor') {
+            $data['instructor_id'] = $request->user()->id;
+        }
+
+        $instructor = null;
+        if (! empty($data['instructor_id'])) {
+            $instructor = User::query()
+                ->whereIn('role', ['admin', 'mentor'])
+                ->find($data['instructor_id']);
+        }
+        if (! empty($data['instructor_id']) && ! $instructor) {
+            return response()->json(['message' => 'Pengajar harus user dengan role admin atau mentor.'], 422);
+        }
+        $data['instructor_name'] = $instructor?->name;
+        $data['academic_period'] = $this->composeAcademicPeriod($data['academic_period_start'] ?? null, $data['academic_period_end'] ?? null);
         $data['created_by'] = $request->user()->id;
 
         $class = BimbleClass::create($data);
 
-        return response()->json($class, 201);
+        return response()->json($class->load('instructor:id,name,role'), 201);
     }
 
     public function update(Request $request, BimbleClass $bimbleClass)
@@ -84,15 +104,39 @@ class BimbleClassController extends Controller
         $data = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'class_code' => 'sometimes|required|string|max:32',
-            'instructor_name' => 'nullable|string|max:255',
-            'academic_period' => 'nullable|string|max:255',
+            'instructor_id' => ['nullable', Rule::exists('users', 'id')->where(fn ($query) => $query->whereIn('role', ['admin', 'mentor']))],
+            'academic_period_start' => 'nullable|date',
+            'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
             'program_type' => 'sometimes|required|string|in:vip_offline,vip_online,regular_offline,regular_online,bimbingan_online,try_out',
         ]);
 
+        if ($request->user()->role === 'mentor') {
+            $data['instructor_id'] = $request->user()->id;
+        }
+
+        if (array_key_exists('instructor_id', $data)) {
+            $instructor = null;
+            if (! empty($data['instructor_id'])) {
+                $instructor = User::query()
+                    ->whereIn('role', ['admin', 'mentor'])
+                    ->find($data['instructor_id']);
+            }
+            if (! empty($data['instructor_id']) && ! $instructor) {
+                return response()->json(['message' => 'Pengajar harus user dengan role admin atau mentor.'], 422);
+            }
+            $data['instructor_name'] = $instructor?->name;
+        }
+
+        if (array_key_exists('academic_period_start', $data) || array_key_exists('academic_period_end', $data)) {
+            $start = $data['academic_period_start'] ?? $bimbleClass->academic_period_start;
+            $end = $data['academic_period_end'] ?? $bimbleClass->academic_period_end;
+            $data['academic_period'] = $this->composeAcademicPeriod($start, $end);
+        }
+
         $bimbleClass->update($data);
 
-        return response()->json($bimbleClass->fresh());
+        return response()->json($bimbleClass->fresh()->load('instructor:id,name,role'));
     }
 
     public function destroy(Request $request, BimbleClass $bimbleClass)
@@ -106,7 +150,9 @@ class BimbleClassController extends Controller
     public function workspace(Request $request, BimbleClass $bimbleClass)
     {
         $user = $request->user();
+        $bimbleClass->load('instructor:id,name,role');
         $ok = $user->role === 'admin'
+            || ($user->role === 'mentor' && ((int) $bimbleClass->created_by === (int) $user->id || (int) $bimbleClass->instructor_id === (int) $user->id))
             || $bimbleClass->students()->where('users.id', $user->id)->exists();
 
         if (! $ok) {
@@ -255,9 +301,32 @@ class BimbleClassController extends Controller
         if ($user->role === 'admin') {
             return;
         }
-        if ($user->role === 'mentor' && (int) $bimbleClass->created_by === (int) $user->id) {
+        if ($user->role === 'mentor' && ((int) $bimbleClass->created_by === (int) $user->id || (int) $bimbleClass->instructor_id === (int) $user->id)) {
             return;
         }
         abort(403, 'Unauthorized');
+    }
+
+    public function instructors(Request $request)
+    {
+        $user = $request->user();
+        $query = User::query()
+            ->whereIn('role', ['admin', 'mentor'])
+            ->orderBy('name');
+
+        if ($user->role === 'mentor') {
+            $query->where('id', $user->id);
+        }
+
+        return response()->json($query->get(['id', 'name', 'role']));
+    }
+
+    private function composeAcademicPeriod(?string $start, ?string $end): ?string
+    {
+        if (! $start || ! $end) {
+            return null;
+        }
+
+        return sprintf('%s - %s', $start, $end);
     }
 }

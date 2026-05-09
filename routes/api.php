@@ -127,6 +127,7 @@ Route::middleware('role:admin,mentor')->group(function () {
     Route::get('/materials/{material}', [MaterialController::class, 'showAdmin']);
 
     Route::get('/bimble-classes', [BimbleClassController::class, 'index']);
+    Route::get('/bimble-class-instructors', [BimbleClassController::class, 'instructors']);
     Route::post('/bimble-classes', [BimbleClassController::class, 'store']);
     Route::get('/bimble-classes/{bimbleClass}', [BimbleClassController::class, 'show']);
     Route::put('/bimble-classes/{bimbleClass}', [BimbleClassController::class, 'update']);

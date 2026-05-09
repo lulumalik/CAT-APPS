@@ -26,11 +26,11 @@
           <div class="flex flex-wrap gap-8 text-sm lg:ml-auto">
             <div>
               <div class="text-white/70 text-xs uppercase tracking-wide">{{ t('bimble.instructor') }}</div>
-              <div class="font-medium">{{ workspace.class.instructor_name || '—' }}</div>
+              <div class="font-medium">{{ workspace.class.instructor?.name || workspace.class.instructor_name || '—' }}</div>
             </div>
             <div>
               <div class="text-white/70 text-xs uppercase tracking-wide">{{ t('bimble.period') }}</div>
-              <div class="font-medium">{{ workspace.class.academic_period || '—' }}</div>
+              <div class="font-medium">{{ formattedPeriod }}</div>
             </div>
             <div>
               <div class="text-white/70 text-xs uppercase tracking-wide">{{ t('bimble.programType') }}</div>
@@ -147,6 +147,15 @@ const sessionKeys = computed(() => {
   const m = workspace.value?.materials_by_session
   if (!m) return []
   return Object.keys(m)
+})
+
+const formattedPeriod = computed(() => {
+  const cls = workspace.value?.class
+  if (!cls) return '—'
+  if (cls.academic_period_start && cls.academic_period_end) {
+    return `${cls.academic_period_start} s/d ${cls.academic_period_end}`
+  }
+  return cls.academic_period || '—'
 })
 
 const sidebarItems = computed(() => {

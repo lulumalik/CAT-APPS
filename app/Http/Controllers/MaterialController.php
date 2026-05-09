@@ -28,9 +28,8 @@ class MaterialController extends Controller
             'content' => 'required|string',
             'category' => 'nullable|string|max:255',
             'status' => 'required|in:draft,published',
-            'visibility' => 'nullable|in:public,class_only',
         ]);
-        $data['visibility'] = $data['visibility'] ?? 'public';
+        $data['visibility'] = 'class_only';
 
         // Extract base64 images, save to disk, and replace with URL
         $data['content'] = $this->processContentImages($data['content']);
@@ -64,8 +63,8 @@ class MaterialController extends Controller
             'content' => 'required|string',
             'category' => 'nullable|string|max:255',
             'status' => 'required|in:draft,published',
-            'visibility' => 'nullable|in:public,class_only',
         ]);
+        $data['visibility'] = 'class_only';
 
         // Extract base64 images, save to disk, and replace with URL
         $data['content'] = $this->processContentImages($data['content']);

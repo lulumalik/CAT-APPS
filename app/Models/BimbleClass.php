@@ -13,16 +13,32 @@ class BimbleClass extends Model
         'name',
         'class_code',
         'instructor_name',
+        'instructor_id',
         'academic_period',
+        'academic_period_start',
+        'academic_period_end',
         'participant_count',
         'program_type',
         'cover_image_path',
         'created_by',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'academic_period_start' => 'date:Y-m-d',
+            'academic_period_end' => 'date:Y-m-d',
+        ];
+    }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function instructor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'instructor_id');
     }
 
     public function students(): BelongsToMany
