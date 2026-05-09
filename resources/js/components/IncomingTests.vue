@@ -92,15 +92,25 @@
           </button>
           <router-link
             v-else-if="test.status === 'ongoing'"
-            :to="{ name: 'quick-test', params: { id: test.id } }"
-            class="block w-full px-6 py-3 rounded-full bg-[#9DB359] text-white text-center font-semibold hover:bg-[#8ca34b] transition-all shadow-lg shadow-[#9DB359]/20 hover:scale-[1.01] active:scale-[0.99]"
+            :to="test?.id ? { name: 'quick-test', params: { id: test.id } } : { name: 'dashboard' }"
+            :class="[
+              'block w-full px-6 py-3 rounded-full text-center font-semibold transition-all',
+              test?.id
+                ? 'bg-[#9DB359] text-white hover:bg-[#8ca34b] shadow-lg shadow-[#9DB359]/20 hover:scale-[1.01] active:scale-[0.99]'
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed pointer-events-none',
+            ]"
           >
             {{ t('incomingTests.startTestNow') }}
           </router-link>
           <router-link
             v-else
-            :to="{ name: 'quick-test', params: { id: test.id } }"
-            class="block w-full px-6 py-3 rounded-full bg-[#1A1A1A] text-white text-center font-medium hover:bg-black transition-all shadow-lg shadow-black/10"
+            :to="test?.id ? { name: 'quick-test', params: { id: test.id } } : { name: 'dashboard' }"
+            :class="[
+              'block w-full px-6 py-3 rounded-full text-center font-medium transition-all',
+              test?.id
+                ? 'bg-[#1A1A1A] text-white hover:bg-black shadow-lg shadow-black/10'
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed pointer-events-none',
+            ]"
           >
             {{ t('incomingTests.reviewTest') }}
           </router-link>
@@ -125,6 +135,7 @@ const fetchTests = async () => {
     tests.value = Array.isArray(data) ? data : (data.data || [])
     updateCountdowns()
   } catch (error) {
+    tests.value = []
     console.error('Failed to fetch tests', error)
   }
 }

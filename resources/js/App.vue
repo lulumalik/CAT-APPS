@@ -1,7 +1,7 @@
 <template>
-  <div :class="{'container-default': !isHomePage}" class="bg-[#F9F9F7] min-h-screen font-sans text-[#1A1A1A]">
-    <StickyHeader v-if="!isTestRunnerPage && !isLoginPage && !isSignupPage && !isHomePage" />
-    <div style="overflow-x: hidden !important;">
+  <div :class="{'container-default': !isHomePage}" class="bg-[#F9F9F7] rounded-3xl border-2 border-gray-200 min-h-screen font-sans text-[#1A1A1A]">
+    <StickyHeader v-if="showSidebarNav" />
+    <div :class="showSidebarNav ? 'pt-20 md:pt-0 md:pl-72' : ''" style="overflow-x: hidden !important;">
       <router-view />
     </div>
     
@@ -36,6 +36,7 @@
 
 <script setup>
 import { computed, onMounted, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import StickyHeader from '@/components/StickyHeader.vue'
 import Modal from '@/components/Modal.vue'
@@ -45,6 +46,7 @@ import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 
 const store = useAppStore()
+const { isAuthenticated } = storeToRefs(store)
 const route = useRoute()
 const { modalState } = useModal()
 const { toasts, removeToast } = useToast()
@@ -54,7 +56,15 @@ const isTestRunnerPage = computed(() => route.name === 'quick-test')
 const isLoginPage = computed(() => route.name === 'login')
 const isSignupPage = computed(() => route.name === 'signup')
 const isHomePage = computed(() => route.name === 'home')
+const isClassRoomPage = computed(() => route.name === 'bimble-class-room')
 const isRankingPage = computed(() => route.name === 'rankings')
+const showSidebarNav = computed(() =>
+  isAuthenticated.value &&
+  !isTestRunnerPage.value &&
+  !isLoginPage.value &&
+  !isSignupPage.value &&
+  !isClassRoomPage.value
+)
 
 onMounted(() => {
   // Try to fetch user on app load

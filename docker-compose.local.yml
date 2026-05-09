@@ -21,29 +21,30 @@ services:
     command: >
       sh -c "
       php -r 'file_exists(\"database/database.sqlite\") || touch(\"database/database.sqlite\");' &&
-      php artisan migrate --force &&
-      php artisan view:clear &&
-      php artisan config:clear &&
+      php artisan optimize:clear &&
       php artisan serve --host=0.0.0.0 --port=9000
       "
 
   vite:
+    profiles: ["docker-vite"]
     image: node:20-alpine
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
-      - /var/www/html/node_modules
+      - node_modules:/var/www/html/node_modules
     ports:
       - "5173:5173"
     environment:
       VITE_HOST: 0.0.0.0
       CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "50"
     command: >
       sh -c "
-      npm install &&
+      if [ ! -d node_modules ] || [ -z \"$(ls -A node_modules 2>/dev/null)\" ]; then npm install; fi &&
       npm run dev -- --host
       "
 
 volumes:
   composer_cache:
   vendor:
+  node_modules:

@@ -1,12 +1,3 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
-
 ## Install Apps
 $env:PHP_INI_SCAN_DIR = "d:\Project\CAT-APPS\php-additional-ini"; composer install
 
@@ -15,8 +6,21 @@ net start MariaDB
 
 # Pastikan MariaDB berjalan di host dan Nginx (jika ada) dikonfigurasi untuk proxy ke port 9000.
 
-jalanin apps dev
-docker compose --profile dev up -d --build app-dev vite
+jalanin apps dev (fast untuk local Windows)
+1) jalanin backend Laravel di container:
+```
+docker compose -f docker-compose.local.yml up -d --build app
+```
+2) jalanin Vite di host (bukan container) agar HMR cepat:
+```
+npm install
+npm run dev
+```
+
+opsional (lebih lambat, hanya jika perlu): Vite di container
+```
+docker compose -f docker-compose.local.yml --profile docker-vite up -d vite
+```
 
 jalanin apps prod
 - Build aset sekali:

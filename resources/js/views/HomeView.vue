@@ -1,291 +1,424 @@
 <template>
-  <div class="bg-[#F9F9F7] min-h-screen font-sans text-[#1A1A1A]">
-    <!-- Header -->
-    <header class="w-full py-6 px-4 md:px-12 flex justify-between items-center max-w-7xl mx-auto">
-      <div class="flex items-center gap-2">
-        <img :src="logoUrl" alt="CAT Platform Logo" class="h-8 w-auto" />
-        <span class="text-xl font-bold tracking-tight">{{ t('app.name') }}</span>
+  <main class="min-h-screen text-[#1A1A1A]">
+    <div
+      v-if="!isAuthenticated"
+      class="fixed top-12 left-[70.5%] md:flex hidden -translate-x-1/2 sm:w-[calc(100%-1rem)] md:w-[590px] z-30 rounded-xl bg-white/95 backdrop-blur border border-gray-100 shadow-xl shadow-black/10 p-2 sm:p-3"
+    >
+      <div class="flex flex-wrap items-center justify-center gap-1 w-full">
+        <button
+          v-for="item in quickNavItems"
+          :key="item.id"
+          type="button"
+          class="text-xs sm:text-sm px-2.5 cursor-pointer py-2 rounded-lg hover:bg-[#f5f8ec] hover:text-[#4f6123] transition-colors whitespace-nowrap"
+          @click="scrollToSection(item.id)"
+        >
+          {{ item.label }}
+        </button>
+      </div>
+    </div>
+
+    <section id="hero" class="relative overflow-hidden px-5 py-10 md:px-10 rounded-none md:rounded-2xl">
+      <div class="absolute top-0 right-0 w-[360px] sm:w-[240px] md:w-[320px] lg:w-[390px] xl:w-[720px] pointer-events-none z-0 banner-wrap">
+        <img :src="bannerUrl" alt="Banner Akademi Polisi" class="w-full h-auto banner-image rounded-none md:rounded-2xl" />
       </div>
 
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-        <router-link to="/" class="text-black font-semibold">{{ t('nav.home') }}</router-link>
-        <router-link to="/rankings" class="hover:text-black transition-colors">{{ t('nav.rankings') }}</router-link>
-        <router-link to="/blog" class="hover:text-black transition-colors">{{ t('nav.materials') }}</router-link>
-        
-        <template v-if="isAuthenticated">
-          <router-link to="/dashboard" class="hover:text-black transition-colors">{{ t('nav.dashboard') }}</router-link>
-          <div class="flex items-center gap-4 ml-4 pl-4 border-l border-gray-200">
-            <span class="text-sm font-medium text-[#1A1A1A]">{{ user?.name }}</span>
-            <button @click="handleLogout" class="text-red-600 hover:text-red-700 transition-colors">{{ t('nav.logout') }}</button>
-          </div>
-        </template>
-        <template v-else>
-          <router-link to="/login" class="hover:text-black transition-colors">{{ t('nav.login') }}</router-link>
-        </template>
-      </nav>
-
-      <div class="flex items-center gap-3">
-        <div class="flex items-center rounded-full border border-gray-200 bg-white shadow-sm overflow-hidden">
-          <button
-            type="button"
-            class="px-3 py-2 text-xs font-semibold transition-colors"
-            :class="locale === 'id' ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-50'"
-            @click="setLocale('id')"
-          >
-            ID
-          </button>
-          <button
-            type="button"
-            class="px-3 py-2 text-xs font-semibold transition-colors"
-            :class="locale === 'en' ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-50'"
-            @click="setLocale('en')"
-          >
-            EN
-          </button>
-        </div>
-
-        <div v-if="!isAuthenticated">
-          <router-link to="/login" class="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center gap-2 hover:bg-gray-800 transition-colors group">
-            {{ t('nav.getStarted') }}
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
-            <line x1="7" y1="17" x2="17" y2="7"></line>
-            <polyline points="7 7 17 7 17 17"></polyline>
-          </svg>
-        </router-link>
-        </div>
-        <div v-else class="md:hidden">
-          <router-link to="/dashboard" class="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center gap-2 hover:bg-gray-800 transition-colors">
-            {{ t('nav.dashboard') }}
-          </router-link>
-        </div>
-      </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 md:px-12 py-8 md:py-16">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-        <!-- Left Content -->
-        <div class="space-y-8">
-          <h1 class="text-4xl md:text-6xl font-bold leading-[1.1] tracking-tight">
-            {{ t('home.hero.title') }}
-          </h1>
-
-          <p class="text-gray-600 text-lg max-w-md leading-relaxed">
-            {{ t('home.hero.description') }}
-          </p>
-
-          <div class="flex flex-col sm:flex-row gap-3">
-            <router-link to="/login"
-              class="inline-flex bg-[#9DB359] text-white px-8 py-4 rounded-full font-medium text-lg items-center justify-center gap-2 hover:bg-[#8ca34b] transition-colors group shadow-lg shadow-[#9DB359]/20">
-              {{ t('home.hero.ctaPrimary') }}
-              <span class="bg-white/20 rounded-full p-1 group-hover:bg-white/30 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="7" y1="17" x2="17" y2="7"></line>
-                  <polyline points="7 7 17 7 17 17"></polyline>
-                </svg>
+      <div class="relative max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-end">
+        <div class="fade-up">
+          <p class="text-sm uppercase tracking-[0.2em] text-[#6c7c3f] font-semibold mb-4">Bimbel Online Akademi Polisi</p>
+          <h1 class="text-2xl md:text-6xl font-extrabold leading-tight tracking-tight text-[#111111]">
+            <span class="inline">
+              <span class="sm:hidden">
+                <div class="rounded-xl bg-white/75 px-2 py-1 shadow-sm sm:bg-transparent sm:p-0">Bimbingan Belajar Online</div>
+                <div class="rounded-xl mt-1 bg-white/75 px-2 py-1 shadow-sm sm:bg-transparent sm:p-0">dan Persiapan Akademi Polisi</div>
+                <div class="rounded-xl mt-1 bg-white/75 px-2 py-1 shadow-sm sm:bg-transparent sm:p-0">Terstruktur, Profesional,</div>
+                <div class="rounded-xl mt-1 bg-white/75 px-2 py-1 shadow-sm sm:bg-transparent sm:p-0">dan Terukur.</div>
               </span>
+              <span class="hidden sm:inline">
+                Bimbingan Belajar Online Akademi Polisi Terstruktur, Profesional, dan Terukur.
+              </span>
+            </span>
+          </h1>
+          <p class="mt-6 text-gray-600 text-lg leading-relaxed max-w-xl">
+            Program pembinaan terpadu untuk calon peserta Akademi Kepolisian: kelas bimbingan, simulasi CBT, evaluasi berkala, monitoring onboarding, dan manajemen kelas yang rapi untuk tim pembina.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <router-link to="/signup" class="px-6 py-3 rounded-full bg-[#9DB359] text-white font-semibold shadow-lg shadow-[#9DB359]/20 hover:bg-[#8da74c] transition-all">
+              Daftar Sebagai Peserta
             </router-link>
-            <router-link to="/rankings"
-              class="inline-flex bg-white border border-gray-200 text-[#1A1A1A] px-8 py-4 rounded-full font-medium text-lg items-center justify-center gap-2 hover:bg-gray-50 transition-colors shadow-sm">
-              {{ t('home.hero.ctaSecondary') }}
+            <router-link to="/login" class="px-6 py-3 rounded-full bg-white border border-gray-200 text-[#1A1A1A] font-semibold hover:bg-gray-50 transition-all">
+              Masuk ke Platform
             </router-link>
           </div>
         </div>
 
-        <!-- Right Image -->
-        <div class="relative">
-          <div class="rounded-[2.5rem] overflow-hidden shadow-2xl relative group">
-            <img src="https://images.pexels.com/photos/6683392/pexels-photo-6683392.jpeg"
-              alt="Platform ujian online dan penilaian"
-              class="w-full h-[500px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+        <div class="fade-up delay-1">
+          <div class="rounded-[2rem] bg-white/80 backdrop-blur border border-gray-100 shadow-2xl shadow-black/10 p-7 md:p-8">
+            <h3 class="text-lg font-bold mb-4">Mengapa platform ini efektif?</h3>
+            <div class="space-y-3 text-sm text-gray-700">
+              <div class="rounded-xl bg-[#f6f9ef] border border-[#dfe8c6] px-4 py-3">Monitoring progres onboarding peserta dari administrasi sampai psikologi.</div>
+              <div class="rounded-xl bg-[#f6f9ef] border border-[#dfe8c6] px-4 py-3">Kelas bimbingan terpusat: materi, kuis, dan ujian dalam satu workspace.</div>
+              <div class="rounded-xl bg-[#f6f9ef] border border-[#dfe8c6] px-4 py-3">Kontrol akses berbasis role untuk admin, mentor, dan peserta.</div>
+              <div class="rounded-xl bg-[#f6f9ef] border border-[#dfe8c6] px-4 py-3">Pelaporan hasil tes terukur untuk evaluasi pembinaan berkelanjutan.</div>
+            </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- Services Section -->
-      <section class="mt-32">
-        <div class="text-center max-w-2xl mx-auto mb-16">
-          <h2 class="text-3xl md:text-5xl font-bold mb-6">{{ t('home.services.title') }}</h2>
-          <p class="text-gray-600 leading-relaxed text-lg">
-            {{ t('home.services.description') }}
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <!-- Card 1 -->
-          <div
-            class="bg-white rounded-[2rem] p-8 shadow-xl shadow-black/5 hover:shadow-2xl hover:shadow-[#9DB359]/10 transition-all duration-300 border border-gray-100 group">
-            <div
-              class="w-14 h-14 bg-[#9DB359]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#9DB359] transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                class="w-7 h-7 text-[#9DB359] group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold mb-3 text-[#1A1A1A]">{{ t('home.services.cards.secureTesting.title') }}</h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-6">
-              {{ t('home.services.cards.secureTesting.description') }}
-            </p>
-            <div class="flex items-center gap-2 text-sm font-medium text-[#9DB359]">
-              {{ t('home.services.learnMore') }}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="group-hover:translate-x-1 transition-transform">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div
-            class="bg-white rounded-[2rem] p-8 shadow-xl shadow-black/5 hover:shadow-2xl hover:shadow-[#9DB359]/10 transition-all duration-300 border border-gray-100 group">
-            <div
-              class="w-14 h-14 bg-[#9DB359]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#9DB359] transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                class="w-7 h-7 text-[#9DB359] group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 20v-6M6 20V10M18 20V4"></path>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold mb-3 text-[#1A1A1A]">{{ t('home.services.cards.rankings.title') }}</h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-6">
-              {{ t('home.services.cards.rankings.description') }}
-            </p>
-            <div class="flex items-center gap-2 text-sm font-medium text-[#9DB359]">
-              {{ t('home.services.learnMore') }}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="group-hover:translate-x-1 transition-transform">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div
-            class="bg-white rounded-[2rem] p-8 shadow-xl shadow-black/5 hover:shadow-2xl hover:shadow-[#9DB359]/10 transition-all duration-300 border border-gray-100 group">
-            <div
-              class="w-14 h-14 bg-[#9DB359]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#9DB359] transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                class="w-7 h-7 text-[#9DB359] group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold mb-3 text-[#1A1A1A]">{{ t('home.services.cards.questionManagement.title') }}</h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-6">
-              {{ t('home.services.cards.questionManagement.description') }}
-            </p>
-            <div class="flex items-center gap-2 text-sm font-medium text-[#9DB359]">
-              {{ t('home.services.learnMore') }}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="group-hover:translate-x-1 transition-transform">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Card 4 -->
-          <div
-            class="bg-white rounded-[2rem] p-8 shadow-xl shadow-black/5 hover:shadow-2xl hover:shadow-[#9DB359]/10 transition-all duration-300 border border-gray-100 group">
-            <div
-              class="w-14 h-14 bg-[#9DB359]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#9DB359] transition-colors duration-300">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                class="w-7 h-7 text-[#9DB359] group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                <rect x="9" y="9" width="6" height="6"></rect>
-                <line x1="9" y1="1" x2="9" y2="4"></line>
-                <line x1="15" y1="1" x2="15" y2="4"></line>
-                <line x1="9" y1="20" x2="9" y2="23"></line>
-                <line x1="15" y1="20" x2="15" y2="23"></line>
-                <line x1="20" y1="9" x2="23" y2="9"></line>
-                <line x1="20" y1="14" x2="23" y2="14"></line>
-                <line x1="1" y1="9" x2="4" y2="9"></line>
-                <line x1="1" y1="14" x2="4" y2="14"></line>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold mb-3 text-[#1A1A1A]">{{ t('home.services.cards.questionBank.title') }}</h3>
-            <p class="text-gray-500 text-sm leading-relaxed mb-6">
-              {{ t('home.services.cards.questionBank.description') }}
-            </p>
-            <div class="flex items-center gap-2 text-sm font-medium text-[#9DB359]">
-              {{ t('home.services.learnMore') }}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="group-hover:translate-x-1 transition-transform">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-16 text-center">
-          <router-link to="/login"
-            class="inline-flex bg-white border border-gray-200 text-[#1A1A1A] px-8 py-3 rounded-full font-medium text-sm items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm">
-            {{ t('home.services.viewAll') }}
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="7" y1="17" x2="17" y2="7"></line>
-              <polyline points="7 7 17 7 17 17"></polyline>
-            </svg>
-          </router-link>
-        </div>
-      </section>
-
-      <footer class="mt-24 pb-10">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 px-8 py-10 md:px-12 md:py-12">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div>
-              <div class="text-xl md:text-2xl font-bold tracking-tight text-[#1A1A1A]">
-                {{ t('home.footer.title') }}
-              </div>
-              <div class="mt-2 text-gray-600">
-                {{ t('home.footer.description') }}
-              </div>
-            </div>
-
-            <a
-              href="mailto:maliklulu098@gmail.com"
-              class="inline-flex items-center justify-center rounded-full bg-[#1A1A1A] text-white px-6 py-3 font-medium hover:bg-black transition-colors"
+    <section id="services" class="px-5 md:px-10 pb-8">
+      <div class="max-w-6xl mx-auto fade-up delay-1 relative">
+        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Layanan Pembinaan</h2>
+          <p class="text-gray-600 mb-8">Program seleksi dan pendampingan untuk kesiapan calon peserta.</p>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <article
+              v-for="service in services"
+              :key="service.title"
+              class="rounded-2xl border border-gray-100 bg-[#fcfdfb] p-5 hover:-translate-y-1 hover:shadow-lg transition-all"
             >
-              maliklulu098@gmail.com
-            </a>
+              <div class="mb-3 inline-flex rounded-lg bg-[#f3f8e7] p-2 text-[#6c7c3f]">
+                <component :is="service.icon" class="h-5 w-5" />
+              </div>
+              <h3 class="font-semibold text-[#1A1A1A]">{{ service.title }}</h3>
+              <p class="text-sm text-gray-600 mt-1">{{ service.desc }}</p>
+            </article>
           </div>
+          <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-0 right-0" />
         </div>
-      </footer>
-    </main>
-  </div>
+      </div>
+    </section>
+
+    <section id="programs" class="px-5 md:px-10 pb-8">
+      <div class="max-w-6xl mx-auto fade-up delay-2 relative">
+        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Keunggulan Program</h2>
+          <p class="text-gray-600 mb-8">Ekosistem belajar yang didesain untuk disiplin, konsisten, dan terukur.</p>
+          <div class="grid md:grid-cols-2 gap-5 relative z-10">
+            <article
+              v-for="feature in keyFeatures"
+              :key="feature.title"
+              class="rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-[#f7faef] p-6"
+            >
+              <div class="mb-3 inline-flex rounded-lg bg-[#f3f8e7] p-2 text-[#6c7c3f]">
+                <component :is="feature.icon" class="h-5 w-5" />
+              </div>
+              <h3 class="font-bold text-lg">{{ feature.title }}</h3>
+              <p class="text-gray-600 text-sm mt-2 leading-relaxed">{{ feature.desc }}</p>
+            </article>
+          </div>
+          <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
+        </div>
+      </div>
+    </section>
+
+    <section id="choices" class="px-5 md:px-10 pb-8">
+      <div class="max-w-6xl mx-auto fade-up delay-2 relative">
+        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Pilihan Bimbel Online</h2>
+          <p class="text-gray-600 mb-8">Pilih jalur program sesuai kebutuhan pembinaan dan target persiapan.</p>
+          <div class="grid md:grid-cols-2 gap-5 relative z-20">
+            <article
+              v-for="program in onlinePrograms"
+              :key="program.name"
+              class="rounded-2xl border border-gray-100 p-6 hover:shadow-lg transition-all"
+            >
+              <div class="flex items-center justify-between gap-3">
+                <h3 class="font-bold text-lg">{{ program.name }}</h3>
+                <span class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border font-semibold" :class="programBadge(program).className">
+                  <Crown v-if="programBadge(program).isVip" class="h-3.5 w-3.5" />
+                  {{ programBadge(program).label }}
+                </span>
+              </div>
+              <p class="text-gray-600 text-sm mt-2">{{ program.summary }}</p>
+              <ul class="mt-3 text-sm text-gray-600 list-disc pl-5 space-y-1">
+                <li v-for="point in program.points" :key="point">{{ point }}</li>
+              </ul>
+            </article>
+          </div>
+          <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-28 bottom-0 right-0" />
+        </div>
+      </div>
+    </section>
+
+    <section id="leaders" class="px-5 md:px-10 pb-8">
+      <div class="max-w-6xl mx-auto fade-up delay-2 relative">
+        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Dewan Pembina & Pimpinan</h2>
+          <p class="text-gray-600 mb-8">Profil pejabat dan pimpinan PT. Pratistha Training Center Indonesia.</p>
+
+          <div class="grid lg:grid-cols-3 gap-6 relative z-30">
+            <article v-for="leader in leaders" :key="leader.name" class="rounded-2xl border border-gray-100 bg-[#fcfdfb] overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <img :src="leader.image" :alt="leader.name" class="w-full h-72 object-cover object-top" />
+              <div class="p-5">
+                <h3 class="font-bold text-lg leading-tight">{{ leader.name }}</h3>
+                <p class="text-sm text-[#6c7c3f] font-semibold mt-1">{{ leader.batch }}</p>
+                <p class="mt-2 text-sm font-medium text-[#1A1A1A]">{{ leader.position }}</p>
+                <p class="mt-2 text-sm font-medium text-[#1A1A1A]">Jabatan Terakhir</p>
+                <ul class="mt-3 space-y-1.5 text-sm text-gray-600 list-disc pl-4">
+                  <li v-for="line in leader.highlights" :key="line">{{ line }}</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+          <div class="mt-10 border-t border-gray-100 pt-8 relative z-30">
+            <h3 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Anggota</h3>
+            <p class="text-gray-600 mb-6">Tim anggota pendukung program pembinaan PT. Pratistha Training Center Indonesia.</p>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <article
+                v-for="member in members"
+                :key="member.name"
+                class="rounded-2xl border border-gray-100 bg-[#fcfdfb] overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+              >
+                <img :src="member.image" :alt="member.name" class="w-full h-72 object-cover object-top" />
+                <div class="p-5">
+                  <h4 class="font-semibold text-base leading-snug text-[#1A1A1A]">{{ member.name }}</h4>
+                  <p class="text-sm text-[#6c7c3f] font-semibold mt-1">{{ member.jabatan }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+          <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-72 bottom-0 right-0" />
+        </div>
+      </div>
+    </section>
+
+    <section class="px-5 md:px-10 pb-14">
+      <div class="max-w-6xl mx-auto rounded-[2rem] bg-[#1A1A1A] text-white p-8 md:p-10 shadow-2xl shadow-black/20 fade-up delay-3">
+        <h2 class="text-2xl md:text-3xl font-bold mb-3">Siap naik level untuk persiapan Akademi Polisi?</h2>
+        <p class="text-white/80 max-w-3xl">
+          Bergabung sebagai peserta, lengkapi onboarding secara bertahap, lalu ikuti program kelas bimbingan online dengan standar pembinaan profesional.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <router-link to="/signup" class="px-6 py-3 rounded-full bg-[#9DB359] text-white font-semibold hover:bg-[#8da74c] transition-all">Mulai Pendaftaran</router-link>
+          <router-link to="/registration" class="px-6 py-3 rounded-full bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 transition-all">Lihat Tahapan Onboarding</router-link>
+        </div>
+      </div>
+    </section>
+  </main>
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
+import { onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAppStore } from '@/stores/app'
-import { useI18n } from '@/composables/useI18n'
+import { storeToRefs } from 'pinia'
+import { BookOpenText, Brain, Crown, Dumbbell, LineChart, NotebookPen, ShieldCheck, UserCheck, Warehouse } from 'lucide-vue-next'
 
+const route = useRoute()
 const store = useAppStore()
-const router = useRouter()
-const { user, isAuthenticated } = storeToRefs(store)
-const { t, locale, setLocale } = useI18n()
-const logoUrl = new URL('../../assets/logo.png', import.meta.url).href
+const { isAuthenticated } = storeToRefs(store)
+const nanaUrl = new URL('../../assets/bpk_nana.jpeg', import.meta.url).href
+const tubagusUrl = new URL('../../assets/bpk_tubagus.png', import.meta.url).href
+const awangUrl = new URL('../../assets/bpk_awang.png', import.meta.url).href
+const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
+const winUrl = new URL('../../assets/anggota/win.jpeg', import.meta.url).href
+const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
+const natashaUrl = new URL('../../assets/anggota/natasha.jpeg', import.meta.url).href
+const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
+const bannerUrl = new URL('../../assets/Banner.png', import.meta.url).href
+const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
+const quickNavItems = [
+  { id: 'services', label: 'Layanan Pembinaan' },
+  { id: 'programs', label: 'Keunggulan Program' },
+  { id: 'choices', label: 'Pilihan Bimbel' },
+  { id: 'leaders', label: 'Dewan Pimpinan' },
+]
 
-const handleLogout = async () => {
-  await store.logout()
-  router.push('/')
+const leaders = [
+  {
+    name: 'Komjen Pol (P) Drs. H. Nana S. Permana',
+    batch: 'Batalion Dharma Angkatan 1968',
+    position: 'Ketua Pembina Yayasan Tribakti Yayasan Langlang Buana',
+    highlights: [
+      'Wakapolri',
+      'Pembina strategis pendidikan dan pembinaan kepolisian',
+    ],
+    image: nanaUrl,
+  },
+  {
+    name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si',
+    batch: 'Bataliyon Anindhita Tahun 1981',
+    position: 'Komisaris PT. Pratistha Training Center Indonesia',
+    highlights: [
+      'Kapolda Sultra',
+      'Kapolda Jabar',
+      'Ketua Persatuan Purnawirawan Daerah Jabar',
+      'Wakil Ketua Pembina Yayasan Pendidikan Tribakti Langlang Buana',
+    ],
+    image: tubagusUrl,
+  },
+  {
+    name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH',
+    batch: 'Bataliyon Pratistha Angkatan 1982',
+    position: 'Direktur Utama PT. Pratistha Training Center Indonesia',
+    highlights: [
+      'Wakapolda Jawa Tengah',
+      'Pengarah operasional program pembinaan dan pelatihan',
+    ],
+    image: awangUrl,
+  },
+]
+
+const members = [
+  { name: 'Gilang Nurfahradz Syahni Fasya, S.T', image: gilangUrl, jabatan: 'Direktur' },
+  { name: 'Win Tasajat, S.Pd.I., M.Si', image: winUrl, jabatan: 'Sekretaris' },
+  { name: 'KBP (P) Dra.Rina Regina', image: rinaUrl, jabatan: 'Bendahara' },
+  { name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P', image: natashaUrl, jabatan: 'Bidang Internal' },
+  { name: 'Kompol (P) Tutik', image: tutikUrl, jabatan: 'Bidang Eksternal' },
+]
+
+const services = [
+  { icon: Brain, title: 'Tes Psikologi', desc: 'Pemetaan karakter, kestabilan emosi, dan kesiapan menghadapi seleksi.' },
+  { icon: BookOpenText, title: 'Tes Akademik', desc: 'Latihan soal akademik terstruktur dengan simulasi CBT berkala.' },
+  { icon: Dumbbell, title: 'Tes Fisik', desc: 'Panduan pembinaan fisik sesuai standar seleksi kepolisian.' },
+  { icon: ShieldCheck, title: 'Mental & Ideologi', desc: 'Penguatan mental, disiplin, wawasan kebangsaan, dan integritas.' },
+  { icon: NotebookPen, title: 'Materi Pembelajaran', desc: 'Modul belajar, bank soal, dan pembahasan eksklusif per kelas.' },
+]
+
+const keyFeatures = [
+  {
+    icon: UserCheck,
+    title: 'Pengajar dari Ahli & Praktisi',
+    desc: 'Tim pembina berpengalaman dari unsur purnawirawan, mentor akademik, dan pelatih kesiapan seleksi.',
+  },
+  {
+    icon: BookOpenText,
+    title: 'Materi Terbaru dan Eksklusif',
+    desc: 'Materi disusun berkala, menyesuaikan pola seleksi terbaru, dan hanya dapat diakses peserta terdaftar.',
+  },
+  {
+    icon: LineChart,
+    title: 'Laporan ke Orang Tua Secara Online',
+    desc: 'Perkembangan hasil latihan, nilai tes, dan progres onboarding peserta dapat dipantau secara digital.',
+  },
+  {
+    icon: Warehouse,
+    title: 'Tempat Belajar Eksklusif',
+    desc: 'Ruang belajar terarah dengan sistem kelas, jadwal, dan evaluasi untuk menjaga fokus pembinaan.',
+  },
+]
+
+const onlinePrograms = [
+  {
+    name: 'VIP Class Online (Karantina)',
+    mode: 'Premium',
+    summary: 'Pendampingan intensif dengan kontrol progres harian dan strategi personal.',
+    points: ['Mentoring prioritas', 'Monitoring ketat', 'Pendalaman psikologi & akademik'],
+  },
+  {
+    name: 'Regular Class Online',
+    mode: 'Reguler',
+    summary: 'Program online fleksibel dengan kurikulum inti untuk persiapan seleksi.',
+    points: ['Kelas terjadwal', 'Latihan CBT periodik', 'Diskusi materi dan evaluasi'],
+  },
+  {
+    name: 'Program Bimbingan Online',
+    mode: 'Full Online',
+    summary: 'Fokus pada penguatan kompetensi akademik, psikologi, dan latihan soal.',
+    points: ['Akses materi kelas', 'Kuis dan tugas', 'Rekap progres pembelajaran'],
+  },
+  {
+    name: 'Try Out Class',
+    mode: 'Ujian',
+    summary: 'Program simulasi ujian dengan pembahasan jawaban untuk pemetaan kemampuan.',
+    points: ['Simulasi tes', 'Analisis skor', 'Pembahasan hasil'],
+  },
+]
+
+const programBadge = (program) => {
+  if (program.name.includes('VIP')) {
+    return {
+      label: program.mode,
+      isVip: true,
+      className: 'bg-amber-100 text-amber-800 border-amber-300',
+    }
+  }
+
+  if (program.name.includes('Regular')) {
+    return {
+      label: program.mode,
+      isVip: false,
+      className: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+    }
+  }
+
+  if (program.name.includes('Bimbingan')) {
+    return {
+      label: program.mode,
+      isVip: false,
+      className: 'bg-slate-100 text-slate-700 border-slate-300',
+    }
+  }
+
+  return {
+    label: program.mode,
+    isVip: false,
+    className: 'bg-orange-100 text-orange-800 border-orange-300',
+  }
 }
+
+const scrollToHash = () => {
+  const id = String(route.hash || '').replace('#', '')
+  if (!id) return
+  const target = document.getElementById(id)
+  if (target) {
+    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80)
+  }
+}
+
+const scrollToSection = (id) => {
+  const target = document.getElementById(id)
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
+watch(() => route.hash, scrollToHash)
+onMounted(scrollToHash)
 </script>
 
 <style scoped>
-/* Custom font if needed, otherwise using system sans */
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.delay-1 { animation-delay: 0.12s; }
+.delay-2 { animation-delay: 0.22s; }
+.delay-3 { animation-delay: 0.32s; }
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.floating-orb {
+  animation: floatOrb 7s ease-in-out infinite;
+}
+
+@keyframes floatOrb {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(18px); }
+}
+
+.banner-wrap {
+  opacity: 0.9;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.banner-image {
+  display: block;
+  transform: scale(1.03);
+  transform-origin: top right;
+  -webkit-mask-image: radial-gradient(ellipse 82% 74% at 72% 26%, rgba(0, 0, 0, 1) 44%, rgba(0, 0, 0, 0.86) 61%, rgba(0, 0, 0, 0) 100%);
+  mask-image: radial-gradient(ellipse 65% 67% at 72% 26%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.86) 61%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
 </style>

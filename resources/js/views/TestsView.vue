@@ -6,7 +6,7 @@
         <p class="text-gray-500 mt-1">{{ t('tests.subtitle') }}</p>
       </div>
       <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openCreate">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <Plus class="h-[18px] w-[18px]" />
         {{ t('tests.createTest') }}
       </button>
     </div>
@@ -33,7 +33,7 @@
     <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 mt-8">
       <div class="relative">
         <input v-model="search" type="text" :placeholder="t('tests.searchPlaceholder')" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <Search class="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-400" />
       </div>
     </div>
 
@@ -62,7 +62,9 @@
 
       <div v-else class="lg:col-span-2 space-y-6">
         <div v-if="filtered.length===0" class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-12 text-center">
-          <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl mb-4 mx-auto grayscale opacity-50">🗎</div>
+          <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-50 text-gray-400">
+            <FileText class="h-9 w-9" />
+          </div>
           <div class="font-bold text-lg text-[#1A1A1A]">{{ t('tests.noTestsTitle') }}</div>
           <div class="text-gray-500 mt-2 text-sm">{{ t('tests.noTestsDescription') }}</div>
           <button class="mt-6 px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors cursor-pointer" @click="openCreate">{{ t('tests.startCreate') }}</button>
@@ -105,8 +107,14 @@
             </div>
             <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
               <span class="text-xs text-gray-400 uppercase font-bold">{{ t('common.status') }}</span>
-              <span v-if="test.status === 'upcoming'" class="text-sm font-medium text-yellow-600 flex items-center gap-1">🔒 {{ t('tests.upcoming') }}</span>
-              <span v-else-if="test.status === 'ongoing'" class="text-sm font-medium text-green-600 flex items-center gap-1">✓ {{ t('tests.ongoing') }}</span>
+              <span v-if="test.status === 'upcoming'" class="text-sm font-medium text-yellow-600 flex items-center gap-1">
+                <Lock class="h-4 w-4" />
+                {{ t('tests.upcoming') }}
+              </span>
+              <span v-else-if="test.status === 'ongoing'" class="text-sm font-medium text-green-600 flex items-center gap-1">
+                <Check class="h-4 w-4" />
+                {{ t('tests.ongoing') }}
+              </span>
               <span v-else-if="test.status === 'ended'" class="text-sm font-medium text-gray-600">{{ t('common.ended') }}</span>
               <span v-else class="text-sm font-medium text-gray-700">{{ isActive(test) ? t('common.active') : t('common.scheduled') }}</span>
             </div>
@@ -164,6 +172,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { Check, FileText, Lock, Plus, Search } from 'lucide-vue-next'
 import TestCreateModal from '@/components/TestCreateModal.vue'
 import TestAssignQuestionsModal from '@/components/TestAssignQuestionsModal.vue'
 import SubmissionsModal from '@/components/SubmissionsModal.vue'

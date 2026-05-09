@@ -1,156 +1,184 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
-    <div v-if="user" class="mb-10 flex items-center justify-between">
+    <div class="mb-8 flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('dashboard.welcomeBackName', { name: user.name }) }}</h1>
-        <p class="text-gray-500 mt-1 flex items-center gap-2">
-          {{ user.email }} 
-          <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
-          <span class="capitalize px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">{{ user.role }}</span>
+        <h1 class="text-3xl font-bold text-[#1A1A1A]">Dashboard</h1>
+        <p class="text-gray-500 mt-1 flex flex-wrap items-center gap-2">
+          <span>{{ user?.name }}</span>
+          <span class="capitalize">{{ user?.role }}</span>
+          <span class="text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span>
         </p>
       </div>
-      <div class="hidden md:block text-right">
-        <div class="text-sm text-gray-500">{{ t('dashboard.todayIs') }}</div>
-        <div class="font-medium text-[#1A1A1A]">{{ todayLabel }}</div>
-      </div>
-    </div>
-    <div v-else class="mb-10">
-      <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('dashboard.welcomeBack') }}</h1>
+      <button @click="loadOverview" class="px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm">
+        Refresh
+      </button>
     </div>
 
-    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-8 flex items-center justify-between group hover:border-[#9DB359]/30 transition-colors">
-        <div>
-          <div class="text-5xl font-bold text-[#9DB359] mb-1">{{ stats.average }}%</div>
-          <div class="text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('dashboard.averageScore') }}</div>
-        </div>
-        <div class="w-16 h-16 rounded-full bg-[#9DB359]/10 flex items-center justify-center text-2xl text-[#9DB359]">
-          📊
-        </div>
-      </div>
-      <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-8 flex items-center justify-between group hover:border-[#9DB359]/30 transition-colors">
-        <div>
-          <div class="text-5xl font-bold text-[#1A1A1A] mb-1">{{ stats.completed }}</div>
-          <div class="text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('dashboard.testsCompleted') }}</div>
-        </div>
-        <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl text-gray-600">
-          ✅
-        </div>
-      </div>
+    <div v-if="loading" class="py-20 text-center text-gray-500">Memuat data dashboard...</div>
+    <div v-else-if="errorMessage" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-red-700 text-sm">
+      {{ errorMessage }}
     </div>
 
-    <div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
-      <!-- Incoming Tests Section (Left, Wider) -->
-      <div class="lg:col-span-2 space-y-6">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xl font-bold text-[#1A1A1A] flex items-center gap-2">
-            <span class="w-2 h-8 rounded-full bg-[#9DB359]"></span>
-            {{ t('dashboard.incomingTests') }}
-          </h2>
-          <button @click="refreshTests" class="text-sm font-medium text-[#9DB359] hover:text-[#8ca34b] cursor-pointer flex items-center gap-1 transition-colors px-3 py-1.5 rounded-full hover:bg-[#9DB359]/10">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-spin-slow"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
-            {{ t('common.refresh') }}
-          </button>
-        </div>
-        <IncomingTests ref="incomingTestsRef" />
-      </div>
+    <template v-else>
+      <section
+        v-if="isLockedForStudent"
+        class="rounded-[2rem] border border-amber-200 bg-amber-50 p-8 text-amber-900"
+      >
+        <h2 class="text-xl font-bold flex items-center gap-2">
+          <LockKeyhole class="h-5 w-5" />
+          Dashboard terkunci
+        </h2>
+        <p class="text-sm mt-2">
+          Fitur dashboard dan kelas akan terbuka setelah onboarding selesai: administrasi, psikologi, kesehatan, lalu fisik.
+        </p>
+        <router-link to="/registration" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
+          Lanjutkan onboarding
+        </router-link>
+      </section>
 
-      <!-- Test History Section (Right, Narrower) -->
-      <div class="space-y-6">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xl font-bold text-[#1A1A1A] flex items-center gap-2">
-            <span class="w-2 h-8 rounded-full bg-gray-800"></span>
-            {{ t('dashboard.recentHistory') }}
-          </h2>
-          <button @click="fetchHistory" class="text-sm font-medium text-gray-500 hover:text-[#1A1A1A] cursor-pointer flex items-center gap-1 transition-colors px-3 py-1.5 rounded-full hover:bg-gray-100">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
-            {{ t('common.refresh') }}
-          </button>
+      <!-- ADMIN -->
+      <template v-else-if="isAdmin">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5 relative"><div class="text-xs text-gray-500">Total Soal</div><div class="text-3xl font-bold">{{ overview.stats?.questions ?? 0 }}</div> <img :src="patternUrl" alt="Pattern" class="absolute w-12 bottom-0 right-0" /></div>
+          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5 relative"><div class="text-xs text-gray-500">Peserta Terdaftar</div><div class="text-3xl font-bold">{{ overview.stats?.registered_users ?? 0 }}</div> <img :src="patternUrl" alt="Pattern" class="absolute w-12 bottom-0 right-0" /></div>
+          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5 relative"><div class="text-xs text-gray-500">Peserta Diterima</div><div class="text-3xl font-bold">{{ overview.stats?.accepted_users ?? 0 }}</div> <img :src="patternUrl" alt="Pattern" class="absolute w-12 bottom-0 right-0" /></div>
+          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5 relative"><div class="text-xs text-gray-500">Kelas Dibuat</div><div class="text-3xl font-bold">{{ overview.stats?.classes_count ?? 0 }}</div> <img :src="patternUrl" alt="Pattern" class="absolute w-12 bottom-0 right-0" /></div>
         </div>
 
-        <div v-if="history.length===0" class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-8 text-center min-h-[300px] flex flex-col items-center justify-center">
-          <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-4xl mb-4 grayscale opacity-50">🗎</div>
-          <div class="font-bold text-lg text-[#1A1A1A]">{{ t('dashboard.noHistoryTitle') }}</div>
-          <div class="text-gray-500 mt-2 text-sm max-w-[200px]">{{ t('dashboard.noHistoryDescription') }}</div>
-        </div>
-        
-        <div v-else class="space-y-4">
-          <div v-for="item in history" :key="item.test_id" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow group">
-            <div class="flex items-start justify-between mb-3">
-              <div>
-                <div class="font-bold text-[#1A1A1A] line-clamp-1 group-hover:text-[#9DB359] transition-colors">{{ item.name }}</div>
-                <div class="text-xs text-gray-500 font-medium bg-gray-50 px-2 py-0.5 rounded inline-block mt-1 capitalize">{{ item.category }}</div>
-              </div>
-              <div class="text-right">
-                <div class="text-lg font-bold" :class="getScoreColor(item.percentage)">{{ item.score }}</div>
-                <div class="text-[10px] text-gray-400 uppercase tracking-wide">{{ t('common.score') }}</div>
+        <div class="mt-8 grid lg:grid-cols-2 gap-6">
+          <section class="bg-white border border-gray-100 rounded-2xl p-5">
+            <h2 class="font-bold text-lg mb-4">Daftar Kelas</h2>
+            <div v-if="!overview.classes?.length" class="text-sm text-gray-500">Belum ada kelas.</div>
+            <div v-else class="space-y-3">
+              <div v-for="c in overview.classes" :key="c.id" class="rounded-xl border border-gray-100 p-3">
+                <div class="font-semibold">{{ c.name }}</div>
+                <div class="text-xs text-gray-500">{{ c.class_code }} · {{ c.program_type }} · {{ c.students_count }} peserta</div>
               </div>
             </div>
-            
-            <div class="w-full bg-gray-100 rounded-full h-1.5 mb-3">
-              <div class="bg-[#9DB359] h-1.5 rounded-full transition-all duration-1000" :style="{ width: item.percentage + '%' }"></div>
+          </section>
+          <section class="bg-white border border-gray-100 rounded-2xl p-5">
+            <h2 class="font-bold text-lg mb-4">Recent History Aktivitas Kelas</h2>
+            <div v-if="!overview.recent_activities?.length" class="text-sm text-gray-500">Belum ada aktivitas.</div>
+            <div v-else class="space-y-3">
+              <div v-for="a in overview.recent_activities" :key="a.id" class="rounded-xl border border-gray-100 p-3">
+                <div class="font-semibold">{{ a.title }}</div>
+                <div class="text-xs text-gray-500">{{ a.bimble_class?.name }} · {{ a.creator?.name }} · {{ formatDate(a.happened_at || a.created_at) }}</div>
+              </div>
             </div>
+          </section>
+        </div>
+      </template>
 
-            <div class="flex items-center justify-between text-xs text-gray-400">
-              <span>{{ formatDate(item.submitted_at) }}</span>
-              <span class="font-medium text-gray-600">{{ t('dashboard.percentCorrect', { pct: item.percentage }) }}</span>
+      <!-- MENTOR -->
+      <template v-else-if="isMentor">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <section class="bg-white border border-gray-100 rounded-2xl p-5">
+            <h2 class="font-bold text-lg mb-4">Kelas yang Diusung</h2>
+            <div v-if="!overview.classes?.length" class="text-sm text-gray-500">Belum ada kelas mentor.</div>
+            <div v-else class="space-y-3">
+              <div v-for="c in overview.classes" :key="c.id" class="rounded-xl border border-gray-100 p-3">
+                <div class="font-semibold">{{ c.name }}</div>
+                <div class="text-xs text-gray-500">{{ c.class_code }} · {{ c.students_count }} peserta</div>
+                <div class="text-xs text-gray-600 mt-1">
+                  Aktivitas terakhir:
+                  <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="bg-white border border-gray-100 rounded-2xl p-5">
+            <h2 class="font-bold text-lg mb-4">Test Akan Berlangsung</h2>
+            <div v-if="!overview.upcoming_tests?.length" class="text-sm text-gray-500">Belum ada test terjadwal.</div>
+            <div v-else class="space-y-3">
+              <div v-for="t in overview.upcoming_tests" :key="t.id" class="rounded-xl border border-gray-100 p-3">
+                <div class="font-semibold">{{ t.name }}</div>
+                <div class="text-xs text-gray-500">{{ t.category }} · {{ formatDate(t.start_time) }}</div>
+                <div class="text-xs text-gray-600 mt-1">
+                  Kelas: {{ (t.classes || []).map((x) => x.name).join(', ') || '-' }}
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section class="bg-white border border-gray-100 rounded-2xl p-5 mt-6">
+          <h2 class="font-bold text-lg mb-4">Aktivitas Kelas Terbaru</h2>
+          <div v-if="!overview.recent_activities?.length" class="text-sm text-gray-500">Belum ada aktivitas.</div>
+          <div v-else class="space-y-3">
+            <div v-for="a in overview.recent_activities" :key="a.id" class="rounded-xl border border-gray-100 p-3">
+              <div class="font-semibold">{{ a.title }}</div>
+              <div class="text-xs text-gray-500">{{ a.bimble_class?.name }} · {{ formatDate(a.happened_at || a.created_at) }}</div>
             </div>
           </div>
+        </section>
+      </template>
+
+      <!-- STUDENT/USER -->
+      <template v-else>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <section class="bg-white border border-gray-100 rounded-2xl p-5">
+            <h2 class="font-bold text-lg mb-4">Kelas Saya</h2>
+            <div v-if="!overview.classes?.length" class="text-sm text-gray-500">Belum ada kelas yang ditambahkan.</div>
+            <div v-else class="space-y-3">
+              <div v-for="c in overview.classes" :key="c.id" class="rounded-xl border border-gray-100 p-3">
+                <div class="font-semibold">{{ c.name }}</div>
+                <div class="text-xs text-gray-500">{{ c.class_code }} · {{ c.program_type }}</div>
+                <div class="text-xs text-gray-600 mt-1">
+                  Aktivitas terakhir:
+                  <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="bg-white border border-gray-100 rounded-2xl p-5">
+            <h2 class="font-bold text-lg mb-4">Aktivitas Kelas</h2>
+            <div v-if="!overview.class_activities?.length" class="text-sm text-gray-500">Belum ada aktivitas kelas.</div>
+            <div v-else class="space-y-3">
+              <div v-for="a in overview.class_activities" :key="a.id" class="rounded-xl border border-gray-100 p-3">
+                <div class="font-semibold">{{ a.title }}</div>
+                <div class="text-xs text-gray-500">{{ a.bimble_class?.name }} · {{ a.creator?.name }} · {{ formatDate(a.happened_at || a.created_at) }}</div>
+                <div v-if="a.description" class="text-xs text-gray-600 mt-1">{{ a.description }}</div>
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
-    </div>
+      </template>
+    </template>
   </main>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
+import { LockKeyhole } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
-import IncomingTests from '@/components/IncomingTests.vue'
-import { useI18n } from '@/composables/useI18n'
+import { getProgramBadge, registrationCompleted } from '@/utils/userMeta'
 
 const store = useAppStore()
 const { user } = storeToRefs(store)
-const incomingTestsRef = ref(null)
-const history = ref([])
-const stats = ref({ completed: 0, average: 0 })
-const { t } = useI18n()
 
-const todayLabel = computed(() => {
-  const dt = new Date()
-  try {
-    return dt.toLocaleDateString('id-ID', {
-      timeZone: 'Asia/Jakarta',
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-  } catch (e) {
-    return dt.toLocaleDateString('id-ID', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-  }
-})
+const loading = ref(false)
+const errorMessage = ref('')
+const overview = ref({})
 
-const refreshTests = () => {
-  if (incomingTestsRef.value && incomingTestsRef.value.fetchTests) {
-    incomingTestsRef.value.fetchTests()
-  }
-}
+const isAdmin = computed(() => user.value?.role === 'admin')
+const isMentor = computed(() => user.value?.role === 'mentor')
+const isLockedForStudent = computed(() => user.value?.role === 'user' && !registrationCompleted(user.value))
+const programBadge = computed(() => getProgramBadge(user.value))
+
+const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 
 const formatDate = (d) => {
-  if (!d) return ''
+  if (!d) return '-'
   const dt = new Date(d)
   const opts = {
-    day: 'numeric',
+    day: '2-digit',
     month: 'short',
+    year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false,
   }
   try {
     return dt.toLocaleString('id-ID', { ...opts, timeZone: 'Asia/Jakarta' })
@@ -159,32 +187,19 @@ const formatDate = (d) => {
   }
 }
 
-const getScoreColor = (percentage) => {
-  if (percentage >= 80) return 'text-[#9DB359]'
-  if (percentage >= 60) return 'text-yellow-500'
-  return 'text-red-500'
-}
-
-const fetchHistory = async () => {
+const loadOverview = async () => {
+  loading.value = true
   try {
-    const { data } = await window.axios.get('/api/my-tests')
-    history.value = data.items || []
-    stats.value = data.stats || { completed: 0, average: 0 }
+    const { data } = await window.axios.get('/api/dashboard/overview')
+    overview.value = data || {}
+    errorMessage.value = ''
   } catch (error) {
+    overview.value = {}
+    errorMessage.value = error?.response?.data?.message || 'Gagal memuat dashboard.'
+  } finally {
+    loading.value = false
   }
 }
 
-onMounted(() => {
-  fetchHistory()
-})
+onMounted(loadOverview)
 </script>
-
-<style scoped>
-.animate-spin-slow {
-  animation: spin 3s linear infinite;
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-</style>

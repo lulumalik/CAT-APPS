@@ -3,6 +3,10 @@ import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 
+const usePolling =
+    process.env.CHOKIDAR_USEPOLLING === 'true' ||
+    process.env.CHOKIDAR_USEPOLLING === '1';
+
 export default defineConfig({
     server: {
         host: process.env.VITE_HOST || '0.0.0.0',
@@ -10,10 +14,12 @@ export default defineConfig({
             host: process.env.VITE_HMR_HOST || 'localhost',
             clientPort: 5173,
         },
-        watch: {
-            usePolling: true,
-            interval: 100,
-        },
+        watch: usePolling
+            ? {
+                usePolling: true,
+                interval: Number(process.env.CHOKIDAR_INTERVAL || 100),
+            }
+            : undefined,
     },
     plugins: [
         vue(),

@@ -28,7 +28,9 @@ class MaterialController extends Controller
             'content' => 'required|string',
             'category' => 'nullable|string|max:255',
             'status' => 'required|in:draft,published',
+            'visibility' => 'nullable|in:public,class_only',
         ]);
+        $data['visibility'] = $data['visibility'] ?? 'public';
 
         // Extract base64 images, save to disk, and replace with URL
         $data['content'] = $this->processContentImages($data['content']);
@@ -62,6 +64,7 @@ class MaterialController extends Controller
             'content' => 'required|string',
             'category' => 'nullable|string|max:255',
             'status' => 'required|in:draft,published',
+            'visibility' => 'nullable|in:public,class_only',
         ]);
 
         // Extract base64 images, save to disk, and replace with URL
@@ -147,18 +150,24 @@ class MaterialController extends Controller
     {
         $materials = Material::with('creator:id,name')
             ->where('status', 'published')
+            ->where('visibility', 'public')
             ->latest()
             ->get();
+
         return response()->json($materials);
     }
 
-    public function publicShow($slug)
+    public function publicShow(Request $request, $slug)
     {
         $material = Material::with('creator:id,name')
             ->where('slug', $slug)
             ->where('status', 'published')
             ->firstOrFail();
-            
+
+        if (! $material->canBeViewedBy($request->user())) {
+            return response()->json(['message' => 'Materi ini hanya untuk peserta kelas tertentu. Silakan masuk dengan akun yang terdaftar.'], 403);
+        }
+
         return response()->json($material);
     }
 }

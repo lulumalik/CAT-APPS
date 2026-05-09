@@ -12,7 +12,9 @@
 
     <!-- Empty State -->
     <div v-else-if="materials.length === 0" class="text-center py-16">
-      <div class="text-6xl mb-4">📝</div>
+      <div class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#9DB359]/10 text-[#9DB359]">
+        <NotebookPen class="h-8 w-8" />
+      </div>
       <h3 class="text-xl font-bold text-gray-900 mb-2">Belum ada materi</h3>
       <p class="text-gray-500">Materi pembelajaran akan segera ditambahkan.</p>
     </div>
@@ -58,6 +60,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { NotebookPen } from 'lucide-vue-next'
 
 const materials = ref([])
 const loading = ref(true)

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 
 class TestDefinition extends Model
@@ -138,5 +140,58 @@ class TestDefinition extends Model
     public function submissions()
     {
         return $this->hasMany(TestSubmission::class);
+    }
+
+    public function bimbleClasses()
+    {
+        return $this->belongsToMany(BimbleClass::class, 'bimble_class_test')
+            ->withPivot(['kind', 'sort_order'])
+            ->withTimestamps();
+    }
+
+    public function isAssignedToClassOnly(): bool
+    {
+        if (! Schema::hasTable('bimble_classes') || ! Schema::hasTable('bimble_class_test')) {
+            return false;
+        }
+
+        return $this->bimbleClasses()->exists();
+    }
+
+    public function canBeAccessedBy(?\App\Models\User $user): bool
+    {
+        if (! Schema::hasTable('bimble_classes') || ! Schema::hasTable('bimble_class_test') || ! Schema::hasTable('bimble_class_user')) {
+            return (bool) $user;
+        }
+
+        if (! $this->isAssignedToClassOnly()) {
+            return (bool) $user;
+        }
+
+        if (! $user) {
+            return false;
+        }
+
+        return $this->bimbleClasses()->whereHas('students', function ($q) use ($user) {
+            $q->where('users.id', $user->id);
+        })->exists();
+    }
+
+    public function scopeVisibleToUser(Builder $query, ?\App\Models\User $user): Builder
+    {
+        if (! Schema::hasTable('bimble_classes') || ! Schema::hasTable('bimble_class_test') || ! Schema::hasTable('bimble_class_user')) {
+            return $query;
+        }
+
+        if (! $user) {
+            return $query->whereDoesntHave('bimbleClasses');
+        }
+
+        return $query->where(function (Builder $q) use ($user) {
+            $q->whereDoesntHave('bimbleClasses')
+                ->orWhereHas('bimbleClasses', function ($cq) use ($user) {
+                    $cq->whereHas('students', fn ($sq) => $sq->where('users.id', $user->id));
+                });
+        });
     }
 }

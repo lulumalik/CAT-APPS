@@ -9,7 +9,7 @@
           <div class="flex items-start gap-4 p-5">
             <!-- Icon -->
             <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm" :class="iconBgClass">
-              {{ icon }}
+              <component :is="iconComponent" class="h-5 w-5" />
             </div>
 
             <!-- Content -->
@@ -23,9 +23,7 @@
               @click="$emit('close')"
               class="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer p-1 rounded-full hover:bg-gray-50"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
+              <X class="w-5 h-5" />
             </button>
           </div>
 
@@ -41,6 +39,7 @@
 
 <script setup>
 import { ref, computed, watch, onUnmounted } from 'vue'
+import { CircleAlert, CircleCheckBig, CircleX, Info, X } from 'lucide-vue-next'
 
 const props = defineProps({
   show: {
@@ -72,12 +71,12 @@ const progress = ref(100)
 let timer = null
 let progressTimer = null
 
-const icon = computed(() => {
+const iconComponent = computed(() => {
   switch (props.type) {
-    case 'success': return '✓'
-    case 'error': return '✕'
-    case 'warning': return '⚠'
-    default: return 'ℹ'
+    case 'success': return CircleCheckBig
+    case 'error': return CircleX
+    case 'warning': return CircleAlert
+    default: return Info
   }
 })
 

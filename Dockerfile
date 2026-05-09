@@ -41,14 +41,18 @@ RUN { \
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy project
+# Copy composer manifests first, then install deps in clean context
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --no-scripts
+
+# Copy project after vendor installation
 COPY . .
 
 # Copy built frontend assets from node build stage
 COPY --from=nodebuild /app/public/build /var/www/html/public/build
 
-# Install composer dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Run composer scripts after full app source is present
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Permission Laravel
 RUN chown -R www-data:www-data /var/www/html \

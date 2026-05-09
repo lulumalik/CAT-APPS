@@ -10,8 +10,8 @@
           <div class="relative bg-white rounded-[2rem] shadow-2xl shadow-black/10 max-w-md w-full transform transition-all border border-gray-100">
             <!-- Icon -->
             <div class="pt-8 px-8 text-center">
-              <div class="mx-auto w-16 h-16 rounded-full flex items-center justify-center text-3xl" :class="iconBgClass">
-                {{ icon }}
+              <div class="mx-auto w-16 h-16 rounded-full flex items-center justify-center" :class="iconBgClass">
+                <component :is="iconComponent" class="h-8 w-8" />
               </div>
             </div>
 
@@ -47,6 +47,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { CircleAlert, CircleCheckBig, CircleHelp, CircleX, Info } from 'lucide-vue-next'
 
 const props = defineProps({
   show: {
@@ -82,14 +83,14 @@ const props = defineProps({
 
 const emit = defineEmits(['confirm', 'cancel', 'close'])
 
-const icon = computed(() => {
+const iconComponent = computed(() => {
   switch (props.type) {
-    case 'success': return '✓'
-    case 'error': return '✕'
-    case 'warning': return '⚠'
-    case 'confirm': return '?'
-    case 'danger': return '⚠'
-    default: return 'ℹ'
+    case 'success': return CircleCheckBig
+    case 'error': return CircleX
+    case 'warning': return CircleAlert
+    case 'confirm': return CircleHelp
+    case 'danger': return CircleAlert
+    default: return Info
   }
 })
 

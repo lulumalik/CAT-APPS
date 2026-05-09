@@ -5,8 +5,9 @@
         <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Kelola Materi</h1>
         <p class="text-gray-500 mt-2">Tambahkan dan kelola materi pembelajaran untuk siswa.</p>
       </div>
-      <button @click="openCreate" class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white font-medium shadow-lg shadow-black/20 hover:bg-black hover:shadow-black/30 transform hover:-translate-y-0.5 transition-all">
-        + Tambah Materi
+      <button @click="openCreate" class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white font-medium shadow-lg shadow-black/20 hover:bg-black hover:shadow-black/30 transform hover:-translate-y-0.5 transition-all inline-flex items-center gap-2">
+        <Plus class="h-4 w-4" />
+        Tambah Materi
       </button>
     </div>
 
@@ -22,7 +23,9 @@
 
     <!-- Empty State -->
     <div v-else-if="materials.length === 0" class="text-center py-16 bg-white rounded-3xl border border-gray-100 shadow-sm">
-      <div class="text-6xl mb-4">📚</div>
+      <div class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#9DB359]/10 text-[#9DB359]">
+        <BookOpenText class="h-8 w-8" />
+      </div>
       <h3 class="text-xl font-bold text-gray-900 mb-2">Belum ada materi</h3>
       <p class="text-gray-500 max-w-md mx-auto">Mulai tambahkan materi pembelajaran agar siswa dapat membacanya.</p>
     </div>
@@ -36,14 +39,10 @@
           </span>
           <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <button @click="edit(material)" class="p-2 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
+              <Pencil class="h-4 w-4" />
             </button>
             <button @click="remove(material.id)" class="p-2 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
+              <Trash2 class="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -69,7 +68,7 @@
         <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <h2 class="text-2xl font-bold text-gray-900">{{ isEdit ? 'Edit Materi' : 'Tambah Materi' }}</h2>
           <button @click="closeModal" class="p-2 rounded-full hover:bg-gray-200 transition-colors text-gray-500">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <X class="h-6 w-6" />
           </button>
         </div>
 
@@ -121,6 +120,7 @@
 
 <script setup>
 import { ref, onMounted, reactive, computed } from 'vue'
+import { BookOpenText, Pencil, Plus, Trash2, X } from 'lucide-vue-next'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { useToast, useModal } from '@/composables/useNotification'

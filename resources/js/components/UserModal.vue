@@ -35,6 +35,23 @@
         </div>
 
         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Program Siswa</label>
+          <select v-model="form.program_category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+            <option value="vip_offline">VIP - offline</option>
+            <option value="vip_online">VIP - online (karantina)</option>
+            <option value="regular_offline">Regular - offline</option>
+            <option value="regular_online">Regular - online</option>
+            <option value="bimbingan_online">Bimbingan - online</option>
+            <option value="try_out">Try Out</option>
+          </select>
+        </div>
+
+        <label class="flex items-center gap-2 text-sm text-gray-700">
+          <input v-model="form.in_quarantine" type="checkbox" class="rounded border-gray-300" />
+          Status karantina
+        </label>
+
+        <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ isEdit ? t('modals.user.passwordLabelEdit') : t('modals.user.passwordLabelAdd') }}</label>
           <input v-model="form.password" type="password" :placeholder="t('modals.user.passwordPlaceholder')" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" :required="!isEdit" />
         </div>
@@ -64,7 +81,9 @@ const form = reactive({
   name: '',
   email: '',
   role: 'user',
-  password: ''
+  password: '',
+  program_category: 'regular_online',
+  in_quarantine: false,
 })
 
 watch(() => props.initial, (val) => {
@@ -73,11 +92,15 @@ watch(() => props.initial, (val) => {
     form.email = val.email
     form.role = val.role
     form.password = ''
+    form.program_category = val.program_category || 'regular_online'
+    form.in_quarantine = !!val.in_quarantine
   } else {
     form.name = ''
     form.email = ''
     form.role = 'user'
     form.password = ''
+    form.program_category = 'regular_online'
+    form.in_quarantine = false
   }
 }, { immediate: true })
 

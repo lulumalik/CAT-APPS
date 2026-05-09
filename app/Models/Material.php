@@ -16,8 +16,31 @@ class Material extends Model
         'content',
         'category',
         'status',
+        'visibility',
         'created_by'
     ];
+
+    public function bimbleClasses()
+    {
+        return $this->belongsToMany(BimbleClass::class, 'bimble_class_material')
+            ->withPivot(['session_number', 'sort_order'])
+            ->withTimestamps();
+    }
+
+    public function canBeViewedBy(?\App\Models\User $user): bool
+    {
+        if ($this->visibility === 'public') {
+            return true;
+        }
+
+        if (! $user) {
+            return false;
+        }
+
+        return $this->bimbleClasses()->whereHas('students', function ($q) use ($user) {
+            $q->where('users.id', $user->id);
+        })->exists();
+    }
 
     protected static function boot()
     {

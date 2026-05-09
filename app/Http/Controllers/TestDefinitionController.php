@@ -132,8 +132,10 @@ class TestDefinitionController extends Controller
      */
     public function incoming(Request $request)
     {
-        $tests = TestDefinition::available()->get();
-        return response()->json($tests);
+        $user = $request->user();
+        $query = TestDefinition::available()->visibleToUser($user);
+
+        return response()->json($query->get());
     }
 
     /**
@@ -141,8 +143,10 @@ class TestDefinitionController extends Controller
      */
     public function available(Request $request)
     {
-        $tests = TestDefinition::available()->get();
-        return response()->json($tests);
+        $user = $request->user();
+        $query = TestDefinition::available()->visibleToUser($user);
+
+        return response()->json($query->get());
     }
 
     /**
@@ -150,16 +154,22 @@ class TestDefinitionController extends Controller
      */
     public function show(Request $request, TestDefinition $test)
     {
+        $user = $request->user();
+
+        if (! $test->canBeAccessedBy($user)) {
+            return response()->json(['message' => 'Anda tidak memiliki akses ke tes ini.'], 403);
+        }
+
         // Cek apakah user sudah submit test ini
         $hasSubmitted = false;
-        if ($user = $request->user()) {
+        if ($user) {
             $hasSubmitted = TestSubmission::where('user_id', $user->id)
                 ->where('test_definition_id', $test->id)
                 ->exists();
         }
 
         $test->has_submitted = $hasSubmitted;
-        
+
         return response()->json($test);
     }
 
@@ -169,7 +179,11 @@ class TestDefinitionController extends Controller
     public function submit(Request $request, TestDefinition $test)
     {
         $user = $request->user();
-        
+
+        if (! $test->canBeAccessedBy($user)) {
+            return response()->json(['message' => 'Anda tidak memiliki akses ke tes ini.'], 403);
+        }
+
         // Cek apakah user sudah submit test ini
         $existingSubmission = TestSubmission::where('user_id', $user->id)
             ->where('test_definition_id', $test->id)

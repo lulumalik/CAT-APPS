@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use App\Models\RegistrationProgress;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -14,7 +16,8 @@ class AuthController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:6',
+            'program_category' => 'required|in:'.implode(',', User::programCategories()),
         ]);
 
         $user = User::create([
@@ -22,20 +25,38 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
             'role' => 'user',
+            'program_category' => $data['program_category'],
+            'in_quarantine' => false,
         ]);
+
+        if (Schema::hasTable('registration_progress')) {
+            RegistrationProgress::create([
+                'user_id' => $user->id,
+                'current_step' => 'administration',
+                'administration_status' => 'not_started',
+                'psychology_status' => 'not_started',
+                'health_status' => 'not_started',
+                'physical_status' => 'not_started',
+                'fully_completed' => false,
+            ]);
+            $user->load('registrationProgress');
+        }
 
         Auth::login($user);
         $request->session()->regenerate();
 
         return response()->json([
             'success' => true,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-            ]
-        ], 201);
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'program_category' => $user->program_category,
+                    'in_quarantine' => (bool) $user->in_quarantine,
+                    'registration' => Schema::hasTable('registration_progress') ? $user->registrationProgress : null,
+                ]
+            ], 201);
     }
     public function login(Request $request)
     {
@@ -48,6 +69,9 @@ class AuthController extends Controller
             $request->session()->regenerate();
             
             $user = Auth::user();
+            if (Schema::hasTable('registration_progress')) {
+                $user->loadMissing('registrationProgress');
+            }
             return response()->json([
                 'success' => true,
                 'user' => [
@@ -55,6 +79,9 @@ class AuthController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role,
+                    'program_category' => $user->program_category,
+                    'in_quarantine' => (bool) $user->in_quarantine,
+                    'registration' => Schema::hasTable('registration_progress') ? $user->registrationProgress : null,
                 ]
             ]);
         }
@@ -81,6 +108,10 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
+            if (Schema::hasTable('registration_progress')) {
+                $user->loadMissing('registrationProgress');
+            }
+
             return response()->json([
                 'success' => true,
                 'user' => [
@@ -88,6 +119,9 @@ class AuthController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role,
+                    'program_category' => $user->program_category,
+                    'in_quarantine' => (bool) $user->in_quarantine,
+                    'registration' => Schema::hasTable('registration_progress') ? $user->registrationProgress : null,
                 ]
             ]);
         }
