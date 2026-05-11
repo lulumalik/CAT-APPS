@@ -20,6 +20,7 @@ import ProfileView from '@/views/ProfileView.vue';
 import AnnouncementsView from '@/views/AnnouncementsView.vue';
 import AdminAnnouncementsManageView from '@/views/AdminAnnouncementsManageView.vue';
 import NotificationsView from '@/views/NotificationsView.vue';
+import CertificateManagementView from '@/views/CertificateManagementView.vue';
 import { useAppStore } from '@/stores/app';
 
 const routes = [
@@ -41,6 +42,7 @@ const routes = [
   { path: '/notifications', name: 'notifications', component: NotificationsView, meta: { requiresAuth: true } },
   { path: '/admin/registration', name: 'admin-registration', component: AdminRegistrationView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/announcements', name: 'admin-announcements', component: AdminAnnouncementsManageView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/certificates', name: 'admin-certificates', component: CertificateManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/bimble-classes', name: 'bimble-classes', component: BimbleClassesManageView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/my-classes', name: 'my-classes', component: MyBimbleClassesView, meta: { requiresAuth: true } },
   { path: '/class/:id', name: 'bimble-class-room', component: BimbleClassRoomView, meta: { requiresAuth: true } },

@@ -37,18 +37,16 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Program Siswa</label>
           <select v-model="form.program_category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
-            <option value="vip_offline">VIP - offline</option>
-            <option value="vip_online">VIP - online (karantina)</option>
-            <option value="regular_offline">Regular - offline</option>
-            <option value="regular_online">Regular - online</option>
-            <option value="bimbingan_online">Bimbingan - online</option>
-            <option value="try_out">Try Out</option>
+            <option value="vip">VIP - online + offline (karantina)</option>
+            <option value="regular">Regular - offline + online</option>
+            <option value="bimbingan_online">Program bimbingan - full online</option>
+            <option value="try_out">Try Out - ujian + pembahasan</option>
           </select>
         </div>
 
-        <label class="flex items-center gap-2 text-sm text-gray-700">
-          <input v-model="form.in_quarantine" type="checkbox" class="rounded border-gray-300" />
-          Status karantina
+        <label class="flex items-center gap-2 text-sm text-gray-700" :class="{ 'opacity-50': !supportsQuarantine }">
+          <input v-model="form.in_quarantine" type="checkbox" class="rounded border-gray-300" :disabled="!supportsQuarantine" />
+          Status karantina (khusus VIP)
         </label>
 
         <div>
@@ -76,13 +74,14 @@ const emit = defineEmits(['close', 'submit'])
 const { t } = useI18n()
 
 const isEdit = computed(() => !!props.initial)
+const supportsQuarantine = computed(() => normalizeProgramCategory(form.program_category) === 'vip')
 
 const form = reactive({
   name: '',
   email: '',
   role: 'user',
   password: '',
-  program_category: 'regular_online',
+  program_category: 'regular',
   in_quarantine: false,
 })
 
@@ -92,17 +91,37 @@ watch(() => props.initial, (val) => {
     form.email = val.email
     form.role = val.role
     form.password = ''
-    form.program_category = val.program_category || 'regular_online'
+    form.program_category = normalizeProgramCategory(val.program_category)
     form.in_quarantine = !!val.in_quarantine
   } else {
     form.name = ''
     form.email = ''
     form.role = 'user'
     form.password = ''
-    form.program_category = 'regular_online'
+    form.program_category = 'regular'
     form.in_quarantine = false
   }
 }, { immediate: true })
+
+watch(
+  () => form.program_category,
+  (value) => {
+    form.program_category = normalizeProgramCategory(value)
+    if (!supportsQuarantine.value) {
+      form.in_quarantine = false
+    }
+  }
+)
+
+function normalizeProgramCategory(value) {
+  if (value === 'vip_online' || value === 'vip_offline') {
+    return 'vip'
+  }
+  if (value === 'regular_online' || value === 'regular_offline' || !value) {
+    return 'regular'
+  }
+  return value
+}
 
 const submit = () => {
   emit('submit', JSON.parse(JSON.stringify(form)))

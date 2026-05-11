@@ -61,8 +61,10 @@ class UserController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
-            'program_category' => $validated['program_category'] ?? User::PROGRAM_REGULAR_ONLINE,
-            'in_quarantine' => (bool) ($validated['in_quarantine'] ?? false),
+            'program_category' => User::normalizeProgramCategory($validated['program_category'] ?? User::PROGRAM_REGULAR),
+            'in_quarantine' => User::supportsQuarantine($validated['program_category'] ?? User::PROGRAM_REGULAR)
+                ? (bool) ($validated['in_quarantine'] ?? false)
+                : false,
         ]);
 
         $this->ensureRegistrationProgress($user);
@@ -86,11 +88,17 @@ class UserController extends Controller
         $user->role = $validated['role'];
 
         if (array_key_exists('program_category', $validated) && $validated['program_category'] !== null) {
-            $user->program_category = $validated['program_category'];
+            $user->program_category = User::normalizeProgramCategory($validated['program_category']);
         }
 
         if (array_key_exists('in_quarantine', $validated) && $validated['in_quarantine'] !== null) {
-            $user->in_quarantine = (bool) $validated['in_quarantine'];
+            $user->in_quarantine = User::supportsQuarantine($user->program_category)
+                ? (bool) $validated['in_quarantine']
+                : false;
+        }
+
+        if (! User::supportsQuarantine($user->program_category)) {
+            $user->in_quarantine = false;
         }
 
         if (! empty($validated['password'])) {
@@ -142,7 +150,7 @@ class UserController extends Controller
             $name = trim((string) ($row['name'] ?? ''));
             $email = trim(strtolower((string) ($row['email'] ?? '')));
             $role = trim((string) ($row['role'] ?? 'user'));
-            $programCategory = trim((string) ($row['program_category'] ?? User::PROGRAM_REGULAR_ONLINE));
+            $programCategory = User::normalizeProgramCategory(trim((string) ($row['program_category'] ?? User::PROGRAM_REGULAR)));
             $inQuarantine = filter_var($row['in_quarantine'] ?? false, FILTER_VALIDATE_BOOLEAN);
             $passwordRaw = (string) ($row['password'] ?? '');
 
@@ -156,15 +164,11 @@ class UserController extends Controller
                 continue;
             }
 
-            if (! in_array($programCategory, User::programCategories(), true)) {
-                $programCategory = User::PROGRAM_REGULAR_ONLINE;
-            }
-
             $payload = [
                 'name' => $name,
                 'role' => $role,
                 'program_category' => $programCategory,
-                'in_quarantine' => $inQuarantine,
+                'in_quarantine' => User::supportsQuarantine($programCategory) ? $inQuarantine : false,
             ];
 
             $existing = User::where('email', $email)->first();

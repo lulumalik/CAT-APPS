@@ -33,6 +33,13 @@
           </button>
         </div>
         <p class="text-sm text-gray-700">{{ item.message }}</p>
+        <a
+          v-if="downloadUrl(item)"
+          :href="downloadUrl(item)"
+          class="inline-flex mt-3 rounded-full border border-[#9DB359]/40 bg-[#f4f9e6] px-3 py-1.5 text-xs font-semibold text-[#6c7c3f] hover:bg-[#edf5d7]"
+        >
+          Download Sertifikat
+        </a>
       </article>
     </div>
   </main>
@@ -45,6 +52,10 @@ import axios from 'axios'
 const loading = ref(true)
 const items = ref([])
 const errorMessage = ref('')
+
+const downloadUrl = (item) => {
+  return item?.payload?.download_url || ''
+}
 
 async function load() {
   loading.value = true

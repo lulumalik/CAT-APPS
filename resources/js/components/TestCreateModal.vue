@@ -69,7 +69,7 @@
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.startTimeLabel') }}</label>
               <div class="flex items-center w-full rounded-xl border border-blue-100 bg-white focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
-                <input v-model="startDate" type="date" class="bg-transparent border-none focus:ring-0 px-4 py-3 flex-1 min-w-[130px] text-gray-700" :min="scheduleDate" required />
+                <input v-model="startDate" type="date" class="bg-transparent border-none focus:ring-0 pl-4 py-3 flex-1 min-w-[130px] text-gray-700" />
                 <div class="flex items-center px-3 border-l border-blue-100 gap-1 bg-blue-50/30 h-full">
                   <select v-model="startHour" class="bg-transparent border-none focus:ring-0 text-center font-medium p-0 cursor-pointer hover:text-blue-600 text-gray-700">
                     <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
@@ -85,7 +85,7 @@
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.endTimeLabel') }}</label>
               <div class="flex items-center w-full rounded-xl border border-blue-100 bg-white focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
-                <input v-model="endDate" type="date" class="bg-transparent border-none focus:ring-0 px-4 py-3 flex-1 min-w-[130px] text-gray-700" :min="startDate" required />
+                <input v-model="endDate" type="date" class="bg-transparent border-none focus:ring-0 pl-4 py-3 flex-1 min-w-[130px] text-gray-700" :min="startDate" required />
                 <div class="flex items-center px-3 border-l border-blue-100 gap-1 bg-blue-50/30 h-full">
                   <select v-model="endHour" class="bg-transparent border-none focus:ring-0 text-center font-medium p-0 cursor-pointer hover:text-blue-600 text-gray-700">
                     <option v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
@@ -112,7 +112,7 @@
 </template>
 
 <script setup>
-import { reactive, computed, watch } from 'vue'
+import { reactive, computed, ref, watch } from 'vue'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
@@ -125,9 +125,10 @@ const emit = defineEmits(['close','submit'])
 const toJakartaDatetimeInputValue = (value) => {
   if (!value) return ''
   
-  // Jika sudah format string "YYYY-MM-DDTHH:mm", biarkan (tidak perlu parse ulang agar tidak geser)
-  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value.slice(0, 16))) {
-    return value.slice(0, 16)
+  // Jika benar-benar sudah format lokal input (tanpa detik/timezone), biarkan.
+  // Penting: string ISO dengan suffix timezone (contoh "...Z") harus tetap dikonversi.
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) {
+    return value
   }
 
   const date = value instanceof Date ? value : new Date(value)
@@ -182,20 +183,24 @@ const addMinutesToString = (datetimeStr, minutes) => {
   return `${ny}-${nm}-${nd}T${nh}:${nmi}`
 }
 
-const base = () => ({ 
+const base = () => {
+  const now = toJakartaDatetimeInputValue(new Date())
+  return ({ 
   name: '', 
   description: '', 
   category: '', 
   duration: 30, 
-  scheduleAt: toJakartaDatetimeInputValue(new Date()),
-  startTime: toJakartaDatetimeInputValue(new Date()),
+  scheduleAt: now,
+  startTime: now,
   endTime: toJakartaDatetimeInputValue(new Date(Date.now() + 3600000)),
   isActive: false,
   questionIds: []
 })
+}
 const form = reactive(base())
 const isEdit = computed(() => !!props.initial)
 const { t } = useI18n()
+const isHydratingFromInitial = ref(false)
 
 const hourOptions = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
 const minuteOptions = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'))
@@ -224,16 +229,16 @@ const setMinutePart = (field, minute) => {
 }
 
 const scheduleDate = computed({
-  get: () => getParts(form.scheduleAt).date,
-  set: (v) => setDatePart('scheduleAt', v),
+  get: () => getParts(form.startTime).date,
+  set: (v) => setDatePart('startTime', v),
 })
 const scheduleHour = computed({
-  get: () => getParts(form.scheduleAt).hour,
-  set: (v) => setHourPart('scheduleAt', v),
+  get: () => getParts(form.startTime).hour,
+  set: (v) => setHourPart('startTime', v),
 })
 const scheduleMinute = computed({
-  get: () => getParts(form.scheduleAt).minute,
-  set: (v) => setMinutePart('scheduleAt', v),
+  get: () => getParts(form.startTime).minute,
+  set: (v) => setMinutePart('startTime', v),
 })
 
 const startDate = computed({
@@ -262,36 +267,47 @@ const endMinute = computed({
   set: (v) => setMinutePart('endTime', v),
 })
 
-// Sinkronisasi otomatis antar waktu
-watch(() => form.scheduleAt, (newSchedule) => {
-  if (newSchedule && (!form.startTime || newSchedule > form.startTime)) {
-    form.startTime = newSchedule
-  }
-})
+// Schedule date selalu sama dengan start time (single source of truth).
+watch(() => form.startTime, (newStart) => {
+  form.scheduleAt = newStart || ''
+}, { immediate: true })
 
 watch([() => form.startTime, () => form.duration], ([newStart, newDuration]) => {
+  if (isHydratingFromInitial.value) return
   if (newStart && newDuration) {
     form.endTime = addMinutesToString(newStart, newDuration)
   }
 })
 
 watch(() => props.initial, (val) => {
+  isHydratingFromInitial.value = true
+
   if (!val) {
     Object.assign(form, base())
+    isHydratingFromInitial.value = false
     return
   }
 
   const next = JSON.parse(JSON.stringify(val))
-  next.scheduleAt = toJakartaDatetimeInputValue(val.scheduleAt ?? val.schedule_at)
   next.startTime = toJakartaDatetimeInputValue(val.startTime ?? val.start_time)
+  next.scheduleAt = next.startTime
   next.endTime = toJakartaDatetimeInputValue(val.endTime ?? val.end_time)
   next.isActive = val.isActive ?? val.is_active ?? false
   next.questionIds = Array.isArray(val.questionIds ?? val.question_ids) ? (val.questionIds ?? val.question_ids) : (next.questionIds ?? [])
   Object.assign(form, next)
+
+  // Lepas mode hidrasi setelah assignment awal selesai,
+  // agar endTime dari backend tidak langsung tertimpa auto-sync.
+  queueMicrotask(() => {
+    isHydratingFromInitial.value = false
+  })
 }, { immediate: true })
 
 const submit = () => {
-  emit('submit', JSON.parse(JSON.stringify(form)))
+  emit('submit', {
+    ...JSON.parse(JSON.stringify(form)),
+    scheduleAt: form.startTime,
+  })
 }
 </script>
 

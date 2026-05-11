@@ -68,8 +68,9 @@ class BimbleClassController extends Controller
             'academic_period_start' => 'nullable|date',
             'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
-            'program_type' => 'required|string|in:vip_offline,vip_online,regular_offline,regular_online,bimbingan_online,try_out',
+            'program_type' => 'required|string|in:'.implode(',', BimbleClass::programTypes()),
         ]);
+        $data['program_type'] = BimbleClass::normalizeProgramType($data['program_type']);
 
         if (empty($data['class_code'])) {
             $data['class_code'] = strtoupper(Str::random(8));
@@ -108,8 +109,11 @@ class BimbleClassController extends Controller
             'academic_period_start' => 'nullable|date',
             'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
-            'program_type' => 'sometimes|required|string|in:vip_offline,vip_online,regular_offline,regular_online,bimbingan_online,try_out',
+            'program_type' => 'sometimes|required|string|in:'.implode(',', BimbleClass::programTypes()),
         ]);
+        if (array_key_exists('program_type', $data)) {
+            $data['program_type'] = BimbleClass::normalizeProgramType($data['program_type']);
+        }
 
         if ($request->user()->role === 'mentor') {
             $data['instructor_id'] = $request->user()->id;
@@ -198,7 +202,7 @@ class BimbleClassController extends Controller
             'activities' => $activities,
             'flags' => [
                 'hide_materials' => $bimbleClass->isTryOut(),
-                'vip_quarantine_note' => $bimbleClass->program_type === 'vip_online',
+                'vip_quarantine_note' => BimbleClass::isVipProgram($bimbleClass->program_type),
             ],
         ]);
     }

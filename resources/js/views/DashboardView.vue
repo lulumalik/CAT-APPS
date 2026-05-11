@@ -52,7 +52,7 @@
             <div v-else class="space-y-3">
               <div v-for="c in overview.classes" :key="c.id" class="rounded-xl border border-gray-100 p-3">
                 <div class="font-semibold">{{ c.name }}</div>
-                <div class="text-xs text-gray-500">{{ c.class_code }} · {{ c.program_type }} · {{ c.students_count }} peserta</div>
+                <div class="text-xs text-gray-500">{{ c.class_code }} · {{ formatProgram(c.program_type) }} · {{ c.students_count }} peserta</div>
               </div>
             </div>
           </section>
@@ -123,7 +123,7 @@
             <div v-else class="space-y-3">
               <div v-for="c in overview.classes" :key="c.id" class="rounded-xl border border-gray-100 p-3">
                 <div class="font-semibold">{{ c.name }}</div>
-                <div class="text-xs text-gray-500">{{ c.class_code }} · {{ c.program_type }}</div>
+                <div class="text-xs text-gray-500">{{ c.class_code }} · {{ formatProgram(c.program_type) }}</div>
                 <div class="text-xs text-gray-600 mt-1">
                   Aktivitas terakhir:
                   <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
@@ -154,7 +154,7 @@ import { computed, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { LockKeyhole } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
-import { getProgramBadge, registrationCompleted } from '@/utils/userMeta'
+import { getProgramBadge, programCategoryLabel, registrationCompleted } from '@/utils/userMeta'
 
 const store = useAppStore()
 const { user } = storeToRefs(store)
@@ -167,6 +167,7 @@ const isAdmin = computed(() => user.value?.role === 'admin')
 const isMentor = computed(() => user.value?.role === 'mentor')
 const isLockedForStudent = computed(() => user.value?.role === 'user' && !registrationCompleted(user.value))
 const programBadge = computed(() => getProgramBadge(user.value))
+const formatProgram = (programType) => programCategoryLabel(programType)
 
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 

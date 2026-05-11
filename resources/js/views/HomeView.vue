@@ -111,12 +111,12 @@
       </div>
     </section>
 
-    <section id="choices" class="px-5 md:px-10 pb-8">
+    <section id="choices" class="px-5 md:px-10 pb-8 relative">
       <div class="max-w-6xl mx-auto fade-up delay-2 relative">
         <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Pilihan Bimbel Online</h2>
           <p class="text-gray-600 mb-8">Pilih jalur program sesuai kebutuhan pembinaan dan target persiapan.</p>
-          <div class="grid md:grid-cols-2 gap-5 relative z-20">
+          <div class="grid md:grid-cols-2 gap-5 relative z-30">
             <article
               v-for="program in onlinePrograms"
               :key="program.name"
@@ -194,6 +194,17 @@
         </div>
       </div>
     </section>
+
+    <a
+      href="https://wa.me/6285124156748"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl shadow-[#25D366]/30 transition hover:scale-105 hover:bg-[#1ebe5d]"
+      aria-label="Chat WhatsApp"
+      title="Chat WhatsApp"
+    >
+      <MessageCircle class="h-7 w-7" />
+    </a>
   </main>
 </template>
 
@@ -202,7 +213,7 @@ import { onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
-import { BookOpenText, Brain, Crown, Dumbbell, LineChart, NotebookPen, ShieldCheck, UserCheck, Warehouse } from 'lucide-vue-next'
+import { BookOpenText, Brain, Crown, Dumbbell, LineChart, MessageCircle, NotebookPen, ShieldCheck, UserCheck, Warehouse } from 'lucide-vue-next'
 
 const route = useRoute()
 const store = useAppStore()
@@ -300,7 +311,7 @@ const keyFeatures = [
 
 const onlinePrograms = [
   {
-    name: 'VIP Class Online (Karantina)',
+    name: 'VIP Class (Online + Offline + Karantina)',
     mode: 'Premium',
     summary: 'Pendampingan intensif dengan kontrol progres harian dan strategi personal.',
     points: ['Mentoring prioritas', 'Monitoring ketat', 'Pendalaman psikologi & akademik'],

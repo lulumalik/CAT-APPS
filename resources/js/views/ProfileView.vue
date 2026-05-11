@@ -19,8 +19,8 @@
           <div><dt class="text-gray-500">Email</dt><dd class="font-medium text-[#1A1A1A]">{{ user?.email || '-' }}</dd></div>
           <div><dt class="text-gray-500">Role</dt><dd class="font-medium capitalize text-[#1A1A1A]">{{ user?.role || '-' }}</dd></div>
           <div><dt class="text-gray-500">Tier</dt><dd><span class="text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span></dd></div>
-          <div><dt class="text-gray-500">Program</dt><dd class="font-medium text-[#1A1A1A]">{{ user?.program_category || '-' }}</dd></div>
-          <div><dt class="text-gray-500">Karantina</dt><dd class="font-medium text-[#1A1A1A]">{{ user?.in_quarantine ? 'Ya' : 'Tidak' }}</dd></div>
+          <div><dt class="text-gray-500">Program</dt><dd class="font-medium text-[#1A1A1A]">{{ programLabel }}</dd></div>
+          <div><dt class="text-gray-500">Karantina</dt><dd class="font-medium text-[#1A1A1A]">{{ quarantineLabel }}</dd></div>
         </dl>
       </section>
 
@@ -54,7 +54,7 @@ import { computed, onMounted, ref } from 'vue'
 import axios from 'axios'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
-import { getProgramBadge } from '@/utils/userMeta'
+import { getProgramBadge, programCategoryLabel, supportsProgramQuarantine } from '@/utils/userMeta'
 
 const store = useAppStore()
 const { user } = storeToRefs(store)
@@ -63,6 +63,13 @@ const loading = ref(true)
 const errorMessage = ref('')
 const progress = ref(null)
 const programBadge = computed(() => getProgramBadge(user.value))
+const programLabel = computed(() => programCategoryLabel(user.value?.program_category))
+const quarantineLabel = computed(() => {
+  if (!supportsProgramQuarantine(user.value?.program_category)) {
+    return 'Tidak berlaku'
+  }
+  return user.value?.in_quarantine ? 'Ya' : 'Tidak'
+})
 
 const steps = computed(() => [
   { key: 'administration', label: 'Administrasi', statusKey: 'administration_status' },

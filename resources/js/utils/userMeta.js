@@ -1,6 +1,29 @@
+export const normalizeProgramCategory = (program) => {
+  if (program === 'vip_online' || program === 'vip_offline') {
+    return 'vip'
+  }
+  if (program === 'regular_online' || program === 'regular_offline' || !program) {
+    return 'regular'
+  }
+  return program
+}
+
+export const programCategoryLabel = (program) => {
+  const normalized = normalizeProgramCategory(program)
+  if (normalized === 'vip') return 'VIP (Online + Offline + Karantina)'
+  if (normalized === 'regular') return 'Regular (Offline + Online)'
+  if (normalized === 'bimbingan_online') return 'Program Bimbingan Online'
+  if (normalized === 'try_out') return 'Try Out'
+  return normalized
+}
+
+export const supportsProgramQuarantine = (program) => {
+  return normalizeProgramCategory(program) === 'vip'
+}
+
 export const getProgramBadge = (user) => {
   const role = user?.role || 'guest'
-  const program = user?.program_category || ''
+  const program = normalizeProgramCategory(user?.program_category || '')
 
   if (role === 'admin') {
     return { label: 'Admin', className: 'bg-slate-100 text-slate-700 border border-slate-200' }

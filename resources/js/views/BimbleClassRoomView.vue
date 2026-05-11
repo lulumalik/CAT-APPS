@@ -34,7 +34,7 @@
             </div>
             <div>
               <div class="text-white/70 text-xs uppercase tracking-wide">{{ t('bimble.programType') }}</div>
-              <div class="font-medium">{{ workspace.class.program_type }}</div>
+              <div class="font-medium">{{ formatProgram(workspace.class.program_type) }}</div>
             </div>
           </div>
         </div>
@@ -134,6 +134,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { useI18n } from '@/composables/useI18n'
+import { programCategoryLabel } from '@/utils/userMeta'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -142,6 +143,7 @@ const loading = ref(true)
 const workspace = ref(null)
 const section = ref('sesi')
 const errorMessage = ref('')
+const formatProgram = (programType) => programCategoryLabel(programType)
 
 const sessionKeys = computed(() => {
   const m = workspace.value?.materials_by_session

@@ -24,7 +24,7 @@
         <div class="flex justify-between items-start gap-2">
           <div>
             <h2 class="text-lg font-bold text-[#1A1A1A]">{{ c.name }}</h2>
-            <p class="text-sm text-gray-500">{{ t('bimble.code') }}: {{ c.class_code }} · {{ c.program_type }}</p>
+            <p class="text-sm text-gray-500">{{ t('bimble.code') }}: {{ c.class_code }} · {{ formatProgram(c.program_type) }}</p>
           </div>
           <router-link
             v-if="c?.id"
@@ -93,7 +93,7 @@
         <div class="flex items-center justify-between mb-5">
           <div>
             <h3 class="font-bold text-xl text-[#1A1A1A]">Kelola {{ managedClass.name }}</h3>
-            <p class="text-xs text-gray-500">{{ managedClass.class_code }} · {{ managedClass.program_type }}</p>
+            <p class="text-xs text-gray-500">{{ managedClass.class_code }} · {{ formatProgram(managedClass.program_type) }}</p>
           </div>
           <button type="button" class="px-3 py-1.5 rounded-full border border-gray-200 text-sm" @click="closeManage">Tutup</button>
         </div>
@@ -159,6 +159,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
 import { useI18n } from '@/composables/useI18n'
+import { programCategoryLabel } from '@/utils/userMeta'
 
 const { t } = useI18n()
 
@@ -176,17 +177,15 @@ const instructorOptions = ref([])
 const studentSearch = ref('')
 
 const programTypes = [
-  'vip_offline',
-  'vip_online',
-  'regular_offline',
-  'regular_online',
+  'vip',
+  'regular',
   'bimbingan_online',
   'try_out',
 ]
 
 const form = reactive({
   name: '',
-  program_type: 'regular_online',
+  program_type: 'regular',
   instructor_id: null,
   academic_period_start: '',
   academic_period_end: '',
@@ -199,6 +198,10 @@ const forms = reactive({
   kind: 'cbt',
   session_number: 1,
 })
+
+function formatProgram(programType) {
+  return programCategoryLabel(programType)
+}
 
 async function load() {
   loading.value = true

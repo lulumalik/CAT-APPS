@@ -1,6 +1,13 @@
 <template>
-  <main class="min-h-screen bg-[#F9F9F7] py-8 font-sans text-[#1A1A1A]">
+  <main class="min-h-screen bg-[#F9F9F7] py-8 font-sans text-[#1A1A1A] anti-cheat-mode">
     <div class="mx-auto max-w-7xl px-4 md:px-12">
+      <div
+        v-if="antiCheatMessage"
+        class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+      >
+        {{ antiCheatMessage }} ({{ violations }}/{{ maxViolations }})
+      </div>
+
       <!-- Header -->
       <div class="flex items-center justify-between mb-8">
         <div>
@@ -11,6 +18,9 @@
           </p>
         </div>
         <div class="flex items-center gap-4">
+          <div class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800">
+            Anti-cheat: {{ violations }}/{{ maxViolations }}
+          </div>
           <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
             <div class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -208,6 +218,10 @@ const flags = ref({})
 const timeLeft = ref(0)
 const timer = ref(null)
 const canSubmit = ref(true)
+const isSubmitting = ref(false)
+const violations = ref(0)
+const antiCheatMessage = ref('')
+const maxViolations = 3
 
 const current = computed(() => questions.value[index.value] || {})
 const selected = (idx) => {
@@ -291,6 +305,7 @@ const toggleFlag = (i) => {
 }
 
 const finishTest = async (force = false) => {
+  if (isSubmitting.value) return
   if (!force) {
     const confirmed = await confirm({
       title: t('testRunner.confirmSubmitTitle'),
@@ -303,6 +318,7 @@ const finishTest = async (force = false) => {
 
   clearInterval(timer.value)
   canSubmit.value = false
+  isSubmitting.value = true
 
   try {
     await window.axios.post(`/api/tests/${testId}/submit`, {
@@ -313,16 +329,106 @@ const finishTest = async (force = false) => {
   } catch (error) {
     toast.error('Error', 'Failed to submit test')
     canSubmit.value = true // Allow retry
+    isSubmitting.value = false
   }
+}
+
+const registerViolation = async (reason) => {
+  if (!canSubmit.value || isSubmitting.value) return
+  violations.value += 1
+  antiCheatMessage.value = reason
+  toast.error('Anti-cheat warning', reason)
+
+  if (violations.value >= maxViolations) {
+    await finishTest(true)
+  }
+}
+
+const preventClipboardAction = (event) => {
+  event.preventDefault()
+  registerViolation('Copy/paste/cut tidak diizinkan selama ujian.')
+}
+
+const preventContextMenu = (event) => {
+  event.preventDefault()
+  registerViolation('Klik kanan dinonaktifkan selama ujian.')
+}
+
+const handleKeydown = (event) => {
+  const key = String(event.key || '').toLowerCase()
+  const ctrlOrMeta = event.ctrlKey || event.metaKey
+  const blockedCtrlKeys = ['c', 'x', 'v', 'a', 'u', 'p', 's']
+  const isDevToolsShortcut =
+    key === 'f12' ||
+    (ctrlOrMeta && event.shiftKey && ['i', 'j', 'c'].includes(key)) ||
+    (ctrlOrMeta && blockedCtrlKeys.includes(key))
+
+  if (isDevToolsShortcut) {
+    event.preventDefault()
+    registerViolation('Shortcut ini diblokir selama ujian.')
+  }
+}
+
+const handleVisibilityChange = () => {
+  if (document.hidden) {
+    registerViolation('Anda berpindah tab/jendela. Tetap di halaman ujian.')
+  }
+}
+
+const handleWindowBlur = () => {
+  registerViolation('Fokus jendela terlepas dari halaman ujian.')
+}
+
+const requestFullscreen = async () => {
+  const root = document.documentElement
+  if (!document.fullscreenElement && root?.requestFullscreen) {
+    try {
+      await root.requestFullscreen()
+    } catch (error) {
+      // Browser may require user gesture; keep test running.
+    }
+  }
+}
+
+const handleFullscreenChange = () => {
+  if (!document.fullscreenElement) {
+    registerViolation('Mode fullscreen ditutup selama ujian.')
+    requestFullscreen()
+  }
+}
+
+const attachAntiCheat = () => {
+  document.addEventListener('copy', preventClipboardAction)
+  document.addEventListener('cut', preventClipboardAction)
+  document.addEventListener('paste', preventClipboardAction)
+  document.addEventListener('contextmenu', preventContextMenu)
+  document.addEventListener('keydown', handleKeydown)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+  window.addEventListener('blur', handleWindowBlur)
+  document.addEventListener('fullscreenchange', handleFullscreenChange)
+}
+
+const detachAntiCheat = () => {
+  document.removeEventListener('copy', preventClipboardAction)
+  document.removeEventListener('cut', preventClipboardAction)
+  document.removeEventListener('paste', preventClipboardAction)
+  document.removeEventListener('contextmenu', preventContextMenu)
+  document.removeEventListener('keydown', handleKeydown)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+  window.removeEventListener('blur', handleWindowBlur)
+  document.removeEventListener('fullscreenchange', handleFullscreenChange)
 }
 
 onMounted(() => {
   fetchTest()
+  attachAntiCheat()
+  requestFullscreen()
 })
 
 onUnmounted(() => {
   if (timer.value) clearInterval(timer.value)
   window.onbeforeunload = null
+  detachAntiCheat()
 })
 
 // Prevent accidental navigation
@@ -332,4 +438,14 @@ window.onbeforeunload = () => {
 </script>
 
 <style scoped>
+.anti-cheat-mode {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.anti-cheat-mode input,
+.anti-cheat-mode textarea {
+  user-select: text;
+  -webkit-user-select: text;
+}
 </style>

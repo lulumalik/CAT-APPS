@@ -73,7 +73,12 @@
         <div v-for="(test, i) in filtered" :key="i" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group">
           <div class="flex items-start justify-between mb-4">
             <div>
-              <h2 class="text-xl font-bold text-[#1A1A1A] group-hover:text-[#9DB359] transition-colors">{{ test.name }}</h2>
+              <router-link
+                :to="{ name: 'quick-test', params: { id: test.id } }"
+                class="text-xl font-bold text-[#1A1A1A] group-hover:text-[#9DB359] transition-colors hover:underline"
+              >
+                {{ test.name }}
+              </router-link>
               <p class="text-sm text-gray-500 mt-1 leading-relaxed">{{ test.description }}</p>
             </div>
             <div class="text-right">
@@ -273,8 +278,8 @@ const openCreate = () => {
 const edit = (i) => {
   editingIndex.value = i
   // Map fields for modal
-  const t = filtered.value[i]
-  selectedTest.value = { ...t }
+  const test = filtered.value[i]
+  selectedTest.value = { ...test }
   showCreateModal.value = true
 }
 
@@ -342,7 +347,7 @@ const createTest = async (formData) => {
 }
 
 const remove = async (i) => {
-  const t = filtered.value[i]
+  const test = filtered.value[i]
   const confirmed = await confirm({
     title: t('tests.deleteTestConfirmTitle'),
     message: t('tests.deleteTestConfirmMessage'),
@@ -351,10 +356,10 @@ const remove = async (i) => {
   })
   
   if (confirmed) {
-    deletingId.value = t.id
+    deletingId.value = test.id
     try {
-      await window.axios.delete(`/api/tests/${t.id}`)
-      tests.value = tests.value.filter(item => item.id !== t.id)
+      await window.axios.delete(`/api/tests/${test.id}`)
+      tests.value = tests.value.filter(item => item.id !== test.id)
       toast.success('Success', t('tests.delete'))
     } catch (e) {
       toast.error('Error', 'Failed to delete test')
@@ -393,7 +398,6 @@ const assignQuestions = async (updatedTest) => {
   
   try {
     const payload = {
-      ...updatedTest,
       question_ids: updatedTest.questionIds,
       is_active: updatedTest.isActive
     }

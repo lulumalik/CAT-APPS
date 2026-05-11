@@ -9,6 +9,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BimbleClass extends Model
 {
+    public const PROGRAM_VIP = 'vip';
+
+    public const PROGRAM_VIP_OFFLINE = 'vip_offline'; // legacy
+
+    public const PROGRAM_VIP_ONLINE = 'vip_online'; // legacy
+
+    public const PROGRAM_REGULAR = 'regular';
+
+    public const PROGRAM_REGULAR_OFFLINE = 'regular_offline'; // legacy
+
+    public const PROGRAM_REGULAR_ONLINE = 'regular_online'; // legacy
+
+    public const PROGRAM_BIMBINGAN_ONLINE = 'bimbingan_online';
+
+    public const PROGRAM_TRY_OUT = 'try_out';
+
     protected $fillable = [
         'name',
         'class_code',
@@ -69,6 +85,48 @@ class BimbleClass extends Model
 
     public function isTryOut(): bool
     {
-        return $this->program_type === 'try_out';
+        return $this->program_type === self::PROGRAM_TRY_OUT;
+    }
+
+    public static function programTypes(): array
+    {
+        return [
+            self::PROGRAM_VIP,
+            self::PROGRAM_VIP_OFFLINE,
+            self::PROGRAM_VIP_ONLINE,
+            self::PROGRAM_REGULAR,
+            self::PROGRAM_REGULAR_OFFLINE,
+            self::PROGRAM_REGULAR_ONLINE,
+            self::PROGRAM_BIMBINGAN_ONLINE,
+            self::PROGRAM_TRY_OUT,
+        ];
+    }
+
+    public static function normalizeProgramType(?string $programType): string
+    {
+        if (! $programType) {
+            return self::PROGRAM_REGULAR;
+        }
+
+        if (in_array($programType, [self::PROGRAM_VIP_OFFLINE, self::PROGRAM_VIP_ONLINE], true)) {
+            return self::PROGRAM_VIP;
+        }
+
+        if (in_array($programType, [self::PROGRAM_REGULAR_OFFLINE, self::PROGRAM_REGULAR_ONLINE], true)) {
+            return self::PROGRAM_REGULAR;
+        }
+
+        if (! in_array($programType, self::programTypes(), true)) {
+            return self::PROGRAM_REGULAR;
+        }
+
+        return $programType;
+    }
+
+    public static function isVipProgram(?string $programType): bool
+    {
+        $normalized = self::normalizeProgramType($programType);
+
+        return $normalized === self::PROGRAM_VIP;
     }
 }

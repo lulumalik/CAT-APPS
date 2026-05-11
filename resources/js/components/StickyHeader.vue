@@ -160,6 +160,7 @@ const navItems = computed(() => {
 
   if (isAdmin.value) {
     items.push({ to: '/users', label: t('nav.users') })
+    items.push({ to: '/admin/certificates', label: 'Sertifikat' })
     items.push({ to: '/admin/registration', label: t('nav.adminRegistration') })
     items.push({ to: '/admin/announcements', label: 'Announcement management' })
   }

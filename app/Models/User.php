@@ -26,13 +26,17 @@ class User extends Authenticatable
         'in_quarantine',
     ];
 
-    public const PROGRAM_VIP_OFFLINE = 'vip_offline';
+    public const PROGRAM_VIP = 'vip';
 
-    public const PROGRAM_VIP_ONLINE = 'vip_online';
+    public const PROGRAM_VIP_OFFLINE = 'vip_offline'; // legacy
 
-    public const PROGRAM_REGULAR_OFFLINE = 'regular_offline';
+    public const PROGRAM_VIP_ONLINE = 'vip_online'; // legacy
 
-    public const PROGRAM_REGULAR_ONLINE = 'regular_online';
+    public const PROGRAM_REGULAR = 'regular';
+
+    public const PROGRAM_REGULAR_OFFLINE = 'regular_offline'; // legacy
+
+    public const PROGRAM_REGULAR_ONLINE = 'regular_online'; // legacy
 
     public const PROGRAM_BIMBINGAN_ONLINE = 'bimbingan_online';
 
@@ -41,13 +45,53 @@ class User extends Authenticatable
     public static function programCategories(): array
     {
         return [
+            self::PROGRAM_VIP,
             self::PROGRAM_VIP_OFFLINE,
             self::PROGRAM_VIP_ONLINE,
+            self::PROGRAM_REGULAR,
             self::PROGRAM_REGULAR_OFFLINE,
             self::PROGRAM_REGULAR_ONLINE,
             self::PROGRAM_BIMBINGAN_ONLINE,
             self::PROGRAM_TRY_OUT,
         ];
+    }
+
+    public static function canonicalProgramCategories(): array
+    {
+        return [
+            self::PROGRAM_VIP,
+            self::PROGRAM_REGULAR,
+            self::PROGRAM_BIMBINGAN_ONLINE,
+            self::PROGRAM_TRY_OUT,
+        ];
+    }
+
+    public static function normalizeProgramCategory(?string $programCategory): string
+    {
+        if (! $programCategory) {
+            return self::PROGRAM_REGULAR;
+        }
+
+        if (in_array($programCategory, [self::PROGRAM_VIP_OFFLINE, self::PROGRAM_VIP_ONLINE], true)) {
+            return self::PROGRAM_VIP;
+        }
+
+        if (in_array($programCategory, [self::PROGRAM_REGULAR_OFFLINE, self::PROGRAM_REGULAR_ONLINE], true)) {
+            return self::PROGRAM_REGULAR;
+        }
+
+        if (! in_array($programCategory, self::programCategories(), true)) {
+            return self::PROGRAM_REGULAR;
+        }
+
+        return $programCategory;
+    }
+
+    public static function supportsQuarantine(?string $programCategory): bool
+    {
+        $normalized = self::normalizeProgramCategory($programCategory);
+
+        return $normalized === self::PROGRAM_VIP;
     }
 
     /**

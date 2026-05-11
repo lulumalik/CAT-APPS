@@ -34,7 +34,7 @@
         class="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-lg shadow-black/5 hover:border-[#9DB359]/40 transition-colors block"
       >
         <div class="font-bold text-lg text-[#1A1A1A]">{{ c.name }}</div>
-        <div class="text-sm text-gray-500 mt-1">{{ c.class_code }} · {{ c.program_type }}</div>
+        <div class="text-sm text-gray-500 mt-1">{{ c.class_code }} · {{ formatProgram(c.program_type) }}</div>
       </router-link>
     </div>
   </main>
@@ -47,7 +47,7 @@ import { LockKeyhole } from 'lucide-vue-next'
 import { useI18n } from '@/composables/useI18n'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
-import { registrationCompleted } from '@/utils/userMeta'
+import { programCategoryLabel, registrationCompleted } from '@/utils/userMeta'
 
 const { t } = useI18n()
 const store = useAppStore()
@@ -56,6 +56,7 @@ const loading = ref(true)
 const classes = ref([])
 const errorMessage = ref('')
 const isLocked = computed(() => user.value?.role === 'user' && !registrationCompleted(user.value))
+const formatProgram = (programType) => programCategoryLabel(programType)
 
 onMounted(async () => {
   if (isLocked.value) {

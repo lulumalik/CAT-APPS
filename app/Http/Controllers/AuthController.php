@@ -19,14 +19,15 @@ class AuthController extends Controller
             'password' => 'required|min:6',
             'program_category' => 'required|in:'.implode(',', User::programCategories()),
         ]);
+        $programCategory = User::normalizeProgramCategory($data['program_category']);
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
             'role' => 'user',
-            'program_category' => $data['program_category'],
-            'in_quarantine' => false,
+            'program_category' => $programCategory,
+            'in_quarantine' => User::supportsQuarantine($programCategory),
         ]);
 
         if (Schema::hasTable('registration_progress')) {

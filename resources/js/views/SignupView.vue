@@ -38,12 +38,10 @@
                 required
                 class="block w-full appearance-none rounded-xl border border-gray-200 px-4 py-3 text-gray-900 shadow-sm focus:border-[#9DB359] focus:outline-none focus:ring-[#9DB359] sm:text-sm transition-colors bg-white"
               >
-                <option value="vip_offline">VIP — offline</option>
-                <option value="vip_online">VIP — online (karantina)</option>
-                <option value="regular_offline">Regular — offline</option>
-                <option value="regular_online">Regular — online</option>
+                <option value="vip">VIP — online + offline (karantina)</option>
+                <option value="regular">Regular — offline + online</option>
                 <option value="bimbingan_online">Program bimbingan — full online</option>
-                <option value="try_out">Try out — ujian saja</option>
+                <option value="try_out">Try out — ujian + pembahasan (tanpa materi)</option>
               </select>
             </div>
           </div>
@@ -116,7 +114,7 @@ import { useI18n } from '@/composables/useI18n'
 const logoUrl = new URL('../../assets/logo.png', import.meta.url).href
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 
-const programCategory = ref('regular_online')
+const programCategory = ref('regular')
 const name = ref('')
 const email = ref('')
 const password = ref('')

@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClassActivityController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\CertificateController;
 
 // Public material routes
 Route::get('/materials/public', [MaterialController::class, 'publicIndex']);
@@ -92,6 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tests/{test}', [TestDefinitionController::class, 'show']);
     Route::post('/tests/{test}/submit', [TestDefinitionController::class, 'submit']);
     Route::get('/my-tests', [TestDefinitionController::class, 'myTests']);
+    Route::get('/certificates/{certificateIssue}/download', [CertificateController::class, 'download']);
 });
 
 Route::middleware('role:admin')->group(function () {
@@ -105,6 +107,11 @@ Route::middleware('role:admin')->group(function () {
     Route::post('/admin/announcements', [AnnouncementController::class, 'store']);
     Route::put('/admin/announcements/{announcement}', [AnnouncementController::class, 'update']);
     Route::delete('/admin/announcements/{announcement}', [AnnouncementController::class, 'destroy']);
+
+    Route::get('/admin/certificate-templates', [CertificateController::class, 'templates']);
+    Route::put('/admin/certificate-templates/{program}', [CertificateController::class, 'updateTemplate']);
+    Route::post('/admin/certificates/issue', [CertificateController::class, 'issue']);
+    Route::get('/admin/certificates/issues', [CertificateController::class, 'listIssues']);
 });
 
 Route::middleware('role:admin,mentor')->group(function () {

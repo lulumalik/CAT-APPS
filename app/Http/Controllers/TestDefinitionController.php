@@ -87,28 +87,46 @@ class TestDefinitionController extends Controller
 
         $this->normalizeRequest($request);
         $data = $request->validate([
-            'name' => 'required|string',
+            'name' => 'sometimes|required|string',
             'description' => 'nullable|string',
-            'category' => 'required|string',
-            'duration' => 'required|integer|min:1',
-            'schedule_at' => 'required|date',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
+            'category' => 'sometimes|required|string',
+            'duration' => 'sometimes|required|integer|min:1',
+            'schedule_at' => 'sometimes|required|date',
+            'start_time' => 'sometimes|required|date',
+            'end_time' => 'sometimes|required|date',
             'is_active' => 'nullable|boolean',
             'question_ids' => 'nullable|array',
         ]);
 
-        $startTime = new \DateTime($data['start_time']);
-        $endTime = new \DateTime($data['end_time']);
-        $durationInHours = ($endTime->getTimestamp() - $startTime->getTimestamp()) / 3600;
+        $effectiveStartTime = $data['start_time'] ?? $test->start_time;
+        $effectiveEndTime = $data['end_time'] ?? $test->end_time;
 
-        if ($durationInHours < 1 || $durationInHours > 4) {
-            return response()->json([
-                'message' => 'Durasi test harus antara 1 sampai 4 jam',
-                'errors' => [
-                    'end_time' => ['Durasi test harus antara 1 sampai 4 jam']
-                ]
-            ], 422);
+        if (array_key_exists('end_time', $data) && ! empty($effectiveStartTime) && ! empty($effectiveEndTime)) {
+            $startTs = strtotime((string) $effectiveStartTime);
+            $endTs = strtotime((string) $effectiveEndTime);
+            if ($startTs !== false && $endTs !== false && $endTs <= $startTs) {
+                return response()->json([
+                    'message' => 'Waktu selesai harus setelah waktu mulai',
+                    'errors' => [
+                        'end_time' => ['Waktu selesai harus setelah waktu mulai']
+                    ]
+                ], 422);
+            }
+        }
+
+        if (! empty($effectiveStartTime) && ! empty($effectiveEndTime)) {
+            $startTime = new \DateTime((string) $effectiveStartTime);
+            $endTime = new \DateTime((string) $effectiveEndTime);
+            $durationInHours = ($endTime->getTimestamp() - $startTime->getTimestamp()) / 3600;
+
+            if ($durationInHours < 1 || $durationInHours > 4) {
+                return response()->json([
+                    'message' => 'Durasi test harus antara 1 sampai 4 jam',
+                    'errors' => [
+                        'end_time' => ['Durasi test harus antara 1 sampai 4 jam']
+                    ]
+                ], 422);
+            }
         }
 
         $this->enforceQuestionDefaults($data);
