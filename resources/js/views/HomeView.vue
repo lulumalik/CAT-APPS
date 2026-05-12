@@ -52,15 +52,50 @@
         </div>
 
         <div class="fade-up delay-1">
-          <div class="rounded-[2rem] bg-white/80 backdrop-blur border border-gray-100 shadow-2xl shadow-black/10 p-7 md:p-8">
-            <h3 class="text-lg font-bold mb-4">Mengapa platform ini efektif?</h3>
-            <div class="space-y-3 text-sm text-gray-700">
-              <div class="rounded-xl bg-[#f6f9ef] border border-[#dfe8c6] px-4 py-3">Monitoring progres onboarding peserta dari administrasi sampai psikologi.</div>
-              <div class="rounded-xl bg-[#f6f9ef] border border-[#dfe8c6] px-4 py-3">Kelas bimbingan terpusat: materi, kuis, dan ujian dalam satu workspace.</div>
-              <div class="rounded-xl bg-[#f6f9ef] border border-[#dfe8c6] px-4 py-3">Kontrol akses berbasis role untuk admin, mentor, dan peserta.</div>
-              <div class="rounded-xl bg-[#f6f9ef] border border-[#dfe8c6] px-4 py-3">Pelaporan hasil tes terukur untuk evaluasi pembinaan berkelanjutan.</div>
+          <div class="rounded-[2rem] bg-white/80 backdrop-blur border border-gray-100 shadow-2xl shadow-black/10 p-4 md:p-5">
+            <div class="relative h-[310px] md:h-[320px] w-full overflow-hidden rounded-[1.5rem]">
+              <img
+                v-for="(slide, index) in wallpaperSlides"
+                :key="slide"
+                :src="slide"
+                :alt="`Wallpaper ${index + 1}`"
+                class="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
+                :class="index === activeWallpaperIndex ? 'opacity-100' : 'opacity-0'"
+              />
+            </div>
+            <div class="mt-4 flex items-center justify-center gap-2">
+              <span
+                v-for="(slide, index) in wallpaperSlides"
+                :key="`${slide}-dot`"
+                class="h-2.5 rounded-full transition-all duration-300"
+                :class="index === activeWallpaperIndex ? 'w-6 bg-[#9DB359]' : 'w-2.5 bg-gray-300'"
+              />
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="programs" class="px-5 md:px-10 pb-8">
+      <div class="max-w-6xl mx-auto fade-up delay-2 relative">
+        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Keunggulan Program</h2>
+          <p class="text-gray-600 mb-8">Ekosistem belajar yang didesain untuk disiplin, konsisten, dan terukur.</p>
+          <div class="grid md:grid-cols-2 gap-5 relative z-10">
+            <article
+              v-for="feature in keyFeatures"
+              :key="feature.title"
+              class="rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-[#f7faef] p-6"
+            >
+              <div class="mb-3 inline-flex rounded-lg bg-[#f3f8e7] p-2 text-[#6c7c3f]">
+                <component :is="feature.icon" class="h-5 w-5" />
+              </div>
+              <h3 class="font-bold text-lg">{{ feature.title }}</h3>
+              <p class="text-gray-600 text-sm mt-2 leading-relaxed">{{ feature.desc }}</p>
+            </article>
+          </div>
+          <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
         </div>
       </div>
     </section>
@@ -84,29 +119,6 @@
             </article>
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-0 right-0" />
-        </div>
-      </div>
-    </section>
-
-    <section id="programs" class="px-5 md:px-10 pb-8">
-      <div class="max-w-6xl mx-auto fade-up delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Keunggulan Program</h2>
-          <p class="text-gray-600 mb-8">Ekosistem belajar yang didesain untuk disiplin, konsisten, dan terukur.</p>
-          <div class="grid md:grid-cols-2 gap-5 relative z-10">
-            <article
-              v-for="feature in keyFeatures"
-              :key="feature.title"
-              class="rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-[#f7faef] p-6"
-            >
-              <div class="mb-3 inline-flex rounded-lg bg-[#f3f8e7] p-2 text-[#6c7c3f]">
-                <component :is="feature.icon" class="h-5 w-5" />
-              </div>
-              <h3 class="font-bold text-lg">{{ feature.title }}</h3>
-              <p class="text-gray-600 text-sm mt-2 leading-relaxed">{{ feature.desc }}</p>
-            </article>
-          </div>
-          <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
         </div>
       </div>
     </section>
@@ -209,7 +221,7 @@
 </template>
 
 <script setup>
-import { onMounted, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
@@ -228,6 +240,15 @@ const natashaUrl = new URL('../../assets/anggota/natasha.jpeg', import.meta.url)
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
 const bannerUrl = new URL('../../assets/Banner.png', import.meta.url).href
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
+const wallpaperModules = import.meta.glob('../../assets/wallpaper/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+  import: 'default',
+})
+const wallpaperSlides = Object.entries(wallpaperModules)
+  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
+  .map(([, src]) => src)
+const activeWallpaperIndex = ref(0)
+let wallpaperInterval
 const quickNavItems = [
   { id: 'services', label: 'Layanan Pembinaan' },
   { id: 'programs', label: 'Keunggulan Program' },
@@ -317,7 +338,7 @@ const onlinePrograms = [
     points: ['Mentoring prioritas', 'Monitoring ketat', 'Pendalaman psikologi & akademik'],
   },
   {
-    name: 'Regular Class Online',
+    name: 'Regular Class (Online + Offline)',
     mode: 'Reguler',
     summary: 'Program online fleksibel dengan kurikulum inti untuk persiapan seleksi.',
     points: ['Kelas terjadwal', 'Latihan CBT periodik', 'Diskusi materi dan evaluasi'],
@@ -385,7 +406,20 @@ const scrollToSection = (id) => {
 }
 
 watch(() => route.hash, scrollToHash)
-onMounted(scrollToHash)
+onMounted(() => {
+  scrollToHash()
+  if (wallpaperSlides.length > 1) {
+    wallpaperInterval = setInterval(() => {
+      activeWallpaperIndex.value = (activeWallpaperIndex.value + 1) % wallpaperSlides.length
+    }, 3200)
+  }
+})
+
+onUnmounted(() => {
+  if (wallpaperInterval) {
+    clearInterval(wallpaperInterval)
+  }
+})
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'container-default': !isHomePage}" class="bg-[#F9F9F7] rounded-3xl border-2 border-gray-200 min-h-screen font-sans text-[#1A1A1A]">
+  <div :class="{'container-default': !isHomePage}" class="bg-[#F9F9F7] rounded-3xl border-2 border-gray-200 font-sans text-[#1A1A1A]">
     <StickyHeader v-if="showSidebarNav" />
     <div :class="showSidebarNav ? 'pt-20 md:pt-0 md:pl-72' : ''" style="overflow-x: hidden !important;">
       <router-view />

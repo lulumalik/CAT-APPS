@@ -1,6 +1,6 @@
 <template>
-  <main class="min-h-screen bg-[#F9F9F7] font-sans text-[#1A1A1A] py-8 px-4 md:px-8">
-    <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 items-stretch min-h-[80vh]">
+  <main class="bg-[#F9F9F7] font-sans text-[#1A1A1A] py-8 px-4 md:px-8">
+    <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 items-stretch">
       <section class="rounded-[2rem] relative border-6 border-[#9DB359] border-dashed shadow-xl shadow-black/5 bg-white text-black p-8 md:p-10 flex flex-col justify-between">
         <div>
           <router-link to="/" class="inline-flex items-center gap-2 mb-8 group">

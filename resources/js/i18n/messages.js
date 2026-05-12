@@ -478,7 +478,7 @@ export const messages = {
     },
     home: {
       hero: {
-        title: 'Bimble platform for practice and online exams',
+        title: 'Bimbel platform for practice and online exams',
         description:
           'Build question banks, create tests, run timed exams, grade automatically, and track rankings in real time.',
         ctaPrimary: 'Login',
@@ -840,9 +840,9 @@ export const messages = {
       },
     },
     seo: {
-      title: 'Bimble Platform - Computer Assisted Test (CAT) App & Question Bank',
+      title: 'Bimbel Platform - Computer Assisted Test (CAT) App & Question Bank',
       description:
-        'Bimble Platform helps you build question banks, schedule tests, run timed online exams, auto-grade, and publish participant leaderboards.',
+        'Bimbel Platform helps you build question banks, schedule tests, run timed online exams, auto-grade, and publish participant leaderboards.',
     },
   },
 };
