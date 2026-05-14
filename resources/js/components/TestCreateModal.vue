@@ -41,6 +41,13 @@
           </div>
         </div>
 
+        <div class="rounded-xl border border-border bg-sky/40 px-4 py-3">
+          <label class="inline-flex items-center gap-3 text-sm font-medium text-text cursor-pointer">
+            <input v-model="form.isFreeTryout" type="checkbox" class="rounded border-border text-secondary focus:ring-secondary" />
+            Jadikan ini soal Tryout Gratis (muncul di halaman publik free tryout)
+          </label>
+        </div>
+
         <div class="grid grid-cols-2 gap-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.scheduleLabel') }}</label>
@@ -194,6 +201,7 @@ const base = () => {
   startTime: now,
   endTime: toJakartaDatetimeInputValue(new Date(Date.now() + 3600000)),
   isActive: false,
+  isFreeTryout: false,
   questionIds: []
 })
 }
@@ -293,6 +301,7 @@ watch(() => props.initial, (val) => {
   next.scheduleAt = next.startTime
   next.endTime = toJakartaDatetimeInputValue(val.endTime ?? val.end_time)
   next.isActive = val.isActive ?? val.is_active ?? false
+  next.isFreeTryout = val.isFreeTryout ?? val.is_free_tryout ?? false
   next.questionIds = Array.isArray(val.questionIds ?? val.question_ids) ? (val.questionIds ?? val.question_ids) : (next.questionIds ?? [])
   Object.assign(form, next)
 

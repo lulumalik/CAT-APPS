@@ -29,10 +29,10 @@
           Dashboard terkunci
         </h2>
         <p class="text-sm mt-2">
-          Fitur dashboard dan kelas akan terbuka setelah onboarding selesai: administrasi, psikologi, kesehatan, lalu fisik.
+          Fitur dashboard dan kelas akan terbuka setelah pendaftaran selesai: administrasi, psikologi, kesehatan, lalu fisik.
         </p>
         <router-link to="/registration" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
-          Lanjutkan onboarding
+          Lanjutkan Pendaftaran
         </router-link>
       </section>
 

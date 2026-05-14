@@ -102,18 +102,13 @@
           >
             {{ t('incomingTests.startTestNow') }}
           </router-link>
-          <router-link
+          <button
             v-else
-            :to="test?.id ? { name: 'quick-test', params: { id: test.id } } : { name: 'dashboard' }"
-            :class="[
-              'block w-full px-6 py-3 rounded-full text-center font-medium transition-all',
-              test?.id
-                ? 'bg-[#1A1A1A] text-white hover:bg-black shadow-lg shadow-black/10'
-                : 'bg-gray-200 text-gray-500 cursor-not-allowed pointer-events-none',
-            ]"
+            disabled
+            class="w-full px-6 py-3 rounded-full bg-gray-100 text-gray-400 font-medium cursor-not-allowed border border-gray-200"
           >
-            {{ t('incomingTests.reviewTest') }}
-          </router-link>
+            {{ t('incomingTests.ended') }}
+          </button>
         </div>
       </div>
     </div>
@@ -163,22 +158,27 @@ const updateCountdowns = () => {
   const now = new Date().getTime()
   
   tests.value.forEach(test => {
-    if (test.status === 'upcoming') {
-      const startTime = new Date(test.start_time).getTime()
-      const distance = startTime - now
-      
-      if (distance < 0) {
-        test.status = 'ongoing'
-        delete countdown.value[test.id]
-      } else {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24))
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000)
-        
-        countdown.value[test.id] = `${days}d ${hours}h ${minutes}m ${seconds}s`
-      }
+    const startTime = new Date(test.start_time).getTime()
+    const endTime = new Date(test.end_time).getTime()
+
+    if (!Number.isFinite(startTime) || !Number.isFinite(endTime)) {
+      delete countdown.value[test.id]
+      return
     }
+
+    if (now < startTime) {
+      test.status = 'upcoming'
+      const distance = startTime - now
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24))
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000)
+      countdown.value[test.id] = `${days}d ${hours}h ${minutes}m ${seconds}s`
+      return
+    }
+
+    delete countdown.value[test.id]
+    test.status = now <= endTime ? 'ongoing' : 'ended'
   })
 }
 

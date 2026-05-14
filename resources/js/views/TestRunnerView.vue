@@ -249,7 +249,10 @@ const fetchTest = async () => {
     }
     
     if (!data.can_submit) {
-      toast.error('Error', 'Test is not available or has ended')
+      const message = data?.status === 'upcoming'
+        ? 'Test belum dimulai sesuai jadwal'
+        : 'Test sudah berakhir atau tidak tersedia'
+      toast.error('Error', message)
       router.push('/dashboard')
       return
     }
@@ -268,7 +271,8 @@ const fetchTest = async () => {
     
     startTimer()
   } catch (error) {
-    toast.error('Error', 'Failed to start test or test not found')
+    const message = error?.response?.data?.message || 'Failed to start test or test not found'
+    toast.error('Error', message)
     router.push('/dashboard')
   }
 }

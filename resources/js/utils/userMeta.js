@@ -1,3 +1,5 @@
+import { ONLINE_PROGRAMS } from '@/constants/onlinePrograms'
+
 export const normalizeProgramCategory = (program) => {
   if (program === 'vip_online' || program === 'vip_offline') {
     return 'vip'
@@ -8,17 +10,24 @@ export const normalizeProgramCategory = (program) => {
   return program
 }
 
+const programRow = (normalized) => ONLINE_PROGRAMS.find((p) => p.value === normalized)
+
 export const programCategoryLabel = (program) => {
   const normalized = normalizeProgramCategory(program)
-  if (normalized === 'vip') return 'VIP (Online + Offline + Karantina)'
-  if (normalized === 'regular') return 'Regular (Offline + Online)'
-  if (normalized === 'bimbingan_online') return 'Program Bimbingan Online'
-  if (normalized === 'try_out') return 'Try Out'
+  const row = programRow(normalized)
+  if (row) return row.name
   return normalized
 }
 
 export const supportsProgramQuarantine = (program) => {
   return normalizeProgramCategory(program) === 'vip'
+}
+
+const badgeStyleByValue = {
+  vip: { className: 'bg-sky text-primary border border-border' },
+  regular: { className: 'bg-mint text-primary border border-border' },
+  bimbingan_online: { className: 'bg-cream text-text border border-border' },
+  try_out: { className: 'bg-background text-text border border-border' },
 }
 
 export const getProgramBadge = (user) => {
@@ -33,19 +42,13 @@ export const getProgramBadge = (user) => {
     return { label: 'Mentor', className: 'bg-blue-100 text-blue-700 border border-blue-200' }
   }
 
-  if (program.startsWith('vip')) {
-    return { label: 'Premium VIP', className: 'bg-purple-100 text-purple-700 border border-purple-200' }
+  const row = programRow(program)
+  if (row) {
+    const style = badgeStyleByValue[program] || badgeStyleByValue.regular
+    return { label: row.mode, className: style.className }
   }
 
-  if (program === 'try_out') {
-    return { label: 'Try Out', className: 'bg-amber-100 text-amber-700 border border-amber-200' }
-  }
-
-  if (program === 'bimbingan_online') {
-    return { label: 'Bimbingan', className: 'bg-cyan-100 text-cyan-700 border border-cyan-200' }
-  }
-
-  return { label: 'Regular', className: 'bg-emerald-100 text-emerald-700 border border-emerald-200' }
+  return { label: program, className: 'bg-gray-100 text-gray-700 border border-gray-200' }
 }
 
 export const registrationCompleted = (user) => {

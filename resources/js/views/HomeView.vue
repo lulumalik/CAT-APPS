@@ -1,81 +1,193 @@
 <template>
-  <main class="min-h-screen text-[#1A1A1A]">
-    <div
-      v-if="!isAuthenticated"
-      class="fixed top-12 left-[70.5%] md:flex hidden -translate-x-1/2 sm:w-[calc(100%-1rem)] md:w-[590px] z-30 rounded-xl bg-white/95 backdrop-blur border border-gray-100 shadow-xl shadow-black/10 p-2 sm:p-3"
-    >
-      <div class="flex flex-wrap items-center justify-center gap-1 w-full">
-        <button
-          v-for="item in quickNavItems"
-          :key="item.id"
-          type="button"
-          class="text-xs sm:text-sm px-2.5 cursor-pointer py-2 rounded-lg hover:bg-[#f5f8ec] hover:text-[#4f6123] transition-colors whitespace-nowrap"
-          @click="scrollToSection(item.id)"
-        >
-          {{ item.label }}
-        </button>
-      </div>
-    </div>
+  <main class="min-h-screen text-text">
+    <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
+      <div class="mx-auto max-w-6xl rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-6 py-2 md:py-0">
+        <div class="hidden md:grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-4">
+          <div class="flex items-center gap-1">
+            <button
+              v-for="item in quickNavItems"
+              :key="item.id"
+              type="button"
+              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap"
+              @click="scrollToSection(item.id)"
+            >
+              {{ item.label }}
+            </button>
+          </div>
 
-    <section id="hero" class="relative overflow-hidden px-5 py-10 md:px-10 rounded-none md:rounded-2xl">
-      <div class="absolute top-0 right-0 w-[360px] sm:w-[240px] md:w-[320px] lg:w-[390px] xl:w-[720px] pointer-events-none z-0 banner-wrap">
-        <img :src="bannerUrl" alt="Banner Akademi Polisi" class="w-full h-auto banner-image rounded-none md:rounded-2xl" />
-      </div>
+          <button
+            type="button"
+            class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap"
+            @click="scrollToSection('hero')"
+          >
+            Tentang Kami
+          </button>
 
-      <div class="relative max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-end">
-        <div class="fade-up">
-          <p class="text-sm uppercase tracking-[0.2em] text-[#6c7c3f] font-semibold mb-4">Bimbel Online Akademi Polisi</p>
-          <h1 class="text-2xl md:text-6xl font-extrabold leading-tight tracking-tight text-[#111111]">
-            <span class="inline">
-              <span class="sm:hidden">
-                <div class="rounded-xl bg-white/75 px-2 py-1 shadow-sm sm:bg-transparent sm:p-0">Bimbingan Belajar Online</div>
-                <div class="rounded-xl mt-1 bg-white/75 px-2 py-1 shadow-sm sm:bg-transparent sm:p-0">dan Persiapan Akademi Polisi</div>
-                <div class="rounded-xl mt-1 bg-white/75 px-2 py-1 shadow-sm sm:bg-transparent sm:p-0">Terstruktur, Profesional,</div>
-                <div class="rounded-xl mt-1 bg-white/75 px-2 py-1 shadow-sm sm:bg-transparent sm:p-0">dan Terukur.</div>
-              </span>
-              <span class="hidden sm:inline">
-                Bimbingan Belajar Online Akademi Polisi Terstruktur, Profesional, dan Terukur.
-              </span>
-            </span>
-          </h1>
-          <p class="mt-6 text-gray-600 text-lg leading-relaxed max-w-xl">
-            Program pembinaan terpadu untuk calon peserta Akademi Kepolisian: kelas bimbingan, simulasi CBT, evaluasi berkala, monitoring onboarding, dan manajemen kelas yang rapi untuk tim pembina.
-          </p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <router-link to="/signup" class="px-6 py-3 rounded-full bg-[#9DB359] text-white font-semibold shadow-lg shadow-[#9DB359]/20 hover:bg-[#8da74c] transition-all">
-              Daftar Sebagai Peserta
-            </router-link>
-            <router-link to="/login" class="px-6 py-3 rounded-full bg-white border border-gray-200 text-[#1A1A1A] font-semibold hover:bg-gray-50 transition-all">
-              Masuk ke Platform
+          <div class="flex items-center justify-end gap-3">
+            <router-link
+              to="/login"
+              class="px-4 py-2 rounded-full bg-primary text-white text-[11px] lg:text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors whitespace-nowrap"
+            >
+              Masuk Ke Platform
             </router-link>
           </div>
         </div>
 
-        <div class="fade-up delay-1">
-          <div class="rounded-[2rem] bg-white/80 backdrop-blur border border-gray-100 shadow-2xl shadow-black/10 p-4 md:p-5">
-            <div class="relative h-[310px] md:h-[320px] w-full overflow-hidden rounded-[1.5rem]">
-              <img
-                v-for="(slide, index) in wallpaperSlides"
-                :key="slide"
-                :src="slide"
-                :alt="`Wallpaper ${index + 1}`"
-                class="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
-                :class="index === activeWallpaperIndex ? 'opacity-100' : 'opacity-0'"
-              />
+        <div class="md:hidden">
+          <div class="h-12 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors"
+              @click="scrollToSection('hero')"
+            >
+              Tentang Kami
+            </button>
+            <button
+              type="button"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-text hover:bg-sky transition-colors"
+              aria-label="Toggle menu"
+              @click="isMobileMenuOpen = !isMobileMenuOpen"
+            >
+              <span class="text-xl leading-none">{{ isMobileMenuOpen ? 'x' : '=' }}</span>
+            </button>
+          </div>
+
+          <div v-if="isMobileMenuOpen" class="pb-3 pt-2 border-t border-border">
+            <div class="grid gap-1">
+              <button
+                v-for="item in quickNavItems"
+                :key="`mobile-${item.id}`"
+                type="button"
+                class="text-left text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors"
+                @click="scrollToSection(item.id)"
+              >
+                {{ item.label }}
+              </button>
+              <router-link
+                to="/signup"
+                class="mt-2 px-4 py-2 rounded-md bg-primary text-white text-center text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors"
+                @click="isMobileMenuOpen = false"
+              >
+                Masuk Ke Platform
+              </router-link>
             </div>
-            <div class="mt-4 flex items-center justify-center gap-2">
-              <span
-                v-for="(slide, index) in wallpaperSlides"
-                :key="`${slide}-dot`"
-                class="h-2.5 rounded-full transition-all duration-300"
-                :class="index === activeWallpaperIndex ? 'w-6 bg-[#9DB359]' : 'w-2.5 bg-gray-300'"
-              />
-            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="hero" class="relative overflow-hidden rounded-none md:rounded-2xl min-h-[560px] md:min-h-[700px]">
+      <img
+        :src="bannerUrl"
+        alt="Banner Akademi Polisi"
+        class="absolute inset-0 h-full w-full object-cover object-center rounded-none md:rounded-2xl hero-banner-fade"
+      />
+      <div class="absolute inset-0 rounded-none md:rounded-2xl bg-gradient-to-b from-white/88 via-white/60 to-black/40" />
+
+      <div class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-16 pb-14 md:px-10">
+        <div class="text-center max-w-4xl fade-up">
+          <h1 class="text-2xl md:text-6xl font-black leading-[0.95] tracking-tight leading-relaxed text-text uppercase">
+            Bimbingan belajar dan pelatihan persiapan <br class="hidden sm:block" /> untuk mengikuti seleksi AKADEMI KEPOLISIAN
+          </h1>
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <router-link to="/free-tryout" class="px-7 py-3 rounded-full bg-secondary text-white text-sm md:text-base font-bold shadow-lg shadow-[#2F6BFF]/25 hover:bg-primary transition-all">
+              Coba Tryout Gratis
+            </router-link>
           </div>
         </div>
       </div>
     </section>
 
+    
+    <section id="leaders" class="my-10">
+      <div class="max-w-6xl mx-auto fade-up fade-up-tight delay-2 relative">
+        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Dewan Pembina & Pimpinan</h2>
+          <p class="text-gray-600 mb-8">Profil pejabat dan pimpinan PT. Pratistha Training Center Indonesia.</p>
+
+          <div class="grid gap-6 relative z-30">
+            <article
+              v-for="(leader, index) in leaders"
+              :key="leader.name"
+              class="group rounded-3xl flex flex-col md:flex-row border border-border bg-gradient-to-br from-white via-background to-sky overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div
+                class="relative md:w-[38%] lg:w-[34%] shrink-0 bg-sky"
+                :class="index % 2 === 0 ? 'md:order-1' : 'md:order-2'"
+              >
+                <img
+                  :src="leader.image"
+                  :alt="leader.name"
+                  class="w-full h-[360px] md:h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
+                />
+                <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/30 to-transparent" />
+              </div>
+              <div
+                class="p-6 md:p-8 flex-1"
+                :class="index % 2 === 0 ? 'md:order-2' : 'md:order-1'"
+              >
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Profil Pimpinan</p>
+                <h3 class="mt-2 font-extrabold text-2xl md:text-3xl leading-tight tracking-tight text-text">{{ leader.name }}</h3>
+                <p class="text-base text-secondary font-bold mt-2">{{ leader.batch }}</p>
+
+                <div class="mt-5 rounded-xl border border-border bg-white/90 px-4 py-3">
+                  <p class="text-[11px] font-bold tracking-[0.14em] text-primary uppercase">Posisi Saat Ini</p>
+                  <p class="mt-1 text-base md:text-lg font-semibold leading-relaxed text-text">{{ leader.position }}</p>
+                </div>
+
+                <div class="mt-5">
+                  <p class="text-sm font-bold tracking-[0.14em] text-text uppercase">Jabatan Terakhir</p>
+                  <ul class="mt-3 space-y-2.5 text-base font-semibold leading-relaxed text-gray-700">
+                    <li v-for="line in leader.highlights" :key="line" class="flex items-start gap-2.5">
+                      <span class="mt-2 h-2 w-2 rounded-full bg-secondary shrink-0" />
+                      <span>{{ line }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </article>
+          </div>
+          <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-72 bottom-0 right-0" />
+        </div>
+      </div>
+    </section>
+
+    <section id="members" class="pb-8">
+      <div class="max-w-6xl mx-auto fade-up fade-up-tight relative">
+        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+          <h3 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Anggota</h3>
+          <p class="text-gray-600 mb-6">Tim anggota pendukung program pembinaan PT. Pratistha Training Center Indonesia.</p>
+          <div class="relative z-20">
+            <Transition name="member-slide-fade" mode="out-in">
+              <div :key="`member-slide-${activeMemberSlide}`" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <article
+                  v-for="member in (memberSlides[activeMemberSlide] || [])"
+                  :key="member.name"
+                  class="rounded-2xl border border-border bg-background overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                >
+                  <img :src="member.image" :alt="member.name" class="w-full h-[480px] object-cover object-top" />
+                  <div class="p-5">
+                    <h4 class="font-semibold text-base leading-snug text-text">{{ member.name }}</h4>
+                    <p class="text-sm text-primary font-semibold mt-1">{{ member.jabatan }}</p>
+                  </div>
+                </article>
+              </div>
+            </Transition>
+            <div v-if="memberSlides.length > 1" class="mt-5 flex items-center justify-center gap-2.5">
+              <button
+                v-for="(_, index) in memberSlides"
+                :key="`member-slide-dot-${index}`"
+                type="button"
+                class="h-2.5 rounded-full transition-all duration-300 cursor-pointer"
+                :class="index === activeMemberSlide ? 'w-8 bg-secondary' : 'w-2.5 bg-gray-300 hover:bg-gray-400'"
+                @click="activeMemberSlide = index"
+              />
+            </div>
+          </div>
+          <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-28 bottom-0 right-0" />
+        </div>
+      </div>
+    </section>
     
     <section id="programs" class="px-5 md:px-10 pb-8">
       <div class="max-w-6xl mx-auto fade-up delay-2 relative">
@@ -86,9 +198,9 @@
             <article
               v-for="feature in keyFeatures"
               :key="feature.title"
-              class="rounded-2xl border border-gray-100 bg-gradient-to-br from-white to-[#f7faef] p-6"
+              class="rounded-2xl border border-border bg-gradient-to-br from-white to-sky p-6"
             >
-              <div class="mb-3 inline-flex rounded-lg bg-[#f3f8e7] p-2 text-[#6c7c3f]">
+              <div class="mb-3 inline-flex rounded-lg bg-sky p-2 text-primary">
                 <component :is="feature.icon" class="h-5 w-5" />
               </div>
               <h3 class="font-bold text-lg">{{ feature.title }}</h3>
@@ -109,12 +221,12 @@
             <article
               v-for="service in services"
               :key="service.title"
-              class="rounded-2xl border border-gray-100 bg-[#fcfdfb] p-5 hover:-translate-y-1 hover:shadow-lg transition-all"
+              class="rounded-2xl border border-border bg-background p-5 hover:-translate-y-1 hover:shadow-lg transition-all"
             >
-              <div class="mb-3 inline-flex rounded-lg bg-[#f3f8e7] p-2 text-[#6c7c3f]">
+              <div class="mb-3 inline-flex rounded-lg bg-sky p-2 text-primary">
                 <component :is="service.icon" class="h-5 w-5" />
               </div>
-              <h3 class="font-semibold text-[#1A1A1A]">{{ service.title }}</h3>
+              <h3 class="font-semibold text-text">{{ service.title }}</h3>
               <p class="text-sm text-gray-600 mt-1">{{ service.desc }}</p>
             </article>
           </div>
@@ -126,12 +238,12 @@
     <section id="choices" class="px-5 md:px-10 pb-8 relative">
       <div class="max-w-6xl mx-auto fade-up delay-2 relative">
         <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Pilihan Bimbel Online</h2>
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Pilihan Kelas BIMBEL dan Pelatihan</h2>
           <p class="text-gray-600 mb-8">Pilih jalur program sesuai kebutuhan pembinaan dan target persiapan.</p>
           <div class="grid md:grid-cols-2 gap-5 relative z-30">
             <article
               v-for="program in onlinePrograms"
-              :key="program.name"
+              :key="program.value"
               class="rounded-2xl border border-gray-100 p-6 hover:shadow-lg transition-all"
             >
               <div class="flex items-center justify-between gap-3">
@@ -152,57 +264,15 @@
       </div>
     </section>
 
-    <section id="leaders" class="px-5 md:px-10 pb-8">
-      <div class="max-w-6xl mx-auto fade-up delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Dewan Pembina & Pimpinan</h2>
-          <p class="text-gray-600 mb-8">Profil pejabat dan pimpinan PT. Pratistha Training Center Indonesia.</p>
-
-          <div class="grid lg:grid-cols-3 gap-6 relative z-30">
-            <article v-for="leader in leaders" :key="leader.name" class="rounded-2xl border border-gray-100 bg-[#fcfdfb] overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <img :src="leader.image" :alt="leader.name" class="w-full h-72 object-cover object-top" />
-              <div class="p-5">
-                <h3 class="font-bold text-lg leading-tight">{{ leader.name }}</h3>
-                <p class="text-sm text-[#6c7c3f] font-semibold mt-1">{{ leader.batch }}</p>
-                <p class="mt-2 text-sm font-medium text-[#1A1A1A]">{{ leader.position }}</p>
-                <p class="mt-2 text-sm font-medium text-[#1A1A1A]">Jabatan Terakhir</p>
-                <ul class="mt-3 space-y-1.5 text-sm text-gray-600 list-disc pl-4">
-                  <li v-for="line in leader.highlights" :key="line">{{ line }}</li>
-                </ul>
-              </div>
-            </article>
-          </div>
-          <div class="mt-10 border-t border-gray-100 pt-8 relative z-30">
-            <h3 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Anggota</h3>
-            <p class="text-gray-600 mb-6">Tim anggota pendukung program pembinaan PT. Pratistha Training Center Indonesia.</p>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              <article
-                v-for="member in members"
-                :key="member.name"
-                class="rounded-2xl border border-gray-100 bg-[#fcfdfb] overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-              >
-                <img :src="member.image" :alt="member.name" class="w-full h-72 object-cover object-top" />
-                <div class="p-5">
-                  <h4 class="font-semibold text-base leading-snug text-[#1A1A1A]">{{ member.name }}</h4>
-                  <p class="text-sm text-[#6c7c3f] font-semibold mt-1">{{ member.jabatan }}</p>
-                </div>
-              </article>
-            </div>
-          </div>
-          <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-72 bottom-0 right-0" />
-        </div>
-      </div>
-    </section>
-
     <section class="px-5 md:px-10 pb-14">
-      <div class="max-w-6xl mx-auto rounded-[2rem] bg-[#1A1A1A] text-white p-8 md:p-10 shadow-2xl shadow-black/20 fade-up delay-3">
-        <h2 class="text-2xl md:text-3xl font-bold mb-3">Siap naik level untuk persiapan Akademi Polisi?</h2>
+      <div class="max-w-6xl mx-auto rounded-[2rem] bg-primary text-white p-8 md:p-10 shadow-2xl shadow-[#123B8F]/30 fade-up delay-3">
+        <h2 class="text-2xl md:text-3xl font-bold mb-3">Siap naik level untuk persiapan Akademi Kepolisian?</h2>
         <p class="text-white/80 max-w-3xl">
-          Bergabung sebagai peserta, lengkapi onboarding secara bertahap, lalu ikuti program kelas bimbingan online dengan standar pembinaan profesional.
+          Bergabung sebagai peserta, lengkapi pendaftaran secara bertahap, lalu ikuti program kelas bimbingan online dengan standar pembinaan profesional.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
-          <router-link to="/signup" class="px-6 py-3 rounded-full bg-[#9DB359] text-white font-semibold hover:bg-[#8da74c] transition-all">Mulai Pendaftaran</router-link>
-          <router-link to="/registration" class="px-6 py-3 rounded-full bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 transition-all">Lihat Tahapan Onboarding</router-link>
+          <router-link to="/signup" class="px-6 py-3 rounded-full bg-secondary text-white font-semibold hover:bg-primary transition-all">Mulai Pendaftaran</router-link>
+          <router-link to="/registration" class="px-6 py-3 rounded-full bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 transition-all">Lihat Tahapan Pendaftaran</router-link>
         </div>
       </div>
     </section>
@@ -211,7 +281,7 @@
       href="https://wa.me/6285124156748"
       target="_blank"
       rel="noopener noreferrer"
-      class="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl shadow-[#25D366]/30 transition hover:scale-105 hover:bg-[#1ebe5d]"
+      class="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-white shadow-xl shadow-[#2F6BFF]/30 transition hover:scale-105 hover:bg-primary"
       aria-label="Chat WhatsApp"
       title="Chat WhatsApp"
     >
@@ -221,16 +291,17 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 import { BookOpenText, Brain, Crown, Dumbbell, LineChart, MessageCircle, NotebookPen, ShieldCheck, UserCheck, Warehouse } from 'lucide-vue-next'
+import { ONLINE_PROGRAMS } from '@/constants/onlinePrograms'
 
 const route = useRoute()
 const store = useAppStore()
 const { isAuthenticated } = storeToRefs(store)
-const nanaUrl = new URL('../../assets/bpk_nana.jpeg', import.meta.url).href
+const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
 const tubagusUrl = new URL('../../assets/bpk_tubagus.png', import.meta.url).href
 const awangUrl = new URL('../../assets/bpk_awang.png', import.meta.url).href
 const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
@@ -238,7 +309,7 @@ const winUrl = new URL('../../assets/anggota/win.jpeg', import.meta.url).href
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.jpeg', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
-const bannerUrl = new URL('../../assets/Banner.png', import.meta.url).href
+const bannerUrl = new URL('../../assets/bg_1.png', import.meta.url).href
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const wallpaperModules = import.meta.glob('../../assets/wallpaper/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -248,12 +319,16 @@ const wallpaperSlides = Object.entries(wallpaperModules)
   .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
   .map(([, src]) => src)
 const activeWallpaperIndex = ref(0)
+const activeMemberSlide = ref(0)
+const isMobileMenuOpen = ref(false)
 let wallpaperInterval
+let memberInterval
+let fadeObserver
 const quickNavItems = [
-  { id: 'services', label: 'Layanan Pembinaan' },
-  { id: 'programs', label: 'Keunggulan Program' },
-  { id: 'choices', label: 'Pilihan Bimbel' },
   { id: 'leaders', label: 'Dewan Pimpinan' },
+  { id: 'programs', label: 'Keunggulan Program' },
+  { id: 'services', label: 'Layanan Pembinaan' },
+  { id: 'choices', label: 'Pilihan Bimbel' },
 ]
 
 const leaders = [
@@ -298,6 +373,14 @@ const members = [
   { name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P', image: natashaUrl, jabatan: 'Bidang Internal' },
   { name: 'Kompol (P) Tutik', image: tutikUrl, jabatan: 'Bidang Eksternal' },
 ]
+const MEMBER_SLIDE_SIZE = 3
+const memberSlides = computed(() => {
+  const chunks = []
+  for (let i = 0; i < members.length; i += MEMBER_SLIDE_SIZE) {
+    chunks.push(members.slice(i, i + MEMBER_SLIDE_SIZE))
+  }
+  return chunks
+})
 
 const services = [
   { icon: Brain, title: 'Tes Psikologi', desc: 'Pemetaan karakter, kestabilan emosi, dan kesiapan menghadapi seleksi.' },
@@ -321,7 +404,7 @@ const keyFeatures = [
   {
     icon: LineChart,
     title: 'Laporan ke Orang Tua Secara Online',
-    desc: 'Perkembangan hasil latihan, nilai tes, dan progres onboarding peserta dapat dipantau secara digital.',
+    desc: 'Perkembangan hasil latihan, nilai tes, dan progres pendaftaran peserta dapat dipantau secara digital.',
   },
   {
     icon: Warehouse,
@@ -330,62 +413,35 @@ const keyFeatures = [
   },
 ]
 
-const onlinePrograms = [
-  {
-    name: 'VIP Class (Online + Offline + Karantina)',
-    mode: 'Premium',
-    summary: 'Pendampingan intensif dengan kontrol progres harian dan strategi personal.',
-    points: ['Mentoring prioritas', 'Monitoring ketat', 'Pendalaman psikologi & akademik'],
-  },
-  {
-    name: 'Regular Class (Online + Offline)',
-    mode: 'Reguler',
-    summary: 'Program online fleksibel dengan kurikulum inti untuk persiapan seleksi.',
-    points: ['Kelas terjadwal', 'Latihan CBT periodik', 'Diskusi materi dan evaluasi'],
-  },
-  {
-    name: 'Program Bimbingan Online',
-    mode: 'Full Online',
-    summary: 'Fokus pada penguatan kompetensi akademik, psikologi, dan latihan soal.',
-    points: ['Akses materi kelas', 'Kuis dan tugas', 'Rekap progres pembelajaran'],
-  },
-  {
-    name: 'Try Out Class',
-    mode: 'Ujian',
-    summary: 'Program simulasi ujian dengan pembahasan jawaban untuk pemetaan kemampuan.',
-    points: ['Simulasi tes', 'Analisis skor', 'Pembahasan hasil'],
-  },
-]
+const onlinePrograms = ONLINE_PROGRAMS
 
 const programBadge = (program) => {
-  if (program.name.includes('VIP')) {
+  const mode = program.mode
+  if (mode === 'Premium') {
     return {
-      label: program.mode,
+      label: mode,
       isVip: true,
-      className: 'bg-amber-100 text-amber-800 border-amber-300',
+      className: 'bg-sky text-primary border-border',
     }
   }
-
-  if (program.name.includes('Regular')) {
+  if (mode === 'Reguler') {
     return {
-      label: program.mode,
+      label: mode,
       isVip: false,
-      className: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+      className: 'bg-mint text-primary border-border',
     }
   }
-
-  if (program.name.includes('Bimbingan')) {
+  if (mode === 'Full Online') {
     return {
-      label: program.mode,
+      label: mode,
       isVip: false,
-      className: 'bg-slate-100 text-slate-700 border-slate-300',
+      className: 'bg-cream text-text border-border',
     }
   }
-
   return {
-    label: program.mode,
+    label: mode,
     isVip: false,
-    className: 'bg-orange-100 text-orange-800 border-orange-300',
+    className: 'bg-background text-text border-border',
   }
 }
 
@@ -399,19 +455,54 @@ const scrollToHash = () => {
 }
 
 const scrollToSection = (id) => {
+  isMobileMenuOpen.value = false
   const target = document.getElementById(id)
   if (target) {
     target.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
 
+const setupScrollFadeAnimations = async () => {
+  await nextTick()
+  const fadeTargets = document.querySelectorAll('.fade-up')
+  if (!fadeTargets.length) return
+
+  // Keep content visible by default; activate fade behavior only when observer is ready.
+  fadeTargets.forEach((el) => el.classList.add('fade-ready'))
+
+  if (typeof IntersectionObserver === 'undefined') {
+    fadeTargets.forEach((el) => el.classList.add('in-view'))
+    return
+  }
+
+  fadeObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('in-view', entry.isIntersecting)
+      })
+    },
+    {
+      threshold: 0.01,
+      rootMargin: '0px 0px -4% 0px',
+    },
+  )
+
+  fadeTargets.forEach((el) => fadeObserver.observe(el))
+}
+
 watch(() => route.hash, scrollToHash)
 onMounted(() => {
   scrollToHash()
+  setupScrollFadeAnimations()
   if (wallpaperSlides.length > 1) {
     wallpaperInterval = setInterval(() => {
       activeWallpaperIndex.value = (activeWallpaperIndex.value + 1) % wallpaperSlides.length
     }, 3200)
+  }
+  if (memberSlides.value.length > 1) {
+    memberInterval = setInterval(() => {
+      activeMemberSlide.value = (activeMemberSlide.value + 1) % memberSlides.value.length
+    }, 4200)
   }
 })
 
@@ -419,25 +510,46 @@ onUnmounted(() => {
   if (wallpaperInterval) {
     clearInterval(wallpaperInterval)
   }
+  if (memberInterval) {
+    clearInterval(memberInterval)
+  }
+  if (fadeObserver) {
+    fadeObserver.disconnect()
+  }
 })
 </script>
 
 <style scoped>
 .fade-up {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.8s ease forwards;
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-.delay-1 { animation-delay: 0.12s; }
-.delay-2 { animation-delay: 0.22s; }
-.delay-3 { animation-delay: 0.32s; }
+.fade-up.fade-ready {
+  opacity: 0;
+  transform: translateY(20px) scale(0.985);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
 
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.fade-up.fade-ready.in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.fade-up-tight.fade-ready {
+  transform: translateY(10px) scale(0.992);
+  transition: opacity 0.38s ease, transform 0.38s ease;
+}
+
+.member-slide-fade-enter-active,
+.member-slide-fade-leave-active {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.member-slide-fade-enter-from,
+.member-slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
 }
 
 .floating-orb {
@@ -449,21 +561,19 @@ onUnmounted(() => {
   50% { transform: translateY(18px); }
 }
 
-.banner-wrap {
-  opacity: 0.9;
-  overflow: hidden;
-  isolation: isolate;
+.hero-banner-fade {
+  animation: heroFadeIn 1.2s ease-out both;
 }
 
-.banner-image {
-  display: block;
-  transform: scale(1.03);
-  transform-origin: top right;
-  -webkit-mask-image: radial-gradient(ellipse 82% 74% at 72% 26%, rgba(0, 0, 0, 1) 44%, rgba(0, 0, 0, 0.86) 61%, rgba(0, 0, 0, 0) 100%);
-  mask-image: radial-gradient(ellipse 65% 67% at 72% 26%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.86) 61%, rgba(0, 0, 0, 0) 100%);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+@keyframes heroFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
+
 </style>

@@ -10,10 +10,10 @@
         Kelas masih terkunci
       </h2>
       <p class="text-sm mt-2">
-        Selesaikan onboarding hingga tahap fisik selesai disetujui admin untuk membuka akses kelas.
+        Selesaikan pendaftaran hingga tahap fisik selesai disetujui admin untuk membuka akses kelas.
       </p>
       <router-link to="/registration" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
-        Buka halaman onboarding
+        Buka halaman pendaftaran
       </router-link>
     </section>
     <div v-if="!isLocked && loading" class="py-16 text-center text-gray-500">{{ t('common.refresh') }}…</div>

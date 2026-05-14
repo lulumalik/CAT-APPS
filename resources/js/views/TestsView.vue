@@ -70,7 +70,52 @@
           <button class="mt-6 px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors cursor-pointer" @click="openCreate">{{ t('tests.startCreate') }}</button>
         </div>
 
-        <div v-for="(test, i) in filtered" :key="i" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group">
+        <section v-if="filteredTryout.length > 0" class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold text-text">Section Soal Tryout Gratis</h2>
+            <span class="text-xs font-semibold text-primary bg-sky px-3 py-1 rounded-full">{{ filteredTryout.length }} test</span>
+          </div>
+          <div v-for="(test, i) in filteredTryout" :key="`tryout-${test.id}`" class="bg-white rounded-[2rem] shadow-sm border border-border p-8 hover:shadow-md transition-shadow group">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <router-link
+                  :to="{ name: 'quick-test', params: { id: test.id } }"
+                  class="text-xl font-bold text-text group-hover:text-primary transition-colors hover:underline"
+                >
+                  {{ test.name }}
+                </router-link>
+                <p class="text-sm text-gray-500 mt-1 leading-relaxed">{{ test.description }}</p>
+              </div>
+              <span class="text-xs font-semibold text-primary bg-sky px-3 py-1 rounded-full">Tryout Gratis</span>
+            </div>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                <span class="text-xs text-gray-400 uppercase font-bold">{{ t('common.questions') }}</span>
+                <span class="text-sm font-medium text-gray-700">{{ test.question_ids?.length || 0 }}</span>
+              </div>
+              <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                <span class="text-xs text-gray-400 uppercase font-bold">{{ t('common.duration') }}</span>
+                <span class="text-sm font-medium text-gray-700">{{ test.duration }} min</span>
+              </div>
+            </div>
+            <div class="mt-6 flex items-center justify-end gap-3 pt-6 border-t border-gray-50">
+              <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewTryoutResults(test)">
+                Tryout Result
+              </button>
+              <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="openAssign(test)">
+                {{ t('tests.assignQuestions') }}
+              </button>
+              <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)">
+                {{ t('common.edit') }}
+              </button>
+              <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" @click="removeById(test.id)">
+                {{ t('common.delete') }}
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <div v-for="test in filteredRegular" :key="`regular-${test.id}`" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group">
           <div class="flex items-start justify-between mb-4">
             <div>
               <router-link
@@ -134,8 +179,8 @@
               {{ t('tests.assignQuestions') }}
             </button>
             <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewSubmissions(test)" :disabled="deletingId === test.id">{{ t('tests.submissions') }}</button>
-            <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="edit(i)" :disabled="deletingId === test.id">{{ t('common.edit') }}</button>
-            <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" @click="remove(i)" :disabled="deletingId === test.id">
+            <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)" :disabled="deletingId === test.id">{{ t('common.edit') }}</button>
+            <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" @click="removeById(test.id)" :disabled="deletingId === test.id">
               <span v-if="deletingId === test.id" class="flex items-center gap-2">
                 <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -172,6 +217,7 @@
     <TestCreateModal v-if="showCreateModal" :categories="categories" :initial="selectedTest" @close="closeCreate" @submit="createTest" />
     <TestAssignQuestionsModal v-if="showAssignModal" :test="selectedTest" :questions="questions" @close="closeAssign" @submit="assignQuestions" />
     <SubmissionsModal v-if="showSubmissionsModal" :test="selectedTest" @close="closeSubmissions" />
+    <FreeTryoutResultsModal v-if="showFreeTryoutResultsModal" :test="selectedTest" @close="closeTryoutResults" />
   </main>
 </template>
 
@@ -181,6 +227,7 @@ import { Check, FileText, Lock, Plus, Search } from 'lucide-vue-next'
 import TestCreateModal from '@/components/TestCreateModal.vue'
 import TestAssignQuestionsModal from '@/components/TestAssignQuestionsModal.vue'
 import SubmissionsModal from '@/components/SubmissionsModal.vue'
+import FreeTryoutResultsModal from '@/components/FreeTryoutResultsModal.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 
@@ -197,6 +244,7 @@ const search = ref('')
 const showCreateModal = ref(false)
 const showAssignModal = ref(false)
 const showSubmissionsModal = ref(false)
+const showFreeTryoutResultsModal = ref(false)
 const selectedTest = ref(null)
 const editingIndex = ref(-1)
 const deletingId = ref(null)
@@ -210,6 +258,8 @@ const filtered = computed(() => {
 })
 
 const activeCount = computed(() => tests.value.filter(t => isActive(t)).length)
+const filteredTryout = computed(() => filtered.value.filter(t => t.is_free_tryout || t.isFreeTryout))
+const filteredRegular = computed(() => filtered.value.filter(t => !(t.is_free_tryout || t.isFreeTryout)))
 const upcoming = computed(() => {
   return tests.value
     .filter(t => new Date(t.schedule_at || t.start_time) > new Date())
@@ -283,6 +333,11 @@ const edit = (i) => {
   showCreateModal.value = true
 }
 
+const editById = (id) => {
+  const idx = filtered.value.findIndex(t => t.id === id)
+  if (idx !== -1) edit(idx)
+}
+
 const openAssign = (test) => {
   selectedTest.value = {
     ...test,
@@ -302,7 +357,8 @@ const createTest = async (formData) => {
       duration: formData.duration,
       schedule_at: formData.scheduleAt,
       start_time: formData.startTime,
-      end_time: formData.endTime
+      end_time: formData.endTime,
+      is_free_tryout: !!formData.isFreeTryout,
     }
 
     let savedTest = null;
@@ -369,6 +425,13 @@ const remove = async (i) => {
   }
 }
 
+const removeById = async (id) => {
+  const idx = filtered.value.findIndex(t => t.id === id)
+  if (idx !== -1) {
+    await remove(idx)
+  }
+}
+
 const closeCreate = () => {
   showCreateModal.value = false
   selectedTest.value = null
@@ -381,6 +444,16 @@ const viewSubmissions = (test) => {
 
 const closeSubmissions = () => {
   showSubmissionsModal.value = false
+  selectedTest.value = null
+}
+
+const viewTryoutResults = (test) => {
+  selectedTest.value = test
+  showFreeTryoutResultsModal.value = true
+}
+
+const closeTryoutResults = () => {
+  showFreeTryoutResultsModal.value = false
   selectedTest.value = null
 }
 

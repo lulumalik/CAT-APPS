@@ -110,7 +110,7 @@
           <div v-if="section === 'info'" class="rounded-[2rem] bg-white border border-gray-100 shadow-lg shadow-black/5 p-8 text-sm text-gray-600 space-y-2">
             <p><strong>{{ t('bimble.classLabel') }}:</strong> {{ workspace.class.name }}</p>
             <p><strong>{{ t('bimble.code') }}:</strong> {{ workspace.class.class_code }}</p>
-            <p v-if="workspace.flags.vip_quarantine_note"><strong>VIP online:</strong> {{ t('bimble.quarantineHint') }}</p>
+            <p v-if="workspace.flags.vip_quarantine_note"><strong>Kelas 1 (online):</strong> {{ t('bimble.quarantineHint') }}</p>
           </div>
         </section>
 

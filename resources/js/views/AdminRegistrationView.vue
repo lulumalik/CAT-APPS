@@ -31,7 +31,7 @@
             <th class="px-4 py-3 font-semibold">{{ t('registration.steps.admin') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('registration.steps.psychology') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('registration.steps.health') }}</th>
-            <th class="px-4 py-3 font-semibold">Fisik</th>
+            <th class="px-4 py-3 font-semibold">{{ t('registration.steps.physical') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('common.status') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('common.actions') }}</th>
           </tr>
@@ -61,24 +61,64 @@
     </div>
 
     <div v-if="modal.open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @click.self="modal.open = false">
-      <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <h3 class="font-bold text-lg mb-4">{{ t('adminRegistration.review') }}</h3>
-        <div v-if="modal.row" class="space-y-4 text-sm">
+        <div v-if="modal.row" class="space-y-5 text-sm">
+          <p class="text-xs text-amber-900 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 leading-relaxed">
+            {{ t('adminRegistration.offlineStaffHint') }}
+          </p>
+
           <div>
-            <div class="font-semibold text-gray-700">{{ t('registration.steps.admin') }}</div>
-            <pre class="mt-1 p-3 bg-gray-50 rounded-xl text-xs overflow-x-auto">{{ JSON.stringify(modal.row.administration_data, null, 2) }}</pre>
+            <div class="font-semibold text-gray-800 mb-2">{{ t('registration.steps.admin') }}</div>
+            <dl class="grid gap-3 sm:grid-cols-2">
+              <template v-for="f in administrationFieldOrder" :key="f.key">
+                <div class="sm:col-span-2" :class="{ 'sm:col-span-1': f.short }">
+                  <dt class="text-xs font-medium text-gray-500">{{ t(f.labelKey) }}</dt>
+                  <dd class="mt-0.5 text-gray-900 break-words">
+                    <a
+                      v-if="f.isFile && registrationFileHref(modal.row, f.key)"
+                      :href="registrationFileHref(modal.row, f.key)"
+                      class="text-[#9DB359] underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {{ registrationFileHref(modal.row, f.key) }}
+                    </a>
+                    <a
+                      v-else-if="isHttpUrl(modal.row.administration_data?.[f.key])"
+                      :href="modal.row.administration_data[f.key]"
+                      class="text-[#9DB359] underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {{ modal.row.administration_data[f.key] }}
+                    </a>
+                    <span v-else>{{ formatAdminScalar(f.key, modal.row.administration_data?.[f.key]) }}</span>
+                  </dd>
+                </div>
+              </template>
+            </dl>
           </div>
-          <div>
-            <div class="font-semibold text-gray-700">{{ t('registration.steps.health') }}</div>
-            <pre class="mt-1 p-3 bg-gray-50 rounded-xl text-xs overflow-x-auto">{{ JSON.stringify(modal.row.health_data, null, 2) }}</pre>
-          </div>
-          <div>
-            <div class="font-semibold text-gray-700">{{ t('registration.steps.psychology') }}</div>
-            <pre class="mt-1 p-3 bg-gray-50 rounded-xl text-xs overflow-x-auto">{{ JSON.stringify(modal.row.psychology_data, null, 2) }}</pre>
-          </div>
-          <div>
-            <div class="font-semibold text-gray-700">Fisik</div>
-            <pre class="mt-1 p-3 bg-gray-50 rounded-xl text-xs overflow-x-auto">{{ JSON.stringify(modal.row.physical_data, null, 2) }}</pre>
+
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <div class="font-semibold text-gray-700">{{ t('registration.steps.psychology') }}</div>
+              <p class="mt-1 text-xs text-gray-500 capitalize">{{ modal.row.psychology_status }}</p>
+              <pre v-if="hasJsonData(modal.row.psychology_data)" class="mt-2 p-3 bg-gray-50 rounded-xl text-xs overflow-x-auto max-h-40">{{ JSON.stringify(modal.row.psychology_data, null, 2) }}</pre>
+              <p v-else class="mt-2 text-xs text-gray-400">{{ t('adminRegistration.noJson') }}</p>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-700">{{ t('registration.steps.health') }}</div>
+              <p class="mt-1 text-xs text-gray-500 capitalize">{{ modal.row.health_status }}</p>
+              <pre v-if="hasJsonData(modal.row.health_data)" class="mt-2 p-3 bg-gray-50 rounded-xl text-xs overflow-x-auto max-h-40">{{ JSON.stringify(modal.row.health_data, null, 2) }}</pre>
+              <p v-else class="mt-2 text-xs text-gray-400">{{ t('adminRegistration.noJson') }}</p>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-700">{{ t('registration.steps.physical') }}</div>
+              <p class="mt-1 text-xs text-gray-500 capitalize">{{ modal.row.physical_status }}</p>
+              <pre v-if="hasJsonData(modal.row.physical_data)" class="mt-2 p-3 bg-gray-50 rounded-xl text-xs overflow-x-auto max-h-40">{{ JSON.stringify(modal.row.physical_data, null, 2) }}</pre>
+              <p v-else class="mt-2 text-xs text-gray-400">{{ t('adminRegistration.noJson') }}</p>
+            </div>
           </div>
 
           <label class="block font-medium text-gray-700">{{ t('adminRegistration.step') }}</label>
@@ -120,8 +160,25 @@ import { onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
 import { Check } from 'lucide-vue-next'
 import { useI18n } from '@/composables/useI18n'
+import { registrationFileHref } from '@/utils/storageUrl'
 
 const { t } = useI18n()
+
+const administrationFieldOrder = [
+  { key: 'full_name', labelKey: 'registration.fields.fullNameKk', short: false },
+  { key: 'whatsapp', labelKey: 'registration.fields.whatsapp', short: true },
+  { key: 'phone', labelKey: 'registration.fields.phone', short: true },
+  { key: 'address_kk', labelKey: 'registration.fields.addressKk', short: false },
+  { key: 'address_domicile', labelKey: 'registration.fields.addressDomicile', short: false },
+  { key: 'id_document_path', labelKey: 'registration.fields.idDocumentFile', short: false, isFile: true },
+  { key: 'kk_path', labelKey: 'registration.fields.kkFile', short: false, isFile: true },
+  { key: 'report_card_path', labelKey: 'registration.fields.reportCardFile', short: false, isFile: true },
+  { key: 'gender', labelKey: 'registration.fields.gender', short: true },
+  { key: 'height_cm', labelKey: 'registration.fields.heightCm', short: true },
+  { key: 'weight_kg', labelKey: 'registration.fields.weightKg', short: true },
+  { key: 'passport_photo_path', labelKey: 'registration.fields.passportPhotoFile', short: false, isFile: true },
+  { key: 'full_body_photo_path', labelKey: 'registration.fields.fullBodyPhotoFile', short: false, isFile: true },
+]
 
 const loading = ref(false)
 const items = ref([])
@@ -136,6 +193,23 @@ const modal = reactive({
   note: '',
   saving: false,
 })
+
+function isHttpUrl(val) {
+  return typeof val === 'string' && /^https?:\/\//i.test(val.trim())
+}
+
+function formatAdminScalar(key, val) {
+  if (val === null || val === undefined || val === '') return '—'
+  if (key === 'gender') {
+    if (val === 'L') return t('registration.fields.genderMale')
+    if (val === 'P') return t('registration.fields.genderFemale')
+  }
+  return String(val)
+}
+
+function hasJsonData(data) {
+  return data != null && typeof data === 'object' && Object.keys(data).length > 0
+}
 
 async function load() {
   loading.value = true

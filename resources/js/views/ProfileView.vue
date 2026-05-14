@@ -25,7 +25,7 @@
       </section>
 
       <section class="rounded-[2rem] bg-white border border-gray-100 shadow-lg shadow-black/5 p-6">
-        <h2 class="font-semibold text-lg mb-4">Progress Onboarding</h2>
+        <h2 class="font-semibold text-lg mb-4">Progress Pendaftaran</h2>
         <ol class="space-y-3">
           <li v-for="s in steps" :key="s.key" class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3">
             <div class="font-medium text-[#1A1A1A]">{{ s.label }}</div>
@@ -42,7 +42,7 @@
           to="/registration"
           class="inline-flex mt-5 px-5 py-2.5 rounded-full bg-[#9DB359] text-white text-sm font-semibold"
         >
-          Lanjutkan Onboarding
+          Lanjutkan Pendaftaran
         </router-link>
       </section>
     </template>
@@ -55,6 +55,7 @@ import axios from 'axios'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 import { getProgramBadge, programCategoryLabel, supportsProgramQuarantine } from '@/utils/userMeta'
+import { registrationFileHref } from '@/utils/storageUrl'
 
 const store = useAppStore()
 const { user } = storeToRefs(store)
@@ -80,7 +81,14 @@ const steps = computed(() => [
 
 const approvedPhotoUrl = computed(() => {
   if (progress.value?.administration_status !== 'approved') return ''
-  return progress.value?.administration_data?.profile_photo_url || ''
+  const d = progress.value?.administration_data
+  if (!d) return ''
+  if (d.passport_photo_path) {
+    return registrationFileHref(progress.value, 'passport_photo_path') || ''
+  }
+  if (typeof d.passport_photo_url === 'string' && /^https?:\/\//i.test(d.passport_photo_url)) return d.passport_photo_url
+  if (typeof d.profile_photo_url === 'string' && /^https?:\/\//i.test(d.profile_photo_url)) return d.profile_photo_url
+  return ''
 })
 
 const statusClass = (status) => {

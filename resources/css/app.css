@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -5,18 +6,26 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-brand: #6d57ff;
-    --color-accent: #4fb2ff;
-    --color-navy: #0b102a;
-    --color-text: #1b1b18;
-    --color-muted: #706f6c;
-    --color-bg: #fdfdfc;
+    --color-primary: #123B8F;
+    --color-secondary: #2F6BFF;
+    --color-sky: #DDF4FF;
+    --color-mint: #DDF7EF;
+    --color-cream: #F6EEDB;
+    --color-background: #F9FCFF;
+    --color-text: #1D2B4F;
+    --color-muted: #6B7280;
+    --color-border: #DCE6F2;
+    --color-brand: #123B8F;
+    --color-accent: #2F6BFF;
+    --color-navy: #1D2B4F;
+    --color-bg: #F9FCFF;
 }
 
 :root {
     color: var(--color-text);
+    background-color: var(--color-background);
 }
 
 .container-main { 
@@ -37,6 +46,30 @@
 
 @layer utilities {
   .ui-card { @apply rounded-xl bg-white border border-gray-200 shadow-sm p-6 md:p-8; }
+
+  /* Legacy palette compatibility so existing arbitrary Tailwind colors
+     follow the new blue tone across pages without editing every component. */
+  .bg-\[\#9DB359\],
+  .bg-\[\#dc2626\] { background-color: var(--color-secondary) !important; }
+  .hover\:bg-\[\#8da74c\]:hover,
+  .hover\:bg-\[\#b91c1c\]:hover { background-color: var(--color-primary) !important; }
+  .text-\[\#6c7c3f\],
+  .text-\[\#5f7334\],
+  .hover\:text-\[\#4f6123\]:hover { color: var(--color-primary) !important; }
+  .text-\[\#1A1A1A\],
+  .text-\[\#111111\] { color: var(--color-text) !important; }
+  .bg-\[\#f3f8e7\],
+  .bg-\[\#f2f6e8\],
+  .bg-\[\#eaf1d8\] { background-color: var(--color-sky) !important; }
+  .bg-\[\#fcfdfb\] { background-color: var(--color-background) !important; }
+  .border-\[\#d7e2bd\],
+  .border-\[\#e5ead8\] { border-color: var(--color-border) !important; }
+}
+
+@layer base {
+    body {
+        @apply bg-background text-text;
+    }
 }
 
 @media screen and (max-width: 480px) {

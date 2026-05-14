@@ -1,5 +1,8 @@
 <template>
-  <div :class="{'container-default': !isHomePage}" class="bg-[#F9F9F7] rounded-3xl border-2 border-gray-200 font-sans text-[#1A1A1A]">
+  <div
+    :class="{ 'container-default': !isHomePage && !isFreeTryoutPage }"
+    class="bg-background rounded-3xl min-h-screen border-2 border-border font-sans text-text"
+  >
     <StickyHeader v-if="showSidebarNav" />
     <div :class="showSidebarNav ? 'pt-20 md:pt-0 md:pl-72' : ''" style="overflow-x: hidden !important;">
       <router-view />
@@ -56,14 +59,17 @@ const isTestRunnerPage = computed(() => route.name === 'quick-test')
 const isLoginPage = computed(() => route.name === 'login')
 const isSignupPage = computed(() => route.name === 'signup')
 const isHomePage = computed(() => route.name === 'home')
+const isFreeTryoutPage = computed(() => route.name === 'free-tryout')
 const isClassRoomPage = computed(() => route.name === 'bimble-class-room')
 const isRankingPage = computed(() => route.name === 'rankings')
-const showSidebarNav = computed(() =>
-  isAuthenticated.value &&
-  !isTestRunnerPage.value &&
-  !isLoginPage.value &&
-  !isSignupPage.value &&
-  !isClassRoomPage.value
+const showSidebarNav = computed(
+  () =>
+    isAuthenticated.value &&
+    !isTestRunnerPage.value &&
+    !isLoginPage.value &&
+    !isSignupPage.value &&
+    !isClassRoomPage.value &&
+    !isFreeTryoutPage.value,
 )
 
 onMounted(() => {

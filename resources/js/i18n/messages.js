@@ -352,11 +352,20 @@ export const messages = {
     },
     registration: {
       title: 'Pendaftaran calon peserta',
-      subtitle: 'Lengkapi tahapan administrasi, psikologi, kesehatan, lalu fisik. Admin akan meninjau setiap langkah.',
+      subtitle:
+        'Lengkapi data administrasi di bawah ini. Tahap psikologi, kesehatan, dan fisik diuji secara offline — Anda hanya melihat status verifikasi; staf memperbarui setelah tes.',
       statusLabel: 'Status langkah ini',
       adminNote: 'Catatan admin',
-      submitStep: 'Kirim untuk ditinjau',
+      submitStep: 'Kirim administrasi untuk ditinjau',
       completeMessage: 'Selamat — proses pendaftaran Anda telah selesai disetujui.',
+      offlineStepTitle: 'Verifikasi tes offline',
+      offlineStepBody:
+        'Tahap ini dilakukan di lokasi tes. Anda tidak mengisi formulir di sini. Staf akan mengubah status menjadi disetujui setelah hasil tes tercatat. Pantau indikator status di atas.',
+      fileUploadHint:
+        'Unggah berkas dari perangkat Anda. JPG, PNG, WebP, atau PDF untuk KTP/KK/rapor; pas foto dan full body hanya gambar. Maksimal 12 MB per berkas.',
+      fileUploaded: 'Berkas tersimpan di server',
+      openFile: 'Lihat berkas',
+      pickFile: 'Pilih / ganti berkas',
       steps: {
         admin: 'Administrasi',
         psychology: 'Psikologi',
@@ -365,12 +374,32 @@ export const messages = {
       },
       fields: {
         fullName: 'Nama lengkap (sesuai dokumen)',
-        phone: 'Nomor telepon / WhatsApp',
+        fullNameKk: 'Nama lengkap (sesuai kartu keluarga)',
+        phone: 'Nomor telepon',
+        whatsapp: 'Nomor WhatsApp',
         address: 'Alamat lengkap',
+        addressKk: 'Alamat lengkap sesuai kartu keluarga',
+        addressDomicile: 'Alamat lengkap domisili',
+        idDocumentFile: 'Unggah KTP / kartu pelajar',
+        kkFile: 'Unggah kartu keluarga',
+        reportCardFile: 'Unggah rapor terakhir',
+        gender: 'Jenis kelamin',
+        genderMale: 'Laki-laki',
+        genderFemale: 'Perempuan',
+        heightCm: 'Tinggi badan (cm)',
+        weightKg: 'Berat badan (kg)',
+        passportPhotoFile: 'Unggah pas foto 4×6',
+        fullBodyPhotoFile: 'Unggah foto full body',
         healthNotes: 'Riwayat kesehatan / keluhan',
         allergies: 'Alergi / obat yang dikonsumsi',
         motivation: 'Motivasi mengikuti program',
         expectations: 'Harapan terhadap program',
+      },
+      hints: {
+        idDocument: 'Wajib KTP; untuk peserta di bawah 17 tahun gunakan kartu pelajar.',
+        passportPhoto: 'Kemeja putih, background merah, tanpa kacamata.',
+        fullBody:
+          'Dari ujung kepala sampai ujung kaki; pakaian putih dan hitam; tanpa alas kaki; background tidak wajib khusus.',
       },
     },
     adminRegistration: {
@@ -382,6 +411,9 @@ export const messages = {
       approve: 'Setujui',
       requestRevision: 'Minta perbaikan',
       note: 'Catatan untuk peserta',
+      offlineStaffHint:
+        'Psikologi, kesehatan, dan fisik diuji offline. Peserta hanya melihat status; setujui atau minta revisi setelah tes di lokasi selesai.',
+      noJson: '(belum ada data JSON)',
     },
     bimble: {
       myClassesTitle: 'Kelas saya',
@@ -409,12 +441,12 @@ export const messages = {
       noMaterials: 'Belum ada materi pada kelas ini.',
       noTests: 'Belum ada tes yang ditautkan.',
       discussionPlaceholder: 'Forum diskusi dapat dihubungkan ke fitur komentar berikutnya.',
-      tryoutNoMaterials: 'Program try out: tidak ada akses materi pembelajaran — hanya tes dan pembahasan.',
-      quarantineHint: 'Peserta VIP online dapat menjalani fase karantina sesuai kebijakan lembaga.',
+      tryoutNoMaterials: 'Program Kelas Ujian: tidak ada akses materi pembelajaran — hanya tes dan pembahasan.',
+      quarantineHint: 'Peserta Kelas 1 (Online + Offline + Karantina) dapat menjalani fase karantina sesuai kebijakan lembaga.',
       sidebar: {
         testsTitle: 'Tes kelas',
         testsHint: 'Gunakan menu utama untuk melihat jadwal lebih lengkap.',
-        tryoutOnly: 'Mode try out: fokus pada latihan ujian dan pembahasan jawaban.',
+        tryoutOnly: 'Mode Kelas Ujian: fokus pada latihan ujian dan pembahasan jawaban.',
       },
     },
     seo: {
@@ -774,11 +806,20 @@ export const messages = {
     },
     registration: {
       title: 'Applicant onboarding',
-      subtitle: 'Complete administration, psychology, health, and physical steps. Staff reviews each step.',
+      subtitle:
+        'Complete the administration form below. Psychology, health, and physical stages are tested offline — you only see verification status; staff updates it after testing.',
       statusLabel: 'Step status',
       adminNote: 'Staff note',
-      submitStep: 'Submit for review',
+      submitStep: 'Submit administration for review',
       completeMessage: 'Your onboarding has been fully approved.',
+      offlineStepTitle: 'Offline test verification',
+      offlineStepBody:
+        'This stage is completed at the test venue. You do not fill in a form here. Staff will set the status to approved after your results are recorded. Watch the status badges above.',
+      fileUploadHint:
+        'Upload from your device. JPG, PNG, WebP, or PDF for ID/family card/report; passport and full-body slots are images only. Max 12 MB per file.',
+      fileUploaded: 'File saved on server',
+      openFile: 'Open file',
+      pickFile: 'Choose / replace file',
       steps: {
         admin: 'Administration',
         psychology: 'Psychology',
@@ -787,12 +828,32 @@ export const messages = {
       },
       fields: {
         fullName: 'Full name (as on documents)',
-        phone: 'Phone / WhatsApp',
+        fullNameKk: 'Full name (as on family card)',
+        phone: 'Phone number',
+        whatsapp: 'WhatsApp number',
         address: 'Full address',
+        addressKk: 'Full address (as on family card)',
+        addressDomicile: 'Full domicile address',
+        idDocumentFile: 'Upload ID / student card',
+        kkFile: 'Upload family card',
+        reportCardFile: 'Upload latest report card',
+        gender: 'Gender',
+        genderMale: 'Male',
+        genderFemale: 'Female',
+        heightCm: 'Height (cm)',
+        weightKg: 'Weight (kg)',
+        passportPhotoFile: 'Upload passport photo 4×6',
+        fullBodyPhotoFile: 'Upload full-body photo',
         healthNotes: 'Health history / concerns',
         allergies: 'Allergies / medications',
         motivation: 'Motivation for joining',
         expectations: 'Expectations from the program',
+      },
+      hints: {
+        idDocument: 'National ID required; participants under 17 may use a student card.',
+        passportPhoto: 'White shirt, red background, no glasses.',
+        fullBody:
+          'Head to toe; black and white clothing; no footwear; any background is fine.',
       },
     },
     adminRegistration: {
@@ -804,6 +865,9 @@ export const messages = {
       approve: 'Approve',
       requestRevision: 'Request revision',
       note: 'Note to applicant',
+      offlineStaffHint:
+        'Psychology, health, and physical are offline tests. Applicants only see status; approve or request revision after the on-site test.',
+      noJson: '(no JSON payload yet)',
     },
     bimble: {
       myClassesTitle: 'My classes',
@@ -831,12 +895,12 @@ export const messages = {
       noMaterials: 'No materials linked yet.',
       noTests: 'No tests linked yet.',
       discussionPlaceholder: 'Discussion can be wired to comments in a later iteration.',
-      tryoutNoMaterials: 'Try-out mode: no learning materials — tests and explanations only.',
-      quarantineHint: 'VIP online learners may follow an institutional quarantine phase.',
+      tryoutNoMaterials: 'Kelas Ujian program: no learning materials — tests and explanations only.',
+      quarantineHint: 'Kelas 1 (Premium, online + offline + quarantine) learners may follow an institutional quarantine phase.',
       sidebar: {
         testsTitle: 'Class tests',
         testsHint: 'Use the dashboard for the full schedule.',
-        tryoutOnly: 'Try-out: focused on exams and answer review.',
+        tryoutOnly: 'Kelas Ujian mode: focused on exams and answer review.',
       },
     },
     seo: {

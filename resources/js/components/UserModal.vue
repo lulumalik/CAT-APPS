@@ -37,16 +37,15 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Program Siswa</label>
           <select v-model="form.program_category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
-            <option value="vip">VIP - online + offline (karantina)</option>
-            <option value="regular">Regular - offline + online</option>
-            <option value="bimbingan_online">Program bimbingan - full online</option>
-            <option value="try_out">Try Out - ujian + pembahasan</option>
+            <option v-for="p in ONLINE_PROGRAMS" :key="p.value" :value="p.value">
+              {{ programSignupOptionLabel(p) }}
+            </option>
           </select>
         </div>
 
         <label class="flex items-center gap-2 text-sm text-gray-700" :class="{ 'opacity-50': !supportsQuarantine }">
           <input v-model="form.in_quarantine" type="checkbox" class="rounded border-gray-300" :disabled="!supportsQuarantine" />
-          Status karantina (khusus VIP)
+          Status karantina (khusus Kelas 1 — Premium / online + offline + karantina)
         </label>
 
         <div>
@@ -66,6 +65,8 @@
 <script setup>
 import { reactive, watch, computed } from 'vue'
 import { useI18n } from '@/composables/useI18n'
+import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
+import { normalizeProgramCategory } from '@/utils/userMeta'
 
 const props = defineProps({
   initial: { type: Object, default: null }
@@ -112,16 +113,6 @@ watch(
     }
   }
 )
-
-function normalizeProgramCategory(value) {
-  if (value === 'vip_online' || value === 'vip_offline') {
-    return 'vip'
-  }
-  if (value === 'regular_online' || value === 'regular_offline' || !value) {
-    return 'regular'
-  }
-  return value
-}
 
 const submit = () => {
   emit('submit', JSON.parse(JSON.stringify(form)))

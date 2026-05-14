@@ -3,11 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\TestDefinition;
+use App\Models\FreeTryoutSubmission;
 use App\Models\TestSubmission;
 use Illuminate\Http\Request;
 
 class TestDefinitionController extends Controller
 {
+    private function enforceSingleFreeTryout(array $data, ?int $exceptTestId = null): void
+    {
+        if (! ($data['is_free_tryout'] ?? false)) {
+            return;
+        }
+
+        $query = TestDefinition::query()->where('is_free_tryout', true);
+        if ($exceptTestId) {
+            $query->where('id', '!=', $exceptTestId);
+        }
+
+        $query->update(['is_free_tryout' => false]);
+    }
+
     private function normalizeRequest(Request $request): void
     {
         foreach ([
@@ -15,6 +30,7 @@ class TestDefinitionController extends Controller
             'startTime' => 'start_time',
             'endTime' => 'end_time',
             'isActive' => 'is_active',
+            'isFreeTryout' => 'is_free_tryout',
             'questionIds' => 'question_ids',
         ] as $from => $to) {
             if ($request->has($from)) {
@@ -56,24 +72,13 @@ class TestDefinitionController extends Controller
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'is_active' => 'nullable|boolean',
+            'is_free_tryout' => 'nullable|boolean',
             'question_ids' => 'nullable|array',
         ]);
 
-        $startTime = new \DateTime($data['start_time']);
-        $endTime = new \DateTime($data['end_time']);
-        $durationInHours = ($endTime->getTimestamp() - $startTime->getTimestamp()) / 3600;
-
-        if ($durationInHours < 1 || $durationInHours > 4) {
-            return response()->json([
-                'message' => 'Durasi test harus antara 1 sampai 4 jam',
-                'errors' => [
-                    'end_time' => ['Durasi test harus antara 1 sampai 4 jam']
-                ]
-            ], 422);
-        }
-
         $data['created_by'] = optional($request->user())->id;
         $this->enforceQuestionDefaults($data);
+        $this->enforceSingleFreeTryout($data);
         $item = TestDefinition::create($data);
         return response()->json($item, 201);
     }
@@ -95,6 +100,7 @@ class TestDefinitionController extends Controller
             'start_time' => 'sometimes|required|date',
             'end_time' => 'sometimes|required|date',
             'is_active' => 'nullable|boolean',
+            'is_free_tryout' => 'nullable|boolean',
             'question_ids' => 'nullable|array',
         ]);
 
@@ -114,22 +120,8 @@ class TestDefinitionController extends Controller
             }
         }
 
-        if (! empty($effectiveStartTime) && ! empty($effectiveEndTime)) {
-            $startTime = new \DateTime((string) $effectiveStartTime);
-            $endTime = new \DateTime((string) $effectiveEndTime);
-            $durationInHours = ($endTime->getTimestamp() - $startTime->getTimestamp()) / 3600;
-
-            if ($durationInHours < 1 || $durationInHours > 4) {
-                return response()->json([
-                    'message' => 'Durasi test harus antara 1 sampai 4 jam',
-                    'errors' => [
-                        'end_time' => ['Durasi test harus antara 1 sampai 4 jam']
-                    ]
-                ], 422);
-            }
-        }
-
         $this->enforceQuestionDefaults($data);
+        $this->enforceSingleFreeTryout($data, $test->id);
         $test->update($data);
         return response()->json($test);
     }
@@ -165,6 +157,75 @@ class TestDefinitionController extends Controller
         $query = TestDefinition::available()->visibleToUser($user);
 
         return response()->json($query->get());
+    }
+
+    public function freeTryoutList()
+    {
+        $item = TestDefinition::query()
+            ->where('is_free_tryout', true)
+            ->where('is_active', true)
+            ->orderBy('start_time')
+            ->first();
+
+        return response()->json($item ? [$item] : []);
+    }
+
+    public function freeTryoutShow(TestDefinition $test)
+    {
+        if (! $test->is_free_tryout || ! $test->is_active) {
+            return response()->json(['message' => 'Tryout gratis tidak tersedia.'], 404);
+        }
+
+        return response()->json($test);
+    }
+
+    public function freeTryoutSubmit(Request $request, TestDefinition $test)
+    {
+        if (! $test->is_free_tryout || ! $test->is_active) {
+            return response()->json(['message' => 'Tryout gratis tidak tersedia.'], 404);
+        }
+
+        if (! $test->canSubmit()) {
+            return response()->json(['message' => 'Tryout belum dimulai atau sudah berakhir.'], 422);
+        }
+
+        $data = $request->validate([
+            'full_name' => 'required|string|max:255',
+            'gender' => 'required|in:L,P,Laki-laki,Perempuan',
+            'city' => 'required|string|max:255',
+            'birth_date' => 'required|date|before:today',
+            'phone' => 'required|string|max:32',
+            'answers' => 'present|array',
+        ]);
+
+        $questions = $test->questions;
+        $score = 0;
+        foreach ($data['answers'] as $questionId => $userAnswer) {
+            $question = $questions->firstWhere('id', $questionId);
+            if ($question && $question->type === 'multiple_choice' && $question->correct == $userAnswer) {
+                $score++;
+            }
+        }
+
+        $submission = FreeTryoutSubmission::create([
+            'test_definition_id' => $test->id,
+            'full_name' => $data['full_name'],
+            'gender' => $data['gender'],
+            'city' => $data['city'],
+            'birth_date' => $data['birth_date'],
+            'phone' => $data['phone'],
+            'answers' => $data['answers'],
+            'score' => $score,
+            'total_questions' => $questions->count(),
+            'submitted_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Tryout gratis berhasil disubmit.',
+            'score' => $score,
+            'total' => $questions->count(),
+            'submission' => $submission,
+        ]);
     }
 
     /**
@@ -313,5 +374,23 @@ class TestDefinitionController extends Controller
 
         $submission->update($data);
         return response()->json($submission);
+    }
+
+    public function freeTryoutSubmissions(Request $request, TestDefinition $test)
+    {
+        if (! $test->is_free_tryout) {
+            return response()->json(['message' => 'Test ini bukan tryout gratis.'], 422);
+        }
+
+        $user = $request->user();
+        if ($user->role === 'mentor' && $test->created_by !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $items = $test->freeTryoutSubmissions()
+            ->orderByDesc('submitted_at')
+            ->get();
+
+        return response()->json($items);
     }
 }

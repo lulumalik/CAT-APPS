@@ -4,7 +4,7 @@
       <Menu class="h-5 w-5" />
     </button>
 
-    <aside class="hidden md:flex fixed left-0 top-0 h-screen w-72 bg-gradient-to-b from-[#FFFDE4] via-[#eef2f3] to-[#eef2f3] border-r border-gray-100 shadow-xl shadow-black/5 z-40 flex-col">
+    <aside class="hidden md:flex fixed left-0 top-0 h-screen w-72 bg-gradient-to-b from-background via-background to-background border-r border-gray-100 shadow-xl shadow-black/5 z-40 flex-col">
       <div class="px-6 py-6 border-b border-gray-100">
         <div class="flex items-center gap-3 cursor-pointer" @click="navigateToHome">
           <img :src="logoUrl" alt="CAT Apps" class="w-9 h-9 object-contain" />
@@ -18,7 +18,7 @@
         <router-link v-for="item in navItems" :key="item.to" :to="item.to" class="block">
           <div
             class="px-3 py-2.5 rounded-xl text-sm transition-colors flex items-center justify-between gap-2"
-            :class="route.path === item.to ? 'bg-[#9DB359]/15 text-[#1A1A1A] font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-[#1A1A1A]'"
+            :class="route.path === item.to ? 'bg-primary/15 text-[#1A1A1A] font-semibold' : 'text-gray-600 hover:bg-gray-50 hover:text-[#1A1A1A]'"
           >
             <span>{{ item.label }}</span>
             <Lock v-if="item.locked" class="h-4 w-4 text-gray-400" />
@@ -139,22 +139,18 @@ const navItems = computed(() => {
       { to: '/my-classes', label: t('nav.myClasses'), locked: !onboardingDone.value },
       { to: '/profile', label: 'Profil' },
       { to: '/registration', label: t('nav.registrationWizard') },
-      { to: '/announcements', label: 'Announcement' },
       { to: '/notifications', label: 'Notifikasi' },
     ]
   }
 
   const items = [
-    { to: '/', label: t('nav.home') },
     { to: '/dashboard', label: t('nav.dashboard') },
-    { to: '/my-classes', label: t('nav.myClasses') },
     { to: '/bimble-classes', label: t('nav.bimbleClasses') },
     { to: '/materials', label: t('nav.manageMaterials') },
     { to: '/tests', label: t('nav.tests') },
     { to: '/question-bank', label: t('nav.questionBank') },
     { to: '/blog', label: t('nav.materials') },
     { to: '/rankings', label: t('nav.rankings') },
-    { to: '/announcements', label: 'Announcement' },
     { to: '/notifications', label: 'Notifikasi' },
   ]
 
@@ -162,7 +158,6 @@ const navItems = computed(() => {
     items.push({ to: '/users', label: t('nav.users') })
     items.push({ to: '/admin/certificates', label: 'Sertifikat' })
     items.push({ to: '/admin/registration', label: t('nav.adminRegistration') })
-    items.push({ to: '/admin/announcements', label: 'Announcement management' })
   }
 
   return items

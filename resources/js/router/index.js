@@ -11,14 +11,13 @@ import TestRunnerView from '@/views/TestRunnerView.vue';
 import MaterialsManageView from '@/views/MaterialsManageView.vue';
 import BlogView from '@/views/BlogView.vue';
 import BlogDetailView from '@/views/BlogDetailView.vue';
+import FreeTryoutView from '@/views/FreeTryoutView.vue';
 import RegistrationWizardView from '@/views/RegistrationWizardView.vue';
 import AdminRegistrationView from '@/views/AdminRegistrationView.vue';
 import BimbleClassesManageView from '@/views/BimbleClassesManageView.vue';
 import BimbleClassRoomView from '@/views/BimbleClassRoomView.vue';
 import MyBimbleClassesView from '@/views/MyBimbleClassesView.vue';
 import ProfileView from '@/views/ProfileView.vue';
-import AnnouncementsView from '@/views/AnnouncementsView.vue';
-import AdminAnnouncementsManageView from '@/views/AdminAnnouncementsManageView.vue';
 import NotificationsView from '@/views/NotificationsView.vue';
 import CertificateManagementView from '@/views/CertificateManagementView.vue';
 import { useAppStore } from '@/stores/app';
@@ -34,14 +33,13 @@ const routes = [
   { path: '/materials', name: 'materials', component: MaterialsManageView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/blog', name: 'blog', component: BlogView },
   { path: '/blog/:slug', name: 'blog-detail', component: BlogDetailView },
+  { path: '/free-tryout', name: 'free-tryout', component: FreeTryoutView },
   { path: '/rankings', name: 'rankings', component: RankingsView },
   { path: '/quick-test/:id', name: 'quick-test', component: TestRunnerView, meta: { requiresAuth: true } },
   { path: '/registration', name: 'registration', component: RegistrationWizardView, meta: { requiresAuth: true } },
   { path: '/profile', name: 'profile', component: ProfileView, meta: { requiresAuth: true } },
-  { path: '/announcements', name: 'announcements', component: AnnouncementsView, meta: { requiresAuth: true } },
   { path: '/notifications', name: 'notifications', component: NotificationsView, meta: { requiresAuth: true } },
   { path: '/admin/registration', name: 'admin-registration', component: AdminRegistrationView, meta: { requiresAuth: true, requiresAdmin: true } },
-  { path: '/admin/announcements', name: 'admin-announcements', component: AdminAnnouncementsManageView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/certificates', name: 'admin-certificates', component: CertificateManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/bimble-classes', name: 'bimble-classes', component: BimbleClassesManageView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/my-classes', name: 'my-classes', component: MyBimbleClassesView, meta: { requiresAuth: true } },
@@ -94,7 +92,7 @@ router.beforeEach(async (to, from, next) => {
       'bimble-class-room',
       'quick-test',
       'blog-detail',
-      'announcements',
+      'free-tryout',
       'notifications',
     ];
     if (!allowedForStudent.includes(String(to.name))) {

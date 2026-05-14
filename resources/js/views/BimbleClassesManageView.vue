@@ -59,7 +59,7 @@
           <div>
             <label class="text-sm font-medium text-gray-700">{{ t('bimble.programType') }}</label>
             <select v-model="form.program_type" class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm">
-              <option v-for="p in programTypes" :key="p" :value="p">{{ p }}</option>
+              <option v-for="p in ONLINE_PROGRAMS" :key="p.value" :value="p.value">{{ programSignupOptionLabel(p) }}</option>
             </select>
           </div>
           <div>
@@ -159,6 +159,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
 import { useI18n } from '@/composables/useI18n'
+import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
 import { programCategoryLabel } from '@/utils/userMeta'
 
 const { t } = useI18n()
@@ -175,13 +176,6 @@ const testOptions = ref([])
 const studentOptions = ref([])
 const instructorOptions = ref([])
 const studentSearch = ref('')
-
-const programTypes = [
-  'vip',
-  'regular',
-  'bimbingan_online',
-  'try_out',
-]
 
 const form = reactive({
   name: '',

@@ -13,7 +13,7 @@ class TestDefinition extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name','description','category','duration','schedule_at','start_time','end_time','is_active','question_ids','created_by'
+        'name','description','category','duration','schedule_at','start_time','end_time','is_active','is_free_tryout','question_ids','created_by'
     ];
 
     protected $casts = [
@@ -22,6 +22,7 @@ class TestDefinition extends Model
         'start_time' => 'datetime',
         'end_time' => 'datetime',
         'is_active' => 'boolean',
+        'is_free_tryout' => 'boolean',
     ];
 
     protected $appends = ['status', 'time_until_start', 'is_locked', 'can_submit', 'questions'];
@@ -140,6 +141,11 @@ class TestDefinition extends Model
     public function submissions()
     {
         return $this->hasMany(TestSubmission::class);
+    }
+
+    public function freeTryoutSubmissions()
+    {
+        return $this->hasMany(FreeTryoutSubmission::class);
     }
 
     public function bimbleClasses()

@@ -72,6 +72,9 @@ Route::post('/register', [AuthController::class, 'register']);
 // Public test routes (accessible to authenticated users)
 Route::get('/incoming-tests', [TestDefinitionController::class, 'incoming']);
 Route::get('/available-tests', [TestDefinitionController::class, 'available']);
+Route::get('/free-tryout/tests', [TestDefinitionController::class, 'freeTryoutList']);
+Route::get('/free-tryout/tests/{test}', [TestDefinitionController::class, 'freeTryoutShow']);
+Route::post('/free-tryout/tests/{test}/submit', [TestDefinitionController::class, 'freeTryoutSubmit']);
 
 // Test operations (requires authentication via session)
 Route::middleware('auth')->group(function () {
@@ -128,6 +131,7 @@ Route::middleware('role:admin,mentor')->group(function () {
     Route::delete('/tests/{test}', [TestDefinitionController::class, 'destroy']);
 
     Route::get('/tests/{test}/submissions', [TestDefinitionController::class, 'testSubmissions']);
+    Route::get('/tests/{test}/free-tryout-submissions', [TestDefinitionController::class, 'freeTryoutSubmissions']);
     Route::put('/submissions/{submission}', [TestDefinitionController::class, 'updateSubmission']);
 
     Route::apiResource('materials', MaterialController::class)->except(['show']);

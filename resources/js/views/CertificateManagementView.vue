@@ -159,16 +159,15 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import axios from 'axios'
+import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
 import { programCategoryLabel } from '@/utils/userMeta'
 import { useToast } from '@/composables/useNotification'
 
 const toast = useToast()
-const programs = [
-  { value: 'vip', label: 'VIP (Online + Offline + Karantina)' },
-  { value: 'regular', label: 'Regular' },
-  { value: 'bimbingan_online', label: 'Bimbingan Online' },
-  { value: 'try_out', label: 'Try Out' },
-]
+const programs = ONLINE_PROGRAMS.map((p) => ({
+  value: p.value,
+  label: programSignupOptionLabel(p),
+}))
 
 const activeProgram = ref('vip')
 const templates = ref([])
