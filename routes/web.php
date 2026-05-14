@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     return view('welcome');
@@ -70,4 +71,27 @@ Route::get('/blog/{slug}', function ($slug) {
     return view('welcome', ['material' => $material]);
 });
 
-Route::view('/{any}', 'welcome')->where('any', '.*');
+/*
+| Serve files under /storage/* from disk (not the SPA). The catch-all below would
+| otherwise return the Vue shell for URLs like /storage/registration/1/file.jpg.
+| Registration objects live on registration.filesystem_disk; other public files use "public".
+*/
+Route::get('/storage/{path}', function (string $path) {
+    $normalized = ltrim(str_replace('\\', '/', $path), '/');
+    if ($normalized === '' || str_contains($normalized, '..')) {
+        abort(404);
+    }
+
+    $diskName = str_starts_with($normalized, 'registration/')
+        ? (string) config('registration.filesystem_disk')
+        : 'public';
+
+    $disk = Storage::disk($diskName);
+    if (! $disk->exists($normalized)) {
+        abort(404);
+    }
+
+    return $disk->response($normalized);
+})->where('path', '.*');
+
+Route::view('/{any}', 'welcome')->where('any', '^(?!storage(?:$|/)).*');
