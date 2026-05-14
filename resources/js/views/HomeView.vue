@@ -79,19 +79,41 @@
     <section id="hero" class="relative overflow-hidden rounded-none md:rounded-2xl min-h-[560px] md:min-h-[700px]">
       <img
         :src="bannerUrl"
-        alt="Banner Akademi Polisi"
+        :alt="heroSelayangPandang.bannerAlt"
         class="absolute inset-0 h-full w-full object-cover object-center rounded-none md:rounded-2xl hero-banner-fade"
       />
       <div class="absolute inset-0 rounded-none md:rounded-2xl bg-gradient-to-b from-white/88 via-white/60 to-black/40" />
 
-      <div class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-32 md:pt-16 pb-14 md:px-10">
+      <div class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-32 md:pt-32 pb-14 md:px-10">
         <div class="text-center max-w-4xl fade-up">
-          <h1 class="text-2xl md:text-6xl font-black leading-[0.95] tracking-tight leading-relaxed text-text uppercase">
-            Bimbingan belajar dan pelatihan persiapan <br class="hidden sm:block" /> untuk mengikuti seleksi AKADEMI KEPOLISIAN
+          <p class="text-[11px] md:text-xs font-bold uppercase tracking-[0.2em] text-primary mb-3">
+            {{ heroSelayangPandang.eyebrow }}
+          </p>
+          <h1 class="text-2xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight text-text uppercase">
+            {{ heroSelayangPandang.title }}
           </h1>
+          <p class="mt-5 text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed font-semibold">
+            {{ heroSelayangPandang.description }}
+          </p>
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+            <span
+              v-for="label in heroOverviewPillLabels"
+              :key="label"
+              class="inline-flex items-center rounded-full border border-border bg-white/90 px-3 py-1.5 text-[11px] md:text-xs font-semibold text-text shadow-sm"
+            >
+              {{ label }}
+            </span>
+          </div>
           <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
             <router-link to="/free-tryout" class="px-7 py-3 rounded-full bg-secondary text-white text-sm md:text-base font-bold shadow-lg shadow-[#2F6BFF]/25 hover:bg-primary transition-all">
               Coba Tryout Gratis
+            </router-link>
+            <router-link
+              type="button"
+              class="px-7 py-3 rounded-full cursor-pointer border-2 border-primary text-primary text-sm md:text-base font-bold bg-white/80 hover:bg-sky transition-all"
+              to="/signup"
+            >
+              Daftar Peserta Bimbel
             </router-link>
           </div>
         </div>
@@ -346,7 +368,7 @@ const leaders = [
   {
     name: 'Komjen Pol (P) Drs. H. Nana S. Permana',
     batch: 'Batalion Dharma Angkatan 1968',
-    position: 'Ketua Pembina Yayasan Tribakti Yayasan Langlang Buana',
+    position: 'Ketua Pembina Yayasan Pendidikan Tribakti Langlang Buana',
     highlights: [
       'Wakapolri',
       'Pembina strategis pendidikan dan pembinaan kepolisian',
@@ -408,6 +430,17 @@ const services = [
   { icon: ShieldCheck, title: 'Mental & Ideologi', desc: 'Penguatan mental, disiplin, wawasan kebangsaan, dan integritas.' },
   { icon: NotebookPen, title: 'Materi Pembelajaran', desc: 'Modul belajar, bank soal, dan pembahasan eksklusif per kelas.' },
 ]
+
+/** Ringkasan hero: selaras dengan penyelenggara & layanan di halaman ini. */
+const heroSelayangPandang = {
+  eyebrow: 'Selayang Pandang',
+  title: 'Bimbingan belajar dan pelatihan persiapan seleksi Akademi Kepolisian',
+  description:
+    'PT. Pratistha Training Center Indonesia menyelenggarakan program pendampingan untuk kesiapan calon peserta AKADEMI KEPOLISIAN, dengan fasilitas belajar eksklusif dan pembinaan profesional.',
+  bannerAlt: 'Banner PT. Pratistha Training Center Indonesia — persiapan seleksi Akademi Kepolisian',
+}
+
+const heroOverviewPillLabels = computed(() => services.map((s) => s.title))
 
 const keyFeatures = [
   {
