@@ -85,7 +85,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/bimble-classes/{bimbleClass}/activities', [ClassActivityController::class, 'index']);
 
     Route::get('/my-registration', [RegistrationProgressController::class, 'mine']);
-    Route::put('/my-registration', [RegistrationProgressController::class, 'updateMine']);
+    // POST + PUT: multipart/form-data + files are not reliably parsed on PUT in PHP;
+    // use POST from clients (Postman, axios FormData) when uploading files.
+    Route::match(['post', 'put'], '/my-registration', [RegistrationProgressController::class, 'updateMine']);
 
     Route::get('/announcements', [AnnouncementController::class, 'index']);
 

@@ -360,7 +360,7 @@ async function submitStep() {
     fileSlots.forEach((s) => {
       if (pendingFiles[s.input]) fd.append(s.input, pendingFiles[s.input])
     })
-    const { data: updated } = await axios.put('/api/my-registration', fd)
+    const { data: updated } = await axios.post('/api/my-registration', fd)
     progress.value = updated
     hydrateForm()
     clearPendingFiles()
