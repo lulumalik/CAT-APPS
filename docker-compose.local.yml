@@ -20,8 +20,10 @@ services:
       DB_DATABASE: /var/www/html/database/database.sqlite
     command: >
       sh -c "
+      if [ ! -d vendor/barryvdh/laravel-dompdf ]; then composer install --no-interaction; fi &&
       php -r 'file_exists(\"database/database.sqlite\") || touch(\"database/database.sqlite\");' &&
       php artisan optimize:clear &&
+      php artisan package:discover --ansi &&
       php artisan serve --host=0.0.0.0 --port=9000
       "
 

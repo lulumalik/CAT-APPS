@@ -302,8 +302,8 @@ const route = useRoute()
 const store = useAppStore()
 const { isAuthenticated } = storeToRefs(store)
 const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
-const tubagusUrl = new URL('../../assets/bpk_tubagus.png', import.meta.url).href
-const awangUrl = new URL('../../assets/bpk_awang.png', import.meta.url).href
+const tubagusUrl = new URL('../../assets/bpk_tubagus.jpg', import.meta.url).href
+const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
 const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
 const winUrl = new URL('../../assets/anggota/win.jpeg', import.meta.url).href
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
@@ -320,9 +320,20 @@ const wallpaperSlides = Object.entries(wallpaperModules)
   .map(([, src]) => src)
 const activeWallpaperIndex = ref(0)
 const activeMemberSlide = ref(0)
+/** Below Tailwind `sm` (640px): one member per slide; sm+: three per slide. */
+const membersMobileOnePerSlide = ref(
+  typeof window !== 'undefined' ? window.matchMedia('(max-width: 639px)').matches : false,
+)
 const isMobileMenuOpen = ref(false)
 let wallpaperInterval
 let memberInterval
+let membersMediaQuery = null
+
+function syncMembersSlideLayout() {
+  if (!membersMediaQuery) return
+  membersMobileOnePerSlide.value = membersMediaQuery.matches
+}
+
 let fadeObserver
 const quickNavItems = [
   { id: 'leaders', label: 'Dewan Pimpinan' },
@@ -373,13 +384,21 @@ const members = [
   { name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P', image: natashaUrl, jabatan: 'Bidang Internal' },
   { name: 'Kompol (P) Tutik', image: tutikUrl, jabatan: 'Bidang Eksternal' },
 ]
-const MEMBER_SLIDE_SIZE = 3
+const MEMBER_SLIDE_SIZE_DESKTOP = 3
 const memberSlides = computed(() => {
+  const size = membersMobileOnePerSlide.value ? 1 : MEMBER_SLIDE_SIZE_DESKTOP
   const chunks = []
-  for (let i = 0; i < members.length; i += MEMBER_SLIDE_SIZE) {
-    chunks.push(members.slice(i, i + MEMBER_SLIDE_SIZE))
+  for (let i = 0; i < members.length; i += size) {
+    chunks.push(members.slice(i, i + size))
   }
   return chunks
+})
+
+watch(memberSlides, (slides) => {
+  if (!slides.length) return
+  if (activeMemberSlide.value >= slides.length) {
+    activeMemberSlide.value = 0
+  }
 })
 
 const services = [
@@ -504,6 +523,9 @@ onMounted(() => {
       activeMemberSlide.value = (activeMemberSlide.value + 1) % memberSlides.value.length
     }, 4200)
   }
+  membersMediaQuery = window.matchMedia('(max-width: 639px)')
+  syncMembersSlideLayout()
+  membersMediaQuery.addEventListener('change', syncMembersSlideLayout)
 })
 
 onUnmounted(() => {
@@ -512,6 +534,9 @@ onUnmounted(() => {
   }
   if (memberInterval) {
     clearInterval(memberInterval)
+  }
+  if (membersMediaQuery) {
+    membersMediaQuery.removeEventListener('change', syncMembersSlideLayout)
   }
   if (fadeObserver) {
     fadeObserver.disconnect()

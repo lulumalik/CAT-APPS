@@ -5,6 +5,9 @@ services:
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
+      # Named volume keeps Composer packages from the image; a plain bind mount
+      # would replace /vendor with the host folder (often empty / .gitignored).
+      - vendor:/var/www/html/vendor
       - composer_cache:/root/.composer/cache
     ports:
       - "9000:9000"
@@ -46,3 +49,4 @@ services:
 
 volumes:
   composer_cache:
+  vendor:

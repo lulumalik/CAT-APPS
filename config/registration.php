@@ -1,5 +1,14 @@
 <?php
 
+$registrationDiskDefault = env('REGISTRATION_FILESYSTEM_DISK')
+    ?: env('UPLOAD_FILESYSTEM_DISK')
+    ?: ((
+        filled(env('AWS_ACCESS_KEY_ID'))
+        && filled(env('AWS_SECRET_ACCESS_KEY'))
+        && filled(env('AWS_BUCKET'))
+        && filled(env('AWS_ENDPOINT'))
+    ) ? 's3' : 'public');
+
 return [
 
     /*
@@ -7,13 +16,14 @@ return [
     | Filesystem disk for onboarding document uploads
     |--------------------------------------------------------------------------
     |
-    | Use "public" for local development (php artisan storage:link).
-    | On Laravel Cloud, attach Object Storage and set this to "s3" (or the
-    | disk name you configured). Laravel Cloud injects AWS_* env vars.
+    | REGISTRATION_FILESYSTEM_DISK overrides everything (e.g. "public" for local only).
+    | Otherwise UPLOAD_FILESYSTEM_DISK is used if set.
+    | Otherwise: S3/R2 when AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_BUCKET, and
+    | AWS_ENDPOINT are set; else "public" (storage:link).
     |
     */
 
-    'filesystem_disk' => env('REGISTRATION_FILESYSTEM_DISK', 'public'),
+    'filesystem_disk' => $registrationDiskDefault,
 
     /*
     |--------------------------------------------------------------------------

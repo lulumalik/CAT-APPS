@@ -48,6 +48,9 @@ RUN composer install --no-dev --no-interaction --no-scripts
 # Copy project after vendor installation
 COPY . .
 
+# Host bind mounts often ship stale bootstrap/cache; manifest must match installed packages
+RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php bootstrap/cache/config.php
+
 # Copy built frontend assets from node build stage
 COPY --from=nodebuild /app/public/build /var/www/html/public/build
 

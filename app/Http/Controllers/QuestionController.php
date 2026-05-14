@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class QuestionController extends Controller
 {
@@ -44,8 +45,11 @@ class QuestionController extends Controller
         $data = $request->validate($rules);
 
         if ($request->hasFile('image')) {
-             $path = $request->file('image')->store('questions', 'public');
-             $data['image'] = '/storage/' . $path;
+            $disk = config('filesystems.upload_disk', 'public');
+            $path = $request->file('image')->store('questions', $disk);
+            $data['image'] = $disk === 'public'
+                ? '/storage/'.$path
+                : Storage::disk($disk)->url($path);
         }
 
         if ($request->input('type') === 'essay') {
@@ -76,8 +80,11 @@ class QuestionController extends Controller
         $data = $request->validate($rules);
 
         if ($request->hasFile('image')) {
-             $path = $request->file('image')->store('questions', 'public');
-             $data['image'] = '/storage/' . $path;
+            $disk = config('filesystems.upload_disk', 'public');
+            $path = $request->file('image')->store('questions', $disk);
+            $data['image'] = $disk === 'public'
+                ? '/storage/'.$path
+                : Storage::disk($disk)->url($path);
         }
 
         if ($request->input('type') === 'essay') {
