@@ -92,17 +92,13 @@
           <h1 class="text-2xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight text-text uppercase">
             {{ heroSelayangPandang.title }}
           </h1>
-          <p class="mt-5 text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed font-semibold">
-            {{ heroSelayangPandang.description }}
-          </p>
-          <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
-            <span
-              v-for="label in heroOverviewPillLabels"
-              :key="label"
-              class="inline-flex items-center rounded-full border border-border bg-white/90 px-3 py-1.5 text-[11px] md:text-xs font-semibold text-text shadow-sm"
-            >
-              {{ label }}
-            </span>
+          <div class="bg-white/40 mt-5 rounded-xl p-4 shadow-xl">
+            <p class="text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed font-bold">
+              {{ heroSelayangPandang.description }}
+            </p>
+            <div class="mt-6 flex flex-wrap font-semibold items-center justify-center gap-2 text-gray-700">
+              Alamat kantor Jl. Sukamaju no. 142, Cipadung Kulon, Kec. Panyileukan, Kota Bandung - Jabar 40614
+            </div>
           </div>
           <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
             <router-link to="/free-tryout" class="px-7 py-3 rounded-full bg-secondary text-white text-sm md:text-base font-bold shadow-lg shadow-[#2F6BFF]/25 hover:bg-primary transition-all">
@@ -140,7 +136,7 @@
                 <img
                   :src="leader.image"
                   :alt="leader.name"
-                  class="w-full h-[360px] md:h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
+                  class="w-full h-[400px] md:h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
                 />
                 <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
