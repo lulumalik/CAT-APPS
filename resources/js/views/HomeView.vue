@@ -84,7 +84,7 @@
       />
       <div class="absolute inset-0 rounded-none md:rounded-2xl bg-gradient-to-b from-white/88 via-white/60 to-black/40" />
 
-      <div class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-16 pb-14 md:px-10">
+      <div class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-32 md:pt-16 pb-14 md:px-10">
         <div class="text-center max-w-4xl fade-up">
           <h1 class="text-2xl md:text-6xl font-black leading-[0.95] tracking-tight leading-relaxed text-text uppercase">
             Bimbingan belajar dan pelatihan persiapan <br class="hidden sm:block" /> untuk mengikuti seleksi AKADEMI KEPOLISIAN
