@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
+import AboutUsView from '@/views/AboutUsView.vue';
 import LoginView from '@/views/LoginView.vue';
 import SignupView from '@/views/SignupView.vue';
 import DashboardView from '@/views/DashboardView.vue';
@@ -24,6 +25,7 @@ import { useAppStore } from '@/stores/app';
 
 const routes = [
   { path: '/', name: 'home', component: HomeView },
+  { path: '/about-us', name: 'about-us', component: AboutUsView },
   { path: '/login', name: 'login', component: LoginView },
   { path: '/signup', name: 'signup', component: SignupView },
   { path: '/dashboard', name: 'dashboard', component: DashboardView, meta: { requiresAuth: true } },
@@ -85,6 +87,8 @@ router.beforeEach(async (to, from, next) => {
   // Registered students can only access participant flows.
   if (store.role === 'user') {
     const allowedForStudent = [
+      'home',
+      'about-us',
       'profile',
       'registration',
       'dashboard',

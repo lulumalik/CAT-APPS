@@ -5,14 +5,14 @@
 export const ONLINE_PROGRAMS = [
   {
     value: 'vip',
-    name: 'Kelas 1 ( Online + Offline + Karantina )',
+    name: 'Kelas Karantina ( Online + Offline + Karantina )',
     mode: 'Premium',
     summary: 'Pendampingan intensif dengan kontrol progres harian dan strategi personal.',
     points: ['Mentoring prioritas', 'Monitoring ketat', 'Pendalaman psikologi & akademik'],
   },
   {
     value: 'regular',
-    name: 'Kelas 2 ( Online + Offline )',
+    name: 'Kelas Reguler ( Online + Offline )',
     mode: 'Reguler',
     summary: 'Program online fleksibel dengan kurikulum inti untuk persiapan seleksi.',
     points: ['Kelas terjadwal', 'Latihan CBT periodik', 'Diskusi materi dan evaluasi'],
