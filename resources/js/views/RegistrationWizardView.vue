@@ -50,13 +50,30 @@
             <div class="grid gap-4 sm:grid-cols-2">
               <div>
                 <label class="block text-sm font-medium text-gray-700">{{ t('registration.fields.whatsapp') }}</label>
-                <input v-model="form.administration.whatsapp" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                <input
+                  v-model="form.administration.whatsapp"
+                  type="text"
+                  inputmode="numeric"
+                  autocomplete="tel"
+                  :placeholder="t('registration.phoneExample')"
+                  pattern="^628[0-9]{7,12}$"
+                  class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"
+                />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">{{ t('registration.fields.phone') }}</label>
-                <input v-model="form.administration.phone" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                <input
+                  v-model="form.administration.phone"
+                  type="text"
+                  inputmode="numeric"
+                  autocomplete="tel"
+                  :placeholder="t('registration.phoneExample')"
+                  pattern="^628[0-9]{7,12}$"
+                  class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"
+                />
               </div>
             </div>
+            <p class="text-xs text-gray-500 -mt-2">{{ t('registration.phoneFormatHint') }}</p>
 
             <label class="block text-sm font-medium text-gray-700">{{ t('registration.fields.addressKk') }}</label>
             <textarea v-model="form.administration.address_kk" rows="3" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />

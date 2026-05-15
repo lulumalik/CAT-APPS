@@ -200,15 +200,19 @@ class RegistrationProgressController extends Controller
         }
 
         if ($step === 'administration') {
+            $phoneRules = ['required', 'string', 'max:64', 'regex:/^628[0-9]{7,12}$/'];
             $text = $request->validate([
                 'full_name' => 'required|string|max:255',
-                'whatsapp' => 'required|string|max:64',
-                'phone' => 'required|string|max:64',
+                'whatsapp' => $phoneRules,
+                'phone' => $phoneRules,
                 'address_kk' => 'required|string|max:4000',
                 'address_domicile' => 'required|string|max:4000',
                 'gender' => 'required|in:L,P',
                 'height_cm' => 'required|numeric|min:50|max:280',
                 'weight_kg' => 'required|numeric|min:15|max:250',
+            ], [
+                'whatsapp.regex' => 'Format nomor WhatsApp harus diawali 628 dan hanya angka (contoh: 6281234567890).',
+                'phone.regex' => 'Format nomor telepon harus diawali 628 dan hanya angka (contoh: 6281234567890).',
             ]);
 
             $merged = $this->scrubLegacyAdministrationUrls(array_merge(

@@ -363,6 +363,8 @@ export const messages = {
         'Tahap ini dilakukan di lokasi tes. Anda tidak mengisi formulir di sini. Staf akan mengubah status menjadi disetujui setelah hasil tes tercatat. Pantau indikator status di atas.',
       fileUploadHint:
         'Unggah berkas dari perangkat Anda. JPG, PNG, WebP, atau PDF untuk KTP/KK/rapor; pas foto dan full body hanya gambar. Maksimal 12 MB per berkas.',
+      phoneFormatHint: 'Gunakan angka saja dan awali dengan 628 (contoh: 6281234567890).',
+      phoneExample: '6281234567890',
       fileUploaded: 'Berkas tersimpan di server',
       openFile: 'Lihat berkas',
       pickFile: 'Pilih / ganti berkas',
@@ -418,7 +420,7 @@ export const messages = {
     bimble: {
       myClassesTitle: 'Kelas saya',
       myClassesEmpty: 'Belum ada kelas yang ditambahkan oleh admin. Hubungi admin setelah pendaftaran.',
-      manageTitle: 'Kelas bimbingan (bimble)',
+      manageTitle: 'Kelas bimbingan (bimbel)',
       createClass: 'Buat kelas',
       openRoom: 'Buka ruang kelas',
       className: 'Nama kelas',
@@ -817,6 +819,8 @@ export const messages = {
         'This stage is completed at the test venue. You do not fill in a form here. Staff will set the status to approved after your results are recorded. Watch the status badges above.',
       fileUploadHint:
         'Upload from your device. JPG, PNG, WebP, or PDF for ID/family card/report; passport and full-body slots are images only. Max 12 MB per file.',
+      phoneFormatHint: 'Use digits only and start with 628 (example: 6281234567890).',
+      phoneExample: '6281234567890',
       fileUploaded: 'File saved on server',
       openFile: 'Open file',
       pickFile: 'Choose / replace file',
