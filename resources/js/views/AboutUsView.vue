@@ -1,11 +1,11 @@
 <template>
-  <main class="min-h-screen bg-background text-text px-5 md:px-10 py-8 md:py-12">
+  <main class="min-h-screen bg-background text-text md:px-10 md:py-12">
     <div class="mx-auto space-y-8">
       <section
-        class="relative overflow-hidden rounded-[2rem] text-white shadow-2xl shadow-[#123B8F]/35 p-7 md:p-10 pb-16 md:pb-20 bg-cover bg-center"
-        :style="{ backgroundImage: `url('${backgroundAboutUrl}')` }"
-      >
-        <div class="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-primary/20 via-[#1E4CA8]/48 to-secondary/90" />
+        class="fade-up relative overflow-hidden text-center md:rounded-[2rem] text-white shadow-2xl shadow-[#123B8F]/35 p-7 md:p-10 pb-16 md:pb-20 bg-cover bg-center"
+        :style="{ backgroundImage: `url('${backgroundAboutUrl}')` }">
+        <div
+          class="absolute inset-0 md:rounded-[2rem] bg-gradient-to-br from-primary/20 via-[#1E4CA8]/48 to-secondary/90" />
         <img :src="patternUrl" alt="Pattern" class="absolute opacity-25 w-40 md:w-52 -bottom-8 -right-6 z-[1]" />
         <div class="relative z-10">
           <router-link to="/"
@@ -17,7 +17,7 @@
           <h1 class="mt-2 text-3xl md:text-5xl font-black leading-tight">
             PT. Pratistha Training Center Indonesia
           </h1>
-          <p class="mt-5 max-w-4xl text-sm font-bold md:text-base text-white/90 leading-relaxed">
+          <p class="mt-5 text-sm font-bold md:text-base text-white/90 leading-relaxed">
             Pratistha Training Center hadir sebagai pusat pembinaan persiapan Akpol yang membentuk kemampuan akademik,
             mental, fisik, serta karakter kepemimpinan peserta secara terarah, disiplin, dan profesional.
           </p>
@@ -25,39 +25,53 @@
       </section>
 
       <section
-        class="relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-160 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 top-12 z-30 right-0 opacity-90" />
-        
+
         <div class="relative z-20">
           <h2 class="mt-2 text-2xl md:text-4xl font-black text-center tracking-tight text-text">
             Pimpinan PT. Pratistha Training Center Indonesia
           </h2>
 
-          <div class="my-24 grid md:grid-cols-3 gap-12 items-end">
-            <article v-for="leader in heroLeaders" :key="leader.name"
-              class="rounded-2xl border border-border shadow-xl bg-background overflow-hidden hover:shadow-lg transition-all duration-300"
-              :class="leader.featured ? 'md:scale-[1.05] md:-translate-y-2 shadow-xl shadow-[#123B8F]/10' : 'md:scale-[0.8]'">
-              <img :src="leader.image" :alt="leader.name"
-                class="h-[360px] md:h-[420px] w-full object-cover object-top" />
-              <div class="p-4">
-                <p class="text-[11px] uppercase tracking-[0.16em] text-primary font-bold">{{ leader.role }}</p>
-                <h3 class="mt-1 text-base md:text-lg font-bold leading-snug text-text">{{ leader.name }}</h3>
-              </div>
-            </article>
+          <div class="mt-8 md:mt-16">
+            <div ref="leaderCarouselRef"
+              class="leader-carousel flex gap-5 md:gap-8 overflow-x-auto px-[11%] md:px-[16%] py-6 snap-x snap-mandatory scroll-smooth" >
+              <article v-for="(leader, index) in heroLeaders" :key="leader.name" @click="goToLeader(index)"
+                :ref="(el) => setLeaderSlideRef(el, index)"
+                class="shrink-0 basis-[78%] md:basis-[52%] lg:basis-[42%] snap-center rounded-2xl border border-border shadow-xl bg-background overflow-hidden transition-all duration-300"
+                :class="activeLeaderIndex === index
+                  ? 'scale-100 md:scale-[1.03] md:-translate-y-2 shadow-xl shadow-[#123B8F]/20 opacity-100'
+                  : 'scale-[0.88] md:scale-[0.9] opacity-70'">
+                <img :src="leader.image" :alt="leader.name"
+                  class="h-[360px] md:h-[420px] w-full object-cover object-top" />
+                <div class="p-4">
+                  <p class="text-[11px] uppercase tracking-[0.16em] text-primary font-bold">{{ leader.role }}</p>
+                  <h3 class="mt-1 text-base md:text-lg font-bold leading-snug text-text">{{ leader.name }}</h3>
+                </div>
+              </article>
+            </div>
+
+            <div class="mt-3 flex items-center justify-center gap-2">
+              <button v-for="(leader, index) in heroLeaders" :key="`dot-${leader.name}`"
+                class="h-2.5 rounded-full transition-all duration-300" :class="activeLeaderIndex === index
+                  ? 'w-7 bg-primary'
+                  : 'w-2.5 bg-primary/30 hover:bg-primary/60'" :aria-label="`Pilih slide ${index + 1}`"
+                @click="goToLeader(index)" />
+            </div>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-30 left-0 right-0 z-10" />
+        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
       <section
-        class="relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 top-12 right-0 opacity-90" />
         <div class="relative z-20">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center gap-3">
             <Users class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Struktur Organisasi</h2>
           </div>
-          <p class="mt-2 text-gray-600">Diagram jabatan inti PT. Pratistha Training Center Indonesia.</p>
+          <p class="mt-2 text-gray-600 text-center">Diagram jabatan inti PT. Pratistha Training Center Indonesia.</p>
 
           <div class="my-12 space-y-6">
             <div v-for="(row, rowIndex) in organizationRows" :key="rowIndex">
@@ -74,63 +88,62 @@
             </div>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-30 left-0 right-0 z-10" />
+        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
       <section
-        class="relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
         <div class="relative z-20">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center gap-3">
             <FileBadge class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Legalitas Perusahaan</h2>
           </div>
-          <p class="mt-2 text-gray-600">Silakan lengkapi nomor dokumen resmi perusahaan di bawah ini.</p>
+          <p class="mt-2 text-gray-600 text-center">Silakan lengkapi nomor dokumen resmi perusahaan di bawah ini.</p>
 
           <div class="mt-6 grid sm:grid-cols-2 gap-4">
             <article v-for="doc in legalDocuments" :key="doc.label"
               class="rounded-xl border border-border bg-background p-4 shadow-lg">
-              <p class="text-xs uppercase tracking-[0.15em] font-bold text-primary">{{ doc.label }}</p>
-              <p class="mt-2 text-base font-semibold text-text">{{ doc.value || '-' }}</p>
+              <p class="text-xs uppercase tracking-[0.15em] font-bold text-primary text-center">{{ doc.label }}</p>
+              <p class="mt-2 text-base font-semibold text-text text-center">{{ doc.value || '-' }}</p>
             </article>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-30 left-0 right-0 z-10" />
+        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
       <section
-        class="relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
         <div class="relative z-20">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center gap-3">
             <Phone class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Kontak Kami</h2>
           </div>
-          <p class="mt-2 text-gray-600">Kanal komunikasi resmi PT. Pratistha Training Center Indonesia.</p>
-
+          <p class="mt-2 text-gray-600 text-center">Kanal komunikasi resmi PT. Pratistha Training Center Indonesia.</p>
           <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <article v-for="contact in contactChannels" :key="contact.label"
               class="rounded-xl border border-border bg-gradient-to-br from-white to-sky shadow-lg p-4">
-              <div class="flex items-center gap-2 text-primary">
+              <div class="flex items-center justify-center gap-2 text-primary">
                 <component :is="contact.icon" class="h-4 w-4" />
-                <p class="text-sm font-bold">{{ contact.label }}</p>
+                <p class="text-sm font-bold text-center">{{ contact.label }}</p>
               </div>
-              <p class="mt-2 text-sm font-semibold text-text break-all">{{ contact.value || '-' }}</p>
+              <p class="mt-2 text-sm font-semibold text-text break-all text-center">{{ contact.value || '-' }}</p>
             </article>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-30 left-0 right-0 z-10" />
+        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
       <section
-        class="relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
         <div class="relative z-20">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center gap-3">
             <Image class="h-6 w-6 text-primary" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Galeri Kegiatan</h2>
+            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-center">Galeri Kegiatan</h2>
           </div>
-          <p class="mt-2 text-gray-600">Dokumentasi suasana pembinaan dan aktivitas pelatihan peserta.</p>
+          <p class="mt-2 text-gray-600 text-center">Dokumentasi suasana pembinaan dan aktivitas pelatihan peserta.</p>
           <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <article v-for="photo in galleryPhotos" :key="photo.src"
               class="rounded-2xl overflow-hidden border border-border bg-background shadow-lg">
@@ -138,7 +151,7 @@
             </article>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-30 left-0 right-0 z-10" />
+        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
     </div>
   </main>
@@ -147,6 +160,7 @@
 <script setup>
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
 import { ArrowLeft, FileBadge, Globe, Image, Instagram, Mail, Music2, Phone, Users } from 'lucide-vue-next'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const backgroundAboutUrl = new URL('../../assets/background-about.jpg', import.meta.url).href
@@ -234,4 +248,161 @@ const galleryPhotos = [
   { src: wallpaper4Url, alt: 'Kegiatan pelatihan 4', caption: 'Pembinaan fisik, mental, dan karakter kepemimpinan.' },
   { src: activityBookUrl, alt: 'Materi belajar', caption: 'Dokumentasi materi belajar dan simulasi seleksi.' },
 ]
+
+const leaderCarouselRef = ref(null)
+const leaderSlideRefs = ref([])
+const activeLeaderIndex = ref(Math.max(0, heroLeaders.findIndex((leader) => leader.featured)))
+const touchStartX = ref(null)
+const pointerStartX = ref(null)
+const swipeThreshold = 45
+let fadeObserver
+
+const setLeaderSlideRef = (element, index) => {
+  if (!element) return
+  leaderSlideRefs.value[index] = element
+}
+
+const goToLeader = (index, behavior = 'smooth') => {
+  const target = leaderSlideRefs.value[index]
+  if (!target) return
+  target.scrollIntoView({
+    behavior,
+    block: 'nearest',
+    inline: 'center',
+  })
+  activeLeaderIndex.value = index
+}
+
+const getNearestLeaderIndex = () => {
+  const container = leaderCarouselRef.value
+  if (!container || !leaderSlideRefs.value.length) return activeLeaderIndex.value
+
+  const containerCenter = container.scrollLeft + container.clientWidth / 2
+  let closestIndex = 0
+  let smallestDistance = Number.POSITIVE_INFINITY
+
+  leaderSlideRefs.value.forEach((slide, index) => {
+    if (!slide) return
+    const slideCenter = slide.offsetLeft + slide.clientWidth / 2
+    const distance = Math.abs(slideCenter - containerCenter)
+    if (distance < smallestDistance) {
+      smallestDistance = distance
+      closestIndex = index
+    }
+  })
+
+  return closestIndex
+}
+
+const onLeaderScroll = () => {
+  activeLeaderIndex.value = getNearestLeaderIndex()
+}
+
+const moveLeaderBySwipe = (deltaX) => {
+  if (Math.abs(deltaX) < swipeThreshold) {
+    goToLeader(activeLeaderIndex.value)
+    return
+  }
+
+  const direction = deltaX > 0 ? 1 : -1
+  const nextIndex = Math.min(
+    Math.max(activeLeaderIndex.value + direction, 0),
+    heroLeaders.length - 1,
+  )
+
+  goToLeader(nextIndex)
+}
+
+const onLeaderTouchStart = (event) => {
+  touchStartX.value = event.changedTouches[0]?.clientX ?? null
+}
+
+const onLeaderTouchEnd = (event) => {
+  if (touchStartX.value === null) return
+  const touchEndX = event.changedTouches[0]?.clientX ?? touchStartX.value
+  const deltaX = touchStartX.value - touchEndX
+  moveLeaderBySwipe(deltaX)
+  touchStartX.value = null
+}
+
+const onLeaderPointerStart = (event) => {
+  pointerStartX.value = event.clientX
+}
+
+const onLeaderPointerEnd = (event) => {
+  if (pointerStartX.value === null) return
+  const deltaX = pointerStartX.value - event.clientX
+  moveLeaderBySwipe(deltaX)
+  pointerStartX.value = null
+}
+
+const onLeaderResize = () => goToLeader(activeLeaderIndex.value, 'auto')
+
+const setupScrollFadeAnimations = async () => {
+  await nextTick()
+  const fadeTargets = document.querySelectorAll('.fade-up')
+  if (!fadeTargets.length) return
+
+  fadeTargets.forEach((el) => el.classList.add('fade-ready'))
+
+  if (typeof IntersectionObserver === 'undefined') {
+    fadeTargets.forEach((el) => el.classList.add('in-view'))
+    return
+  }
+
+  fadeObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('in-view', entry.isIntersecting)
+      })
+    },
+    {
+      threshold: 0.01,
+      rootMargin: '0px 0px -4% 0px',
+    },
+  )
+
+  fadeTargets.forEach((el) => fadeObserver.observe(el))
+}
+
+onMounted(async () => {
+  await nextTick()
+  goToLeader(activeLeaderIndex.value, 'auto')
+  setupScrollFadeAnimations()
+  window.addEventListener('resize', onLeaderResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', onLeaderResize)
+  if (fadeObserver) {
+    fadeObserver.disconnect()
+  }
+})
 </script>
+
+<style scoped>
+.fade-up {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.fade-up.fade-ready {
+  opacity: 0;
+  transform: translateY(20px) scale(0.985);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.fade-up.fade-ready.in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.leader-carousel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.leader-carousel::-webkit-scrollbar {
+  display: none;
+}
+</style>

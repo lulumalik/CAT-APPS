@@ -2,7 +2,7 @@
   <main class="bg-background font-sans text-text py-8 px-4 md:px-8">
     <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 items-stretch">
       <section
-        class="rounded-[2rem] p-[2px] bg-gradient-to-br from-secondary via-secondary to-primary shadow-xl shadow-secondary/15"
+        class="fade-up rounded-[2rem] p-[2px] bg-gradient-to-br from-secondary via-secondary to-primary shadow-xl shadow-secondary/15"
       >
         <div
           class="rounded-[calc(2rem-2px)] relative bg-white text-text p-8 md:p-10 flex flex-col justify-between h-full min-h-[280px]"
@@ -23,7 +23,7 @@
       </section>
 
       <section
-        class="rounded-[2rem] p-[2px] bg-gradient-to-br from-secondary/90 via-secondary to-primary shadow-xl shadow-primary/10"
+        class="fade-up rounded-[2rem] p-[2px] bg-gradient-to-br from-secondary/90 via-secondary to-primary shadow-xl shadow-primary/10"
       >
         <div
           class="rounded-[calc(2rem-2px)] bg-white py-8 px-4 sm:px-10 flex flex-col justify-center border border-transparent"
@@ -126,7 +126,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { CircleAlert } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
@@ -144,6 +144,34 @@ const router = useRouter()
 const store = useAppStore()
 const toast = useToast()
 const { t } = useI18n()
+let fadeObserver
+
+const setupScrollFadeAnimations = async () => {
+  await nextTick()
+  const fadeTargets = document.querySelectorAll('.fade-up')
+  if (!fadeTargets.length) return
+
+  fadeTargets.forEach((el) => el.classList.add('fade-ready'))
+
+  if (typeof IntersectionObserver === 'undefined') {
+    fadeTargets.forEach((el) => el.classList.add('in-view'))
+    return
+  }
+
+  fadeObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('in-view', entry.isIntersecting)
+      })
+    },
+    {
+      threshold: 0.01,
+      rootMargin: '0px 0px -4% 0px',
+    },
+  )
+
+  fadeTargets.forEach((el) => fadeObserver.observe(el))
+}
 
 const onSubmit = async () => {
   loading.value = true
@@ -167,9 +195,35 @@ const onSubmit = async () => {
     toast.error(t('auth.login.toastFailedTitle'), result.message || t('auth.login.invalidMessage'))
   }
 }
+
+onMounted(() => {
+  setupScrollFadeAnimations()
+})
+
+onBeforeUnmount(() => {
+  if (fadeObserver) {
+    fadeObserver.disconnect()
+  }
+})
 </script>
 
 <style scoped>
+.fade-up {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.fade-up.fade-ready {
+  opacity: 0;
+  transform: translateY(20px) scale(0.985);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.fade-up.fade-ready.in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
 input[type='checkbox']:checked {
   background-color: var(--color-secondary);
   border-color: var(--color-secondary);

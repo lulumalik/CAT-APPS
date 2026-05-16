@@ -142,7 +142,7 @@
             <p class="mt-6 text-lg font-bold text-primary">Bersama Pratistha Training Center, wujudkan langkah pasti menuju Akpol.</p>
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
-          <SectionWaveDivider class="absolute -bottom-30 left-0 right-0 z-10" />
+          <SectionWaveDivider class="absolute -bottom-4 md:-bottom-30 left-0 right-0 z-10" />
         </div>
       </div>
     </section>
@@ -288,9 +288,9 @@
 
     <section id="choices" class="px-5 md:px-10 pb-8 relative">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Pilihan Kelas BIMBEL dan Pelatihan</h2>
-          <p class="text-gray-600 mb-8">Pilih jalur program sesuai kebutuhan pembinaan dan target persiapan.</p>
+        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-2 md:p-10">
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight p-5 md:p-0">Pilihan Kelas BIMBEL dan Pelatihan</h2>
+          <p class="text-gray-600 p-5 md:p-0">Pilih jalur program sesuai kebutuhan pembinaan dan target persiapan.</p>
           <div class="grid md:grid-cols-2 gap-5 relative z-30">
             <article
               v-for="program in onlinePrograms"
@@ -298,7 +298,7 @@
               class="rounded-2xl border border-gray-100 p-6 hover:shadow-lg transition-all"
             >
               <div class="flex items-center justify-between gap-3">
-                <h3 class="font-bold text-lg whitespace-nowrap">{{ program.name }}</h3>
+                <h3 class="font-bold text-lg md:whitespace-nowrap">{{ program.name }}</h3>
                 <span class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border font-semibold" :class="programBadge(program).className">
                   <Crown v-if="programBadge(program).isVip" class="h-3.5 w-3.5" />
                   {{ programBadge(program).label }}
