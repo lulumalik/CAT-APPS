@@ -173,8 +173,9 @@
                   </select>
                 </label>
                 <label class="text-sm font-medium text-text">
-                  Asal Daerah / Kota
-                  <input v-model="form.city" required class="mt-1 w-full rounded-lg border border-border px-3 py-2 bg-background" />
+                  Alamat Lengkap
+                  <textarea v-model="form.address" required class="mt-1 w-full rounded-lg border border-border px-3 py-2 bg-background">
+                  </textarea>
                 </label>
                 <label class="text-sm font-medium text-text">
                   Tanggal Lahir
@@ -182,7 +183,23 @@
                 </label>
                 <label class="text-sm font-medium text-text md:col-span-2">
                   Nomor Telepon / Whatsapp
-                  <input v-model="form.phone" required class="mt-1 w-full rounded-lg border border-border px-3 py-2 bg-background" />
+                  <div
+                    class="mt-1 flex w-full items-center overflow-hidden rounded-lg border border-border bg-background transition-colors focus-within:border-secondary"
+                  >
+                    <span class="shrink-0 border-r border-border px-3 py-2 text-sm text-muted select-none">+62</span>
+                    <input
+                      v-model="form.phone"
+                      required
+                      type="tel"
+                      inputmode="numeric"
+                      autocomplete="tel-national"
+                      placeholder="812345678"
+                      class="w-full min-w-0 border-0 bg-transparent px-3 py-2 focus:outline-none focus:ring-0"
+                    />
+                  </div>
+                  <span v-if="form.phone && !isValidPhoneLocal(form.phone)" class="mt-1 block text-xs text-red-500">
+                    Nomor tidak valid. Contoh: 812345678
+                  </span>
                 </label>
                 <div class="md:col-span-2 pt-2">
                   <button
@@ -357,6 +374,22 @@ const form = ref({
 
 const currentQuestion = computed(() => questions.value[currentIndex.value] || null)
 
+function normalizePhoneLocal(rawPhone) {
+  const digitsOnly = String(rawPhone || '').replace(/\D/g, '')
+  if (digitsOnly.startsWith('62')) return digitsOnly.slice(2)
+  if (digitsOnly.startsWith('0')) return digitsOnly.slice(1)
+  return digitsOnly
+}
+
+function isValidPhoneLocal(localPhone) {
+  return /^8\d{8,11}$/.test(String(localPhone || ''))
+}
+
+function formatPhoneForBackend(localPhone) {
+  const normalized = normalizePhoneLocal(localPhone)
+  return normalized ? `62${normalized}` : ''
+}
+
 function runScoreCelebration() {
   const target = scoreSparkleTargetRef.value
   const panel = scorePanelRef.value
@@ -386,6 +419,14 @@ watch(
         runScoreCelebration()
       })
     })
+  },
+)
+
+watch(
+  () => form.value.phone,
+  (value) => {
+    const normalized = normalizePhoneLocal(value)
+    if (value !== normalized) form.value.phone = normalized
   },
 )
 
@@ -442,6 +483,10 @@ const pickTest = async (test) => {
 
 const startTryout = async () => {
   if (!selectedTest.value) return
+  if (!isValidPhoneLocal(form.value.phone)) {
+    toast.error('Info', 'Nomor telepon tidak valid. Gunakan format seperti 812345678.')
+    return
+  }
   try {
     const { data } = await window.axios.get(`/api/free-tryout/tests/${selectedTest.value.id}`)
     if (!data?.can_submit) {
@@ -463,10 +508,15 @@ function openSubmitConfirm() {
 
 async function confirmSubmitTryout() {
   if (!selectedTest.value || submitting.value) return
+  if (!isValidPhoneLocal(form.value.phone)) {
+    toast.error('Info', 'Nomor telepon tidak valid. Gunakan format seperti 812345678.')
+    return
+  }
   submitting.value = true
   try {
     const payload = {
       ...form.value,
+      phone: formatPhoneForBackend(form.value.phone),
       answers: answers.value,
     }
     const { data } = await window.axios.post(`/api/free-tryout/tests/${selectedTest.value.id}/submit`, payload)

@@ -120,7 +120,7 @@
           <div class="relative z-30">
             <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3">Selayang Pandang</p>
             <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-text leading-tight">
-              Fondasi Terarah untuk Melangkah Pasti Menuju Akpol
+              Fondasi Terarah untuk Melangkah Pasti Menuju AKPOL
             </h2>
             <div class="mt-6 space-y-4 font-semibold text-gray-700 leading-relaxed">
               <p>
@@ -130,7 +130,7 @@
                 Kami berfokus pada pembinaan akademik, mental, fisik, dan karakter kepemimpinan. Dalam persaingan seleksi yang semakin ketat, kami meyakini keberhasilan tidak hanya ditentukan oleh kecerdasan, tetapi juga oleh strategi belajar yang tepat dan pembinaan yang konsisten.
               </p>
               <p>
-                Melalui metode pelatihan yang terstruktur, simulasi seleksi yang realistis, serta pendampingan mentor berpengalaman, setiap peserta dibimbing agar siap menghadapi seluruh tahapan seleksi Akpol secara maksimal.
+                Melalui metode pelatihan yang terstruktur, simulasi seleksi yang realistis, serta pendampingan mentor berpengalaman, setiap peserta dibimbing agar siap menghadapi seluruh tahapan seleksi AKPOL secara maksimal.
               </p>
               <p>
                 Nama <span class="font-bold text-text">Pratistha</span> melambangkan kehormatan, keteguhan, dan fondasi kuat dalam meraih cita-cita. Nilai inilah yang kami tanamkan: semangat juang, integritas, kedisiplinan, dan mental pantang menyerah.
@@ -139,7 +139,7 @@
                 Kami tidak hanya membina peserta untuk lulus seleksi, tetapi juga membentuk pribadi berkarakter yang siap menjadi generasi pemimpin bangsa.
               </p>
             </div>
-            <p class="mt-6 text-lg font-bold text-primary">Bersama Pratistha Training Center, wujudkan langkah pasti menuju Akpol.</p>
+            <p class="mt-6 text-lg font-bold text-primary">Bersama Pratistha Training Center, wujudkan langkah pasti menuju AKPOL.</p>
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
           <SectionWaveDivider class="absolute -bottom-4 md:-bottom-30 left-0 right-0 z-10" />
@@ -246,17 +246,22 @@
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Keunggulan Program</h2>
           <p class="text-gray-600 mb-8">Ekosistem belajar yang didesain untuk disiplin, konsisten, dan terukur.</p>
           <div class="grid md:grid-cols-2 gap-5 relative z-10">
-            <article
+            <button
               v-for="feature in keyFeatures"
               :key="feature.title"
-              class="rounded-2xl border border-border bg-gradient-to-br from-white to-sky p-6"
+              type="button"
+              class="rounded-2xl border border-border bg-gradient-to-br from-white to-sky p-6 text-left cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
+              @click="openFeatureModal(feature)"
             >
               <div class="mb-3 inline-flex rounded-lg bg-sky p-2 text-primary">
                 <component :is="feature.icon" class="h-5 w-5" />
               </div>
               <h3 class="font-bold text-lg">{{ feature.title }}</h3>
               <p class="text-gray-600 text-sm mt-2 leading-relaxed">{{ feature.desc }}</p>
-            </article>
+              <span class="mt-4 inline-flex items-center text-xs font-semibold text-primary">
+                Lihat detail
+              </span>
+            </button>
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
         </div>
@@ -394,6 +399,53 @@
     >
       <MessageCircle class="h-7 w-7" />
     </a>
+
+    <Teleport to="body">
+      <Transition name="member-slide-fade">
+        <div
+          v-if="activeFeatureModal"
+          class="fixed inset-0 z-[120] flex items-center justify-center bg-black/50 p-4 backdrop-blur-[2px]"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="feature-modal-title"
+          @click.self="closeFeatureModal"
+        >
+          <div class="w-full max-w-2xl overflow-hidden rounded-3xl border border-border bg-white shadow-2xl shadow-black/20">
+            <div class="flex items-start justify-between gap-4 border-b border-border bg-gradient-to-r from-sky to-white px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="inline-flex rounded-lg bg-sky p-2 text-primary">
+                  <component :is="activeFeatureModal.icon" class="h-5 w-5" />
+                </div>
+                <div>
+                  <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Detail Keunggulan</p>
+                  <h3 id="feature-modal-title" class="text-lg md:text-xl font-bold text-text">{{ activeFeatureModal.title }}</h3>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-gray-500 hover:bg-background hover:text-text transition-colors"
+                aria-label="Tutup"
+                @click="closeFeatureModal"
+              >
+                <XIcon class="h-4 w-4" />
+              </button>
+            </div>
+
+            <div class="px-5 py-5 md:px-6 md:py-6">
+              <p class="text-sm text-gray-700 leading-relaxed">
+                {{ activeFeatureModal.longDesc }}
+              </p>
+              <ul class="mt-4 space-y-2.5">
+                <li v-for="point in activeFeatureModal.points" :key="point" class="flex items-start gap-2.5 text-sm text-gray-700">
+                  <span class="mt-1.5 h-2 w-2 rounded-full bg-secondary shrink-0" />
+                  <span>{{ point }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </main>
 </template>
 
@@ -433,6 +485,7 @@ const membersMobileOnePerSlide = ref(
   typeof window !== 'undefined' ? window.matchMedia('(max-width: 639px)').matches : false,
 )
 const isMobileMenuOpen = ref(false)
+const activeFeatureModal = ref(null)
 let wallpaperInterval
 let memberInterval
 let membersMediaQuery = null
@@ -534,23 +587,55 @@ const keyFeatures = [
     icon: UserCheck,
     title: 'Pengajar dari Ahli & Praktisi',
     desc: 'Tim pembina berpengalaman dari unsur purnawirawan, mentor akademik, dan pelatih kesiapan seleksi.',
+    longDesc: 'Pendampingan peserta dilakukan oleh tim lintas bidang agar persiapan berjalan terarah, disiplin, dan sesuai kebutuhan seleksi terkini.',
+    points: [
+      'Sesi pembinaan dipandu mentor akademik dan pelatih berpengalaman.',
+      'Peserta mendapat arahan belajar mingguan yang terukur.',
+      'Evaluasi dilakukan berkala untuk menentukan fokus latihan berikutnya.',
+    ],
   },
   {
     icon: BookOpenText,
     title: 'Materi Terbaru dan Eksklusif',
     desc: 'Materi disusun berkala, menyesuaikan pola seleksi terbaru, dan hanya dapat diakses peserta terdaftar.',
+    longDesc: 'Konten pembelajaran diperbarui secara periodik agar tetap relevan dengan standar seleksi, disertai pembahasan yang mudah dipahami.',
+    points: [
+      'Bank soal latihan ditata berdasarkan tingkat kesulitan.',
+      'Ringkasan materi disiapkan untuk mempercepat pengulangan.',
+      'Pembahasan contoh soal membantu peserta memahami pola jawaban.',
+    ],
   },
   {
     icon: LineChart,
     title: 'Laporan ke Orang Tua Secara Online',
     desc: 'Perkembangan hasil latihan, nilai tes, dan progres pendaftaran peserta dapat dipantau secara digital.',
+    longDesc: 'Informasi perkembangan peserta ditampilkan dalam laporan ringkas agar orang tua bisa memantau progres belajar secara berkala.',
+    points: [
+      'Rekap latihan dan capaian nilai ditampilkan per periode.',
+      'Perubahan progres dapat dipantau tanpa harus datang ke lokasi.',
+      'Komunikasi pendampingan menjadi lebih cepat dan transparan.',
+    ],
   },
   {
     icon: Warehouse,
     title: 'Tempat Belajar Eksklusif',
     desc: 'Ruang belajar terarah dengan sistem kelas, jadwal, dan evaluasi untuk menjaga fokus pembinaan.',
+    longDesc: 'Lingkungan belajar dirancang kondusif untuk menjaga ritme latihan, meningkatkan fokus, dan membangun konsistensi peserta.',
+    points: [
+      'Jadwal pembinaan disusun dengan alur yang jelas.',
+      'Sistem kelas membantu peserta belajar sesuai target program.',
+      'Monitoring rutin menjaga kedisiplinan selama masa pelatihan.',
+    ],
   },
 ]
+
+function openFeatureModal(feature) {
+  activeFeatureModal.value = feature
+}
+
+function closeFeatureModal() {
+  activeFeatureModal.value = null
+}
 
 const onlinePrograms = ONLINE_PROGRAMS
 

@@ -50,27 +50,47 @@
             <div class="grid gap-4 sm:grid-cols-2">
               <div>
                 <label class="block text-sm font-medium text-gray-700">{{ t('registration.fields.whatsapp') }}</label>
-                <input
-                  v-model="form.administration.whatsapp"
-                  type="text"
-                  inputmode="numeric"
-                  autocomplete="tel"
-                  :placeholder="t('registration.phoneExample')"
-                  pattern="^628[0-9]{7,12}$"
-                  class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"
-                />
+                <div
+                  class="mt-1 flex w-full items-center overflow-hidden rounded-xl border border-gray-200 bg-white transition-colors focus-within:border-[#9DB359]"
+                >
+                  <span class="shrink-0 border-r border-gray-200 px-4 py-3 text-sm text-gray-500 select-none">+62</span>
+                  <input
+                    v-model="form.administration.whatsapp"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="tel-national"
+                    placeholder="812345678"
+                    class="w-full min-w-0 border-0 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-0"
+                  />
+                </div>
+                <p
+                  v-if="form.administration.whatsapp && !isValidPhoneLocal(form.administration.whatsapp)"
+                  class="mt-1 text-xs text-red-500"
+                >
+                  Nomor tidak valid. Contoh: 812345678
+                </p>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">{{ t('registration.fields.phone') }}</label>
-                <input
-                  v-model="form.administration.phone"
-                  type="text"
-                  inputmode="numeric"
-                  autocomplete="tel"
-                  :placeholder="t('registration.phoneExample')"
-                  pattern="^628[0-9]{7,12}$"
-                  class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"
-                />
+                <div
+                  class="mt-1 flex w-full items-center overflow-hidden rounded-xl border border-gray-200 bg-white transition-colors focus-within:border-[#9DB359]"
+                >
+                  <span class="shrink-0 border-r border-gray-200 px-4 py-3 text-sm text-gray-500 select-none">+62</span>
+                  <input
+                    v-model="form.administration.phone"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="tel-national"
+                    placeholder="812345678"
+                    class="w-full min-w-0 border-0 bg-transparent px-4 py-3 text-sm focus:outline-none focus:ring-0"
+                  />
+                </div>
+                <p
+                  v-if="form.administration.phone && !isValidPhoneLocal(form.administration.phone)"
+                  class="mt-1 text-xs text-red-500"
+                >
+                  Nomor tidak valid. Contoh: 812345678
+                </p>
               </div>
             </div>
             <p class="text-xs text-gray-500 -mt-2">{{ t('registration.phoneFormatHint') }}</p>
@@ -299,6 +319,22 @@ function statusBadgeClass(status) {
   return 'bg-gray-100 text-gray-600'
 }
 
+function normalizePhoneLocal(rawPhone) {
+  const digitsOnly = String(rawPhone || '').replace(/\D/g, '')
+  if (digitsOnly.startsWith('62')) return digitsOnly.slice(2)
+  if (digitsOnly.startsWith('0')) return digitsOnly.slice(1)
+  return digitsOnly
+}
+
+function isValidPhoneLocal(localPhone) {
+  return /^8\d{8,11}$/.test(String(localPhone || ''))
+}
+
+function formatPhoneForBackend(localPhone) {
+  const normalized = normalizePhoneLocal(localPhone)
+  return normalized ? `62${normalized}` : ''
+}
+
 function migrateLegacyAdministration(raw) {
   const text = administrationDefaults()
   if (!raw || typeof raw !== 'object') return text
@@ -323,6 +359,8 @@ function hydrateForm() {
   Object.keys(administrationDefaults()).forEach((k) => {
     form.administration[k] = next[k] ?? ''
   })
+  form.administration.whatsapp = normalizePhoneLocal(form.administration.whatsapp)
+  form.administration.phone = normalizePhoneLocal(form.administration.phone)
   if (!form.administration.height_cm && p.physical_data?.height_cm != null) {
     form.administration.height_cm = String(p.physical_data.height_cm)
   }
@@ -350,6 +388,20 @@ async function fetchProgress() {
 }
 
 watch(progress, hydrateForm)
+watch(
+  () => form.administration.whatsapp,
+  (value) => {
+    const normalized = normalizePhoneLocal(value)
+    if (value !== normalized) form.administration.whatsapp = normalized
+  },
+)
+watch(
+  () => form.administration.phone,
+  (value) => {
+    const normalized = normalizePhoneLocal(value)
+    if (value !== normalized) form.administration.phone = normalized
+  },
+)
 
 function clearPendingFiles() {
   fileSlots.forEach((s) => {
@@ -362,13 +414,17 @@ async function submitStep() {
   if (!progress.value || progress.value.fully_completed) return
   const step = progress.value.current_step
   if (step !== 'administration') return
+  if (!isValidPhoneLocal(form.administration.whatsapp) || !isValidPhoneLocal(form.administration.phone)) {
+    errorMessage.value = 'Format nomor telepon tidak valid. Gunakan format seperti 812345678.'
+    return
+  }
   saving.value = true
   try {
     const fd = new FormData()
     fd.append('step', 'administration')
     fd.append('full_name', form.administration.full_name)
-    fd.append('whatsapp', form.administration.whatsapp)
-    fd.append('phone', form.administration.phone)
+    fd.append('whatsapp', formatPhoneForBackend(form.administration.whatsapp))
+    fd.append('phone', formatPhoneForBackend(form.administration.phone))
     fd.append('address_kk', form.administration.address_kk)
     fd.append('address_domicile', form.administration.address_domicile)
     fd.append('gender', form.administration.gender)

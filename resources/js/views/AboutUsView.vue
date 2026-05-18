@@ -18,7 +18,7 @@
             PT. Pratistha Training Center Indonesia
           </h1>
           <p class="mt-5 text-sm font-bold md:text-base text-white/90 leading-relaxed">
-            Pratistha Training Center hadir sebagai pusat pembinaan persiapan Akpol yang membentuk kemampuan akademik,
+            Pratistha Training Center hadir sebagai pusat pembinaan persiapan AKPOL yang membentuk kemampuan akademik,
             mental, fisik, serta karakter kepemimpinan peserta secara terarah, disiplin, dan profesional.
           </p>
         </div>
