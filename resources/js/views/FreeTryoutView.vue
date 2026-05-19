@@ -201,6 +201,16 @@
                     Nomor tidak valid. Contoh: 812345678
                   </span>
                 </label>
+                <label class="text-sm font-medium text-text md:col-span-2">
+                  Alamat Email
+                  <input
+                    v-model="form.email"
+                    required
+                    type="email"
+                    placeholder="contoh@email.com"
+                    class="mt-1 w-full rounded-lg border border-border px-3 py-2 bg-background"
+                  />
+                </label>
                 <div class="md:col-span-2 pt-2">
                   <button
                     type="submit"
@@ -370,6 +380,7 @@ const form = ref({
   city: '',
   birth_date: '',
   phone: '',
+  email: '',
 })
 
 const currentQuestion = computed(() => questions.value[currentIndex.value] || null)

@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen bg-background text-text md:px-10 md:py-12">
+  <main class="min-h-screen text-text md:px-10 md:py-12 about-bg">
     <div class="mx-auto space-y-8">
       <section
         class="fade-up relative overflow-hidden text-center md:rounded-[2rem] text-white shadow-2xl shadow-[#123B8F]/35 p-7 md:p-10 pb-16 md:pb-20 bg-cover bg-center"
@@ -15,16 +15,16 @@
           </router-link>
           <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-white/80">Tentang Kami</p>
           <h1 class="mt-2 text-3xl md:text-5xl font-black leading-tight">
-            PT. Pratistha Training Center Indonesia
+            Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
           </h1>
           <p class="mt-5 text-xl md:text-2xl font-bold text-white/90 leading-relaxed">
-            Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Training Center Indonesia didukung oleh legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan profesionalisme merupakan fondasi penting dalam membangun kepercayaan peserta didik maupun orang tua.
+            Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Cendekia Prestasi didukung oleh legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan profesionalisme merupakan fondasi penting dalam membangun kepercayaan peserta didik maupun orang tua.
           </p>
         </div>
       </section>
 
       <section
-        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-white via-sky/20 to-blue-50/60 border border-blue-100/80 shadow-xl shadow-primary/8 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
@@ -48,12 +48,12 @@
       </section>
 
       <section
-        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-primary/5 via-white to-sky/30 border border-primary/10 shadow-xl shadow-primary/8 p-7 md:p-10 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 top-12 z-30 right-0 opacity-90" />
 
         <div class="relative z-20">
           <h2 class="mt-2 text-2xl md:text-4xl font-black text-center tracking-tight text-text">
-            Pimpinan PT. Pratistha Training Center Indonesia
+            Pimpinan Pratistha Cendekia Prestasi
           </h2>
 
           <div class="mt-8 md:mt-16">
@@ -87,14 +87,14 @@
       </section>
 
       <section
-        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-sky/25 via-white to-white border border-blue-100/60 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 top-12 right-0 opacity-90" />
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
             <Users class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Struktur Organisasi</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Diagram jabatan inti PT. Pratistha Training Center Indonesia.</p>
+          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Diagram jabatan inti Pratistha Cendekia Prestasi.</p>
 
           <div class="org-chart my-12">
             <div class="org-node">
@@ -175,14 +175,14 @@
       </section>
 
       <section
-        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-white to-mint/30 border border-green-100/60 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
             <Phone class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Kontak Kami</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Kanal komunikasi resmi PT. Pratistha Training Center Indonesia.</p>
+          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Kanal komunikasi resmi Pratistha Cendekia Prestasi.</p>
           <div class="mt-6 grid gap-4 md:flex md:flex-wrap justify-center gap-4">
             <article v-for="contact in contactChannels" :key="contact.label"
               class="rounded-xl border border-border bg-gradient-to-br from-white to-sky shadow-lg p-4 md:w-1/3">
@@ -198,7 +198,7 @@
       </section>
 
       <section
-        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-cream/40 via-white to-sky/20 border border-amber-100/60 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 top-12 right-0 opacity-90" />
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
@@ -206,7 +206,7 @@
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Rekening Resmi Pembayaran</h2>
           </div>
           <p class="mt-2 text-gray-600 text-lg md:text-xl text-center max-w-3xl mx-auto">
-            Segala transaksi Lembaga Kursus Pratistha Training Center Indonesia hanya dilakukan melalui rekening resmi perusahaan di Bank BCA dan Bank BRI.
+            Segala transaksi Lembaga Kursus Pratistha Cendekia Prestasi hanya dilakukan melalui rekening resmi perusahaan di Bank BCA dan Bank BRI.
           </p>
 
           <div class="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm md:text-xl text-amber-900 text-center max-w-5xl mx-auto">
@@ -228,7 +228,7 @@
       </section>
 
       <section
-        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-sky/20 via-white to-blue-50/50 border border-blue-100/60 shadow-xl shadow-primary/6 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
         <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
@@ -296,7 +296,7 @@ const orgChart = {
   komisaris: { role: 'Komisaris', name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si' },
   direkturUtama: { role: 'Direktur Utama', name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH' },
   direktur: { role: 'Direktur', name: 'Gilang Nurfahradz Syahni Fasya, S.T' },
-  sekretaris: { role: 'Sekretaris', name: '-' },
+  sekretaris: { role: 'Sekretaris', name: 'AKBP (P) Wahyu suhardini, S.IP' },
   bendahara: { role: 'Bendahara', name: 'KBP (P) Dra.Rina Regina' },
   internal: { role: 'Internal', name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P' },
   eksternal: { role: 'Eksternal', name: 'Kompol (P) Tutik' },
@@ -309,27 +309,27 @@ const legalDocuments = [
     subtitle: 'Keputusan Menteri Hukum Republik Indonesia',
     value: 'AHU-0037173.AH.01.01.TAHUN 2026',
     image: skKemenkumhamUrl,
-    alt: 'SK Kemenkumham PT. Pratistha Training Center Indonesia',
+    alt: 'SK Kemenkumham Pratistha Cendekia Prestasi',
   },
   {
     label: 'NPWP Perusahaan',
     subtitle: 'Nomor Pokok Wajib Pajak',
     value: '1000 0000 0958 6609',
     details: [
-      'PT PRATISTHA TRAINING CENTER INDONESIA',
+      'Pratistha Cendekia Prestasi',
       'Jalan Sukamaju Nomor 142 RT. 003 RW. 005, Cipadung Kulon, Panyileukan, Kota Bandung, Jawa Barat',
       'Tanggal Terdaftar: 11/05/2026',
       'KPP Pratama Bandung Cicadas',
     ],
     image: npwpUrl,
-    alt: 'NPWP PT. Pratistha Training Center Indonesia',
+    alt: 'NPWP Pratistha Cendekia Prestasi',
   },
   {
     label: 'Nomor Induk Berusaha (NIB)',
     subtitle: 'Perizinan Berusaha Berbasis Risiko — Pemerintah Republik Indonesia',
     value: '1805260036293',
     image: nibUrl,
-    alt: 'NIB PT. Pratistha Training Center Indonesia',
+    alt: 'NIB Pratistha Cendekia Prestasi',
   },
 ]
 
@@ -355,7 +355,7 @@ const contactChannels = [
 ]
 
 const galleryPhotos = [
-  { src: bannerUrl, alt: 'Banner Pratistha Training Center', caption: 'Program kursus terarah dan profesional.' },
+  { src: bannerUrl, alt: 'Banner Pratistha Cendekia Prestasi', caption: 'Program kursus terarah dan profesional.' },
   { src: wallpaper1Url, alt: 'Kegiatan kursus 1', caption: 'Suasana pembelajaran akademik dan kesiapan seleksi.' },
   { src: wallpaper2Url, alt: 'Kegiatan kursus 2', caption: 'Latihan terukur untuk meningkatkan konsistensi peserta.' },
   { src: wallpaper3Url, alt: 'Kegiatan kursus 3', caption: 'Pendampingan intensif oleh mentor berpengalaman.' },
@@ -509,6 +509,15 @@ onBeforeUnmount(() => {
 .fade-up.fade-ready.in-view {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+.about-bg {
+  background-color: #eef6ff;
+  background-image:
+    radial-gradient(ellipse 75% 45% at 0% 0%, rgba(0, 174, 255, 0.95) 0%, transparent 100%),
+    radial-gradient(ellipse 55% 90% at 100% 8%, rgba(47, 107, 255, 0.09) 0%, transparent 100%),
+    radial-gradient(ellipse 65% 50% at 55% 100%, rgba(18, 59, 143, 0.07) 0%, transparent 100%),
+    radial-gradient(ellipse 40% 35% at 85% 75%, rgba(0, 114, 166, 0.7) 0%, transparent 100%);
 }
 
 .leader-carousel {

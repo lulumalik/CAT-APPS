@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen text-text">
+  <main class="min-h-screen text-text bg-gradient-to-b from-[#52a2ed] via-[#260da7] via-[#5f0ad7] to-[#13c1fc]">
     <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
       <div class="mx-auto max-w-7xl rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-6 py-2 md:py-0">
         <div class="hidden md:grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-4">
@@ -85,7 +85,7 @@
       <div class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-32 md:pt-32 pb-14 md:px-10">
         <div class="text-center max-w-4xl fade-up">
           <p class="text-[11px] md:text-4xl font-bold uppercase tracking-[0.2em] text-primary mb-3">
-            Pratistha Training Center
+            Pratistha Cendekia Prestasi
           </p>
           <h1 class="text-2xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight text-text uppercase">
             {{ heroSelayangPandang.title }}
@@ -116,7 +116,7 @@
 
     <section id="selayang-pandang-2" class="px-5 md:px-10 py-10">
       <div class="max-w-7xl mx-auto fade-up delay-1 relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10 relative overflow-hidden">
+        <div class="rounded-[2rem] bg-white border border-blue-100/80 shadow-xl shadow-primary/8 p-8 md:p-10 relative overflow-hidden">
           <div class="relative z-30">
             <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3">Selayang Pandang</p>
             <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-text leading-tight">
@@ -124,7 +124,7 @@
             </h2>
             <div class="mt-6 space-y-4 font-semibold text-gray-700 leading-relaxed">
               <p>
-                Selamat datang di <span class="font-bold text-text">Pratistha Training Center</span>, tempat lahirnya calon taruna terbaik yang dipersiapkan secara terarah, disiplin, dan profesional untuk menghadapi seleksi Akademi Kepolisian.
+                Selamat datang di <span class="font-bold text-text">Pratistha Cendekia Prestasi</span>, tempat lahirnya calon taruna terbaik yang dipersiapkan secara terarah, disiplin, dan profesional untuk menghadapi seleksi Akademi Kepolisian.
               </p>
               <p>
                 Kami berfokus pada pembinaan akademik, mental, fisik, dan karakter kepemimpinan. Dalam persaingan seleksi yang semakin ketat, kami meyakini keberhasilan tidak hanya ditentukan oleh kecerdasan, tetapi juga oleh strategi belajar yang tepat dan pembinaan yang konsisten.
@@ -139,7 +139,7 @@
                 Kami tidak hanya membina peserta untuk lulus seleksi, tetapi juga membentuk pribadi berkarakter yang siap menjadi generasi pemimpin bangsa.
               </p>
             </div>
-            <p class="mt-6 text-lg font-bold text-primary">Bersama Pratistha Training Center, wujudkan langkah pasti menuju AKPOL.</p>
+            <p class="mt-6 text-lg font-bold text-primary">Bersama Pratistha Cendekia Prestasi, wujudkan langkah pasti menuju AKPOL.</p>
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
           <SectionWaveDivider class="absolute -bottom-4 md:-bottom-30 left-0 right-0 z-10" />
@@ -150,15 +150,15 @@
     
     <section id="leaders" class="my-10">
       <div class="max-w-7xl mx-auto fade-up fade-up-tight delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Dewan Pembina & Pimpinan</h2>
-          <p class="text-gray-600 mb-8">Profil pejabat dan pimpinan PT. Pratistha Training Center Indonesia.</p>
+        <div class="rounded-[2rem] bg-white border border-blue-100/70 shadow-xl shadow-primary/8 p-8 md:p-10">
+          <!-- <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Dewan Pimpinan</h2> -->
+          <p class="text-3xl md:text-4xl font-bold tracking-tight mb-2 mb-8">Profil pejabat dan pimpinan Pratistha Cendekia Prestasi.</p>
 
           <div class="grid gap-6 relative z-30">
             <article
               v-for="(leader, index) in leaders"
               :key="leader.name"
-              class="group rounded-3xl flex flex-col md:flex-row border border-border bg-gradient-to-br from-white via-background to-sky overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              class="group rounded-3xl relative bg-gradient-to-br from-[#b0862e] via-[#bea053] to-[#dac887] flex flex-col md:flex-row overflow-hidden border border-blue-100/20 transition-all duration-300 hover:-translate-y-1"
             >
               <div
                 class="relative md:w-[38%] lg:w-[34%] shrink-0 bg-sky"
@@ -175,20 +175,20 @@
                 class="p-6 md:p-8 flex-1"
                 :class="index % 2 === 0 ? 'md:order-2' : 'md:order-1'"
               >
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Profil Pimpinan</p>
-                <h3 class="mt-2 font-extrabold text-2xl md:text-3xl leading-tight tracking-tight text-text">{{ leader.name }}</h3>
-                <p class="text-base text-secondary font-bold mt-2">{{ leader.batch }}</p>
+                <p class="text-[14px] font-bold uppercase tracking-[0.18em] text-white">Profil {{ leader.jabatan }}</p>
+                <h3 class="mt-2 font-extrabold text-2xl md:text-3xl leading-tight tracking-tight text-white">{{ leader.name }}</h3>
+                <p class="text-base text-cyan-200 font-bold mt-2">{{ leader.batch }}</p>
 
-                <div class="mt-5 rounded-xl border border-border bg-white/90 px-4 py-3">
-                  <p class="text-[11px] font-bold tracking-[0.14em] text-primary uppercase">Posisi Saat Ini</p>
-                  <p class="mt-1 text-base md:text-lg font-semibold leading-relaxed text-text">{{ leader.position }}</p>
+                <div class="mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px]">
+                  <p class="text-[14px] font-bold tracking-[0.14em] text-white uppercase">Posisi Saat Ini</p>
+                  <p class="mt-1 text-base md:text-lg font-semibold leading-relaxed text-white">{{ leader.position }}</p>
                 </div>
 
-                <div class="mt-5">
-                  <p class="text-sm font-bold tracking-[0.14em] text-text uppercase">Jabatan Terakhir</p>
-                  <ul class="mt-3 space-y-2.5 text-base font-semibold leading-relaxed text-gray-700">
+                <div class="mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px]">
+                  <p class="text-sm font-bold tracking-[0.14em] text-blue-100 uppercase">Jabatan Terakhir</p>
+                  <ul class="mt-3 space-y-2.5 text-base font-semibold leading-relaxed text-blue-50">
                     <li v-for="line in leader.highlights" :key="line" class="flex items-start gap-2.5">
-                      <span class="mt-2 h-2 w-2 rounded-full bg-secondary shrink-0" />
+                      <span class="mt-2 h-2 w-2 rounded-full bg-cyan-300 shrink-0" />
                       <span>{{ line }}</span>
                     </li>
                   </ul>
@@ -196,53 +196,42 @@
               </div>
             </article>
           </div>
-          <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-72 bottom-0 right-0" />
         </div>
       </div>
     </section>
 
     <section id="members" class="pb-8">
-      <div class="max-w-7xl mx-auto fade-up fade-up-tight relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+      <div class="max-w-7xl mx-auto fade-up fade-up-tight">
+        <div class="rounded-[2rem] bg-gradient-to-br from-white to-secondary border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10 relative overflow-hidden">
           <h3 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Staff</h3>
-          <p class="text-gray-600 mb-6">Staff pendukung program pembinaan PT. Pratistha Training Center Indonesia.</p>
-          <div class="relative z-20">
-            <div class="min-h-[590px]">
-              <Transition name="member-slide-fade" mode="out-in">
-                <div :key="`member-slide-${activeMemberSlide}`" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  <article
-                    v-for="member in (memberSlides[activeMemberSlide] || [])"
-                    :key="member.name"
-                    class="h-full rounded-2xl border border-border bg-background overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <img :src="member.image" :alt="member.name" class="w-full h-[480px] object-cover object-top" />
-                    <div class="p-5">
-                      <h4 class="font-semibold text-base leading-snug text-text">{{ member.name }}</h4>
-                      <p class="text-sm text-primary font-semibold mt-1">{{ member.jabatan }}</p>
-                    </div>
-                  </article>
+          <p class="text-gray-600 mb-6">Staff pendukung program pembinaan Pratistha Cendekia Prestasi.</p>
+          <div class="relative z-20 flex flex-wrap justify-center gap-5">
+            <article
+              v-for="member in members"
+              :key="member.name"
+              class="group flex flex-col items-center text-center rounded-2xl border border-border bg-gradient-to-b from-white to-sky/80 p-5 w-[calc(50%-10px)] sm:w-[320px] hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+            >
+              <div class="relative mb-4">
+                <div class="w-28 h-28 md:w-56 md:h-56 rounded-full overflow-hidden ring-4 ring-white shadow-lg border-2 border-primary/15 group-hover:ring-primary/30 group-hover:border-primary/30 transition-all duration-300">
+                  <img :src="member.image" :alt="member.name" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
                 </div>
-              </Transition>
-            </div>
-            <div v-if="memberSlides.length > 1" class="mt-5 flex items-center justify-center gap-2.5">
-              <button
-                v-for="(_, index) in memberSlides"
-                :key="`member-slide-dot-${index}`"
-                type="button"
-                class="h-2.5 rounded-full transition-all duration-300 cursor-pointer"
-                :class="index === activeMemberSlide ? 'w-8 bg-secondary' : 'w-2.5 bg-gray-300 hover:bg-gray-400'"
-                @click="activeMemberSlide = index"
-              />
-            </div>
+                <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-secondary flex items-center justify-center shadow-md">
+                  <span class="block w-2.5 h-2.5 rounded-full bg-white" />
+                </div>
+              </div>
+              <h4 class="font-bold text-sm md:text-lg leading-snug text-text">{{ member.name }}</h4>
+              <p class="text-xs md:text-base text-primary font-semibold mt-1 uppercase tracking-wide">{{ member.jabatan }}</p>
+            </article>
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-28 bottom-0 right-0" />
+          <SectionWaveDivider class="absolute -bottom-4 md:-bottom-30 left-0 right-0 z-10" />
         </div>
       </div>
     </section>
     
     <section id="programs" class="px-5 md:px-10 pb-8">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+        <div class="rounded-[2rem] bg-white border border-primary/10 shadow-xl shadow-primary/8 p-8 md:p-10">
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Keunggulan Program</h2>
           <p class="text-gray-600 mb-8">Ekosistem belajar yang didesain untuk disiplin, konsisten, dan terukur.</p>
           <div class="grid md:grid-cols-2 gap-5 relative z-10">
@@ -270,7 +259,7 @@
 
     <section id="services" class="px-5 md:px-10 pb-8">
       <div class="max-w-7xl mx-auto fade-up delay-1 relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+        <div class="rounded-[2rem] bg-white border border-green-100/60 shadow-xl shadow-black/5 p-8 md:p-10">
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Layanan Pembinaan</h2>
           <p class="text-gray-600 mb-8">Program seleksi dan pendampingan untuk kesiapan calon peserta.</p>
           <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -296,21 +285,30 @@
         <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-2 md:p-10">
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight p-5 md:p-0">Pilihan Kelas Kursus</h2>
           <p class="text-gray-600 p-5 md:p-0">Pilih jalur program sesuai kebutuhan kursus dan target persiapan.</p>
-          <div class="grid md:grid-cols-2 gap-5 relative z-30">
+          <div class="grid md:grid-cols-2 gap-5 relative z-30 mt-8">
             <article
               v-for="program in onlinePrograms"
               :key="program.value"
-              class="rounded-2xl border border-gray-100 p-6 hover:shadow-lg transition-all"
+              class="rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1"
+              :style="{
+                backgroundImage: program.backgroundColor,
+                color: program.textColor,
+                boxShadow: program.boxShadow,
+                border: '1px solid rgba(255,255,255,0.18)',
+              }"
             >
               <div class="flex items-center justify-between gap-3">
                 <h3 class="font-bold text-lg md:whitespace-nowrap">{{ program.name }}</h3>
-                <span class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border font-semibold" :class="programBadge(program).className">
-                  <Crown v-if="programBadge(program).isVip" class="h-3.5 w-3.5" />
-                  {{ programBadge(program).label }}
+                <span
+                  class="inline-flex shrink-0 items-center gap-1 text-xs px-2.5 py-1 rounded-full font-bold backdrop-blur-sm"
+                  :style="programBadgeStyle(program)"
+                >
+                  <Crown v-if="program.mode === 'Premium'" class="h-3.5 w-3.5" />
+                  {{ program.mode }}
                 </span>
               </div>
-              <p class="text-gray-600 text-sm mt-2">{{ program.summary }}</p>
-              <ul class="mt-3 text-sm text-gray-600 list-disc pl-5 space-y-1">
+              <p class="text-sm mt-2 opacity-90 font-semibold">{{ program.summary }}</p>
+              <ul class="mt-3 text-sm list-disc pl-5 space-y-1 opacity-85 font-semibold">
                 <li v-for="point in program.points" :key="point">{{ point }}</li>
               </ul>
             </article>
@@ -322,7 +320,7 @@
 
     <section id="comparison" class="px-5 md:px-10 pb-8">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
+        <div class="rounded-[2rem] bg-white border border-blue-100/60 shadow-xl shadow-primary/6 p-8 md:p-10">
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Tabel Perbandingan Fasilitas Kelas Kursus</h2>
           <p class="text-gray-600 mb-6">Bandingkan fasilitas dan durasi akses setiap kelas untuk menentukan program paling sesuai.</p>
 
@@ -450,7 +448,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
@@ -465,7 +463,7 @@ const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
 const tubagusUrl = new URL('../../assets/bpk_tubagus.jpg', import.meta.url).href
 const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
 const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
-const winUrl = new URL('../../assets/anggota/win.jpeg', import.meta.url).href
+const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).href
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.jpeg', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
@@ -479,21 +477,9 @@ const wallpaperSlides = Object.entries(wallpaperModules)
   .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
   .map(([, src]) => src)
 const activeWallpaperIndex = ref(0)
-const activeMemberSlide = ref(0)
-/** Below Tailwind `sm` (640px): one member per slide; sm+: three per slide. */
-const membersMobileOnePerSlide = ref(
-  typeof window !== 'undefined' ? window.matchMedia('(max-width: 639px)').matches : false,
-)
 const isMobileMenuOpen = ref(false)
 const activeFeatureModal = ref(null)
 let wallpaperInterval
-let memberInterval
-let membersMediaQuery = null
-
-function syncMembersSlideLayout() {
-  if (!membersMediaQuery) return
-  membersMobileOnePerSlide.value = membersMediaQuery.matches
-}
 
 let fadeObserver
 const quickNavItems = [
@@ -509,6 +495,7 @@ const leaders = [
     name: 'Komjen Pol (P) Drs. H. Nana S. Permana',
     batch: 'Batalion Dharma Angkatan 1968',
     position: 'Ketua Pembina Yayasan Pendidikan Tribakti Langlang Buana',
+    jabatan: 'Penasehat',
     highlights: [
       'Wakapolri tahun 1998 - 2000',
       'Pembina strategis pendidikan dan pembinaan kepolisian',
@@ -518,7 +505,8 @@ const leaders = [
   {
     name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si',
     batch: 'Bataliyon Anindhita Tahun 1981',
-    position: 'Komisaris PT. Pratistha Training Center Indonesia',
+    position: 'Komisaris Pratistha Cendekia Prestasi',
+    jabatan: 'Komisaris',
     highlights: [
       'Kapolda Jabar tahun 2012 - 2013',
       'Kapolda Sultra tahun 2012',
@@ -530,7 +518,8 @@ const leaders = [
   {
     name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH',
     batch: 'Bataliyon Pratistha Angkatan 1982',
-    position: 'Direktur Utama PT. Pratistha Training Center Indonesia',
+    position: 'Direktur Utama Pratistha Cendekia Prestasi',
+    jabatan: 'Direktur Utama',
     highlights: [
       'Wakapolda Jawa Tengah tahun 2016 - 2017',
       'Pengarah operasional program kursus',
@@ -539,29 +528,35 @@ const leaders = [
   },
 ]
 
+function leaderCardStyle(index) {
+  const premiumTexture = [
+    'radial-gradient(ellipse at 20% 16%, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.08) 28%, transparent 55%)',
+    'radial-gradient(ellipse at 85% 85%, rgba(0,0,0,0.45) 0%, transparent 50%)',
+    'linear-gradient(145deg, rgba(255,255,255,0.18) 0%, transparent 34%)',
+    'linear-gradient(235deg, rgba(255,255,255,0.08) 0%, transparent 28%)',
+    'linear-gradient(328deg, rgba(0,0,0,0.15) 0%, transparent 42%)',
+  ]
+
+  const baseGradient =
+    index === 0
+      ? 'linear-gradient(112deg, #9a0000 0%, #d12a2a 34%, #7a0000 57%, #b01616 78%, #4d0000 100%)'
+      : 'linear-gradient(112deg, #00acb2 0%, #33ced2 34%, #008d92 57%, #1abec2 78%, #00666a 100%)'
+
+  const shadowColor = index === 0 ? 'rgba(120, 0, 0, 0.4)' : 'rgba(0, 120, 125, 0.38)'
+
+  return {
+    backgroundImage: [...premiumTexture, baseGradient].join(', '),
+    boxShadow: `0 14px 36px ${shadowColor}, 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.3)`,
+  }
+}
+
 const members = [
   { name: 'Gilang Nurfahradz Syahni Fasya, S.T', image: gilangUrl, jabatan: 'Direktur' },
-  { name: '-', image: 'https://placehold.co/600x400', jabatan: 'Sekretaris' },
+  { name: 'AKBP (P) Wahyu suhardini, S.IP', image: wahyuUrl, jabatan: 'Sekretaris' },
   { name: 'KBP (P) Dra.Rina Regina', image: rinaUrl, jabatan: 'Bendahara' },
   { name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P', image: natashaUrl, jabatan: 'Bidang Internal' },
   { name: 'Kompol (P) Tutik', image: tutikUrl, jabatan: 'Bidang Eksternal' },
 ]
-const MEMBER_SLIDE_SIZE_DESKTOP = 3
-const memberSlides = computed(() => {
-  const size = membersMobileOnePerSlide.value ? 1 : MEMBER_SLIDE_SIZE_DESKTOP
-  const chunks = []
-  for (let i = 0; i < members.length; i += size) {
-    chunks.push(members.slice(i, i + size))
-  }
-  return chunks
-})
-
-watch(memberSlides, (slides) => {
-  if (!slides.length) return
-  if (activeMemberSlide.value >= slides.length) {
-    activeMemberSlide.value = 0
-  }
-})
 
 const services = [
   { icon: Brain, title: 'Tes Psikologi', desc: 'Pemetaan karakter, kestabilan emosi, dan kesiapan menghadapi seleksi.' },
@@ -576,11 +571,10 @@ const heroSelayangPandang = {
   eyebrow: 'Selayang Pandang',
   title: 'Lembaga Kursus Persiapan Seleksi Akademi Kepolisian',
   description:
-    'PT. Pratistha Training Center Indonesia adalah lembaga kursus yang menyelenggarakan program persiapan calon peserta AKADEMI KEPOLISIAN, dengan fasilitas belajar eksklusif dan pembelajaran profesional.',
-  bannerAlt: 'Banner PT. Pratistha Training Center Indonesia — persiapan seleksi Akademi Kepolisian',
+    'Pratistha Cendekia Prestasi adalah lembaga kursus yang menyelenggarakan program persiapan calon peserta AKADEMI KEPOLISIAN, dengan fasilitas belajar eksklusif dan pembelajaran profesional.',
+  bannerAlt: 'Banner Pratistha Cendekia Prestasi — persiapan seleksi Akademi Kepolisian',
 }
 
-const heroOverviewPillLabels = computed(() => services.map((s) => s.title))
 
 const keyFeatures = [
   {
@@ -663,35 +657,35 @@ const classComparisonRows = [
   { label: 'Tas dan topi', values: { karantina: true, reguler: true, online: false, ujian: false } },
   { label: 'Perlengkapan makan', values: { karantina: true, reguler: false, online: false, ujian: false } },
   { label: 'Masa akses aplikasi', values: { karantina: '1 tahun', reguler: '1 tahun', online: '6 bulan', ujian: '3 bulan' } },
+  { label: 'Biaya kursus', values: { karantina: 'Hubungi kami', reguler: 'Hubungi kami', online: 'Rp. 6.500.000', ujian: 'Rp. 500.000' } },
 ]
 
 const programBadge = (program) => {
   const mode = program.mode
   if (mode === 'Premium') {
-    return {
-      label: mode,
-      isVip: true,
-      className: 'bg-sky text-primary border-border',
-    }
+    return { label: mode, isVip: true, className: 'bg-sky text-primary border-border' }
   }
   if (mode === 'Reguler') {
-    return {
-      label: mode,
-      isVip: false,
-      className: 'bg-mint text-primary border-border',
-    }
+    return { label: mode, isVip: false, className: 'bg-mint text-primary border-border' }
   }
   if (mode === 'Full Online') {
+    return { label: mode, isVip: false, className: 'bg-cream text-text border-border' }
+  }
+  return { label: mode, isVip: false, className: 'bg-background text-text border-border' }
+}
+
+const programBadgeStyle = (program) => {
+  if (program.mode === 'Premium') {
     return {
-      label: mode,
-      isVip: false,
-      className: 'bg-cream text-text border-border',
+      background: 'rgba(255,255,255,0.88)',
+      color: '#7a4a00',
+      border: '1px solid rgba(180,140,30,0.5)',
     }
   }
   return {
-    label: mode,
-    isVip: false,
-    className: 'bg-background text-text border-border',
+    background: 'rgba(255,255,255,0.18)',
+    color: program.textColor,
+    border: '1px solid rgba(255,255,255,0.35)',
   }
 }
 
@@ -749,25 +743,11 @@ onMounted(() => {
       activeWallpaperIndex.value = (activeWallpaperIndex.value + 1) % wallpaperSlides.length
     }, 3200)
   }
-  if (memberSlides.value.length > 1) {
-    memberInterval = setInterval(() => {
-      activeMemberSlide.value = (activeMemberSlide.value + 1) % memberSlides.value.length
-    }, 4200)
-  }
-  membersMediaQuery = window.matchMedia('(max-width: 639px)')
-  syncMembersSlideLayout()
-  membersMediaQuery.addEventListener('change', syncMembersSlideLayout)
 })
 
 onUnmounted(() => {
   if (wallpaperInterval) {
     clearInterval(wallpaperInterval)
-  }
-  if (memberInterval) {
-    clearInterval(memberInterval)
-  }
-  if (membersMediaQuery) {
-    membersMediaQuery.removeEventListener('change', syncMembersSlideLayout)
   }
   if (fadeObserver) {
     fadeObserver.disconnect()
