@@ -107,7 +107,7 @@
               class="px-7 py-3 rounded-full cursor-pointer border-2 border-primary text-primary text-sm md:text-base font-bold bg-white/80 hover:bg-sky transition-all"
               to="/signup"
             >
-              Daftar Peserta Bimbel
+              Daftar Peserta Kursus
             </router-link>
           </div>
         </div>
@@ -130,7 +130,7 @@
                 Kami berfokus pada pembinaan akademik, mental, fisik, dan karakter kepemimpinan. Dalam persaingan seleksi yang semakin ketat, kami meyakini keberhasilan tidak hanya ditentukan oleh kecerdasan, tetapi juga oleh strategi belajar yang tepat dan pembinaan yang konsisten.
               </p>
               <p>
-                Melalui metode pelatihan yang terstruktur, simulasi seleksi yang realistis, serta pendampingan mentor berpengalaman, setiap peserta dibimbing agar siap menghadapi seluruh tahapan seleksi AKPOL secara maksimal.
+                Melalui metode kursus yang terstruktur, simulasi seleksi yang realistis, serta pendampingan mentor berpengalaman, setiap peserta dipersiapkan agar siap menghadapi seluruh tahapan seleksi AKPOL secara maksimal.
               </p>
               <p>
                 Nama <span class="font-bold text-text">Pratistha</span> melambangkan kehormatan, keteguhan, dan fondasi kuat dalam meraih cita-cita. Nilai inilah yang kami tanamkan: semangat juang, integritas, kedisiplinan, dan mental pantang menyerah.
@@ -294,8 +294,8 @@
     <section id="choices" class="px-5 md:px-10 pb-8 relative">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
         <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-2 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight p-5 md:p-0">Pilihan Kelas BIMBEL dan Pelatihan</h2>
-          <p class="text-gray-600 p-5 md:p-0">Pilih jalur program sesuai kebutuhan pembinaan dan target persiapan.</p>
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight p-5 md:p-0">Pilihan Kelas Kursus</h2>
+          <p class="text-gray-600 p-5 md:p-0">Pilih jalur program sesuai kebutuhan kursus dan target persiapan.</p>
           <div class="grid md:grid-cols-2 gap-5 relative z-30">
             <article
               v-for="program in onlinePrograms"
@@ -323,7 +323,7 @@
     <section id="comparison" class="px-5 md:px-10 pb-8">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
         <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Tabel Perbandingan Fasilitas Kelas Bimbel</h2>
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Tabel Perbandingan Fasilitas Kelas Kursus</h2>
           <p class="text-gray-600 mb-6">Bandingkan fasilitas dan durasi akses setiap kelas untuk menentukan program paling sesuai.</p>
 
           <div class="overflow-x-auto rounded-2xl border border-border relative z-20">
@@ -380,7 +380,7 @@
       <div class="max-w-7xl mx-auto rounded-[2rem] bg-primary text-white p-8 md:p-10 shadow-2xl shadow-[#123B8F]/30 fade-up delay-3">
         <h2 class="text-2xl md:text-3xl font-bold mb-3">Siap naik level untuk persiapan Akademi Kepolisian?</h2>
         <p class="text-white/80 max-w-3xl">
-          Bergabung sebagai peserta, lengkapi pendaftaran secara bertahap, lalu ikuti program kelas bimbingan online dengan standar pembinaan profesional.
+          Bergabung sebagai peserta, lengkapi pendaftaran secara bertahap, lalu ikuti program kelas kursus online dengan standar pembelajaran profesional.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <router-link to="/signup" class="px-6 py-3 rounded-full bg-secondary text-white font-semibold hover:bg-primary transition-all">Mulai Pendaftaran</router-link>
@@ -500,7 +500,7 @@ const quickNavItems = [
   { id: 'leaders', label: 'Dewan Pimpinan' },
   { id: 'programs', label: 'Keunggulan Program' },
   { id: 'services', label: 'Layanan Pembinaan' },
-  { id: 'choices', label: 'Pilihan Bimbel' },
+  { id: 'choices', label: 'Pilihan Kursus' },
   { id: 'comparison', label: 'Perbandingan Kelas' },
 ]
 
@@ -533,7 +533,7 @@ const leaders = [
     position: 'Direktur Utama PT. Pratistha Training Center Indonesia',
     highlights: [
       'Wakapolda Jawa Tengah tahun 2016 - 2017',
-      'Pengarah operasional program pembinaan dan pelatihan',
+      'Pengarah operasional program kursus',
     ],
     image: awangUrl,
   },
@@ -541,7 +541,7 @@ const leaders = [
 
 const members = [
   { name: 'Gilang Nurfahradz Syahni Fasya, S.T', image: gilangUrl, jabatan: 'Direktur' },
-  { name: 'Win Tasajat, S.Pd.I., M.Si', image: winUrl, jabatan: 'Sekretaris' },
+  { name: 'Win Tasajat, S.Pd.I., M.Si', image: 'https://placehold.co/600x400', jabatan: 'Sekretaris' },
   { name: 'KBP (P) Dra.Rina Regina', image: rinaUrl, jabatan: 'Bendahara' },
   { name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P', image: natashaUrl, jabatan: 'Bidang Internal' },
   { name: 'Kompol (P) Tutik', image: tutikUrl, jabatan: 'Bidang Eksternal' },
@@ -574,9 +574,9 @@ const services = [
 /** Ringkasan hero: selaras dengan penyelenggara & layanan di halaman ini. */
 const heroSelayangPandang = {
   eyebrow: 'Selayang Pandang',
-  title: 'Bimbingan belajar dan pelatihan persiapan seleksi Akademi Kepolisian',
+  title: 'Lembaga Kursus Persiapan Seleksi Akademi Kepolisian',
   description:
-    'PT. Pratistha Training Center Indonesia menyelenggarakan program pendampingan untuk kesiapan calon peserta AKADEMI KEPOLISIAN, dengan fasilitas belajar eksklusif dan pembinaan profesional.',
+    'PT. Pratistha Training Center Indonesia adalah lembaga kursus yang menyelenggarakan program persiapan calon peserta AKADEMI KEPOLISIAN, dengan fasilitas belajar eksklusif dan pembelajaran profesional.',
   bannerAlt: 'Banner PT. Pratistha Training Center Indonesia — persiapan seleksi Akademi Kepolisian',
 }
 
@@ -624,7 +624,7 @@ const keyFeatures = [
     points: [
       'Jadwal pembinaan disusun dengan alur yang jelas.',
       'Sistem kelas membantu peserta belajar sesuai target program.',
-      'Monitoring rutin menjaga kedisiplinan selama masa pelatihan.',
+      'Monitoring rutin menjaga kedisiplinan selama masa kursus.',
     ],
   },
 ]
@@ -647,17 +647,17 @@ const classComparisonColumns = [
 ]
 
 const classComparisonRows = [
-  { label: 'Masa pelatihan', values: { karantina: '3 bulan', reguler: '3 bulan', online: '3 bulan', ujian: '3 bulan' } },
+  { label: 'Masa kursus', values: { karantina: '3 bulan', reguler: '3 bulan', online: '3 bulan', ujian: '3 bulan' } },
   { label: 'Konsultasi', values: { karantina: true, reguler: true, online: true, ujian: true } },
   { label: 'Penginapan siswa (1 kamar 2 orang)', values: { karantina: true, reguler: false, online: false, ujian: false } },
   { label: 'Makan (3 kali sehari)', values: { karantina: true, reguler: false, online: false, ujian: false } },
   { label: 'Seragam siswa (baju olahraga, batik, PDH)', values: { karantina: true, reguler: true, online: false, ujian: false } },
   { label: 'Psikotes', values: { karantina: true, reguler: true, online: false, ujian: false } },
   { label: 'Medical check up', values: { karantina: true, reguler: true, online: false, ujian: false } },
-  { label: 'Pelatihan jasmani', values: { karantina: true, reguler: true, online: false, ujian: false } },
-  { label: 'Pelatihan akademik', values: { karantina: true, reguler: true, online: true, ujian: false } },
-  { label: 'Pelatihan renang', values: { karantina: true, reguler: true, online: false, ujian: false } },
-  { label: 'Pelatihan ujian', values: { karantina: true, reguler: true, online: true, ujian: true } },
+  { label: 'Program jasmani', values: { karantina: true, reguler: true, online: false, ujian: false } },
+  { label: 'Program akademik', values: { karantina: true, reguler: true, online: true, ujian: false } },
+  { label: 'Program renang', values: { karantina: true, reguler: true, online: false, ujian: false } },
+  { label: 'Program ujian', values: { karantina: true, reguler: true, online: true, ujian: true } },
   { label: 'Materi online', values: { karantina: true, reguler: true, online: true, ujian: false } },
   { label: 'Transportasi selama program', values: { karantina: true, reguler: false, online: false, ujian: false } },
   { label: 'Tas dan topi', values: { karantina: true, reguler: true, online: false, ujian: false } },

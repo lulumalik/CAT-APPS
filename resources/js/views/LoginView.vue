@@ -11,7 +11,7 @@
             <router-link to="/" class="inline-flex items-center gap-2 mb-8 group">
               <span class="text-2xl text-secondary font-bold tracking-tight">{{ t('app.name') }}</span>
             </router-link>
-            <h1 class="text-3xl md:text-4xl font-bold leading-tight">Bimbingan belajar dan pelatihan persiapan untuk mengikuti seleksi AKADEMI KEPOLISIAN</h1>
+            <h1 class="text-3xl md:text-4xl font-bold leading-tight">Lembaga Kursus persiapan untuk mengikuti seleksi AKADEMI KEPOLISIAN</h1>
           </div>
           <img :src="patternUrl" alt="" class="absolute w-32 bottom-0 right-0 opacity-80 pointer-events-none" />
           <ul class="space-y-2 text-sm text-text/85 font-semibold">

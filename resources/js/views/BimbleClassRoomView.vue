@@ -16,7 +16,7 @@
         <div class="relative max-w-7xl mx-auto flex flex-col gap-5 md:gap-8 lg:flex-row lg:items-end">
           <div class="flex gap-3 md:gap-5 items-start">
             <div class="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-white/20 flex items-center justify-center text-[10px] md:text-xs font-bold text-center leading-tight shrink-0 border border-white/30 shadow-lg shadow-black/10">
-              BIMBEL
+              KURSUS
             </div>
             <div>
               <p class="inline-flex rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide text-white/90">

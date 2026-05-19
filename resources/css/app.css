@@ -1,4 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Roboto:wght@400;500;600;700&family=Source+Sans+Pro:wght@400;600;700&family=Karla:wght@400;500;600;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/liberation-sans');
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap');
+
+@theme {
+  --font-lora: 'Lora', Georgia, 'Times New Roman', serif;
+}
+
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -6,8 +13,16 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-lora: 'Lora', Georgia, 'Times New Roman', serif;
+    --font-liberation: 'Liberation Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Bookman Old Style', Bookman, 'URW Bookman L', 'Lora', Georgia, 'Times New Roman', serif;
+    --font-montserrat: 'Montserrat', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-source-sans: 'Source Sans Pro', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-karla: 'Karla', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-bookman: var(--font-sans);
     --color-primary: #123B8F;
     --color-secondary: #2F6BFF;
     --color-sky: #DDF4FF;
@@ -68,7 +83,7 @@
 
 @layer base {
     body {
-        @apply bg-background text-text;
+        @apply bg-background text-text font-sans;
     }
 }
 

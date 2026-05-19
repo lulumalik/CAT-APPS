@@ -49,7 +49,7 @@ export const messages = {
       materials: 'Materi',
       registrationWizard: 'Alur pendaftaran',
       adminRegistration: 'Admin pendaftaran',
-      bimbleClasses: 'Kelas bimbingan',
+      bimbleClasses: 'Kelas kursus',
       myClasses: 'Kelas saya',
       announcements: 'Announcement',
       notifications: 'Notifikasi',
@@ -420,7 +420,7 @@ export const messages = {
     bimble: {
       myClassesTitle: 'Kelas saya',
       myClassesEmpty: 'Belum ada kelas yang ditambahkan oleh admin. Hubungi admin setelah pendaftaran.',
-      manageTitle: 'Kelas bimbingan (bimbel)',
+      manageTitle: 'Kelas kursus',
       createClass: 'Buat kelas',
       openRoom: 'Buka ruang kelas',
       className: 'Nama kelas',

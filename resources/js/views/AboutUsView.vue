@@ -17,11 +17,34 @@
           <h1 class="mt-2 text-3xl md:text-5xl font-black leading-tight">
             PT. Pratistha Training Center Indonesia
           </h1>
-          <p class="mt-5 text-sm font-bold md:text-base text-white/90 leading-relaxed">
-            Pratistha Training Center hadir sebagai pusat pembinaan persiapan AKPOL yang membentuk kemampuan akademik,
-            mental, fisik, serta karakter kepemimpinan peserta secara terarah, disiplin, dan profesional.
+          <p class="mt-5 text-xl md:text-2xl font-bold text-white/90 leading-relaxed">
+            Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Training Center Indonesia didukung oleh legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan profesionalisme merupakan fondasi penting dalam membangun kepercayaan peserta didik maupun orang tua.
           </p>
         </div>
+      </section>
+
+      <section
+        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
+        <div class="relative z-20">
+          <div class="flex items-center justify-center gap-3">
+            <FileBadge class="h-6 w-6 text-primary" />
+            <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Legalitas Perusahaan</h2>
+          </div>
+          <p class="mt-2 text-gray-600 text-lg md:text-xl text-center">Berikut adalah nomor dokumen resmi perusahaan kami:</p>
+
+          <div class="mt-6 grid gap-6 md:grid-cols-3">
+            <article v-for="doc in legalDocuments" :key="doc.label"
+              class="rounded-xl border border-border bg-background shadow-lg overflow-hidden flex flex-col">
+              <div class="p-4 md:p-5 border-t border-border bg-gradient-to-br from-white to-sky flex-1">
+                <p class="text-xs md:text-sm uppercase tracking-[0.15em] font-bold text-primary text-center">{{ doc.label }}</p>
+                <p v-if="doc.subtitle" class="mt-1 text-xs md:text-sm text-gray-600 font-bold text-center leading-relaxed">{{ doc.subtitle }}</p>
+                <p class="mt-3 text-sm md:text-base font-bold text-text text-center break-words">{{ doc.value }}</p>
+              </div>
+            </article>
+          </div>
+        </div>
+        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
       <section
@@ -71,42 +94,81 @@
             <Users class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Struktur Organisasi</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center">Diagram jabatan inti PT. Pratistha Training Center Indonesia.</p>
+          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Diagram jabatan inti PT. Pratistha Training Center Indonesia.</p>
 
-          <div class="my-12 space-y-6">
-            <div v-for="(row, rowIndex) in organizationRows" :key="rowIndex">
-              <div class="grid gap-12" :class="row.gridClass">
-                <article v-for="item in row.items" :key="item.role"
-                  class="rounded-xl border border-border bg-gradient-to-br from-white to-sky p-4 text-center shadow-lg">
-                  <p class="text-lg uppercase tracking-[0.15em] text-primary font-bold">{{ item.role }}</p>
-                  <p class="mt-2 text-sm font-semibold text-text">{{ item.name || '-' }}</p>
-                </article>
+          <div class="org-chart my-12">
+            <div class="org-node">
+              <p class="org-node__role">{{ orgChart.penasehat.role }}</p>
+              <p class="org-node__name">{{ orgChart.penasehat.name }}</p>
+            </div>
+
+            <div class="org-stem" />
+
+            <div class="org-node">
+              <p class="org-node__role">{{ orgChart.komisaris.role }}</p>
+              <p class="org-node__name">{{ orgChart.komisaris.name }}</p>
+            </div>
+
+            <div class="org-stem" />
+
+            <div class="org-node">
+              <p class="org-node__role">{{ orgChart.direkturUtama.role }}</p>
+              <p class="org-node__name">{{ orgChart.direkturUtama.name }}</p>
+            </div>
+
+            <div class="org-stem" />
+
+            <div class="org-node">
+              <p class="org-node__role">{{ orgChart.direktur.role }}</p>
+              <p class="org-node__name">{{ orgChart.direktur.name }}</p>
+            </div>
+
+            <div class="org-split">
+              <div class="org-stem" />
+              <div class="org-split__cols">
+                <div class="org-split__col">
+                  <div class="org-split__drop" />
+                  <div class="org-node">
+                    <p class="org-node__role">{{ orgChart.sekretaris.role }}</p>
+                    <p class="org-node__name">{{ orgChart.sekretaris.name }}</p>
+                  </div>
+                </div>
+                <div class="org-split__col">
+                  <div class="org-split__drop" />
+                  <div class="org-node">
+                    <p class="org-node__role">{{ orgChart.bendahara.role }}</p>
+                    <p class="org-node__name">{{ orgChart.bendahara.name }}</p>
+                  </div>
+                </div>
               </div>
-              <div v-if="rowIndex < organizationRows.length - 1" class="flex justify-center py-1">
-                <div class="h-6 w-px bg-border border-2 border-border mt-6" />
+
+              <div class="org-split__through">
+                <div class="org-stem org-stem--bridge" />
+                <div class="org-split__cols org-split__cols--three">
+                  <div class="org-split__col">
+                    <div class="org-split__drop" />
+                    <div class="org-node">
+                      <p class="org-node__role">{{ orgChart.internal.role }}</p>
+                      <p class="org-node__name">{{ orgChart.internal.name }}</p>
+                    </div>
+                  </div>
+                  <div class="org-split__col">
+                    <div class="org-split__drop" />
+                    <div class="org-node">
+                      <p class="org-node__role">{{ orgChart.eksternal.role }}</p>
+                      <p class="org-node__name">{{ orgChart.eksternal.name }}</p>
+                    </div>
+                  </div>
+                  <div class="org-split__col">
+                    <div class="org-split__drop" />
+                    <div class="org-node">
+                      <p class="org-node__role">{{ orgChart.digitalMarketing.role }}</p>
+                      <p class="org-node__name">{{ orgChart.digitalMarketing.name }}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
-      </section>
-
-      <section
-        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
-        <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
-        <div class="relative z-20">
-          <div class="flex items-center justify-center gap-3">
-            <FileBadge class="h-6 w-6 text-primary" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Legalitas Perusahaan</h2>
-          </div>
-          <p class="mt-2 text-gray-600 text-center">Silakan lengkapi nomor dokumen resmi perusahaan di bawah ini.</p>
-
-          <div class="mt-6 grid sm:grid-cols-2 gap-4">
-            <article v-for="doc in legalDocuments" :key="doc.label"
-              class="rounded-xl border border-border bg-background p-4 shadow-lg">
-              <p class="text-xs uppercase tracking-[0.15em] font-bold text-primary text-center">{{ doc.label }}</p>
-              <p class="mt-2 text-base font-semibold text-text text-center">{{ doc.value || '-' }}</p>
-            </article>
           </div>
         </div>
         <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
@@ -120,15 +182,45 @@
             <Phone class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Kontak Kami</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center">Kanal komunikasi resmi PT. Pratistha Training Center Indonesia.</p>
-          <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Kanal komunikasi resmi PT. Pratistha Training Center Indonesia.</p>
+          <div class="mt-6 grid gap-4 md:flex md:flex-wrap justify-center gap-4">
             <article v-for="contact in contactChannels" :key="contact.label"
-              class="rounded-xl border border-border bg-gradient-to-br from-white to-sky shadow-lg p-4">
+              class="rounded-xl border border-border bg-gradient-to-br from-white to-sky shadow-lg p-4 md:w-1/3">
               <div class="flex items-center justify-center gap-2 text-primary">
                 <component :is="contact.icon" class="h-4 w-4" />
-                <p class="text-sm font-bold text-center">{{ contact.label }}</p>
+                <p class="text-sm md:text-xl font-bold text-center">{{ contact.label }}</p>
               </div>
               <p class="mt-2 text-sm font-semibold text-text break-all text-center">{{ contact.value || '-' }}</p>
+            </article>
+          </div>
+        </div>
+        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
+      </section>
+
+      <section
+        class="fade-up relative rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
+        <img :src="patternUrl" alt="Pattern" class="absolute w-28 top-12 right-0 opacity-90" />
+        <div class="relative z-20">
+          <div class="flex items-center justify-center gap-3">
+            <Landmark class="h-6 w-6 text-primary" />
+            <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Rekening Resmi Pembayaran</h2>
+          </div>
+          <p class="mt-2 text-gray-600 text-lg md:text-xl text-center max-w-3xl mx-auto">
+            Segala transaksi Lembaga Kursus Pratistha Training Center Indonesia hanya dilakukan melalui rekening resmi perusahaan di Bank BCA dan Bank BRI.
+          </p>
+
+          <div class="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm md:text-xl text-amber-900 text-center max-w-5xl mx-auto">
+            Demi keamanan, mohon pastikan pembayaran hanya ditransfer ke rekening resmi di bawah ini. Kami tidak menerima pembayaran melalui rekening pribadi, e-wallet, atau metode lain di luar rekening resmi perusahaan.
+          </div>
+
+          <div class="mt-6 grid sm:grid-cols-2 gap-4 max-w-5xl mx-auto">
+            <article v-for="account in officialBankAccounts" :key="account.bank"
+              class="rounded-xl border border-border bg-gradient-to-br from-white to-sky shadow-lg p-5">
+              <p class="text-sm md:text-xl uppercase tracking-[0.15em] font-bold text-primary text-center">{{ account.bank }}</p>
+              <p class="mt-3 text-sm font-semibold md:text-xl text-gray-600 text-center">Nomor Rekening</p>
+              <p class="mt-1 text-lg md:text-xl font-black text-text text-center tracking-wide">{{ account.accountNumber || '-' }}</p>
+              <p class="mt-4 text-sm font-semibold md:text-xl text-gray-600 text-center">Atas Nama</p>
+              <p class="mt-1 text-sm font-bold md:text-xl text-text text-center leading-relaxed">{{ account.accountName }}</p>
             </article>
           </div>
         </div>
@@ -143,7 +235,7 @@
             <Image class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-center">Galeri Kegiatan</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center">Dokumentasi suasana pembinaan dan aktivitas pelatihan peserta.</p>
+          <p class="mt-2 text-gray-600 text-center">Dokumentasi suasana pembelajaran dan aktivitas kursus peserta.</p>
           <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <article v-for="photo in galleryPhotos" :key="photo.src"
               class="rounded-2xl overflow-hidden border border-border bg-background shadow-lg">
@@ -159,7 +251,7 @@
 
 <script setup>
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
-import { ArrowLeft, FileBadge, Globe, Image, Instagram, Mail, Music2, Phone, Users } from 'lucide-vue-next'
+import { ArrowLeft, FileBadge, Globe, Image, Instagram, Landmark, Mail, Music2, Phone, Users } from 'lucide-vue-next'
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
@@ -173,6 +265,9 @@ const activityBookUrl = new URL('../../assets/book.jpg', import.meta.url).href
 const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
 const tubagusUrl = new URL('../../assets/bpk_tubagus.jpg', import.meta.url).href
 const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
+const skKemenkumhamUrl = new URL('../../assets/legal/sk-kemenkumham.png', import.meta.url).href
+const npwpUrl = new URL('../../assets/legal/npwp.png', import.meta.url).href
+const nibUrl = new URL('../../assets/legal/nib.png', import.meta.url).href
 
 const heroLeaders = [
   {
@@ -196,40 +291,59 @@ const heroLeaders = [
   },
 ]
 
-const organizationRows = [
+const orgChart = {
+  penasehat: { role: 'Penasehat', name: 'Komjen Pol (P) Drs. H. Nana S. Permana' },
+  komisaris: { role: 'Komisaris', name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si' },
+  direkturUtama: { role: 'Direktur Utama', name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH' },
+  direktur: { role: 'Direktur', name: 'Gilang Nurfahradz Syahni Fasya, S.T' },
+  sekretaris: { role: 'Sekretaris', name: '-' },
+  bendahara: { role: 'Bendahara', name: 'KBP (P) Dra.Rina Regina' },
+  internal: { role: 'Internal', name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P' },
+  eksternal: { role: 'Eksternal', name: 'Kompol (P) Tutik' },
+  digitalMarketing: { role: 'Digital Marketing', name: '-' },
+}
+
+const legalDocuments = [
   {
-    gridClass: 'md:max-w-sm mx-auto',
-    items: [{ role: 'Penasehat', name: 'Komjen Pol (P) Drs. H. Nana S. Permana' }],
+    label: 'Nomor SK Kemenkumham',
+    subtitle: 'Keputusan Menteri Hukum Republik Indonesia',
+    value: 'AHU-0037173.AH.01.01.TAHUN 2026',
+    image: skKemenkumhamUrl,
+    alt: 'SK Kemenkumham PT. Pratistha Training Center Indonesia',
   },
   {
-    gridClass: 'md:max-w-2xl mx-auto sm:grid-cols-2',
-    items: [
-      { role: 'Komisaris', name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si' },
-      { role: 'Direktur Utama', name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH' },
+    label: 'NPWP Perusahaan',
+    subtitle: 'Nomor Pokok Wajib Pajak',
+    value: '1000 0000 0958 6609',
+    details: [
+      'PT PRATISTHA TRAINING CENTER INDONESIA',
+      'Jalan Sukamaju Nomor 142 RT. 003 RW. 005, Cipadung Kulon, Panyileukan, Kota Bandung, Jawa Barat',
+      'Tanggal Terdaftar: 11/05/2026',
+      'KPP Pratama Bandung Cicadas',
     ],
+    image: npwpUrl,
+    alt: 'NPWP PT. Pratistha Training Center Indonesia',
   },
   {
-    gridClass: 'md:max-w-4xl mx-auto sm:grid-cols-3',
-    items: [
-      { role: 'Direktur', name: 'Gilang Nurfahradz Syahni Fasya, S.T' },
-      { role: 'Sekretaris', name: 'Win Tasajat, S.Pd.I., M.Si' },
-      { role: 'Bendahara', name: 'KBP (P) Dra.Rina Regina' },
-    ],
-  },
-  {
-    gridClass: 'md:max-w-2xl mx-auto sm:grid-cols-2',
-    items: [
-      { role: 'Internal', name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P' },
-      { role: 'Eksternal', name: 'Kompol (P) Tutik' },
-    ],
+    label: 'Nomor Induk Berusaha (NIB)',
+    subtitle: 'Perizinan Berusaha Berbasis Risiko — Pemerintah Republik Indonesia',
+    value: '1805260036293',
+    image: nibUrl,
+    alt: 'NIB PT. Pratistha Training Center Indonesia',
   },
 ]
 
-const legalDocuments = [
-  { label: 'Nomor SK Kemenkumham', value: '-' },
-  { label: 'NPWP Perusahaan', value: '-' },
-  { label: 'Nomor Induk Berusaha (NIB)', value: '-' },
-  { label: 'Nomor Izin Operasional', value: '-' },
+const officialBankAccounts = [
+  {
+    bank: 'Bank BCA',
+    accountNumber: '-',
+    accountName: 'PT. Pratistha Training Center Indonesia',
+  },
+  {
+    bank: 'Bank BRI',
+    accountNumber: '-',
+    accountName: 'PT. Pratistha Training Center Indonesia',
+  },
 ]
 
 const contactChannels = [
@@ -241,11 +355,11 @@ const contactChannels = [
 ]
 
 const galleryPhotos = [
-  { src: bannerUrl, alt: 'Banner Pratistha Training Center', caption: 'Program pembinaan terarah dan profesional.' },
-  { src: wallpaper1Url, alt: 'Kegiatan pelatihan 1', caption: 'Suasana pembinaan akademik dan kesiapan seleksi.' },
-  { src: wallpaper2Url, alt: 'Kegiatan pelatihan 2', caption: 'Latihan terukur untuk meningkatkan konsistensi peserta.' },
-  { src: wallpaper3Url, alt: 'Kegiatan pelatihan 3', caption: 'Pendampingan intensif oleh mentor berpengalaman.' },
-  { src: wallpaper4Url, alt: 'Kegiatan pelatihan 4', caption: 'Pembinaan fisik, mental, dan karakter kepemimpinan.' },
+  { src: bannerUrl, alt: 'Banner Pratistha Training Center', caption: 'Program kursus terarah dan profesional.' },
+  { src: wallpaper1Url, alt: 'Kegiatan kursus 1', caption: 'Suasana pembelajaran akademik dan kesiapan seleksi.' },
+  { src: wallpaper2Url, alt: 'Kegiatan kursus 2', caption: 'Latihan terukur untuk meningkatkan konsistensi peserta.' },
+  { src: wallpaper3Url, alt: 'Kegiatan kursus 3', caption: 'Pendampingan intensif oleh mentor berpengalaman.' },
+  { src: wallpaper4Url, alt: 'Kegiatan kursus 4', caption: 'Pembelajaran fisik, mental, dan karakter kepemimpinan.' },
   { src: activityBookUrl, alt: 'Materi belajar', caption: 'Dokumentasi materi belajar dan simulasi seleksi.' },
 ]
 
@@ -404,5 +518,196 @@ onBeforeUnmount(() => {
 
 .leader-carousel::-webkit-scrollbar {
   display: none;
+}
+
+.org-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: auto;
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: 0 0.5rem 1rem;
+}
+
+.org-node {
+  width: min(100%, 34rem);
+  padding: 1.4rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border, #dce6f2);
+  background: linear-gradient(to bottom right, #fff, var(--color-sky, #ddf4ff));
+  text-align: center;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.08);
+}
+
+.org-node__role {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-primary, #123b8f);
+}
+
+.org-node__name {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-text, #1d2b4f);
+}
+
+.org-stem {
+  width: 2px;
+  height: 1.75rem;
+  background: var(--color-border, #dce6f2);
+  flex-shrink: 0;
+}
+
+.org-split {
+  --org-through-offset: 8rem;
+  --org-through-stem: 10rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 44rem;
+}
+
+.org-split__through {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: calc(-1 * var(--org-through-offset));
+}
+
+.org-stem--bridge {
+  height: var(--org-through-stem);
+}
+
+.org-split:has(.org-split__cols--three) {
+  max-width: min(100%, 72rem);
+  width: 100%;
+}
+
+.org-split__cols--three {
+  --org-gap: clamp(1rem, 2.5vw, 1.5rem);
+  width: 100%;
+}
+
+.org-split__cols--three::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc((100% - 2 * var(--org-gap)) / 6);
+  width: calc(100% - (100% - 2 * var(--org-gap)) / 3);
+  height: 2px;
+  background: var(--color-border, #dce6f2);
+}
+
+.org-split__cols--three .org-split__col {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: none;
+  align-items: center;
+}
+
+.org-split__cols--three .org-split__drop {
+  align-self: center;
+}
+
+.org-split__cols--three .org-node {
+  width: 100%;
+  align-self: stretch;
+  min-height: 100%;
+  min-width: 14rem;
+  padding: 1.4rem;
+  box-sizing: border-box;
+}
+
+.org-split__cols {
+  --org-gap: clamp(1.5rem, 6vw, 4rem);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--org-gap);
+  width: 100%;
+}
+
+.org-split__col {
+  position: relative;
+  flex: 1;
+  max-width: 32rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.org-split__cols:not(.org-split__cols--three) .org-split__col:first-child::after,
+.org-split__cols:not(.org-split__cols--three) .org-split__col:last-child::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 2px;
+  background: var(--color-border, #dce6f2);
+  width: calc(100% + var(--org-gap));
+}
+
+.org-split__cols:not(.org-split__cols--three) .org-split__col:first-child::after {
+  left: 50%;
+}
+
+.org-split__cols:not(.org-split__cols--three) .org-split__col:last-child::after {
+  right: 50%;
+}
+
+.org-split__cols--three .org-split__col::after {
+  display: none;
+}
+
+.org-split__drop {
+  width: 2px;
+  height: 1.25rem;
+  background: var(--color-border, #dce6f2);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .org-split__through {
+    margin-top: 0;
+  }
+
+  .org-stem--bridge {
+    height: 1.75rem;
+  }
+
+  .org-split__cols {
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .org-split__cols:not(.org-split__cols--three) .org-split__col:first-child::after,
+  .org-split__cols:not(.org-split__cols--three) .org-split__col:last-child::after,
+  .org-split__cols--three::before {
+    display: none;
+  }
+
+  .org-split__drop {
+    display: none;
+  }
+
+  .org-split__col + .org-split__col {
+    margin-top: 0.5rem;
+  }
+
+  .org-split__col + .org-split__col::before {
+    content: '';
+    width: 2px;
+    height: 1rem;
+    background: var(--color-border, #dce6f2);
+  }
 }
 </style>

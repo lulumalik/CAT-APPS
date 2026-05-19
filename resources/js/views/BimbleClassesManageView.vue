@@ -205,7 +205,7 @@ async function load() {
     errorMessage.value = ''
   } catch (error) {
     classes.value = []
-    errorMessage.value = error?.response?.data?.message || 'Gagal memuat data kelas bimbingan.'
+    errorMessage.value = error?.response?.data?.message || 'Gagal memuat data kelas kursus.'
   } finally {
     loading.value = false
   }
