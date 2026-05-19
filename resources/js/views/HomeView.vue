@@ -541,7 +541,7 @@ const leaders = [
 
 const members = [
   { name: 'Gilang Nurfahradz Syahni Fasya, S.T', image: gilangUrl, jabatan: 'Direktur' },
-  { name: 'Win Tasajat, S.Pd.I., M.Si', image: 'https://placehold.co/600x400', jabatan: 'Sekretaris' },
+  { name: '-', image: 'https://placehold.co/600x400', jabatan: 'Sekretaris' },
   { name: 'KBP (P) Dra.Rina Regina', image: rinaUrl, jabatan: 'Bendahara' },
   { name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P', image: natashaUrl, jabatan: 'Bidang Internal' },
   { name: 'Kompol (P) Tutik', image: tutikUrl, jabatan: 'Bidang Eksternal' },
