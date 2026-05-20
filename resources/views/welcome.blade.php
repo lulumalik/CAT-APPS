@@ -12,16 +12,16 @@
         <meta name="robots" content="index,follow">
         <meta name="theme-color" content="#123B8F">
         <link rel="canonical" href="{{ url()->current() }}">
-        <link rel="icon" type="image/x-icon" href="{{ Vite::asset('resources/assets/favicon_io/favicon.ico') }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ Vite::asset('resources/assets/favicon_io/favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ Vite::asset('resources/assets/favicon_io/favicon-16x16.png') }}">
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ Vite::asset('resources/assets/favicon_io/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon_io/favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon_io/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon_io/favicon-16x16.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon_io/apple-touch-icon.png') }}">
         <meta property="og:type" content="{{ isset($material) ? 'article' : 'website' }}">
         <meta property="og:site_name" content="Bimbel Platform">
         <meta property="og:title" content="{{ isset($material) ? $material->title : 'Bimbel Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
         <meta property="og:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Bimbel Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
         <meta property="og:url" content="{{ url()->current() }}">
-        <meta property="og:image" content="{{ Vite::asset('resources/assets/favicon_io/android-chrome-512x512.png') }}">
+        <meta property="og:image" content="{{ asset('favicon_io/android-chrome-512x512.png') }}">
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="{{ isset($material) ? $material->title : 'Bimbel Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
         <meta name="twitter:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Bimbel Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
