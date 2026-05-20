@@ -9,10 +9,15 @@
         <img :src="patternUrl" alt="Pattern" class="absolute opacity-25 w-40 md:w-52 -bottom-8 -right-6 z-[1]" />
         <div class="relative z-10">
           <router-link to="/"
-            class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
+            class="inline-flex absolute left-0 top-0 items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
             <ArrowLeft class="h-4 w-4" />
             Kembali ke Beranda
           </router-link>
+          <img
+            :src="brandLogoUrl"
+            alt="Logo Pratistha Cendekia Prestasi"
+            class="mx-auto mb-5 h-16 w-16 md:h-72 md:w-72 rounded-full border border-white/70 bg-white/90 p-2 shadow-lg"
+          />
           <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-white/80">Tentang Kami</p>
           <h1 class="mt-2 text-3xl md:text-5xl font-black leading-tight">
             Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
@@ -255,6 +260,7 @@ import { ArrowLeft, FileBadge, Globe, Image, Instagram, Landmark, Mail, Music2, 
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
+const brandLogoUrl = new URL('../../assets/favicon_io/android-chrome-512x512.png', import.meta.url).href
 const backgroundAboutUrl = new URL('../../assets/background-about.jpg', import.meta.url).href
 const wallpaper1Url = new URL('../../assets/wallpaper/1.webp', import.meta.url).href
 const wallpaper2Url = new URL('../../assets/wallpaper/2.jpeg', import.meta.url).href

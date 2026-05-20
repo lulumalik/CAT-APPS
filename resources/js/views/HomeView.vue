@@ -65,6 +65,11 @@
       <div
         class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-32 md:pt-32 pb-14 md:px-10">
         <div class="text-center max-w-4xl fade-up">
+          <img
+            :src="brandLogoUrl"
+            alt="Logo Pratistha Cendekia Prestasi"
+            class="mx-auto mb-4 h-16 w-16 md:h-72 md:w-72 rounded-full border border-white/70 bg-white/90 p-2 shadow-lg"
+          />
           <p class="text-[11px] md:text-4xl font-bold uppercase tracking-[0.2em] text-primary mb-3">
             Pratistha Cendekia Prestasi
           </p>
@@ -495,6 +500,7 @@ const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).hre
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
+const brandLogoUrl = new URL('../../assets/favicon_io/android-chrome-512x512.png', import.meta.url).href
 const bannerUrl = new URL('../../assets/bg_1.png', import.meta.url).href
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const wallpaperModules = import.meta.glob('../../assets/wallpaper/*.{jpg,jpeg,png,webp}', {
