@@ -1,32 +1,25 @@
 <template>
   <main class="min-h-screen text-text bg-gradient-to-b from-[#52a2ed] via-[#260da7] via-[#5f0ad7] to-[#13c1fc]">
     <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
-      <div class="mx-auto max-w-7xl rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-6 py-2 md:py-0">
+      <div
+        class="mx-auto max-w-7xl rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-6 py-2 md:py-0">
         <div class="hidden md:grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-4">
           <div class="flex items-center gap-1">
-            <button
-              v-for="item in quickNavItems"
-              :key="item.id"
-              type="button"
+            <button v-for="item in quickNavItems" :key="item.id" type="button"
               class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap"
-              @click="scrollToSection(item.id)"
-            >
+              @click="scrollToSection(item.id)">
               {{ item.label }}
             </button>
           </div>
 
-          <router-link
-            to="/about-us"
-            class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap"
-          >
+          <router-link to="/about-us"
+            class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap">
             Tentang Kami
           </router-link>
 
           <div class="flex items-center justify-end gap-3">
-            <router-link
-              to="/login"
-              class="px-4 py-2 rounded-full bg-primary text-white text-[11px] lg:text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors whitespace-nowrap"
-            >
+            <router-link to="/login"
+              class="px-4 py-2 rounded-full bg-primary text-white text-[11px] lg:text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors whitespace-nowrap">
               Masuk Ke Platform
             </router-link>
           </div>
@@ -34,38 +27,27 @@
 
         <div class="md:hidden">
           <div class="h-12 flex items-center justify-between gap-3">
-            <router-link
-              to="/about-us"
-              class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors"
-            >
+            <router-link to="/about-us"
+              class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors">
               Tentang Kami
             </router-link>
-            <button
-              type="button"
+            <button type="button"
               class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-text hover:bg-sky transition-colors"
-              aria-label="Toggle menu"
-              @click="isMobileMenuOpen = !isMobileMenuOpen"
-            >
+              aria-label="Toggle menu" @click="isMobileMenuOpen = !isMobileMenuOpen">
               <span class="text-xl leading-none">{{ isMobileMenuOpen ? 'x' : '=' }}</span>
             </button>
           </div>
 
           <div v-if="isMobileMenuOpen" class="pb-3 pt-2 border-t border-border">
             <div class="grid gap-1">
-              <button
-                v-for="item in quickNavItems"
-                :key="`mobile-${item.id}`"
-                type="button"
+              <button v-for="item in quickNavItems" :key="`mobile-${item.id}`" type="button"
                 class="text-left text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors"
-                @click="scrollToSection(item.id)"
-              >
+                @click="scrollToSection(item.id)">
                 {{ item.label }}
               </button>
-              <router-link
-                to="/signup"
+              <router-link to="/signup"
                 class="mt-2 px-4 py-2 rounded-md bg-primary text-white text-center text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors"
-                @click="isMobileMenuOpen = false"
-              >
+                @click="isMobileMenuOpen = false">
                 Masuk Ke Platform
               </router-link>
             </div>
@@ -75,14 +57,13 @@
     </div>
 
     <section id="hero" class="relative overflow-hidden rounded-none md:rounded-2xl min-h-[560px] md:min-h-[700px]">
-      <img
-        :src="bannerUrl"
-        :alt="heroSelayangPandang.bannerAlt"
-        class="absolute inset-0 h-full w-full object-cover object-center rounded-none md:rounded-2xl hero-banner-fade"
-      />
-      <div class="absolute inset-0 rounded-none md:rounded-2xl bg-gradient-to-b from-white/88 via-white/60 to-black/40" />
+      <img :src="bannerUrl" :alt="heroSelayangPandang.bannerAlt"
+        class="absolute inset-0 h-full w-full object-cover object-center rounded-none md:rounded-2xl hero-banner-fade" />
+      <div
+        class="absolute inset-0 rounded-none md:rounded-2xl bg-gradient-to-b from-white/88 via-white/60 to-black/40" />
 
-      <div class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-32 md:pt-32 pb-14 md:px-10">
+      <div
+        class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-32 md:pt-32 pb-14 md:px-10">
         <div class="text-center max-w-4xl fade-up">
           <p class="text-[11px] md:text-4xl font-bold uppercase tracking-[0.2em] text-primary mb-3">
             Pratistha Cendekia Prestasi
@@ -99,14 +80,13 @@
             </div>
           </div>
           <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <router-link to="/free-tryout" class="px-7 py-3 rounded-full bg-secondary text-white text-sm md:text-base font-bold shadow-lg shadow-[#2F6BFF]/25 hover:bg-primary transition-all">
+            <router-link to="/free-tryout"
+              class="px-7 py-3 rounded-full bg-secondary text-white text-sm md:text-base font-bold shadow-lg shadow-[#2F6BFF]/25 hover:bg-primary transition-all">
               Coba Tryout Gratis
             </router-link>
-            <router-link
-              type="button"
+            <router-link type="button"
               class="px-7 py-3 rounded-full cursor-pointer border-2 border-primary text-primary text-sm md:text-base font-bold bg-white/80 hover:bg-sky transition-all"
-              to="/signup"
-            >
+              to="/signup">
               Daftar Peserta Kursus
             </router-link>
           </div>
@@ -116,7 +96,8 @@
 
     <section id="selayang-pandang-2" class="px-5 md:px-10 py-10">
       <div class="max-w-7xl mx-auto fade-up delay-1 relative">
-        <div class="rounded-[2rem] bg-white border border-blue-100/80 shadow-xl shadow-primary/8 p-8 md:p-10 relative overflow-hidden">
+        <div
+          class="rounded-[2rem] bg-white border border-blue-100/80 shadow-xl shadow-primary/8 p-8 md:p-10 relative overflow-hidden">
           <div class="relative z-30">
             <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3">Selayang Pandang</p>
             <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-text leading-tight">
@@ -124,22 +105,32 @@
             </h2>
             <div class="mt-6 space-y-4 font-semibold text-gray-700 leading-relaxed">
               <p>
-                Selamat datang di <span class="font-bold text-text">Pratistha Cendekia Prestasi</span>, tempat lahirnya calon taruna terbaik yang dipersiapkan secara terarah, disiplin, dan profesional untuk menghadapi seleksi Akademi Kepolisian.
+                Selamat datang di <span class="font-bold text-text">Pratistha Cendekia Prestasi</span>, tempat lahirnya
+                calon taruna terbaik yang dipersiapkan secara terarah, disiplin, dan profesional untuk menghadapi
+                seleksi Akademi Kepolisian.
               </p>
               <p>
-                Kami berfokus pada pembinaan akademik, mental, fisik, dan karakter kepemimpinan. Dalam persaingan seleksi yang semakin ketat, kami meyakini keberhasilan tidak hanya ditentukan oleh kecerdasan, tetapi juga oleh strategi belajar yang tepat dan pembinaan yang konsisten.
+                Kami berfokus pada pembinaan akademik, mental, fisik, dan karakter kepemimpinan. Dalam persaingan
+                seleksi yang semakin ketat, kami meyakini keberhasilan tidak hanya ditentukan oleh kecerdasan, tetapi
+                juga oleh strategi belajar yang tepat dan pembinaan yang konsisten.
               </p>
               <p>
-                Melalui metode kursus yang terstruktur, simulasi seleksi yang realistis, serta pendampingan mentor berpengalaman, setiap peserta dipersiapkan agar siap menghadapi seluruh tahapan seleksi AKPOL secara maksimal.
+                Melalui metode kursus yang terstruktur, simulasi seleksi yang realistis, serta pendampingan mentor
+                berpengalaman, setiap peserta dipersiapkan agar siap menghadapi seluruh tahapan seleksi AKPOL secara
+                maksimal.
               </p>
               <p>
-                Nama <span class="font-bold text-text">Pratistha</span> melambangkan kehormatan, keteguhan, dan fondasi kuat dalam meraih cita-cita. Nilai inilah yang kami tanamkan: semangat juang, integritas, kedisiplinan, dan mental pantang menyerah.
+                Nama <span class="font-bold text-text">Pratistha</span> melambangkan kehormatan, keteguhan, dan fondasi
+                kuat dalam meraih cita-cita. Nilai inilah yang kami tanamkan: semangat juang, integritas, kedisiplinan,
+                dan mental pantang menyerah.
               </p>
               <p>
-                Kami tidak hanya membina peserta untuk lulus seleksi, tetapi juga membentuk pribadi berkarakter yang siap menjadi generasi pemimpin bangsa.
+                Kami tidak hanya membina peserta untuk lulus seleksi, tetapi juga membentuk pribadi berkarakter yang
+                siap menjadi generasi pemimpin bangsa.
               </p>
             </div>
-            <p class="mt-6 text-lg font-bold text-primary">Bersama Pratistha Cendekia Prestasi, wujudkan langkah pasti menuju AKPOL.</p>
+            <p class="mt-6 text-lg font-bold text-primary">Bersama Pratistha Cendekia Prestasi, wujudkan langkah pasti
+              menuju AKPOL.</p>
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
           <SectionWaveDivider class="absolute -bottom-4 md:-bottom-30 left-0 right-0 z-10" />
@@ -147,41 +138,33 @@
       </div>
     </section>
 
-    
+
     <section id="leaders" class="my-10">
       <div class="max-w-7xl mx-auto fade-up fade-up-tight delay-2 relative">
         <div class="rounded-[2rem] bg-white border border-blue-100/70 shadow-xl shadow-primary/8 p-8 md:p-10">
           <!-- <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Dewan Pimpinan</h2> -->
-          <p class="text-3xl md:text-4xl font-bold tracking-tight mb-2 mb-8">Profil pejabat dan pimpinan Pratistha Cendekia Prestasi.</p>
+          <p class="text-3xl md:text-4xl font-bold tracking-tight mb-2 mb-8">Profil pejabat dan pimpinan Pratistha
+            Cendekia Prestasi.</p>
 
           <div class="grid gap-6 relative z-30">
-            <article
-              v-for="(leader, index) in leaders"
-              :key="leader.name"
-              class="group rounded-3xl relative bg-gradient-to-br from-[#b0862e] via-[#bea053] to-[#dac887] flex flex-col md:flex-row overflow-hidden border border-blue-100/20 transition-all duration-300 hover:-translate-y-1"
-            >
-              <div
-                class="relative md:w-[38%] lg:w-[34%] shrink-0 bg-sky"
-                :class="index % 2 === 0 ? 'md:order-1' : 'md:order-2'"
-              >
-                <img
-                  :src="leader.image"
-                  :alt="leader.name"
-                  class="w-full h-[400px] md:h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
-                />
+            <article v-for="(leader, index) in leaders" :key="leader.name"
+              class="group rounded-3xl relative bg-gradient-to-br from-[#b0862e] via-[#bea053] to-[#dac887] flex flex-col md:flex-row overflow-hidden border border-blue-100/20 transition-all duration-300 hover:-translate-y-1">
+              <div class="relative md:w-[38%] lg:w-[34%] shrink-0 bg-sky"
+                :class="index % 2 === 0 ? 'md:order-1' : 'md:order-2'">
+                <img :src="leader.image" :alt="leader.name"
+                  class="w-full h-[400px] md:h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]" />
                 <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
-              <div
-                class="p-6 md:p-8 flex-1"
-                :class="index % 2 === 0 ? 'md:order-2' : 'md:order-1'"
-              >
+              <div class="p-6 md:p-8 flex-1" :class="index % 2 === 0 ? 'md:order-2' : 'md:order-1'">
                 <p class="text-[14px] font-bold uppercase tracking-[0.18em] text-white">Profil {{ leader.jabatan }}</p>
-                <h3 class="mt-2 font-extrabold text-2xl md:text-3xl leading-tight tracking-tight text-white">{{ leader.name }}</h3>
+                <h3 class="mt-2 font-extrabold text-2xl md:text-3xl leading-tight tracking-tight text-white">{{
+                  leader.name }}</h3>
                 <p class="text-base text-cyan-200 font-bold mt-2">{{ leader.batch }}</p>
 
                 <div class="mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px]">
                   <p class="text-[14px] font-bold tracking-[0.14em] text-white uppercase">Posisi Saat Ini</p>
-                  <p class="mt-1 text-base md:text-lg font-semibold leading-relaxed text-white">{{ leader.position }}</p>
+                  <p class="mt-1 text-base md:text-lg font-semibold leading-relaxed text-white">{{ leader.position }}
+                  </p>
                 </div>
 
                 <div class="mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px]">
@@ -202,25 +185,32 @@
 
     <section id="members" class="pb-8">
       <div class="max-w-7xl mx-auto fade-up fade-up-tight">
-        <div class="rounded-[2rem] bg-gradient-to-br from-white to-secondary border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10 relative overflow-hidden">
+        <div
+          class="rounded-[2rem] bg-gradient-to-br from-white to-secondary border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10 relative overflow-hidden">
           <h3 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Staff</h3>
           <p class="text-gray-600 mb-6">Staff pendukung program pembinaan Pratistha Cendekia Prestasi.</p>
           <div class="relative z-20 flex flex-wrap justify-center gap-5">
-            <article
-              v-for="member in members"
-              :key="member.name"
-              class="group flex flex-col items-center text-center rounded-2xl border border-border bg-gradient-to-b from-white to-sky/80 p-5 w-[calc(50%-10px)] sm:w-[320px] hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-            >
+            <article v-for="member in members" :key="member.name"
+              class="group flex flex-col items-center text-center rounded-2xl border border-border bg-gradient-to-b from-white to-sky/80 p-5 w-[calc(50%-10px)] sm:w-[320px] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40"
+              role="button" tabindex="0" @click="openMemberModal(member)"
+              @keydown.enter.prevent="openMemberModal(member)" @keydown.space.prevent="openMemberModal(member)">
               <div class="relative mb-4">
-                <div class="w-28 h-28 md:w-56 md:h-56 rounded-full overflow-hidden ring-4 ring-white shadow-lg border-2 border-primary/15 group-hover:ring-primary/30 group-hover:border-primary/30 transition-all duration-300">
-                  <img :src="member.image" :alt="member.name" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                <div
+                  class="w-28 h-28 md:w-56 md:h-56 rounded-full overflow-hidden ring-4 ring-white shadow-lg border-2 border-primary/15 group-hover:ring-primary/30 group-hover:border-primary/30 transition-all duration-300">
+                  <img :src="member.image" :alt="member.name"
+                    class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-secondary flex items-center justify-center shadow-md">
+                <div
+                  class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-secondary flex items-center justify-center shadow-md">
                   <span class="block w-2.5 h-2.5 rounded-full bg-white" />
                 </div>
               </div>
               <h4 class="font-bold text-sm md:text-lg leading-snug text-text">{{ member.name }}</h4>
-              <p class="text-xs md:text-base text-primary font-semibold mt-1 uppercase tracking-wide">{{ member.jabatan }}</p>
+              <p class="text-xs md:text-base text-primary font-semibold mt-1 uppercase tracking-wide">{{ member.jabatan
+                }}</p>
+              <span class="mt-3 inline-flex items-center text-[11px] md:text-xs font-semibold text-primary">
+                Lihat profil
+              </span>
             </article>
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-28 bottom-0 right-0" />
@@ -228,20 +218,16 @@
         </div>
       </div>
     </section>
-    
+
     <section id="programs" class="px-5 md:px-10 pb-8">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
         <div class="rounded-[2rem] bg-white border border-primary/10 shadow-xl shadow-primary/8 p-8 md:p-10">
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Keunggulan Program</h2>
           <p class="text-gray-600 mb-8">Ekosistem belajar yang didesain untuk disiplin, konsisten, dan terukur.</p>
           <div class="grid md:grid-cols-2 gap-5 relative z-10">
-            <button
-              v-for="feature in keyFeatures"
-              :key="feature.title"
-              type="button"
+            <button v-for="feature in keyFeatures" :key="feature.title" type="button"
               class="rounded-2xl border border-border bg-gradient-to-br from-white to-sky p-6 text-left cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
-              @click="openFeatureModal(feature)"
-            >
+              @click="openFeatureModal(feature)">
               <div class="mb-3 inline-flex rounded-lg bg-sky p-2 text-primary">
                 <component :is="feature.icon" class="h-5 w-5" />
               </div>
@@ -263,11 +249,8 @@
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Layanan Pembinaan</h2>
           <p class="text-gray-600 mb-8">Program seleksi dan pendampingan untuk kesiapan calon peserta.</p>
           <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <article
-              v-for="service in services"
-              :key="service.title"
-              class="rounded-2xl border border-border bg-background p-5 hover:-translate-y-1 hover:shadow-lg transition-all"
-            >
+            <article v-for="service in services" :key="service.title"
+              class="rounded-2xl border border-border bg-background p-5 hover:-translate-y-1 hover:shadow-lg transition-all">
               <div class="mb-3 inline-flex rounded-lg bg-sky p-2 text-primary">
                 <component :is="service.icon" class="h-5 w-5" />
               </div>
@@ -286,23 +269,18 @@
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight p-5 md:p-0">Pilihan Kelas Kursus</h2>
           <p class="text-gray-600 p-5 md:p-0">Pilih jalur program sesuai kebutuhan kursus dan target persiapan.</p>
           <div class="grid md:grid-cols-2 gap-5 relative z-30 mt-8">
-            <article
-              v-for="program in onlinePrograms"
-              :key="program.value"
-              class="rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1"
-              :style="{
+            <article v-for="program in onlinePrograms" :key="program.value"
+              class="rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1" :style="{
                 backgroundImage: program.backgroundColor,
                 color: program.textColor,
                 boxShadow: program.boxShadow,
                 border: '1px solid rgba(255,255,255,0.18)',
-              }"
-            >
+              }">
               <div class="flex items-center justify-between gap-3">
                 <h3 class="font-bold text-lg md:whitespace-nowrap">{{ program.name }}</h3>
                 <span
                   class="inline-flex shrink-0 items-center gap-1 text-xs px-2.5 py-1 rounded-full font-bold backdrop-blur-sm"
-                  :style="programBadgeStyle(program)"
-                >
+                  :style="programBadgeStyle(program)">
                   <Crown v-if="program.mode === 'Premium'" class="h-3.5 w-3.5" />
                   {{ program.mode }}
                 </span>
@@ -322,19 +300,19 @@
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
         <div class="rounded-[2rem] bg-white border border-blue-100/60 shadow-xl shadow-primary/6 p-8 md:p-10">
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Tabel Perbandingan Fasilitas Kelas Kursus</h2>
-          <p class="text-gray-600 mb-6">Bandingkan fasilitas dan durasi akses setiap kelas untuk menentukan program paling sesuai.</p>
+          <p class="text-gray-600 mb-6">Bandingkan fasilitas dan durasi akses setiap kelas untuk menentukan program
+            paling sesuai.</p>
 
           <div class="overflow-x-auto rounded-2xl border border-border relative z-20">
             <table class="min-w-[980px] w-full border-collapse">
               <thead>
                 <tr class="bg-sky/60">
-                  <th class="text-left px-4 py-3 font-bold text-text border-b border-border min-w-[290px]">Fasilitas Program</th>
-                  <th
-                    v-for="col in classComparisonColumns"
-                    :key="col.key"
-                    class="px-4 py-3 border-b border-border text-center"
-                  >
-                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide" :class="col.badgeClass">
+                  <th class="text-left px-4 py-3 font-bold text-text border-b border-border min-w-[290px]">Fasilitas
+                    Program</th>
+                  <th v-for="col in classComparisonColumns" :key="col.key"
+                    class="px-4 py-3 border-b border-border text-center">
+                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
+                      :class="col.badgeClass">
                       {{ col.label }}
                     </span>
                   </th>
@@ -342,17 +320,15 @@
               </thead>
               <tbody>
                 <tr v-for="row in classComparisonRows" :key="row.label" class="odd:bg-white even:bg-sky/20">
-                  <th class="text-left px-4 py-3 text-sm md:text-base font-semibold text-text border-b border-border">{{ row.label }}</th>
-                  <td
-                    v-for="col in classComparisonColumns"
-                    :key="`${row.label}-${col.key}`"
+                  <th class="text-left px-4 py-3 text-sm md:text-base font-semibold text-text border-b border-border">{{
+                    row.label }}</th>
+                  <td v-for="col in classComparisonColumns" :key="`${row.label}-${col.key}`"
                     class="px-4 py-3 border-b border-border text-center"
-                  >
+                    :class="isBiayaRow(row) ? 'cursor-pointer hover:bg-primary/5 transition-colors' : ''"
+                    @click="handleComparisonCellClick(row)">
                     <template v-if="typeof row.values[col.key] === 'boolean'">
-                      <span
-                        class="inline-flex h-7 w-7 items-center justify-center rounded-full border"
-                        :class="row.values[col.key] ? 'bg-mint text-primary border-border' : 'bg-rose-50 text-rose-500 border-rose-100'"
-                      >
+                      <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border"
+                        :class="row.values[col.key] ? 'bg-mint text-primary border-border' : 'bg-rose-50 text-rose-500 border-rose-100'">
                         <Check v-if="row.values[col.key]" class="h-4 w-4" />
                         <XIcon v-else class="h-4 w-4" />
                       </span>
@@ -375,56 +351,53 @@
     </section>
 
     <section class="px-5 md:px-10 pb-14">
-      <div class="max-w-7xl mx-auto rounded-[2rem] bg-primary text-white p-8 md:p-10 shadow-2xl shadow-[#123B8F]/30 fade-up delay-3">
+      <div
+        class="max-w-7xl mx-auto rounded-[2rem] bg-primary text-white p-8 md:p-10 shadow-2xl shadow-[#123B8F]/30 fade-up delay-3">
         <h2 class="text-2xl md:text-3xl font-bold mb-3">Siap naik level untuk persiapan Akademi Kepolisian?</h2>
         <p class="text-white/80 max-w-3xl">
-          Bergabung sebagai peserta, lengkapi pendaftaran secara bertahap, lalu ikuti program kelas kursus online dengan standar pembelajaran profesional.
+          Bergabung sebagai peserta, lengkapi pendaftaran secara bertahap, lalu ikuti program kelas kursus online dengan
+          standar pembelajaran profesional.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
-          <router-link to="/signup" class="px-6 py-3 rounded-full bg-secondary text-white font-semibold hover:bg-primary transition-all">Mulai Pendaftaran</router-link>
-          <router-link to="/registration" class="px-6 py-3 rounded-full bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 transition-all">Lihat Tahapan Pendaftaran</router-link>
+          <router-link to="/signup"
+            class="px-6 py-3 rounded-full bg-secondary text-white font-semibold hover:bg-primary transition-all">Mulai
+            Pendaftaran</router-link>
+          <router-link to="/registration"
+            class="px-6 py-3 rounded-full bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 transition-all">Lihat
+            Tahapan Pendaftaran</router-link>
         </div>
       </div>
     </section>
 
-    <a
-      href="https://wa.me/6285124156748"
-      target="_blank"
-      rel="noopener noreferrer"
+    <a href="https://wa.me/6285124156748" target="_blank" rel="noopener noreferrer"
       class="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-white shadow-xl shadow-[#2F6BFF]/30 transition hover:scale-105 hover:bg-primary"
-      aria-label="Chat WhatsApp"
-      title="Chat WhatsApp"
-    >
+      aria-label="Chat WhatsApp" title="Chat WhatsApp">
       <MessageCircle class="h-7 w-7" />
     </a>
 
     <Teleport to="body">
       <Transition name="member-slide-fade">
-        <div
-          v-if="activeFeatureModal"
+        <div v-if="activeFeatureModal"
           class="fixed inset-0 z-[120] flex items-center justify-center bg-black/50 p-4 backdrop-blur-[2px]"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="feature-modal-title"
-          @click.self="closeFeatureModal"
-        >
-          <div class="w-full max-w-2xl overflow-hidden rounded-3xl border border-border bg-white shadow-2xl shadow-black/20">
-            <div class="flex items-start justify-between gap-4 border-b border-border bg-gradient-to-r from-sky to-white px-5 py-4">
+          role="dialog" aria-modal="true" aria-labelledby="feature-modal-title" @click.self="closeFeatureModal">
+          <div
+            class="w-full max-w-2xl overflow-hidden rounded-3xl border border-border bg-white shadow-2xl shadow-black/20">
+            <div
+              class="flex items-start justify-between gap-4 border-b border-border bg-gradient-to-r from-sky to-white px-5 py-4">
               <div class="flex items-center gap-3">
                 <div class="inline-flex rounded-lg bg-sky p-2 text-primary">
                   <component :is="activeFeatureModal.icon" class="h-5 w-5" />
                 </div>
                 <div>
                   <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Detail Keunggulan</p>
-                  <h3 id="feature-modal-title" class="text-lg md:text-xl font-bold text-text">{{ activeFeatureModal.title }}</h3>
+                  <h3 id="feature-modal-title" class="text-lg md:text-xl font-bold text-text">{{
+                    activeFeatureModal.title }}
+                  </h3>
                 </div>
               </div>
-              <button
-                type="button"
+              <button type="button"
                 class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-gray-500 hover:bg-background hover:text-text transition-colors"
-                aria-label="Tutup"
-                @click="closeFeatureModal"
-              >
+                aria-label="Tutup" @click="closeFeatureModal">
                 <XIcon class="h-4 w-4" />
               </button>
             </div>
@@ -434,11 +407,65 @@
                 {{ activeFeatureModal.longDesc }}
               </p>
               <ul class="mt-4 space-y-2.5">
-                <li v-for="point in activeFeatureModal.points" :key="point" class="flex items-start gap-2.5 text-sm text-gray-700">
+                <li v-for="point in activeFeatureModal.points" :key="point"
+                  class="flex items-start gap-2.5 text-sm text-gray-700">
                   <span class="mt-1.5 h-2 w-2 rounded-full bg-secondary shrink-0" />
                   <span>{{ point }}</span>
                 </li>
               </ul>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+    <Teleport to="body">
+      <Transition name="member-slide-fade">
+        <div v-if="activeMemberModal"
+          class="fixed inset-0 z-[125] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
+          role="dialog" aria-modal="true" aria-labelledby="member-modal-title" @click.self="closeMemberModal">
+          <div
+            class="w-full max-w-xl overflow-hidden rounded-3xl border border-border bg-white shadow-2xl shadow-black/20">
+            <div
+              class="flex items-start justify-between gap-4 border-b border-border bg-gradient-to-r from-sky to-white px-5 py-4">
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Profil Staff</p>
+                <h3 id="member-modal-title" class="text-lg md:text-xl font-bold text-text">{{ activeMemberModal.name }}
+                </h3>
+                <p class="text-sm font-semibold text-primary mt-1 uppercase">{{ activeMemberModal.jabatan }}</p>
+              </div>
+              <button type="button"
+                class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-gray-500 hover:bg-background hover:text-text transition-colors"
+                aria-label="Tutup" @click="closeMemberModal">
+                <XIcon class="h-4 w-4" />
+              </button>
+            </div>
+
+            <div class="px-5 py-5 md:px-6 md:py-6">
+              <div class="mb-4 gap-4 text-center">
+                <div class="relative mb-4 mx-auto w-56">
+                  <div
+                    class="w-28 h-28 md:w-56 md:h-56 rounded-full overflow-hidden ring-4 ring-white shadow-lg border-2 border-primary/15">
+                    <img :src="activeMemberModal.image" :alt="activeMemberModal.name" class="w-full h-full object-cover object-top" />
+                  </div>
+                  <div
+                    class="absolute -bottom-1 -right-1 z-30 w-6 h-6 rounded-full bg-secondary flex items-center justify-center shadow-md">
+                    <span class="block w-2.5 h-2.5 rounded-full bg-white" />
+                  </div>
+                </div>
+                <p class="text-sm text-gray-700 leading-relaxed">
+                  {{ activeMemberModal.profile.summary }}
+                </p>
+              </div>
+
+              <div class="rounded-xl border border-border bg-background px-4 py-4">
+                <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Fokus Pembinaan</p>
+                <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                  <li v-for="point in activeMemberModal.profile.points" :key="point" class="flex items-start gap-2">
+                    <span class="mt-1.5 h-2 w-2 rounded-full bg-secondary shrink-0" />
+                    <span>{{ point }}</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -449,7 +476,7 @@
 
 <script setup>
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 import { BookOpenText, Brain, Check, Crown, Dumbbell, LineChart, MessageCircle, NotebookPen, ShieldCheck, UserCheck, Warehouse, X as XIcon } from 'lucide-vue-next'
@@ -457,6 +484,7 @@ import { ONLINE_PROGRAMS } from '@/constants/onlinePrograms'
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
 
 const route = useRoute()
+const router = useRouter()
 const store = useAppStore()
 const { isAuthenticated } = storeToRefs(store)
 const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
@@ -465,7 +493,7 @@ const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
 const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
 const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).href
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
-const natashaUrl = new URL('../../assets/anggota/natasha.jpeg', import.meta.url).href
+const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
 const bannerUrl = new URL('../../assets/bg_1.png', import.meta.url).href
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
@@ -479,6 +507,7 @@ const wallpaperSlides = Object.entries(wallpaperModules)
 const activeWallpaperIndex = ref(0)
 const isMobileMenuOpen = ref(false)
 const activeFeatureModal = ref(null)
+const activeMemberModal = ref(null)
 let wallpaperInterval
 
 let fadeObserver
@@ -551,11 +580,51 @@ function leaderCardStyle(index) {
 }
 
 const members = [
-  { name: 'Gilang Nurfahradz Syahni Fasya, S.T', image: gilangUrl, jabatan: 'Direktur' },
-  { name: 'AKBP (P) Wahyu suhardini, S.IP', image: wahyuUrl, jabatan: 'Sekretaris' },
-  { name: 'KBP (P) Dra.Rina Regina', image: rinaUrl, jabatan: 'Bendahara' },
-  { name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P', image: natashaUrl, jabatan: 'Bidang Internal' },
-  { name: 'Kompol (P) Tutik', image: tutikUrl, jabatan: 'Bidang Eksternal' },
+  {
+    name: 'Gilang Nurfahradz Syahni Fasya, S.T',
+    image: gilangUrl,
+    jabatan: 'Direktur',
+    profile: {
+      summary: 'Mengawal arah program pembinaan agar berjalan terstruktur, terukur, dan selaras dengan kebutuhan seleksi AKPOL.',
+      points: ['Koordinasi strategi akademik lintas tim', 'Monitoring capaian bulanan peserta', 'Penguatan standar kualitas pembinaan'],
+    },
+  },
+  {
+    name: 'AKBP (P) Wahyu suhardini, S.IP',
+    image: wahyuUrl,
+    jabatan: 'Sekretaris',
+    profile: {
+      summary: 'Mendukung kelancaran operasional administrasi dan memastikan komunikasi program berjalan efektif.',
+      points: ['Pendampingan administrasi peserta', 'Pengelolaan jadwal kegiatan pembinaan', 'Koordinasi komunikasi orang tua peserta'],
+    },
+  },
+  {
+    name: 'KBP (P) Dra.Rina Regina',
+    image: rinaUrl,
+    jabatan: 'Bendahara',
+    profile: {
+      summary: 'Mengelola tata kelola keuangan program secara akuntabel untuk mendukung keberlangsungan layanan pembinaan.',
+      points: ['Perencanaan anggaran kegiatan', 'Kontrol transparansi pembayaran', 'Laporan keuangan periodik program'],
+    },
+  },
+  {
+    name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P',
+    image: natashaUrl,
+    jabatan: 'Bidang Internal',
+    profile: {
+      summary: 'Fokus pada penguatan proses internal, kedisiplinan pelaksanaan program, dan evaluasi mutu pembinaan.',
+      points: ['Audit pelaksanaan kelas berkala', 'Standarisasi SOP pembinaan', 'Evaluasi performa tim pendamping'],
+    },
+  },
+  {
+    name: 'Kompol (P) Tutik',
+    image: tutikUrl,
+    jabatan: 'Bidang Eksternal',
+    profile: {
+      summary: 'Membangun relasi eksternal dan kolaborasi strategis untuk memperluas dukungan terhadap program peserta.',
+      points: ['Koordinasi kemitraan eksternal', 'Sosialisasi program ke calon peserta', 'Penguatan jejaring dukungan pembinaan'],
+    },
+  },
 ]
 
 const services = [
@@ -631,6 +700,14 @@ function closeFeatureModal() {
   activeFeatureModal.value = null
 }
 
+function openMemberModal(member) {
+  activeMemberModal.value = member
+}
+
+function closeMemberModal() {
+  activeMemberModal.value = null
+}
+
 const onlinePrograms = ONLINE_PROGRAMS
 
 const classComparisonColumns = [
@@ -659,6 +736,15 @@ const classComparisonRows = [
   { label: 'Masa akses aplikasi', values: { karantina: '1 tahun', reguler: '1 tahun', online: '6 bulan', ujian: '3 bulan' } },
   { label: 'Biaya kursus', values: { karantina: 'Hubungi kami', reguler: 'Hubungi kami', online: 'Rp. 6.500.000', ujian: 'Rp. 500.000' } },
 ]
+
+function isBiayaRow(row) {
+  return row.label === 'Biaya kursus'
+}
+
+function handleComparisonCellClick(row) {
+  if (!isBiayaRow(row)) return
+  router.push('/about-us')
+}
 
 const programBadge = (program) => {
   const mode = program.mode
@@ -793,8 +879,15 @@ onUnmounted(() => {
 }
 
 @keyframes floatOrb {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(18px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(18px);
+  }
 }
 
 .hero-banner-fade {
@@ -806,10 +899,10 @@ onUnmounted(() => {
     opacity: 0;
     transform: scale(1.04);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
   }
 }
-
 </style>

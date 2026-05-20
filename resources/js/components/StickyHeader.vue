@@ -116,7 +116,7 @@ const route = useRoute()
 const router = useRouter()
 const { role, user, isAuthenticated } = storeToRefs(store)
 const { t, locale, setLocale } = useI18n()
-const logoUrl = new URL('../../assets/logo.png', import.meta.url).href
+const logoUrl = new URL('../../assets/favicon_io/android-chrome-192x192.png', import.meta.url).href
 const isMenuOpen = ref(false)
 const unreadCount = ref(0)
 const isAdmin = computed(() => role.value === 'admin')
