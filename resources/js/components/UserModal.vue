@@ -34,7 +34,7 @@
           </select>
         </div>
 
-        <div>
+        <div v-if="form.role !== 'mentor'">
           <label class="block text-sm font-medium text-gray-700 mb-2">Program Siswa</label>
           <select v-model="form.program_category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
             <option v-for="p in ONLINE_PROGRAMS" :key="p.value" :value="p.value">
@@ -42,11 +42,6 @@
             </option>
           </select>
         </div>
-
-        <label class="flex items-center gap-2 text-sm text-gray-700" :class="{ 'opacity-50': !supportsQuarantine }">
-          <input v-model="form.in_quarantine" type="checkbox" class="rounded border-gray-300" :disabled="!supportsQuarantine" />
-          Status karantina (khusus Kelas 1 — Premium / online + offline + karantina)
-        </label>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ isEdit ? t('modals.user.passwordLabelEdit') : t('modals.user.passwordLabelAdd') }}</label>
@@ -75,7 +70,6 @@ const emit = defineEmits(['close', 'submit'])
 const { t } = useI18n()
 
 const isEdit = computed(() => !!props.initial)
-const supportsQuarantine = computed(() => normalizeProgramCategory(form.program_category) === 'vip')
 
 const form = reactive({
   name: '',
@@ -83,7 +77,6 @@ const form = reactive({
   role: 'user',
   password: '',
   program_category: 'regular',
-  in_quarantine: false,
 })
 
 watch(() => props.initial, (val) => {
@@ -93,14 +86,12 @@ watch(() => props.initial, (val) => {
     form.role = val.role
     form.password = ''
     form.program_category = normalizeProgramCategory(val.program_category)
-    form.in_quarantine = !!val.in_quarantine
   } else {
     form.name = ''
     form.email = ''
     form.role = 'user'
     form.password = ''
     form.program_category = 'regular'
-    form.in_quarantine = false
   }
 }, { immediate: true })
 
@@ -108,8 +99,14 @@ watch(
   () => form.program_category,
   (value) => {
     form.program_category = normalizeProgramCategory(value)
-    if (!supportsQuarantine.value) {
-      form.in_quarantine = false
+  }
+)
+
+watch(
+  () => form.role,
+  (role) => {
+    if (role === 'mentor') {
+      form.program_category = 'regular'
     }
   }
 )

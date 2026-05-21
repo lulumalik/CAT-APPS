@@ -56,21 +56,20 @@
       </div>
     </div>
 
-    <section id="hero" class="relative overflow-hidden rounded-none md:rounded-2xl min-h-[560px] md:min-h-[700px]">
+    <section id="hero" class="relative overflow-hidden rounded-none min-h-[560px] md:min-h-[700px]">
       <img :src="bannerUrl" :alt="heroSelayangPandang.bannerAlt"
-        class="absolute inset-0 h-full w-full object-cover object-center rounded-none md:rounded-2xl hero-banner-fade" />
+        class="absolute inset-0 h-full w-full object-cover object-center rounded-none hero-banner-fade" />
       <div
-        class="absolute inset-0 rounded-none md:rounded-2xl bg-gradient-to-b from-white/88 via-white/60 to-black/40" />
-
+        class="absolute inset-0 rounded-none bg-gradient-to-b from-white/30 via-white/90 to-black/40" />
       <div
         class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-32 md:pt-32 pb-14 md:px-10">
         <div class="text-center max-w-4xl fade-up">
-          <img
-            :src="brandLogoUrl"
-            alt="Logo Pratistha Cendekia Prestasi"
-            class="mx-auto mb-4 h-16 w-16 md:h-72 md:w-72 rounded-full border border-white/70 bg-white/90 p-2 shadow-lg"
-          />
-          <p class="text-[11px] md:text-4xl font-bold uppercase tracking-[0.2em] text-primary mb-3">
+          <div
+            class="rounded-full border h-32 w-32 md:h-82 md:w-82 mx-auto border-white/70 flex items-center bg-white/90 p-2 shadow-lg">
+            <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi"
+              class="mx-auto mb-4 h-16 w-16 md:h-56 md:w-56" />
+          </div>
+          <p class="text-[11px] md:text-4xl font-bold uppercase tracking-[0.2em] text-primary my-4">
             Pratistha Cendekia Prestasi
           </p>
           <h1 class="text-2xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight text-text uppercase">
@@ -212,7 +211,7 @@
               </div>
               <h4 class="font-bold text-sm md:text-lg leading-snug text-text">{{ member.name }}</h4>
               <p class="text-xs md:text-base text-primary font-semibold mt-1 uppercase tracking-wide">{{ member.jabatan
-                }}</p>
+              }}</p>
               <span class="mt-3 inline-flex items-center text-[11px] md:text-xs font-semibold text-primary">
                 Lihat profil
               </span>
@@ -450,7 +449,8 @@
                 <div class="relative mb-4 mx-auto w-56">
                   <div
                     class="w-28 h-28 md:w-56 md:h-56 rounded-full overflow-hidden ring-4 ring-white shadow-lg border-2 border-primary/15">
-                    <img :src="activeMemberModal.image" :alt="activeMemberModal.name" class="w-full h-full object-cover object-top" />
+                    <img :src="activeMemberModal.image" :alt="activeMemberModal.name"
+                      class="w-full h-full object-cover object-top" />
                   </div>
                   <div
                     class="absolute -bottom-1 -right-1 z-30 w-6 h-6 rounded-full bg-secondary flex items-center justify-center shadow-md">
@@ -500,7 +500,7 @@ const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).hre
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
-const brandLogoUrl = new URL('../../assets/favicon_io/android-chrome-512x512.png', import.meta.url).href
+const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
 const bannerUrl = new URL('../../assets/bg_1.png', import.meta.url).href
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const wallpaperModules = import.meta.glob('../../assets/wallpaper/*.{jpg,jpeg,png,webp}', {

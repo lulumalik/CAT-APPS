@@ -149,9 +149,9 @@ const navItems = computed(() => {
     { to: '/materials', label: t('nav.manageMaterials') },
     { to: '/tests', label: t('nav.tests') },
     { to: '/question-bank', label: t('nav.questionBank') },
-    { to: '/blog', label: t('nav.materials') },
+    // { to: '/blog', label: t('nav.materials') },
     { to: '/rankings', label: t('nav.rankings') },
-    { to: '/notifications', label: 'Notifikasi' },
+    // { to: '/notifications', label: 'Notifikasi' },
   ]
 
   if (isAdmin.value) {

@@ -13,17 +13,19 @@
             <ArrowLeft class="h-4 w-4" />
             Kembali ke Beranda
           </router-link>
-          <img
-            :src="brandLogoUrl"
-            alt="Logo Pratistha Cendekia Prestasi"
-            class="mx-auto mb-5 h-16 w-16 md:h-72 md:w-72 rounded-full border border-white/70 bg-white/90 p-2 shadow-lg"
-          />
+          <div
+            class="rounded-full border h-32 w-32 md:h-82 md:w-82 mx-auto border-white/70 flex items-center bg-white/90 p-2 shadow-lg">
+            <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi"
+              class="mx-auto mb-5 h-16 w-16 md:h-56 md:w-56" />
+          </div>
           <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-white/80">Tentang Kami</p>
           <h1 class="mt-2 text-3xl md:text-5xl font-black leading-tight">
             Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
           </h1>
           <p class="mt-5 text-xl md:text-2xl font-bold text-white/90 leading-relaxed">
-            Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Cendekia Prestasi didukung oleh legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan profesionalisme merupakan fondasi penting dalam membangun kepercayaan peserta didik maupun orang tua.
+            Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Cendekia Prestasi didukung oleh
+            legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan profesionalisme
+            merupakan fondasi penting dalam membangun kepercayaan peserta didik maupun orang tua.
           </p>
         </div>
       </section>
@@ -36,14 +38,18 @@
             <FileBadge class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Legalitas Perusahaan</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-lg md:text-xl text-center">Berikut adalah nomor dokumen resmi perusahaan kami:</p>
+          <p class="mt-2 text-gray-600 text-lg md:text-xl text-center">Berikut adalah nomor dokumen resmi perusahaan
+            kami:</p>
 
           <div class="mt-6 grid gap-6 md:grid-cols-3">
             <article v-for="doc in legalDocuments" :key="doc.label"
               class="rounded-xl border border-border bg-background shadow-lg overflow-hidden flex flex-col">
               <div class="p-4 md:p-5 border-t border-border bg-gradient-to-br from-white to-sky flex-1">
-                <p class="text-xs md:text-sm uppercase tracking-[0.15em] font-bold text-primary text-center">{{ doc.label }}</p>
-                <p v-if="doc.subtitle" class="mt-1 text-xs md:text-sm text-gray-600 font-bold text-center leading-relaxed">{{ doc.subtitle }}</p>
+                <p class="text-xs md:text-sm uppercase tracking-[0.15em] font-bold text-primary text-center">{{
+                  doc.label }}</p>
+                <p v-if="doc.subtitle"
+                  class="mt-1 text-xs md:text-sm text-gray-600 font-bold text-center leading-relaxed">{{ doc.subtitle }}
+                </p>
                 <p class="mt-3 text-sm md:text-base font-bold text-text text-center break-words">{{ doc.value }}</p>
               </div>
             </article>
@@ -63,7 +69,7 @@
 
           <div class="mt-8 md:mt-16">
             <div ref="leaderCarouselRef"
-              class="leader-carousel flex gap-5 md:gap-8 overflow-x-auto px-[11%] md:px-[16%] py-6 snap-x snap-mandatory scroll-smooth" >
+              class="leader-carousel flex gap-5 md:gap-8 overflow-x-auto px-[11%] md:px-[16%] py-6 snap-x snap-mandatory scroll-smooth">
               <article v-for="(leader, index) in heroLeaders" :key="leader.name" @click="goToLeader(index)"
                 :ref="(el) => setLeaderSlideRef(el, index)"
                 class="shrink-0 basis-[78%] md:basis-[52%] lg:basis-[42%] snap-center rounded-2xl border border-border shadow-xl bg-background overflow-hidden transition-all duration-300"
@@ -99,7 +105,8 @@
             <Users class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Struktur Organisasi</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Diagram jabatan inti Pratistha Cendekia Prestasi.</p>
+          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Diagram jabatan inti Pratistha Cendekia Prestasi.
+          </p>
 
           <div class="org-chart my-12">
             <div class="org-node">
@@ -187,7 +194,8 @@
             <Phone class="h-6 w-6 text-primary" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Kontak Kami</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Kanal komunikasi resmi Pratistha Cendekia Prestasi.</p>
+          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Kanal komunikasi resmi Pratistha Cendekia
+            Prestasi.</p>
           <div class="mt-6 grid gap-4 md:flex md:flex-wrap justify-center gap-4">
             <article v-for="contact in contactChannels" :key="contact.label"
               class="rounded-xl border border-border bg-gradient-to-br from-white to-sky shadow-lg p-4 md:w-1/3">
@@ -211,21 +219,27 @@
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Rekening Resmi Pembayaran</h2>
           </div>
           <p class="mt-2 text-gray-600 text-lg md:text-xl text-center max-w-3xl mx-auto">
-            Segala transaksi Lembaga Kursus Pratistha Cendekia Prestasi hanya dilakukan melalui rekening resmi perusahaan di Bank BCA dan Bank BRI.
+            Segala transaksi Lembaga Kursus Pratistha Cendekia Prestasi hanya dilakukan melalui rekening resmi
+            perusahaan di Bank BCA dan Bank BRI.
           </p>
 
-          <div class="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm md:text-xl text-amber-900 text-center max-w-5xl mx-auto">
-            Demi keamanan, mohon pastikan pembayaran hanya ditransfer ke rekening resmi di bawah ini. Kami tidak menerima pembayaran melalui rekening pribadi, e-wallet, atau metode lain di luar rekening resmi perusahaan.
+          <div
+            class="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm md:text-xl text-amber-900 text-center max-w-5xl mx-auto">
+            Demi keamanan, mohon pastikan pembayaran hanya ditransfer ke rekening resmi di bawah ini. Kami tidak
+            menerima pembayaran melalui rekening pribadi, e-wallet, atau metode lain di luar rekening resmi perusahaan.
           </div>
 
           <div class="mt-6 grid sm:grid-cols-2 gap-4 max-w-5xl mx-auto">
             <article v-for="account in officialBankAccounts" :key="account.bank"
               class="rounded-xl border border-border bg-gradient-to-br from-white to-sky shadow-lg p-5">
-              <p class="text-sm md:text-xl uppercase tracking-[0.15em] font-bold text-primary text-center">{{ account.bank }}</p>
+              <p class="text-sm md:text-xl uppercase tracking-[0.15em] font-bold text-primary text-center">{{
+                account.bank }}</p>
               <p class="mt-3 text-sm font-semibold md:text-xl text-gray-600 text-center">Nomor Rekening</p>
-              <p class="mt-1 text-lg md:text-xl font-black text-text text-center tracking-wide">{{ account.accountNumber || '-' }}</p>
+              <p class="mt-1 text-lg md:text-xl font-black text-text text-center tracking-wide">{{ account.accountNumber
+                || '-' }}</p>
               <p class="mt-4 text-sm font-semibold md:text-xl text-gray-600 text-center">Atas Nama</p>
-              <p class="mt-1 text-sm font-bold md:text-xl text-text text-center leading-relaxed">{{ account.accountName }}</p>
+              <p class="mt-1 text-sm font-bold md:text-xl text-text text-center leading-relaxed">{{ account.accountName
+                }}</p>
             </article>
           </div>
         </div>
@@ -260,7 +274,7 @@ import { ArrowLeft, FileBadge, Globe, Image, Instagram, Landmark, Mail, Music2, 
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
-const brandLogoUrl = new URL('../../assets/favicon_io/android-chrome-512x512.png', import.meta.url).href
+const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
 const backgroundAboutUrl = new URL('../../assets/background-about.jpg', import.meta.url).href
 const wallpaper1Url = new URL('../../assets/wallpaper/1.webp', import.meta.url).href
 const wallpaper2Url = new URL('../../assets/wallpaper/2.jpeg', import.meta.url).href
@@ -714,11 +728,11 @@ onBeforeUnmount(() => {
     display: none;
   }
 
-  .org-split__col + .org-split__col {
+  .org-split__col+.org-split__col {
     margin-top: 0.5rem;
   }
 
-  .org-split__col + .org-split__col::before {
+  .org-split__col+.org-split__col::before {
     content: '';
     width: 2px;
     height: 1rem;
