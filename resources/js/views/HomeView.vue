@@ -1,6 +1,6 @@
 <template>
-  <main class="min-h-screen text-text bg-gradient-to-b from-[#52a2ed] via-[#260da7] via-[#5f0ad7] to-[#13c1fc]">
-    <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
+  <main class="home-main-gradient-animated min-h-screen text-text">
+    <!-- <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
       <div
         class="mx-auto max-w-7xl rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-6 py-2 md:py-0">
         <div class="hidden md:grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-4">
@@ -17,12 +17,7 @@
             Tentang Kami
           </router-link>
 
-          <div class="flex items-center justify-end gap-3">
-            <router-link to="/login"
-              class="px-4 py-2 rounded-full bg-primary text-white text-[11px] lg:text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors whitespace-nowrap">
-              Masuk Ke Platform
-            </router-link>
-          </div>
+
         </div>
 
         <div class="md:hidden">
@@ -54,20 +49,24 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <section id="hero" class="relative overflow-hidden rounded-none min-h-[560px] md:min-h-[700px]">
-      <img :src="bannerUrl" :alt="heroSelayangPandang.bannerAlt"
-        class="absolute inset-0 h-full w-full object-cover object-center rounded-none hero-banner-fade" />
+      <div class="absolute inset-0 overflow-hidden">
+        <iframe
+          class="hero-banner-fade pointer-events-none absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.78vh] scale-200 min-w-full -translate-x-1/2 -translate-y-1/2"
+          :src="heroVideoEmbedUrl" title="Video profil Pratistha Cendekia Prestasi"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen />
+      </div>
+      <div class="absolute inset-0 rounded-none bg-gradient-to-b from-white/20 via-white/60 to-black/40" />
       <div
-        class="absolute inset-0 rounded-none bg-gradient-to-b from-white/30 via-white/90 to-black/40" />
-      <div
-        class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-32 md:pt-32 pb-14 md:px-10">
-        <div class="text-center max-w-4xl fade-up">
+        class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-10 pb-10 md:px-10">
+        <div class="text-center max-w-5xl fade-up">
           <div
-            class="rounded-full border h-32 w-32 md:h-82 md:w-82 mx-auto border-white/70 flex items-center bg-white/90 p-2 shadow-lg">
+            class="rounded-full border-10 h-32 w-32 md:h-56 md:w-56 mx-auto border-primary/50 flex items-center bg-white/90 p-2 shadow-lg">
             <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi"
-              class="mx-auto mb-4 h-16 w-16 md:h-56 md:w-56" />
+              class="mx-auto mb-4 h-16 w-16 md:h-36 md:w-36" />
           </div>
           <p class="text-[11px] md:text-4xl font-bold uppercase tracking-[0.2em] text-primary my-4">
             Pratistha Cendekia Prestasi
@@ -76,7 +75,7 @@
             {{ heroSelayangPandang.title }}
           </h1>
           <div class="bg-white/40 mt-5 rounded-xl p-4 shadow-xl">
-            <p class="text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed font-bold">
+            <p class="text-base md:text-lg text-gray-700 max-w-5xl mx-auto leading-relaxed font-bold">
               {{ heroSelayangPandang.description }}
             </p>
             <div class="mt-6 flex flex-wrap font-semibold items-center justify-center gap-2 text-gray-700">
@@ -85,7 +84,7 @@
           </div>
           <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
             <router-link to="/free-tryout"
-              class="px-7 py-3 rounded-full bg-secondary text-white text-sm md:text-base font-bold shadow-lg shadow-[#2F6BFF]/25 hover:bg-primary transition-all">
+              class="cta-tryout-animated px-7 py-3 rounded-full text-white text-sm md:text-base font-bold transition-all">
               Coba Tryout Gratis
             </router-link>
             <router-link type="button"
@@ -100,9 +99,11 @@
 
     <section id="selayang-pandang-2" class="px-5 md:px-10 py-10">
       <div class="max-w-7xl mx-auto fade-up delay-1 relative">
-        <div
-          class="rounded-[2rem] bg-white border border-blue-100/80 shadow-xl shadow-primary/8 p-8 md:p-10 relative overflow-hidden">
-          <div class="relative z-30">
+        <div class="selayang-card-container rounded-[2rem] shadow-xl shadow-primary/8 relative overflow-hidden">
+          <div class="absolute inset-0 mobile-card-gradient md:hidden"></div>
+          <img :src="selayangCard" alt="Selayang Pandang"
+            class="selayang-card-bg hidden md:block w-full h-full absolute top-0 left-0 object-cover" />
+          <div class="relative z-30 p-8 md:p-10">
             <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3">Selayang Pandang</p>
             <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-text leading-tight">
               Fondasi Terarah untuk Melangkah Pasti Menuju AKPOL
@@ -120,12 +121,14 @@
               </p>
               <p>
                 Melalui metode kursus yang terstruktur, simulasi seleksi yang realistis, serta pendampingan mentor
-                berpengalaman, setiap peserta dipersiapkan agar siap menghadapi seluruh tahapan seleksi AKPOL secara
+                berpengalaman, setiap peserta dipersiapkan agar <br> siap menghadapi seluruh tahapan seleksi AKPOL
+                secara
                 maksimal.
               </p>
               <p>
                 Nama <span class="font-bold text-text">Pratistha</span> melambangkan kehormatan, keteguhan, dan fondasi
-                kuat dalam meraih cita-cita. Nilai inilah yang kami tanamkan: semangat juang, integritas, kedisiplinan,
+                kuat dalam meraih cita-cita. Nilai inilah yang kami tanamkan: semangat juang, <br> integritas,
+                kedisiplinan,
                 dan mental pantang menyerah.
               </p>
               <p>
@@ -133,11 +136,10 @@
                 siap menjadi generasi pemimpin bangsa.
               </p>
             </div>
-            <p class="mt-6 text-lg font-bold text-primary">Bersama Pratistha Cendekia Prestasi, wujudkan langkah pasti
+            <p class="mt-6 text-lg font-bold text-primary text-center">Bersama Pratistha Cendekia Prestasi, wujudkan
+              langkah pasti
               menuju AKPOL.</p>
           </div>
-          <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
-          <SectionWaveDivider class="absolute -bottom-4 md:-bottom-30 left-0 right-0 z-10" />
         </div>
       </div>
     </section>
@@ -145,41 +147,84 @@
 
     <section id="leaders" class="my-10">
       <div class="max-w-7xl mx-auto fade-up fade-up-tight delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-blue-100/70 shadow-xl shadow-primary/8 p-8 md:p-10">
-          <!-- <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Dewan Pimpinan</h2> -->
-          <p class="text-3xl md:text-4xl font-bold tracking-tight mb-2 mb-8">Profil pejabat dan pimpinan Pratistha
-            Cendekia Prestasi.</p>
-
-          <div class="grid gap-6 relative z-30">
-            <article v-for="(leader, index) in leaders" :key="leader.name"
-              class="group rounded-3xl relative bg-gradient-to-br from-[#b0862e] via-[#bea053] to-[#dac887] flex flex-col md:flex-row overflow-hidden border border-blue-100/20 transition-all duration-300 hover:-translate-y-1">
-              <div class="relative md:w-[38%] lg:w-[34%] shrink-0 bg-sky"
-                :class="index % 2 === 0 ? 'md:order-1' : 'md:order-2'">
-                <img :src="leader.image" :alt="leader.name"
-                  class="w-full h-[400px] md:h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]" />
-                <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/30 to-transparent" />
+        <div>
+          <div class="text-2xl md:text-4xl font-bold tracking-tight text-white text-center">
+            Profil pejabat dan pimpinan Pratistha Cendekia Prestasi
+          </div>
+          <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
+          <div class="relative z-30 p-10 md:p-0 grid gap-5 lg:grid-cols-[330px_1fr] lg:items-start mt-10">
+            <div>
+              <Transition :name="leaderTransitionName" mode="out-in">
+                <img :key="`leader-main-image-${activeLeaderIndex}`" :src="leaders[activeLeaderIndex].image"
+                  :alt="leaders[activeLeaderIndex].name"
+                  class="h-[450px] w-full rounded-[2rem] object-cover shadow-xl" />
+              </Transition>
+              <div ref="leaderCarouselRef"
+                class="leader-vertical-carousel mt-4 grid grid-cols-3 max-h-[585px] gap-4 overflow-y-auto pr-2 snap-y snap-mandatory scroll-smooth"
+                @scroll.passive="onLeaderScroll">
+                <article v-for="(leader, index) in leaders" :key="leader.name"
+                  :ref="(el) => setLeaderSlideRef(el, index)"
+                  class="shrink-0 snap-center cursor-pointer overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-white to-sky/40 p-3 shadow transition-all duration-300"
+                  :class="activeLeaderIndex === index
+                    ? 'scale-[1.01] border-primary/50 shadow-lg shadow-primary/20'
+                    : 'opacity-70 hover:opacity-100'" @click="activeLeaderIndex = index">
+                  <img :src="leader.image" :alt="leader.name" class="h-24 w-full rounded-[2rem] object-cover" />
+                </article>
               </div>
-              <div class="p-6 md:p-8 flex-1" :class="index % 2 === 0 ? 'md:order-2' : 'md:order-1'">
-                <p class="text-[14px] font-bold uppercase tracking-[0.18em] text-white">Profil {{ leader.jabatan }}</p>
-                <h3 class="mt-2 font-extrabold text-2xl md:text-3xl leading-tight tracking-tight text-white">{{
-                  leader.name }}</h3>
-                <p class="text-base text-cyan-200 font-bold mt-2">{{ leader.batch }}</p>
 
-                <div class="mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px]">
-                  <p class="text-[14px] font-bold tracking-[0.14em] text-white uppercase">Posisi Saat Ini</p>
-                  <p class="mt-1 text-base md:text-lg font-semibold leading-relaxed text-white">{{ leader.position }}
+              <div class="mt-4 flex items-center justify-center gap-2">
+                <button v-for="(leader, index) in leaders" :key="`leader-dot-${leader.name}`" type="button"
+                  class="h-2.5 rounded-full transition-all duration-300"
+                  :class="activeLeaderIndex === index ? 'w-7 bg-primary' : 'w-2.5 bg-primary/30 hover:bg-primary/60'"
+                  :aria-label="`Pilih pimpinan ${index + 1}`" @click="goToLeader(index)" />
+              </div>
+            </div>
+
+            <article
+              class="rounded-3xl relative bg-gradient-to-br from-primary to-secondary border border-blue-100/20 p-6 md:p-8 shadow-xl">
+              <div class="absolute inset-0 mobile-card-gradient md:hidden rounded-[2rem]"></div>
+              <img :src="card2Url" alt="Card 2"
+                class="hidden md:block w-full h-full md:h-[590px] object-cover z-10 rounded-[2rem] absolute top-0 left-0" />
+              <div class="relative min-h-[390px] md:min-h-[430px]">
+                <div v-if="isLeaderInfoSwitching"
+                  class="absolute inset-0 z-30 rounded-2xl">
+                  <div class="loader2 block mx-auto mt-45"></div>
+                </div>
+                <Transition :name="leaderTransitionName" mode="out-in" @before-leave="onLeaderInfoBeforeLeave"
+                  @after-enter="onLeaderInfoAfterEnter" @enter-cancelled="onLeaderInfoAfterEnter"
+                  @leave-cancelled="onLeaderInfoAfterEnter">
+                  <div :key="`leader-info-${activeLeaderIndex}`" class="md:mt-10">
+                  <p class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center">
+                    Profil {{ leaders[activeLeaderIndex].jabatan }}
                   </p>
-                </div>
+                  <h3
+                    class="mt-2 text-2xl font-extrabold leading-tight tracking-tight md:text-3xl relative z-20 text-center">
+                    {{ leaders[activeLeaderIndex].name }}
+                  </h3>
+                  <p class="mt-2 text-md font-bold relative z-20 text-center">{{ leaders[activeLeaderIndex].batch }}
+                  </p>
 
-                <div class="mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px]">
-                  <p class="text-sm font-bold tracking-[0.14em] text-blue-100 uppercase">Jabatan Terakhir</p>
-                  <ul class="mt-3 space-y-2.5 text-base font-semibold leading-relaxed text-blue-50">
-                    <li v-for="line in leader.highlights" :key="line" class="flex items-start gap-2.5">
-                      <span class="mt-2 h-2 w-2 rounded-full bg-cyan-300 shrink-0" />
-                      <span>{{ line }}</span>
-                    </li>
-                  </ul>
-                </div>
+                  <div
+                    class="mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px] text-center relative z-20">
+                    <p class="text-lg font-bold uppercase tracking-[0.14em]">Posisi Saat Ini</p>
+                    <p class="mt-1 text-base font-semibold leading-relaxed md:text-lg">
+                      {{ leaders[activeLeaderIndex].position }}
+                    </p>
+                  </div>
+
+                  <div
+                    class="md:mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px] relative z-20">
+                    <p
+                      class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-700/20 pb-2">
+                      Jabatan Terakhir</p>
+                    <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed">
+                      <li v-for="line in leaders[activeLeaderIndex].highlights" :key="line" class="text-center">
+                        <span>{{ line }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                  </div>
+                </Transition>
               </div>
             </article>
           </div>
@@ -187,26 +232,26 @@
       </div>
     </section>
 
-    <section id="members" class="pb-8">
+    <section id="members" class="pb-8 mt-10">
       <div class="max-w-7xl mx-auto fade-up fade-up-tight">
-        <div
-          class="rounded-[2rem] bg-gradient-to-br from-white to-secondary border border-gray-100 shadow-xl shadow-black/5 p-8 md:p-10 relative overflow-hidden">
-          <h3 class="text-2xl md:text-3xl font-bold tracking-tight mb-2">Staff</h3>
-          <p class="text-gray-600 mb-6">Staff pendukung program pembinaan Pratistha Cendekia Prestasi.</p>
-          <div class="relative z-20 flex flex-wrap justify-center gap-5">
+        <div class="text-2xl md:text-4xl font-bold tracking-tight text-white text-center">
+          Staff pendukung program pembinaan Pratistha Cendekia Prestasi.
+        </div>
+        <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
+        <div class=" relative overflow-hidden mt-10">
+          <div class="relative z-20 p-4 grid grid-cols-2 gap-4 md:flex md:flex-wrap md:justify-center md:gap-12">
             <article v-for="member in members" :key="member.name"
-              class="group flex flex-col items-center text-center rounded-2xl border border-border bg-gradient-to-b from-white to-sky/80 p-5 w-[calc(50%-10px)] sm:w-[320px] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40"
+              class="group flex flex-col items-center text-center rounded-2xl border border-border bg-gradient-to-b from-white to-sky/80 p-5 w-full sm:w-[360px] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40"
               role="button" tabindex="0" @click="openMemberModal(member)"
               @keydown.enter.prevent="openMemberModal(member)" @keydown.space.prevent="openMemberModal(member)">
               <div class="relative mb-4">
                 <div
-                  class="w-28 h-28 md:w-56 md:h-56 rounded-full overflow-hidden ring-4 ring-white shadow-lg border-2 border-primary/15 group-hover:ring-primary/30 group-hover:border-primary/30 transition-all duration-300">
+                  class="w-32 h-32 md:w-64 md:h-64 rounded-full overflow-hidden ring-4 ring-white shadow-lg border-2 border-primary/15 group-hover:ring-primary/30 group-hover:border-primary/30 transition-all duration-300">
                   <img :src="member.image" :alt="member.name"
                     class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <div
-                  class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-secondary flex items-center justify-center shadow-md">
-                  <span class="block w-2.5 h-2.5 rounded-full bg-white" />
+                <div class="absolute bottom-0 right-0 flex items-center justify-center">
+                  <span class="block loader" />
                 </div>
               </div>
               <h4 class="font-bold text-sm md:text-lg leading-snug text-text">{{ member.name }}</h4>
@@ -217,64 +262,77 @@
               </span>
             </article>
           </div>
-          <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-28 bottom-0 right-0" />
-          <SectionWaveDivider class="absolute -bottom-4 md:-bottom-30 left-0 right-0 z-10" />
         </div>
       </div>
     </section>
 
-    <section id="programs" class="px-5 md:px-10 pb-8">
+    <section id="programs" class="px-5 md:px-10 pb-8 mt-10">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-primary/10 shadow-xl shadow-primary/8 p-8 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Keunggulan Program</h2>
-          <p class="text-gray-600 mb-8">Ekosistem belajar yang didesain untuk disiplin, konsisten, dan terukur.</p>
-          <div class="grid md:grid-cols-2 gap-5 relative z-10">
-            <button v-for="feature in keyFeatures" :key="feature.title" type="button"
-              class="rounded-2xl border border-border bg-gradient-to-br from-white to-sky p-6 text-left cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
-              @click="openFeatureModal(feature)">
-              <div class="mb-3 inline-flex rounded-lg bg-sky p-2 text-primary">
-                <component :is="feature.icon" class="h-5 w-5" />
+        <div>
+          <div class="text-3xl md:text-4xl font-bold tracking-tight text-white text-center">
+            Keunggulan Program
+          </div>
+          <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
+          <div class="grid md:grid-cols-2 gap-8 relative z-10 mt-10">
+            <div v-for="feature in keyFeatures" :key="feature.title" class="relative">
+              <div
+                class="absolute inset-0 top-3 -left-3 rounded-2xl bg-white/60 backdrop-blur-sm -z-10 pointer-events-none">
               </div>
-              <h3 class="font-bold text-lg">{{ feature.title }}</h3>
-              <p class="text-gray-600 text-sm mt-2 leading-relaxed">{{ feature.desc }}</p>
-              <span class="mt-4 inline-flex items-center text-xs font-semibold text-primary">
-                Lihat detail
-              </span>
-            </button>
+              <button type="button"
+                class="feature-gradient-animated rounded-2xl relative z-10 p-6 text-left cursor-pointer transition-all translate-y-2 hover:-translate-y-2 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
+                @click="openFeatureModal(feature)">
+                <div class="mb-3 inline-flex rounded-lg bg-[gold] p-2 text-primary relative z-20">
+                  <component :is="feature.icon" class="h-5 w-5" />
+                </div>
+                <h3 class="font-bold text-lg relative text-xl z-20">{{ feature.title }}</h3>
+                <p class="text-gray-600 text-sm mt-2 text-lg leading-relaxed relative z-20 font-semibold">{{ feature.desc }}</p>
+                <span class="mt-4 inline-flex items-center text-md font-semibold text-primary relative z-20">
+                  Lihat detail
+                </span>
+              </button>
+            </div>
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
         </div>
       </div>
     </section>
 
-    <section id="services" class="px-5 md:px-10 pb-8">
+    <section id="services" class="px-5 md:px-10 pb-8 mt-10">
       <div class="max-w-7xl mx-auto fade-up delay-1 relative">
-        <div class="rounded-[2rem] bg-white border border-green-100/60 shadow-xl shadow-black/5 p-8 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Layanan Pembinaan</h2>
-          <p class="text-gray-600 mb-8">Program seleksi dan pendampingan untuk kesiapan calon peserta.</p>
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <article v-for="service in services" :key="service.title"
-              class="rounded-2xl border border-border bg-background p-5 hover:-translate-y-1 hover:shadow-lg transition-all">
-              <div class="mb-3 inline-flex rounded-lg bg-sky p-2 text-primary">
-                <component :is="service.icon" class="h-5 w-5" />
-              </div>
-              <h3 class="font-semibold text-text">{{ service.title }}</h3>
-              <p class="text-sm text-gray-600 mt-1">{{ service.desc }}</p>
-            </article>
+        <div>
+          <div class="text-3xl md:text-4xl font-bold tracking-tight text-white text-center">
+            Layanan Pembinaan
           </div>
-          <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-0 right-0" />
+          <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10 relative z-10">
+            <div v-for="service in services" :key="service.title" class="relative">
+              <div
+                class="absolute inset-0 top-3 -left-3 rounded-2xl bg-white/30 backdrop-blur-sm -z-10 pointer-events-none">
+              </div>
+              <article
+                class="service-gradient-animated rounded-2xl border border-border p-5 relative z-10 hover:-translate-y-1 hover:shadow-lg transition-all">
+                <div class="mb-3 inline-flex rounded-lg bg-sky p-2 text-primary">
+                  <component :is="service.icon" class="h-5 w-5" />
+                </div>
+                <h3 class="font-semibold text-xl text-text">{{ service.title }}</h3>
+                <p class="text-lg text-gray-600 mt-1">{{ service.desc }}</p>
+              </article>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="choices" class="px-5 md:px-10 pb-8 relative">
+    <section id="choices" class="px-5 md:px-10 pb-8 relative mt-10">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-gray-100 shadow-xl shadow-black/5 p-2 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight p-5 md:p-0">Pilihan Kelas Kursus</h2>
-          <p class="text-gray-600 p-5 md:p-0">Pilih jalur program sesuai kebutuhan kursus dan target persiapan.</p>
-          <div class="grid md:grid-cols-2 gap-5 relative z-30 mt-8">
+        <div>
+          <div class="text-3xl md:text-4xl font-bold tracking-tight text-white text-center">
+            Pilihan Kelas Kursus
+          </div>
+          <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
+          <div class="grid md:grid-cols-2 gap-5 relative z-30 mt-10">
             <article v-for="program in onlinePrograms" :key="program.value"
-              class="rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1" :style="{
+              class="program-gradient-animated rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1" :style="{
                 backgroundImage: program.backgroundColor,
                 color: program.textColor,
                 boxShadow: program.boxShadow,
@@ -300,7 +358,7 @@
       </div>
     </section>
 
-    <section id="comparison" class="px-5 md:px-10 pb-8">
+    <section id="comparison" class="px-5 md:px-10 pb-8 mt-10">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
         <div class="rounded-[2rem] bg-white border border-blue-100/60 shadow-xl shadow-primary/6 p-8 md:p-10">
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Tabel Perbandingan Fasilitas Kelas Kursus</h2>
@@ -428,49 +486,76 @@
           class="fixed inset-0 z-[125] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
           role="dialog" aria-modal="true" aria-labelledby="member-modal-title" @click.self="closeMemberModal">
           <div
-            class="w-full max-w-xl overflow-hidden rounded-3xl border border-border bg-white shadow-2xl shadow-black/20">
-            <div
-              class="flex items-start justify-between gap-4 border-b border-border bg-gradient-to-r from-sky to-white px-5 py-4">
-              <div>
-                <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Profil Staff</p>
-                <h3 id="member-modal-title" class="text-lg md:text-xl font-bold text-text">{{ activeMemberModal.name }}
-                </h3>
-                <p class="text-sm font-semibold text-primary mt-1 uppercase">{{ activeMemberModal.jabatan }}</p>
-              </div>
-              <button type="button"
-                class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-gray-500 hover:bg-background hover:text-text transition-colors"
-                aria-label="Tutup" @click="closeMemberModal">
-                <XIcon class="h-4 w-4" />
-              </button>
-            </div>
-
-            <div class="px-5 py-5 md:px-6 md:py-6">
-              <div class="mb-4 gap-4 text-center">
-                <div class="relative mb-4 mx-auto w-56">
-                  <div
-                    class="w-28 h-28 md:w-56 md:h-56 rounded-full overflow-hidden ring-4 ring-white shadow-lg border-2 border-primary/15">
-                    <img :src="activeMemberModal.image" :alt="activeMemberModal.name"
-                      class="w-full h-full object-cover object-top" />
+            class="w-full max-w-3xl overflow-hidden rounded-3xl relative border border-border bg-white shadow-2xl shadow-black/20">
+            <button type="button" @click="closeMemberModal"
+              class="absolute right-3 top-3 z-40 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/65 text-white shadow-lg transition hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/90"
+              aria-label="Tutup detail anggota">
+              <XIcon class="h-5 w-5" />
+            </button>
+            <div class="overflow-y-auto bg-cover bg-center absolute top-32 z-30 px-5 py-5 md:px-6 md:py-6">
+              <div class="rounded-2xl border border-primary/15 p-4 shadow-lg backdrop-blur-[1px] md:p-6">
+                <div class="grid gap-4 md:grid-cols-[220px_1fr] md:items-start">
+                  <div class="relative mx-auto w-40 md:w-52">
+                    <div class="h-40 w-40 overflow-hidden rounded-full border-4 border-white shadow-lg md:h-52 md:w-52">
+                      <img :src="activeMemberModal.image" :alt="activeMemberModal.name"
+                        class="h-full w-full object-cover object-top" />
+                    </div>
+                    <div class="absolute bottom-0 right-0 z-30 flex items-center justify-center">
+                      <span class="block loader" />
+                    </div>
                   </div>
-                  <div
-                    class="absolute -bottom-1 -right-1 z-30 w-6 h-6 rounded-full bg-secondary flex items-center justify-center shadow-md">
-                    <span class="block w-2.5 h-2.5 rounded-full bg-white" />
+
+                  <div class="space-y-2 text-left">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Data Diri</p>
+                    <h4 class="text-xl font-extrabold leading-tight text-text md:text-2xl">{{ activeMemberModal.name }}
+                    </h4>
+                    <p class="text-sm font-semibold uppercase tracking-wide text-primary">{{ activeMemberModal.jabatan
+                    }}
+                    </p>
+                    <div class="mt-3 space-y-1.5 text-sm text-gray-700">
+                      <p><span class="font-semibold text-text">Tempat, Tanggal Lahir:</span> {{
+                        activeMemberModal.profile.birthPlaceDate }}</p>
+                    </div>
                   </div>
                 </div>
-                <p class="text-sm text-gray-700 leading-relaxed">
-                  {{ activeMemberModal.profile.summary }}
-                </p>
-              </div>
 
-              <div class="rounded-xl border border-border bg-background px-4 py-4">
-                <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Fokus Pembinaan</p>
-                <ul class="mt-3 space-y-2 text-sm text-gray-700">
-                  <li v-for="point in activeMemberModal.profile.points" :key="point" class="flex items-start gap-2">
-                    <span class="mt-1.5 h-2 w-2 rounded-full bg-secondary shrink-0" />
-                    <span>{{ point }}</span>
-                  </li>
-                </ul>
+                <div class="mt-12 grid gap-4 md:grid-cols-3">
+                  <div class="rounded-xl border border-border bg-background/90 p-4">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Riwayat Pendidikan</p>
+                    <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                      <li v-for="item in activeMemberModal.profile.education" :key="item"
+                        class="flex items-start gap-2">
+                        <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary" />
+                        <span>{{ item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="rounded-xl border border-border bg-background/90 p-4">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Riwayat Organisasi</p>
+                    <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                      <li v-for="item in activeMemberModal.profile.organization" :key="item"
+                        class="flex items-start gap-2">
+                        <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary" />
+                        <span>{{ item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="rounded-xl border border-border bg-background/90 p-4">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Riwayat Pekerjaan</p>
+                    <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                      <li v-for="item in activeMemberModal.profile.work" :key="item" class="flex items-start gap-2">
+                        <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary" />
+                        <span>{{ item }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
+            </div>
+            <div>
+              <img :src="cvTemplateUrl" alt="CV Template" class="w-full relative z-10 h-screen" />
             </div>
           </div>
         </div>
@@ -480,7 +565,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
@@ -500,8 +585,12 @@ const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).hre
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
+const cvTemplateUrl = new URL('../../assets/cv.png', import.meta.url).href
+const card2Url = new URL('../../assets/card2.png', import.meta.url).href
+const selayangCard = new URL('../../assets/selayangcard.png', import.meta.url).href
 const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
 const bannerUrl = new URL('../../assets/bg_1.png', import.meta.url).href
+const heroVideoEmbedUrl = 'https://www.youtube.com/embed/t2k3uwS2zyA?autoplay=1&mute=1&controls=0&loop=1&playlist=t2k3uwS2zyA&modestbranding=1&rel=0&playsinline=1'
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const wallpaperModules = import.meta.glob('../../assets/wallpaper/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -514,6 +603,14 @@ const activeWallpaperIndex = ref(0)
 const isMobileMenuOpen = ref(false)
 const activeFeatureModal = ref(null)
 const activeMemberModal = ref(null)
+const leaderCarouselRef = ref(null)
+const leaderSlideRefs = ref([])
+const activeLeaderIndex = ref(0)
+const isLeaderInfoSwitching = ref(false)
+const leaderTransitionName = computed(() => {
+  const variants = ['leader-swap-slide', 'leader-swap-pop', 'leader-swap-tilt']
+  return variants[activeLeaderIndex.value % variants.length]
+})
 let wallpaperInterval
 
 let fadeObserver
@@ -585,14 +682,68 @@ function leaderCardStyle(index) {
   }
 }
 
+const setLeaderSlideRef = (element, index) => {
+  if (!element) return
+  leaderSlideRefs.value[index] = element
+}
+
+const goToLeader = (index, behavior = 'smooth') => {
+  const target = leaderSlideRefs.value[index]
+  if (!target) return
+
+  target.scrollIntoView({
+    behavior,
+    block: 'center',
+    inline: 'nearest',
+  })
+  activeLeaderIndex.value = index
+}
+
+const getNearestLeaderIndex = () => {
+  const container = leaderCarouselRef.value
+  if (!container || !leaderSlideRefs.value.length) return activeLeaderIndex.value
+
+  const containerCenter = container.scrollTop + container.clientHeight / 2
+  let closestIndex = 0
+  let smallestDistance = Number.POSITIVE_INFINITY
+
+  leaderSlideRefs.value.forEach((slide, index) => {
+    if (!slide) return
+    const slideCenter = slide.offsetTop + slide.clientHeight / 2
+    const distance = Math.abs(slideCenter - containerCenter)
+    if (distance < smallestDistance) {
+      smallestDistance = distance
+      closestIndex = index
+    }
+  })
+
+  return closestIndex
+}
+
+const onLeaderScroll = () => {
+  activeLeaderIndex.value = getNearestLeaderIndex()
+}
+
+const onLeaderResize = () => goToLeader(activeLeaderIndex.value, 'auto')
+
+const onLeaderInfoBeforeLeave = () => {
+  isLeaderInfoSwitching.value = true
+}
+
+const onLeaderInfoAfterEnter = () => {
+  isLeaderInfoSwitching.value = false
+}
+
 const members = [
   {
     name: 'Gilang Nurfahradz Syahni Fasya, S.T',
     image: gilangUrl,
     jabatan: 'Direktur',
     profile: {
-      summary: 'Mengawal arah program pembinaan agar berjalan terstruktur, terukur, dan selaras dengan kebutuhan seleksi AKPOL.',
-      points: ['Koordinasi strategi akademik lintas tim', 'Monitoring capaian bulanan peserta', 'Penguatan standar kualitas pembinaan'],
+      birthPlaceDate: 'Bandung, 12 Februari 1993',
+      education: ['S1 Teknik Industri', 'Pelatihan Manajemen Pendidikan'],
+      organization: ['Pengurus Yayasan Pendidikan', 'Koordinator Pembinaan Internal'],
+      work: ['Direktur Pratistha Cendekia Prestasi', 'Koordinator Strategi Program Pembinaan'],
     },
   },
   {
@@ -600,8 +751,10 @@ const members = [
     image: wahyuUrl,
     jabatan: 'Sekretaris',
     profile: {
-      summary: 'Mendukung kelancaran operasional administrasi dan memastikan komunikasi program berjalan efektif.',
-      points: ['Pendampingan administrasi peserta', 'Pengelolaan jadwal kegiatan pembinaan', 'Koordinasi komunikasi orang tua peserta'],
+      birthPlaceDate: 'Tasikmalaya, 20 Juni 1972',
+      education: ['S1 Ilmu Pemerintahan (S.IP)', 'Pelatihan Administrasi dan Kearsipan'],
+      organization: ['Pengurus Bidang Administrasi Yayasan', 'Tim Koordinasi Program'],
+      work: ['Sekretaris Pratistha Cendekia Prestasi', 'Pendamping Operasional Administrasi Program'],
     },
   },
   {
@@ -609,8 +762,10 @@ const members = [
     image: rinaUrl,
     jabatan: 'Bendahara',
     profile: {
-      summary: 'Mengelola tata kelola keuangan program secara akuntabel untuk mendukung keberlangsungan layanan pembinaan.',
-      points: ['Perencanaan anggaran kegiatan', 'Kontrol transparansi pembayaran', 'Laporan keuangan periodik program'],
+      birthPlaceDate: 'Jakarta, 5 April 1970',
+      education: ['S1 Administrasi Negara', 'Pelatihan Manajemen Keuangan'],
+      organization: ['Pengurus Keuangan Yayasan', 'Tim Pengawasan Anggaran Program'],
+      work: ['Bendahara Pratistha Cendekia Prestasi', 'Penanggung Jawab Laporan Keuangan Program'],
     },
   },
   {
@@ -618,8 +773,10 @@ const members = [
     image: natashaUrl,
     jabatan: 'Bidang Internal',
     profile: {
-      summary: 'Fokus pada penguatan proses internal, kedisiplinan pelaksanaan program, dan evaluasi mutu pembinaan.',
-      points: ['Audit pelaksanaan kelas berkala', 'Standarisasi SOP pembinaan', 'Evaluasi performa tim pendamping'],
+      birthPlaceDate: 'Bandung, 18 November 1974',
+      education: ['S1 Hukum (S.H.)', 'Pelatihan Tata Kelola Internal'],
+      organization: ['Pengurus Bidang Internal Lembaga', 'Tim Evaluasi SOP Pembinaan'],
+      work: ['Koordinator Bidang Internal', 'Auditor Pelaksanaan Program Pembinaan'],
     },
   },
   {
@@ -627,8 +784,10 @@ const members = [
     image: tutikUrl,
     jabatan: 'Bidang Eksternal',
     profile: {
-      summary: 'Membangun relasi eksternal dan kolaborasi strategis untuk memperluas dukungan terhadap program peserta.',
-      points: ['Koordinasi kemitraan eksternal', 'Sosialisasi program ke calon peserta', 'Penguatan jejaring dukungan pembinaan'],
+      birthPlaceDate: 'Cirebon, 9 September 1971',
+      education: ['S1 Ilmu Sosial', 'Pelatihan Public Relations'],
+      organization: ['Pengurus Hubungan Eksternal', 'Tim Kemitraan Strategis'],
+      work: ['Koordinator Bidang Eksternal', 'Pengembang Jejaring Kolaborasi Program'],
     },
   },
 ]
@@ -637,6 +796,7 @@ const services = [
   { icon: Brain, title: 'Tes Psikologi', desc: 'Pemetaan karakter, kestabilan emosi, dan kesiapan menghadapi seleksi.' },
   { icon: BookOpenText, title: 'Tes Akademik', desc: 'Latihan soal akademik terstruktur dengan simulasi CBT berkala.' },
   { icon: Dumbbell, title: 'Tes Fisik', desc: 'Panduan pembinaan fisik sesuai standar seleksi kepolisian.' },
+  { icon: Check, title: 'Tes Kesehatan', desc: 'Pendampingan pemeriksaan kesehatan untuk memenuhi standar seleksi kepolisian.' },
   { icon: ShieldCheck, title: 'Mental & Ideologi', desc: 'Penguatan mental, disiplin, wawasan kebangsaan, dan integritas.' },
   { icon: NotebookPen, title: 'Materi Pembelajaran', desc: 'Modul belajar, bank soal, dan pembahasan eksklusif per kelas.' },
 ]
@@ -827,9 +987,12 @@ const setupScrollFadeAnimations = async () => {
 }
 
 watch(() => route.hash, scrollToHash)
-onMounted(() => {
+onMounted(async () => {
   scrollToHash()
   setupScrollFadeAnimations()
+  await nextTick()
+  goToLeader(activeLeaderIndex.value, 'auto')
+  window.addEventListener('resize', onLeaderResize)
   if (wallpaperSlides.length > 1) {
     wallpaperInterval = setInterval(() => {
       activeWallpaperIndex.value = (activeWallpaperIndex.value + 1) % wallpaperSlides.length
@@ -838,6 +1001,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.removeEventListener('resize', onLeaderResize)
   if (wallpaperInterval) {
     clearInterval(wallpaperInterval)
   }
@@ -847,10 +1011,101 @@ onUnmounted(() => {
 })
 </script>
 
+<style src="../../css/animate.css"></style>
+
 <style scoped>
 .fade-up {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+.selayang-card-container {
+  min-height: 100%;
+}
+
+.selayang-card-bg {
+  object-position: center 32%;
+}
+
+.cta-tryout-animated {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+  background-image: linear-gradient(120deg, #2f6bff 0%, #5f0ad7 45%, #13c1fc 100%);
+  background-size: 220% 220%;
+  box-shadow: 0 12px 30px -14px rgba(47, 107, 255, 0.8);
+  animation: ctaTryoutBgFlow 4.8s ease-in-out infinite, ctaTryoutPulse 1.9s ease-in-out infinite;
+  will-change: transform, background-position, box-shadow;
+}
+
+.cta-tryout-animated::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-130%);
+  background: linear-gradient(105deg, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0) 75%);
+  animation: ctaTryoutShine 2.3s linear infinite;
+  pointer-events: none;
+}
+
+.cta-tryout-animated:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 18px 36px -16px rgba(47, 107, 255, 0.92);
+}
+
+.cta-tryout-animated:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.home-main-gradient-animated {
+  background-color: #2f2a30;
+  background-image:
+    conic-gradient(from 22deg at 13% 12%,
+      rgba(246, 225, 106, 0.52) 0deg 48deg,
+      rgba(244, 188, 111, 0.44) 48deg 108deg,
+      rgba(240, 157, 128, 0.36) 108deg 192deg,
+      rgba(207, 123, 145, 0.3) 192deg 278deg,
+      rgba(171, 103, 155, 0.24) 278deg 360deg),
+    conic-gradient(from 210deg at 78% 26%,
+      rgba(167, 112, 154, 0.4) 0deg 58deg,
+      rgba(143, 91, 150, 0.36) 58deg 146deg,
+      rgba(126, 78, 144, 0.32) 146deg 235deg,
+      rgba(103, 70, 140, 0.28) 235deg 320deg,
+      rgba(89, 66, 133, 0.24) 320deg 360deg),
+    conic-gradient(from 318deg at 52% 82%,
+      rgba(246, 143, 116, 0.34) 0deg 70deg,
+      rgba(220, 95, 137, 0.32) 70deg 150deg,
+      rgba(165, 74, 146, 0.3) 150deg 238deg,
+      rgba(94, 62, 132, 0.34) 238deg 360deg),
+    linear-gradient(160deg, #6c8ff7 0%, #9069f1 26%, #ee7f7a 48%, #b44a98 72%, #1f2c79 100%);
+  background-size: 190% 190%, 190% 190%, 220% 220%, 135% 135%;
+  background-blend-mode: soft-light, overlay, multiply, normal;
+  animation: homeMainGradientFlow 12s ease-in-out infinite;
+  will-change: background-position;
+}
+
+.mobile-card-gradient {
+  background-color: #b8e3bc;
+  background-image:
+    conic-gradient(from 24deg at 14% 14%,
+      rgba(196, 239, 199, 0.7) 0deg 56deg,
+      rgba(167, 231, 202, 0.52) 56deg 132deg,
+      rgba(114, 199, 214, 0.36) 132deg 222deg,
+      rgba(58, 126, 225, 0.34) 222deg 318deg,
+      rgba(196, 239, 199, 0.56) 318deg 360deg),
+    conic-gradient(from 210deg at 82% 26%,
+      rgba(173, 235, 206, 0.5) 0deg 70deg,
+      rgba(128, 216, 212, 0.38) 70deg 170deg,
+      rgba(63, 147, 228, 0.36) 170deg 285deg,
+      rgba(151, 226, 209, 0.48) 285deg 360deg),
+    linear-gradient(150deg, #bee9bf 0%, #92e5cc 42%, #2f79e9 100%);
+  background-size: 170% 170%, 185% 185%, 125% 125%;
+  background-blend-mode: overlay, soft-light, normal;
+  animation: mobileCardGradientFlow 9s ease-in-out infinite;
+  will-change: background-position;
 }
 
 .fade-up.fade-ready {
@@ -867,6 +1122,63 @@ onUnmounted(() => {
 .fade-up-tight.fade-ready {
   transform: translateY(10px) scale(0.992);
   transition: opacity 0.38s ease, transform 0.38s ease;
+}
+
+.leader-vertical-carousel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.leader-vertical-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.leader-swap-slide-enter-active,
+.leader-swap-slide-leave-active {
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.42s ease;
+}
+
+.leader-swap-slide-enter-from {
+  opacity: 0;
+  transform: translateY(34px) scale(0.985);
+}
+
+.leader-swap-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-26px) scale(1.01);
+}
+
+.leader-swap-pop-enter-active,
+.leader-swap-pop-leave-active {
+  transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.38s ease, opacity 0.38s ease;
+}
+
+.leader-swap-pop-enter-from {
+  opacity: 0;
+  transform: scale(0.9) translateX(14px);
+  filter: blur(4px);
+}
+
+.leader-swap-pop-leave-to {
+  opacity: 0;
+  transform: scale(1.08) translateX(-10px);
+  filter: blur(3px);
+}
+
+.leader-swap-tilt-enter-active,
+.leader-swap-tilt-leave-active {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+  transform-origin: center;
+}
+
+.leader-swap-tilt-enter-from {
+  opacity: 0;
+  transform: perspective(900px) rotateX(-8deg) translateY(20px) scale(0.96);
+}
+
+.leader-swap-tilt-leave-to {
+  opacity: 0;
+  transform: perspective(900px) rotateX(7deg) translateY(-16px) scale(1.02);
 }
 
 .member-slide-fade-enter-active,
@@ -896,8 +1208,143 @@ onUnmounted(() => {
   }
 }
 
+@keyframes ctaTryoutBgFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes ctaTryoutPulse {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 12px 30px -14px rgba(47, 107, 255, 0.8);
+  }
+
+  50% {
+    transform: translateY(-1px) scale(1.025);
+    box-shadow: 0 16px 34px -14px rgba(47, 107, 255, 0.95);
+  }
+}
+
+@keyframes ctaTryoutShine {
+  0% {
+    transform: translateX(-130%);
+  }
+
+  100% {
+    transform: translateX(130%);
+  }
+}
+
 .hero-banner-fade {
   animation: heroFadeIn 1.2s ease-out both;
+}
+
+.program-gradient-animated {
+  background-size: 220% 220%;
+  animation: programGradientFlow 9s ease-in-out infinite;
+}
+
+.feature-gradient-animated {
+  background-image:
+    radial-gradient(circle at 16% 22%, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0) 42%),
+    linear-gradient(120deg, #ebcc00 0%, #f37500 32%, #ffdd00 58%, #c09900 78%, #ffffff 100%);
+  background-size: 240% 240%;
+  animation: featureGradientFlow 5.8s linear infinite;
+  will-change: background-position;
+}
+
+.service-gradient-animated {
+  background-image:
+    radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 38%),
+    linear-gradient(138deg, #ffffff 0%, #ecf8ff 28%, #cfefff 54%, #a8e6ff 74%, #e7f7ff 100%);
+  background-size: 230% 230%;
+  animation: serviceGradientFlow 6.2s linear infinite;
+  will-change: background-position;
+}
+
+@keyframes programGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes serviceGradientFlow {
+  0% {
+    background-position: 100% 10%;
+  }
+
+  50% {
+    background-position: 0% 90%;
+  }
+
+  100% {
+    background-position: 100% 10%;
+  }
+}
+
+@keyframes homeMainGradientFlow {
+  0% {
+    background-position: 0% 0%, 100% 0%, 50% 100%, 0% 0%;
+  }
+
+  35% {
+    background-position: 42% 24%, 70% 30%, 34% 78%, 30% 22%;
+  }
+
+  70% {
+    background-position: 18% 58%, 94% 46%, 62% 56%, 78% 74%;
+  }
+
+  100% {
+    background-position: 0% 0%, 100% 0%, 50% 100%, 0% 0%;
+  }
+}
+
+@keyframes mobileCardGradientFlow {
+  0% {
+    background-position: 0% 0%, 100% 0%, 50% 50%;
+  }
+
+  50% {
+    background-position: 100% 100%, 0% 100%, 55% 45%;
+  }
+
+  100% {
+    background-position: 0% 0%, 100% 0%, 50% 50%;
+  }
+}
+
+@keyframes featureGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes heroFadeIn {
@@ -909,6 +1356,14 @@ onUnmounted(() => {
   100% {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .selayang-card-bg {
+    object-position: center 20%;
+    transform: scale(1.06);
+    transform-origin: center;
   }
 }
 </style>

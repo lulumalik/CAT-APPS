@@ -1,69 +1,71 @@
 <template>
-  <main class="min-h-screen text-text md:px-10 md:py-12 about-bg">
+  <main class="min-h-screen text-text md:px-10 md:py-12 about-us-gradient-animated">
     <div class="mx-auto space-y-8">
       <section
-        class="fade-up relative overflow-hidden text-center md:rounded-[2rem] text-white shadow-2xl shadow-[#123B8F]/35 p-7 md:p-10 pb-16 md:pb-20 bg-cover bg-center"
-        :style="{ backgroundImage: `url('${backgroundAboutUrl}')` }">
-        <div
-          class="absolute inset-0 md:rounded-[2rem] bg-gradient-to-br from-primary/20 via-[#1E4CA8]/48 to-secondary/90" />
-        <img :src="patternUrl" alt="Pattern" class="absolute opacity-25 w-40 md:w-52 -bottom-8 -right-6 z-[1]" />
-        <div class="relative z-10">
+        class="fade-up relative overflow-hidden text-center md:text-left md:rounded-[2rem] text-primary shadow-2xl shadow-[#123B8F]/35">
+        <img :src="backgroundAboutUrl" alt="Background About Us" class="about-hero-bg absolute inset-0 z-0 h-full w-full object-cover" />
+        <!-- <div class="absolute inset-0 z-0 bg-gradient-to-b from-white/40 via-white/55 to-white/70" /> -->
+        <div class="relative z-10 p-7 md:p-10 pb-16">
           <router-link to="/"
-            class="inline-flex absolute left-0 top-0 items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
+            class="inline-flex absolute left-5 top-2 items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
             <ArrowLeft class="h-4 w-4" />
             Kembali ke Beranda
           </router-link>
-          <div
-            class="rounded-full border h-32 w-32 md:h-82 md:w-82 mx-auto border-white/70 flex items-center bg-white/90 p-2 shadow-lg">
-            <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi"
-              class="mx-auto mb-5 h-16 w-16 md:h-56 md:w-56" />
+          <div class="md:flex md:items-center md:justify-center md:gap-4">
+            <div class="md:w-4/12 mt-8 md:mt-0">
+              <div
+                class="rounded-full border-10 h-32 w-32 md:h-56 md:w-56 mx-auto border-primary/50 flex items-center bg-white/90 p-2 shadow-lg">
+                <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi"
+                  class="mx-auto mb-4 h-16 w-16 md:h-36 md:w-36" />
+              </div>
+            </div>
+            <div>
+              <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-primary/80">Tentang Kami</p>
+              <h1 class="mt-2 text-3xl md:text-5xl font-black leading-tight">
+                Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
+              </h1>
+              <p class="mt-5 text-xl md:text-2xl pb-4 font-bold text-primary/90 leading-relaxed">
+                Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Cendekia Prestasi didukung oleh
+                legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan
+                profesionalisme
+                merupakan fondasi penting dalam membangun kepercayaan peserta didik maupun orang tua.
+              </p>
+            </div>
           </div>
-          <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-white/80">Tentang Kami</p>
-          <h1 class="mt-2 text-3xl md:text-5xl font-black leading-tight">
-            Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
-          </h1>
-          <p class="mt-5 text-xl md:text-2xl font-bold text-white/90 leading-relaxed">
-            Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Cendekia Prestasi didukung oleh
-            legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan profesionalisme
-            merupakan fondasi penting dalam membangun kepercayaan peserta didik maupun orang tua.
-          </p>
         </div>
       </section>
 
-      <section
-        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-white via-sky/20 to-blue-50/60 border border-blue-100/80 shadow-xl shadow-primary/8 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
-        <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
+      <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
-            <FileBadge class="h-6 w-6 text-primary" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Legalitas Perusahaan</h2>
+            <FileBadge class="h-6 w-6 text-white" />
+            <h2 class="text-2xl md:text-3xl text-white font-bold tracking-tight">Legalitas Perusahaan</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-lg md:text-xl text-center">Berikut adalah nomor dokumen resmi perusahaan
+          <p class="mt-2 text-white text-lg md:text-xl text-center">Berikut adalah nomor dokumen resmi perusahaan
             kami:</p>
 
           <div class="mt-6 grid gap-6 md:grid-cols-3">
             <article v-for="doc in legalDocuments" :key="doc.label"
               class="rounded-xl border border-border bg-background shadow-lg overflow-hidden flex flex-col">
-              <div class="p-4 md:p-5 border-t border-border bg-gradient-to-br from-white to-sky flex-1">
-                <p class="text-xs md:text-sm uppercase tracking-[0.15em] font-bold text-primary text-center">{{
+              <div
+                class="p-4 md:p-5 border-t border-border bg-gradient-to-br from-white to-sky flex-1 legal-gradient-animated">
+                <p class="text-xs md:text-lg uppercase tracking-[0.15em] font-bold text-primary text-center">{{
                   doc.label }}</p>
                 <p v-if="doc.subtitle"
-                  class="mt-1 text-xs md:text-sm text-gray-600 font-bold text-center leading-relaxed">{{ doc.subtitle }}
+                  class="mt-1 text-xs md:text-sm text-gray-600 font-bold text-center leading-relaxed text-md">{{ doc.subtitle }}
                 </p>
-                <p class="mt-3 text-sm md:text-base font-bold text-text text-center break-words">{{ doc.value }}</p>
+                <p class="mt-3 text-sm md:text-lg font-bold text-text text-center break-words">{{ doc.value }}</p>
               </div>
             </article>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
-      <section
-        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-primary/5 via-white to-sky/30 border border-primary/10 shadow-xl shadow-primary/8 p-7 md:p-10 overflow-hidden">
-        <img :src="patternUrl" alt="Pattern" class="absolute w-28 top-12 z-30 right-0 opacity-90" />
-
+      <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
-          <h2 class="mt-2 text-2xl md:text-4xl font-black text-center tracking-tight text-text">
+          <h2
+            class="mt-2 text-2xl md:text-4xl font-black text-center tracking-tight text-white flex items-center justify-center gap-3">
+            <Crown class="h-6 w-6 md:h-7 md:w-7 text-white" />
             Pimpinan Pratistha Cendekia Prestasi
           </h2>
 
@@ -94,43 +96,38 @@
             </div>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
-      <section
-        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-sky/25 via-white to-white border border-blue-100/60 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
-        <img :src="patternUrl" alt="Pattern" class="absolute w-28 top-12 right-0 opacity-90" />
+      <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
-            <Users class="h-6 w-6 text-primary" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Struktur Organisasi</h2>
+            <Users class="h-6 w-6 text-white" />
+            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Struktur Organisasi</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Diagram jabatan inti Pratistha Cendekia Prestasi.
-          </p>
 
           <div class="org-chart my-12">
-            <div class="org-node">
+            <div class="org-node org-node-animated">
               <p class="org-node__role">{{ orgChart.penasehat.role }}</p>
               <p class="org-node__name">{{ orgChart.penasehat.name }}</p>
             </div>
 
             <div class="org-stem" />
 
-            <div class="org-node">
+            <div class="org-node org-node-animated">
               <p class="org-node__role">{{ orgChart.komisaris.role }}</p>
               <p class="org-node__name">{{ orgChart.komisaris.name }}</p>
             </div>
 
             <div class="org-stem" />
 
-            <div class="org-node">
+            <div class="org-node org-node-animated">
               <p class="org-node__role">{{ orgChart.direkturUtama.role }}</p>
               <p class="org-node__name">{{ orgChart.direkturUtama.name }}</p>
             </div>
 
             <div class="org-stem" />
 
-            <div class="org-node">
+            <div class="org-node org-node-animated">
               <p class="org-node__role">{{ orgChart.direktur.role }}</p>
               <p class="org-node__name">{{ orgChart.direktur.name }}</p>
             </div>
@@ -140,14 +137,14 @@
               <div class="org-split__cols">
                 <div class="org-split__col">
                   <div class="org-split__drop" />
-                  <div class="org-node">
+                  <div class="org-node org-node-animated">
                     <p class="org-node__role">{{ orgChart.sekretaris.role }}</p>
                     <p class="org-node__name">{{ orgChart.sekretaris.name }}</p>
                   </div>
                 </div>
                 <div class="org-split__col">
                   <div class="org-split__drop" />
-                  <div class="org-node">
+                  <div class="org-node org-node-animated">
                     <p class="org-node__role">{{ orgChart.bendahara.role }}</p>
                     <p class="org-node__name">{{ orgChart.bendahara.name }}</p>
                   </div>
@@ -159,21 +156,21 @@
                 <div class="org-split__cols org-split__cols--three">
                   <div class="org-split__col">
                     <div class="org-split__drop" />
-                    <div class="org-node">
+                    <div class="org-node org-node-animated">
                       <p class="org-node__role">{{ orgChart.internal.role }}</p>
                       <p class="org-node__name">{{ orgChart.internal.name }}</p>
                     </div>
                   </div>
                   <div class="org-split__col">
                     <div class="org-split__drop" />
-                    <div class="org-node">
+                    <div class="org-node org-node-animated">
                       <p class="org-node__role">{{ orgChart.eksternal.role }}</p>
                       <p class="org-node__name">{{ orgChart.eksternal.name }}</p>
                     </div>
                   </div>
                   <div class="org-split__col">
                     <div class="org-split__drop" />
-                    <div class="org-node">
+                    <div class="org-node org-node-animated">
                       <p class="org-node__role">{{ orgChart.digitalMarketing.role }}</p>
                       <p class="org-node__name">{{ orgChart.digitalMarketing.name }}</p>
                     </div>
@@ -183,22 +180,19 @@
             </div>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
-      <section
-        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-white to-mint/30 border border-green-100/60 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
-        <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
+      <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
-            <Phone class="h-6 w-6 text-primary" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Kontak Kami</h2>
+            <Phone class="h-6 w-6 text-white" />
+            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Kontak Kami</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center text-lg md:text-xl">Kanal komunikasi resmi Pratistha Cendekia
+          <p class="mt-2 text-white text-center text-lg md:text-xl">Kanal komunikasi resmi Pratistha Cendekia
             Prestasi.</p>
           <div class="mt-6 grid gap-4 md:flex md:flex-wrap justify-center gap-4">
             <article v-for="contact in contactChannels" :key="contact.label"
-              class="rounded-xl border border-border bg-gradient-to-br from-white to-sky shadow-lg p-4 md:w-1/3">
+              class="rounded-xl border border-border legal-gradient-animated shadow-lg p-4 md:w-1/3 contact-channel-animated">
               <div class="flex items-center justify-center gap-2 text-primary">
                 <component :is="contact.icon" class="h-4 w-4" />
                 <p class="text-sm md:text-xl font-bold text-center">{{ contact.label }}</p>
@@ -207,18 +201,15 @@
             </article>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
-      <section
-        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-cream/40 via-white to-sky/20 border border-amber-100/60 shadow-xl shadow-black/5 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
-        <img :src="patternUrl" alt="Pattern" class="absolute w-28 top-12 right-0 opacity-90" />
+      <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0">
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
-            <Landmark class="h-6 w-6 text-primary" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight">Rekening Resmi Pembayaran</h2>
+            <Landmark class="h-6 w-6 text-white" />
+            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Rekening Resmi Pembayaran</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-lg md:text-xl text-center max-w-3xl mx-auto">
+          <p class="mt-2 text-white text-lg md:text-xl text-center max-w-3xl mx-auto">
             Segala transaksi Lembaga Kursus Pratistha Cendekia Prestasi hanya dilakukan melalui rekening resmi
             perusahaan di Bank BCA dan Bank BRI.
           </p>
@@ -231,31 +222,29 @@
 
           <div class="mt-6 grid sm:grid-cols-2 gap-4 max-w-5xl mx-auto">
             <article v-for="account in officialBankAccounts" :key="account.bank"
-              class="rounded-xl border border-border bg-gradient-to-br from-white to-sky shadow-lg p-5">
-              <p class="text-sm md:text-xl uppercase tracking-[0.15em] font-bold text-primary text-center">{{
-                account.bank }}</p>
+              class="rounded-xl shadow-xl p-5 bank-card-animated" :class="account.themeClass">
+              <div><img :src="account.logo" :alt="account.logoAlt" class="h-24 w-32 mx-auto object-contain" />
+              </div>
               <p class="mt-3 text-sm font-semibold md:text-xl text-gray-600 text-center">Nomor Rekening</p>
               <p class="mt-1 text-lg md:text-xl font-black text-text text-center tracking-wide">{{ account.accountNumber
                 || '-' }}</p>
               <p class="mt-4 text-sm font-semibold md:text-xl text-gray-600 text-center">Atas Nama</p>
               <p class="mt-1 text-sm font-bold md:text-xl text-text text-center leading-relaxed">{{ account.accountName
-                }}</p>
+              }}</p>
             </article>
           </div>
         </div>
-        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
 
       <section
-        class="fade-up relative rounded-[2rem] bg-gradient-to-br from-sky/20 via-white to-blue-50/50 border border-blue-100/60 shadow-xl shadow-primary/6 p-7 md:p-10 pb-16 md:pb-20 overflow-hidden">
-        <img :src="patternUrl" alt="Pattern" class="absolute w-28 bottom-12 right-0 opacity-90" />
+        class="fade-up relative overflow-hidden mt-16 p-4 md:p-0">
+
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
-            <Image class="h-6 w-6 text-primary" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-center">Galeri Kegiatan</h2>
+            <Image class="h-6 w-6 text-white" />
+            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Galeri Kegiatan</h2>
           </div>
-          <p class="mt-2 text-gray-600 text-center">Dokumentasi suasana pembelajaran dan aktivitas kursus peserta.</p>
-          <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <article v-for="photo in galleryPhotos" :key="photo.src"
               class="rounded-2xl overflow-hidden border border-border bg-background shadow-lg">
               <img :src="photo.src" :alt="photo.alt" class="h-56 w-full object-cover" />
@@ -270,12 +259,12 @@
 
 <script setup>
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
-import { ArrowLeft, FileBadge, Globe, Image, Instagram, Landmark, Mail, Music2, Phone, Users } from 'lucide-vue-next'
+import { ArrowLeft, Crown, FileBadge, Globe, Image, Instagram, Landmark, Mail, Music2, Phone, Users } from 'lucide-vue-next'
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
-const backgroundAboutUrl = new URL('../../assets/background-about.jpg', import.meta.url).href
+const backgroundAboutUrl = new URL('../../assets/about.png', import.meta.url).href
 const wallpaper1Url = new URL('../../assets/wallpaper/1.webp', import.meta.url).href
 const wallpaper2Url = new URL('../../assets/wallpaper/2.jpeg', import.meta.url).href
 const wallpaper3Url = new URL('../../assets/wallpaper/3.webp', import.meta.url).href
@@ -288,6 +277,8 @@ const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
 const skKemenkumhamUrl = new URL('../../assets/legal/sk-kemenkumham.png', import.meta.url).href
 const npwpUrl = new URL('../../assets/legal/npwp.png', import.meta.url).href
 const nibUrl = new URL('../../assets/legal/nib.png', import.meta.url).href
+const bcaLogoUrl = new URL('../../assets/logotransaksi/Logo BCA_Biru.png', import.meta.url).href
+const briLogoUrl = new URL('../../assets/logotransaksi/BRI_2025.png', import.meta.url).href
 
 const heroLeaders = [
   {
@@ -358,11 +349,17 @@ const officialBankAccounts = [
     bank: 'Bank BCA',
     accountNumber: '-',
     accountName: 'PT. Pratistha Training Center Indonesia',
+    logo: bcaLogoUrl,
+    logoAlt: 'Logo Bank BCA',
+    themeClass: 'bank-card-bca',
   },
   {
     bank: 'Bank BRI',
     accountNumber: '-',
     accountName: 'PT. Pratistha Training Center Indonesia',
+    logo: briLogoUrl,
+    logoAlt: 'Logo Bank BRI',
+    themeClass: 'bank-card-bri',
   },
 ]
 
@@ -515,6 +512,26 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.about-us-gradient-animated {
+  background-color: #050507;
+  background-image:
+    radial-gradient(120% 70% at 8% 6%, rgba(19, 193, 252, 0.24) 0%, rgba(19, 193, 252, 0) 58%),
+    radial-gradient(85% 65% at 92% 10%, rgba(95, 10, 215, 0.5) 0%, rgba(95, 10, 215, 0) 62%),
+    radial-gradient(95% 90% at 50% 100%, rgba(38, 13, 167, 0.62) 0%, rgba(38, 13, 167, 0) 64%),
+    linear-gradient(180deg, #000000 0%, #260da7 46%, #5f0ad7 74%, #13c1fc 100%);
+  background-size: 190% 190%, 180% 180%, 200% 200%, 140% 140%;
+  animation: homeMainGradientFlow 12s ease-in-out infinite;
+  will-change: background-position;
+}
+
+.about-hero-section {
+  min-height: 560px;
+}
+
+.about-hero-bg {
+  min-height: 100%;
+}
+
 .fade-up {
   opacity: 1;
   transform: translateY(0) scale(1);
@@ -538,6 +555,29 @@ onBeforeUnmount(() => {
     radial-gradient(ellipse 55% 90% at 100% 8%, rgba(47, 107, 255, 0.09) 0%, transparent 100%),
     radial-gradient(ellipse 65% 50% at 55% 100%, rgba(18, 59, 143, 0.07) 0%, transparent 100%),
     radial-gradient(ellipse 40% 35% at 85% 75%, rgba(0, 114, 166, 0.7) 0%, transparent 100%);
+}
+
+.legal-gradient-animated {
+  background-image:
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 40%),
+    linear-gradient(130deg, #ffffff 0%, #f0f9ff 30%, #d8f0ff 55%, #bfe6ff 78%, #ffffff 100%);
+  background-size: 230% 230%;
+  animation: legalGradientFlow 6.6s linear infinite;
+  will-change: background-position;
+}
+
+@keyframes legalGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .leader-carousel {
@@ -568,6 +608,47 @@ onBeforeUnmount(() => {
   background: linear-gradient(to bottom right, #fff, var(--color-sky, #ddf4ff));
   text-align: center;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.08);
+}
+
+.org-node-animated {
+  background-image:
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 40%),
+    linear-gradient(130deg, #ffffff 0%, #f0f9ff 30%, #d8f0ff 55%, #bfe6ff 78%, #ffffff 100%);
+  background-size: 230% 230%;
+  animation: legalGradientFlow 6.6s linear infinite;
+  will-change: background-position;
+}
+
+.bank-card-animated {
+  background-size: 230% 230%;
+  animation: bankCardGradientFlow 7.2s linear infinite;
+  will-change: background-position;
+}
+
+.bank-card-bca {
+  background-image:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 42%),
+    linear-gradient(132deg, #0066ae 0%, #6095ff 34%, #ffffff 62%, #388dc9 82%, #0066ae 100%);
+}
+
+.bank-card-bri {
+  background-image:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 42%),
+    linear-gradient(132deg, #00529c 0%, #6095ff 34%, #ffffff 62%, #388dc9 82%, #00529c 100%);
+}
+
+@keyframes bankCardGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .org-node__role {
@@ -704,6 +785,10 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 640px) {
+  .about-hero-section {
+    min-height: 620px;
+  }
+
   .org-split__through {
     margin-top: 0;
   }
