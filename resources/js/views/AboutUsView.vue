@@ -39,10 +39,10 @@
       <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
-            <FileBadge class="h-6 w-6 text-white" />
-            <h2 class="text-2xl md:text-3xl text-white font-bold tracking-tight">Legalitas Perusahaan</h2>
+            <FileBadge class="h-6 w-6 text-primary" />
+            <h2 class="text-2xl md:text-3xl text-primary font-bold tracking-tight">Legalitas Perusahaan</h2>
           </div>
-          <p class="mt-2 text-white text-lg md:text-xl text-center">Berikut adalah nomor dokumen resmi perusahaan
+          <p class="mt-2 text-primary text-lg md:text-xl text-center">Berikut adalah nomor dokumen resmi perusahaan
             kami:</p>
 
           <div class="mt-6 grid gap-6 md:grid-cols-3">
@@ -66,8 +66,8 @@
       <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
           <h2
-            class="mt-2 text-2xl md:text-4xl font-black text-center tracking-tight text-white flex items-center justify-center gap-3">
-            <Crown class="h-6 w-6 md:h-7 md:w-7 text-white" />
+            class="mt-2 text-2xl md:text-4xl font-black text-center tracking-tight text-primary flex items-center justify-center gap-3">
+            <Crown class="h-6 w-6 md:h-7 md:w-7 text-primary" />
             Pimpinan Pratistha Cendekia Prestasi
           </h2>
 
@@ -103,8 +103,8 @@
       <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
-            <Users class="h-6 w-6 text-white" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Struktur Organisasi</h2>
+            <Users class="h-6 w-6 text-primary" />
+            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-primary">Struktur Organisasi</h2>
           </div>
 
           <div class="org-chart my-12">
@@ -514,29 +514,29 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .about-us-gradient-animated {
-  background-color: #2f2a30;
+  background-color: #262626;
   background-image:
     conic-gradient(from 22deg at 13% 12%,
-      rgba(246, 225, 106, 0.52) 0deg 48deg,
-      rgba(244, 188, 111, 0.44) 48deg 108deg,
-      rgba(240, 157, 128, 0.36) 108deg 192deg,
-      rgba(207, 123, 145, 0.3) 192deg 278deg,
-      rgba(171, 103, 155, 0.24) 278deg 360deg),
+      rgba(255, 255, 255, 0.38) 0deg 48deg,
+      rgba(230, 230, 230, 0.32) 48deg 108deg,
+      rgba(185, 185, 185, 0.28) 108deg 192deg,
+      rgba(130, 130, 130, 0.24) 192deg 278deg,
+      rgba(85, 85, 85, 0.22) 278deg 360deg),
     conic-gradient(from 210deg at 78% 26%,
-      rgba(167, 112, 154, 0.4) 0deg 58deg,
-      rgba(143, 91, 150, 0.36) 58deg 146deg,
-      rgba(126, 78, 144, 0.32) 146deg 235deg,
-      rgba(103, 70, 140, 0.28) 235deg 320deg,
-      rgba(89, 66, 133, 0.24) 320deg 360deg),
+      rgba(242, 242, 242, 0.28) 0deg 58deg,
+      rgba(196, 196, 196, 0.26) 58deg 146deg,
+      rgba(148, 148, 148, 0.24) 146deg 235deg,
+      rgba(98, 98, 98, 0.22) 235deg 320deg,
+      rgba(58, 58, 58, 0.2) 320deg 360deg),
     conic-gradient(from 318deg at 52% 82%,
-      rgba(246, 143, 116, 0.34) 0deg 70deg,
-      rgba(220, 95, 137, 0.32) 70deg 150deg,
-      rgba(165, 74, 146, 0.3) 150deg 238deg,
-      rgba(94, 62, 132, 0.34) 238deg 360deg),
-    linear-gradient(160deg, #6c8ff7 0%, #561aef 26%, #1000f0 48%, #008cff 72%, #0019a8 100%);
+      rgba(255, 255, 255, 0.2) 0deg 70deg,
+      rgba(210, 210, 210, 0.22) 70deg 150deg,
+      rgba(134, 134, 134, 0.24) 150deg 238deg,
+      rgba(60, 60, 60, 0.28) 238deg 360deg),
+    linear-gradient(160deg, #ffffff 0%, #d6d6d6 26%, #9b9b9b 48%, #525252 72%, #0f0f0f 100%);
   background-size: 190% 190%, 190% 190%, 220% 220%, 135% 135%;
   background-blend-mode: soft-light, overlay, multiply, normal;
-  animation: homeMainGradientFlow 12s ease-in-out infinite;
+  animation: homeMainGradientFlow 5s ease-in-out infinite;
   will-change: background-position;
 }
 
@@ -651,6 +651,24 @@ onBeforeUnmount(() => {
   background-image:
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 42%),
     linear-gradient(132deg, #00529c 0%, #6095ff 34%, #00eaff 62%, #388dc9 82%, #00529c 100%);
+}
+
+@keyframes homeMainGradientFlow {
+  0% {
+    background-position: 0% 0%, 100% 0%, 50% 100%, 0% 0%;
+  }
+
+  35% {
+    background-position: 42% 24%, 70% 30%, 34% 78%, 30% 22%;
+  }
+
+  70% {
+    background-position: 18% 58%, 94% 46%, 62% 56%, 78% 74%;
+  }
+
+  100% {
+    background-position: 0% 0%, 100% 0%, 50% 100%, 0% 0%;
+  }
 }
 
 @keyframes bankCardGradientFlow {
