@@ -215,7 +215,7 @@
                   <div
                     class="md:mt-5 rounded-xl backdrop-blur-[1px] relative z-20">
                     <p
-                      class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-300/20 pb-2">
+                      class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-300 pb-2">
                       Jabatan Terakhir</p>
                     <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed">
                       <li v-for="line in leaders[activeLeaderIndex].highlights" :key="line" class="text-center">
