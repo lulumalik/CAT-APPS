@@ -3,7 +3,8 @@
     <div class="mx-auto space-y-8">
       <section
         class="fade-up relative overflow-hidden text-center md:text-left md:rounded-[2rem] text-primary shadow-2xl shadow-[#123B8F]/35">
-        <img :src="backgroundAboutUrl" alt="Background About Us" class="about-hero-bg absolute inset-0 z-0 h-full w-full object-cover" />
+        <img :src="backgroundAboutUrl" alt="Background About Us"
+          class="about-hero-bg absolute inset-0 z-0 h-full w-full object-cover" />
         <!-- <div class="absolute inset-0 z-0 bg-gradient-to-b from-white/40 via-white/55 to-white/70" /> -->
         <div class="relative z-10 p-7 md:p-10 pb-16">
           <router-link to="/"
@@ -52,7 +53,8 @@
                 <p class="text-xs md:text-lg uppercase tracking-[0.15em] font-bold text-primary text-center">{{
                   doc.label }}</p>
                 <p v-if="doc.subtitle"
-                  class="mt-1 text-xs md:text-sm text-gray-600 font-bold text-center leading-relaxed text-md">{{ doc.subtitle }}
+                  class="mt-1 text-xs md:text-sm text-gray-600 font-bold text-center leading-relaxed text-md">{{
+                  doc.subtitle }}
                 </p>
                 <p class="mt-3 text-sm md:text-lg font-bold text-text text-center break-words">{{ doc.value }}</p>
               </div>
@@ -230,14 +232,13 @@
                 || '-' }}</p>
               <p class="mt-4 text-sm font-semibold md:text-xl text-gray-600 text-center">Atas Nama</p>
               <p class="mt-1 text-sm font-bold md:text-xl text-text text-center leading-relaxed">{{ account.accountName
-              }}</p>
+                }}</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section
-        class="fade-up relative overflow-hidden mt-16 p-4 md:p-0">
+      <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0">
 
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
@@ -513,13 +514,28 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .about-us-gradient-animated {
-  background-color: #050507;
+  background-color: #2f2a30;
   background-image:
-    radial-gradient(120% 70% at 8% 6%, rgba(19, 193, 252, 0.24) 0%, rgba(19, 193, 252, 0) 58%),
-    radial-gradient(85% 65% at 92% 10%, rgba(95, 10, 215, 0.5) 0%, rgba(95, 10, 215, 0) 62%),
-    radial-gradient(95% 90% at 50% 100%, rgba(38, 13, 167, 0.62) 0%, rgba(38, 13, 167, 0) 64%),
-    linear-gradient(180deg, #000000 0%, #260da7 46%, #5f0ad7 74%, #13c1fc 100%);
-  background-size: 190% 190%, 180% 180%, 200% 200%, 140% 140%;
+    conic-gradient(from 22deg at 13% 12%,
+      rgba(246, 225, 106, 0.52) 0deg 48deg,
+      rgba(244, 188, 111, 0.44) 48deg 108deg,
+      rgba(240, 157, 128, 0.36) 108deg 192deg,
+      rgba(207, 123, 145, 0.3) 192deg 278deg,
+      rgba(171, 103, 155, 0.24) 278deg 360deg),
+    conic-gradient(from 210deg at 78% 26%,
+      rgba(167, 112, 154, 0.4) 0deg 58deg,
+      rgba(143, 91, 150, 0.36) 58deg 146deg,
+      rgba(126, 78, 144, 0.32) 146deg 235deg,
+      rgba(103, 70, 140, 0.28) 235deg 320deg,
+      rgba(89, 66, 133, 0.24) 320deg 360deg),
+    conic-gradient(from 318deg at 52% 82%,
+      rgba(246, 143, 116, 0.34) 0deg 70deg,
+      rgba(220, 95, 137, 0.32) 70deg 150deg,
+      rgba(165, 74, 146, 0.3) 150deg 238deg,
+      rgba(94, 62, 132, 0.34) 238deg 360deg),
+    linear-gradient(160deg, #6c8ff7 0%, #561aef 26%, #1000f0 48%, #008cff 72%, #0019a8 100%);
+  background-size: 190% 190%, 190% 190%, 220% 220%, 135% 135%;
+  background-blend-mode: soft-light, overlay, multiply, normal;
   animation: homeMainGradientFlow 12s ease-in-out infinite;
   will-change: background-position;
 }
@@ -628,13 +644,13 @@ onBeforeUnmount(() => {
 .bank-card-bca {
   background-image:
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 42%),
-    linear-gradient(132deg, #0066ae 0%, #6095ff 34%, #ffffff 62%, #388dc9 82%, #0066ae 100%);
+    linear-gradient(132deg, #0066ae 0%, #6095ff 34%, #00eaff 62%, #388dc9 82%, #0066ae 100%);
 }
 
 .bank-card-bri {
   background-image:
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 42%),
-    linear-gradient(132deg, #00529c 0%, #6095ff 34%, #ffffff 62%, #388dc9 82%, #00529c 100%);
+    linear-gradient(132deg, #00529c 0%, #6095ff 34%, #00eaff 62%, #388dc9 82%, #00529c 100%);
 }
 
 @keyframes bankCardGradientFlow {

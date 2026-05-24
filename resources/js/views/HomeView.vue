@@ -102,7 +102,7 @@
         <div class="selayang-card-container rounded-[2rem] shadow-xl shadow-primary/8 relative overflow-hidden">
           <div class="absolute inset-0 mobile-card-gradient md:hidden"></div>
           <img :src="selayangCard" alt="Selayang Pandang"
-            class="selayang-card-bg hidden md:block w-full h-full absolute top-0 left-0 object-cover" />
+            class="selayang-card-bg selayang-card-breathe hidden md:block w-full h-full absolute top-0 left-0 object-cover" />
           <div class="relative z-30 p-8 md:p-10">
             <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3">Selayang Pandang</p>
             <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-text leading-tight">
@@ -181,10 +181,10 @@
             </div>
 
             <article
-              class="rounded-3xl relative bg-gradient-to-br from-primary to-secondary border border-blue-100/20 p-6 md:p-8 shadow-xl">
+              class="rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 p-6 md:p-8 shadow-xl">
               <div class="absolute inset-0 mobile-card-gradient md:hidden rounded-[2rem]"></div>
               <img :src="card2Url" alt="Card 2"
-                class="hidden md:block w-full h-full md:h-[590px] object-cover z-10 rounded-[2rem] absolute top-0 left-0" />
+                class="selayang-card-breathe hidden md:block w-full h-full md:h-[590px] object-cover z-10 rounded-[2rem] absolute top-0 left-0" />
               <div class="relative min-h-[390px] md:min-h-[430px]">
                 <div v-if="isLeaderInfoSwitching"
                   class="absolute inset-0 z-30 rounded-2xl">
@@ -205,7 +205,7 @@
                   </p>
 
                   <div
-                    class="mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px] text-center relative z-20">
+                    class="mt-5 rounded-xl backdrop-blur-[1px] text-center relative z-20">
                     <p class="text-lg font-bold uppercase tracking-[0.14em]">Posisi Saat Ini</p>
                     <p class="mt-1 text-base font-semibold leading-relaxed md:text-lg">
                       {{ leaders[activeLeaderIndex].position }}
@@ -213,9 +213,9 @@
                   </div>
 
                   <div
-                    class="md:mt-5 rounded-xl border border-white/20 bg-white/12 px-4 py-6 backdrop-blur-[1px] relative z-20">
+                    class="md:mt-5 rounded-xl backdrop-blur-[1px] relative z-20">
                     <p
-                      class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-700/20 pb-2">
+                      class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-300/20 pb-2">
                       Jabatan Terakhir</p>
                     <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed">
                       <li v-for="line in leaders[activeLeaderIndex].highlights" :key="line" class="text-center">
@@ -422,11 +422,10 @@
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <router-link to="/signup"
-            class="px-6 py-3 rounded-full bg-secondary text-white font-semibold hover:bg-primary transition-all">Mulai
+            class="px-6 py-3 rounded-full bg-secondary text-white font-semibold cta-tryout-animated transition-all">Mulai
             Pendaftaran</router-link>
-          <router-link to="/registration"
-            class="px-6 py-3 rounded-full bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 transition-all">Lihat
-            Tahapan Pendaftaran</router-link>
+          <router-link to="/about-us"
+            class="px-6 py-3 rounded-full bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 transition-all">Tentang Kami</router-link>
         </div>
       </div>
     </section>
@@ -492,7 +491,7 @@
               aria-label="Tutup detail anggota">
               <XIcon class="h-5 w-5" />
             </button>
-            <div class="overflow-y-auto bg-cover bg-center absolute top-32 z-30 px-5 py-5 md:px-6 md:py-6">
+            <div class="overflow-y-auto bg-cover bg-center absolute z-30 px-5 py-5 md:px-6 md:py-6">
               <div class="rounded-2xl border border-primary/15 p-4 shadow-lg backdrop-blur-[1px] md:p-6">
                 <div class="grid gap-4 md:grid-cols-[220px_1fr] md:items-start">
                   <div class="relative mx-auto w-40 md:w-52">
@@ -519,7 +518,7 @@
                   </div>
                 </div>
 
-                <div class="mt-12 grid gap-4 md:grid-cols-3">
+                <div class="mt-6 grid gap-4 grid-cols-1 md:grid-cols-2">
                   <div class="rounded-xl border border-border bg-background/90 p-4">
                     <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Riwayat Pendidikan</p>
                     <ul class="mt-3 space-y-2 text-sm text-gray-700">
@@ -542,7 +541,7 @@
                     </ul>
                   </div>
 
-                  <div class="rounded-xl border border-border bg-background/90 p-4">
+                  <div class="rounded-xl border border-border bg-background/90 p-4 col-span-2">
                     <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Riwayat Pekerjaan</p>
                     <ul class="mt-3 space-y-2 text-sm text-gray-700">
                       <li v-for="item in activeMemberModal.profile.work" :key="item" class="flex items-start gap-2">
@@ -555,7 +554,7 @@
               </div>
             </div>
             <div>
-              <img :src="cvTemplateUrl" alt="CV Template" class="w-full relative z-10 h-screen" />
+              <img :src="cvTemplateUrl" alt="CV Template" class="selayang-card-breathe w-full relative z-10 h-screen" />
             </div>
           </div>
         </div>
@@ -688,13 +687,17 @@ const setLeaderSlideRef = (element, index) => {
 }
 
 const goToLeader = (index, behavior = 'smooth') => {
+  const container = leaderCarouselRef.value
   const target = leaderSlideRefs.value[index]
-  if (!target) return
+  if (!container || !target) return
 
-  target.scrollIntoView({
+  const targetTop = target.offsetTop - (container.clientHeight / 2) + (target.clientHeight / 2)
+  const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight)
+  const boundedTop = Math.min(Math.max(targetTop, 0), maxScrollTop)
+
+  container.scrollTo({
+    top: boundedTop,
     behavior,
-    block: 'center',
-    inline: 'nearest',
   })
   activeLeaderIndex.value = index
 }
@@ -724,7 +727,10 @@ const onLeaderScroll = () => {
   activeLeaderIndex.value = getNearestLeaderIndex()
 }
 
-const onLeaderResize = () => goToLeader(activeLeaderIndex.value, 'auto')
+const onLeaderResize = () => {
+  if (window.innerWidth < 1024) return
+  goToLeader(activeLeaderIndex.value, 'auto')
+}
 
 const onLeaderInfoBeforeLeave = () => {
   isLeaderInfoSwitching.value = true
@@ -762,10 +768,10 @@ const members = [
     image: rinaUrl,
     jabatan: 'Bendahara',
     profile: {
-      birthPlaceDate: 'Jakarta, 5 April 1970',
-      education: ['S1 Administrasi Negara', 'Pelatihan Manajemen Keuangan'],
+      birthPlaceDate: 'Bandung, 31 Oktober 1975',
+      education: ['Sarjana Pendidikan Ikip Bdg', 'Sepamilksukwan Polri 1984', 'Selapa Polri 1997'],
       organization: ['Pengurus Keuangan Yayasan', 'Tim Pengawasan Anggaran Program'],
-      work: ['Bendahara Pratistha Cendekia Prestasi', 'Penanggung Jawab Laporan Keuangan Program'],
+      work: ['Kasat Binmas Polresta Malang', 'Kaur Regident Sat Lantas Polwiltabes Bdg', 'Kaur Jianma Sat Lantas Polwiltabes Bdg', 'Kasetum Polda Jabar', 'Kabag Binamitra Polwiltabes Bdg','Gadik SPN Cisarua', 'Kasubdit Kerma Dit Binmas Polda Jbr'],
     },
   },
   {
@@ -1027,6 +1033,12 @@ onUnmounted(() => {
   object-position: center 32%;
 }
 
+.selayang-card-breathe {
+  animation: selayangCardBreathe 8s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
 .cta-tryout-animated {
   position: relative;
   display: inline-flex;
@@ -1080,7 +1092,7 @@ onUnmounted(() => {
       rgba(220, 95, 137, 0.32) 70deg 150deg,
       rgba(165, 74, 146, 0.3) 150deg 238deg,
       rgba(94, 62, 132, 0.34) 238deg 360deg),
-    linear-gradient(160deg, #6c8ff7 0%, #9069f1 26%, #ee7f7a 48%, #b44a98 72%, #1f2c79 100%);
+    linear-gradient(160deg, #6c8ff7 0%, #561aef 26%, #1000f0 48%, #008cff 72%, #0019a8 100%);
   background-size: 190% 190%, 190% 190%, 220% 220%, 135% 135%;
   background-blend-mode: soft-light, overlay, multiply, normal;
   animation: homeMainGradientFlow 12s ease-in-out infinite;
@@ -1101,7 +1113,7 @@ onUnmounted(() => {
       rgba(128, 216, 212, 0.38) 70deg 170deg,
       rgba(63, 147, 228, 0.36) 170deg 285deg,
       rgba(151, 226, 209, 0.48) 285deg 360deg),
-    linear-gradient(150deg, #bee9bf 0%, #92e5cc 42%, #2f79e9 100%);
+    linear-gradient(150deg, #45b1ff 0%, #0766ff 42%, #0d64e5 100%);
   background-size: 170% 170%, 185% 185%, 125% 125%;
   background-blend-mode: overlay, soft-light, normal;
   animation: mobileCardGradientFlow 9s ease-in-out infinite;
@@ -1355,6 +1367,20 @@ onUnmounted(() => {
 
   100% {
     opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes selayangCardBreathe {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.035);
+  }
+
+  100% {
     transform: scale(1);
   }
 }
