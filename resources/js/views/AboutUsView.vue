@@ -4,7 +4,11 @@
       <section
         class="fade-up relative overflow-hidden text-center md:text-left md:rounded-[2rem] text-primary shadow-2xl shadow-[#123B8F]/35">
         <img :src="backgroundAboutUrl" alt="Background About Us"
-          class="about-hero-bg absolute inset-0 z-0 h-full w-full object-cover" />
+          class="about-hero-bg absolute inset-0 z-0 h-full w-full object-cover md:block hidden" />
+        <img :src="accesoriseUrl" alt="Accessorise"
+          class="about-hero-accesorise absolute top-0 right-0 h-32 w-32 object-cover md:hidden block" />
+        <img :src="accesoriseUrl" alt="Accessorise"
+          class="about-hero-accesorise absolute bottom-0 left-0 h-32 w-32 object-cover md:hidden block rotate-180" />
         <!-- <div class="absolute inset-0 z-0 bg-gradient-to-b from-white/40 via-white/55 to-white/70" /> -->
         <div class="relative z-10 p-7 md:p-10 pb-16">
           <router-link to="/"
@@ -22,10 +26,10 @@
             </div>
             <div>
               <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-primary/80">Tentang Kami</p>
-              <h1 class="mt-2 text-3xl md:text-5xl font-black leading-tight">
+              <h1 class="mt-2 text-2xl md:text-5xl font-black leading-tight">
                 Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
               </h1>
-              <p class="mt-5 text-xl md:text-2xl pb-4 font-bold text-primary/90 leading-relaxed">
+              <p class="mt-5 text-md md:text-2xl pb-4 font-bold text-primary/90 leading-relaxed">
                 Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Cendekia Prestasi didukung oleh
                 legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan
                 profesionalisme
@@ -80,11 +84,21 @@
                 :class="activeLeaderIndex === index
                   ? 'scale-100 md:scale-[1.03] md:-translate-y-2 shadow-xl shadow-[#123B8F]/20 opacity-100'
                   : 'scale-[0.88] md:scale-[0.9] opacity-70'">
-                <img :src="leader.image" :alt="leader.name"
-                  class="h-[360px] md:h-[420px] w-full object-cover object-top" />
-                <div class="p-4">
-                  <p class="text-[11px] uppercase tracking-[0.16em] text-primary font-bold">{{ leader.role }}</p>
-                  <h3 class="mt-1 text-base md:text-lg font-bold leading-snug text-text">{{ leader.name }}</h3>
+                <div class="relative">
+                  <img :src="leader.image" :alt="leader.name" class="h-[360px] md:h-[420px] w-full object-cover object-top" />
+                  <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center p-2">
+                    <div>
+                      {{ leader.name }}
+                    </div>
+                    <button type="button"
+                      class="text-xs text-white/80 mt-2 underline decoration-white/50 underline-offset-2 md:hidden"
+                      @click.stop="openLeaderDetailModal(index)">
+                      lihat detail
+                    </button>
+                    <div class="text-xs text-white/80 mt-2 hidden md:block">
+                      lihat detail
+                    </div>
+                  </div>
                 </div>
               </article>
             </div>
@@ -107,7 +121,8 @@
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-primary">Struktur Organisasi</h2>
           </div>
 
-          <div class="org-chart my-12">
+          <div ref="orgChartViewportRef" class="org-chart-viewport my-12">
+            <div class="org-chart">
             <div class="org-node org-node-animated">
               <p class="org-node__role">{{ orgChart.penasehat.role }}</p>
               <p class="org-node__name">{{ orgChart.penasehat.name }}</p>
@@ -180,6 +195,7 @@
                 </div>
               </div>
             </div>
+            </div>
           </div>
         </div>
       </section>
@@ -192,9 +208,9 @@
           </div>
           <p class="mt-2 text-white text-center text-lg md:text-xl">Kanal komunikasi resmi Pratistha Cendekia
             Prestasi.</p>
-          <div class="mt-6 grid gap-4 md:flex md:flex-wrap justify-center gap-4">
+          <div class="mt-6 flex flex-wrap justify-center gap-4">
             <article v-for="contact in contactChannels" :key="contact.label"
-              class="rounded-xl border border-border legal-gradient-animated shadow-lg p-4 md:w-1/3 contact-channel-animated">
+              class="rounded-xl border border-border legal-gradient-animated shadow-lg p-4 w-full md:w-1/3 contact-channel-animated">
               <div class="flex items-center justify-center gap-2 text-primary">
                 <component :is="contact.icon" class="h-4 w-4" />
                 <p class="text-sm md:text-xl font-bold text-center">{{ contact.label }}</p>
@@ -207,8 +223,8 @@
 
       <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0">
         <div class="relative z-20">
-          <div class="flex items-center justify-center gap-3">
-            <Landmark class="h-6 w-6 text-white" />
+          <div class="flex items-center text-center gap-3">
+            <Landmark class="h-6 w-6 text-white left-12 relative md:left-0" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Rekening Resmi Pembayaran</h2>
           </div>
           <p class="mt-2 text-white text-lg md:text-xl text-center max-w-3xl mx-auto">
@@ -254,16 +270,65 @@
         </div>
         <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
+    <Teleport to="body">
+      <Transition name="member-slide-fade">
+        <div v-if="isLeaderDetailModalOpen"
+          class="fixed inset-0 z-[120] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
+          role="dialog" aria-modal="true" aria-labelledby="leader-detail-modal-title" @click.self="closeLeaderDetailModal">
+          <article
+            class="w-full max-w-2xl rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 p-6 shadow-xl">
+            <div class="absolute inset-0 mobile-card-gradient rounded-[2rem]"></div>
+            <div class="relative min-h-[390px]">
+              <div class="flex items-center justify-end">
+                <button type="button"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 bg-white/12 text-white hover:bg-white/20 transition-colors"
+                  aria-label="Tutup detail pimpinan" @click="closeLeaderDetailModal">
+                  <XIcon class="h-4 w-4" />
+                </button>
+              </div>
+              <div class="mt-4">
+                <p id="leader-detail-modal-title"
+                  class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center">
+                  Profil {{ activeLeaderDetail.role }}
+                </p>
+                <h3 class="mt-2 text-2xl font-extrabold leading-tight tracking-tight relative z-20 text-center">
+                  {{ activeLeaderDetail.name }}
+                </h3>
+                <p class="mt-2 text-md font-bold relative z-20 text-center">{{ activeLeaderDetail.batch }}</p>
+
+                <div class="mt-5 rounded-xl backdrop-blur-[1px] text-center relative z-20">
+                  <p class="text-lg font-bold uppercase tracking-[0.14em]">Posisi Saat Ini</p>
+                  <p class="mt-1 text-base font-semibold leading-relaxed">
+                    {{ activeLeaderDetail.position }}
+                  </p>
+                </div>
+
+                <div class="mt-5 rounded-xl backdrop-blur-[1px] relative z-20">
+                  <p class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-300 pb-2">
+                    Jabatan Terakhir</p>
+                  <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed">
+                    <li v-for="line in activeLeaderDetail.highlights" :key="line" class="text-center">
+                      <span>{{ line }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </Transition>
+    </Teleport>
     </div>
   </main>
 </template>
 
 <script setup>
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
-import { ArrowLeft, Crown, FileBadge, Globe, Image, Instagram, Landmark, Mail, Music2, Phone, Users } from 'lucide-vue-next'
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { ArrowLeft, Crown, FileBadge, Globe, Image, Instagram, Landmark, Mail, Music2, Phone, Users, X as XIcon } from 'lucide-vue-next'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
+const accesoriseUrl = new URL('../../assets/accessorise.png', import.meta.url).href
 const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
 const backgroundAboutUrl = new URL('../../assets/about.png', import.meta.url).href
 const wallpaper1Url = new URL('../../assets/wallpaper/1.webp', import.meta.url).href
@@ -285,12 +350,26 @@ const heroLeaders = [
   {
     name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si',
     role: 'Komisaris',
+    batch: 'Bataliyon Anindhita Tahun 1981',
+    position: 'Komisaris Pratistha Cendekia Prestasi',
+    highlights: [
+      'Kapolda Jabar tahun 2012 - 2013',
+      'Kapolda Sultra tahun 2012',
+      'Ketua Persatuan Purnawirawan Daerah Jabar',
+      'Wakil Ketua Pembina Yayasan Pendidikan Tribakti Langlang Buana',
+    ],
     image: tubagusUrl,
     featured: false,
   },
   {
     name: 'Komjen Pol (P) Drs. H. Nana S. Permana',
     role: 'Penasehat',
+    batch: 'Batalion Dharma Angkatan 1968',
+    position: 'Ketua Pembina Yayasan Pendidikan Tribakti Langlang Buana',
+    highlights: [
+      'Wakapolri tahun 1998 - 2000',
+      'Pembina strategis pendidikan dan pembinaan kepolisian',
+    ],
     image: nanaUrl,
     featured: true,
   },
@@ -298,6 +377,12 @@ const heroLeaders = [
   {
     name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH',
     role: 'Direktur Utama',
+    batch: 'Bataliyon Pratistha Angkatan 1982',
+    position: 'Direktur Utama Pratistha Cendekia Prestasi',
+    highlights: [
+      'Wakapolda Jawa Tengah tahun 2016 - 2017',
+      'Pengarah operasional program kursus',
+    ],
     image: awangUrl,
     featured: false,
   },
@@ -382,12 +467,17 @@ const galleryPhotos = [
 ]
 
 const leaderCarouselRef = ref(null)
+const orgChartViewportRef = ref(null)
 const leaderSlideRefs = ref([])
 const activeLeaderIndex = ref(Math.max(0, heroLeaders.findIndex((leader) => leader.featured)))
+const isLeaderDetailModalOpen = ref(false)
+const activeLeaderDetailIndex = ref(activeLeaderIndex.value)
 const touchStartX = ref(null)
 const pointerStartX = ref(null)
 const swipeThreshold = 45
 let fadeObserver
+
+const activeLeaderDetail = computed(() => heroLeaders[activeLeaderDetailIndex.value] ?? heroLeaders[0])
 
 const setLeaderSlideRef = (element, index) => {
   if (!element) return
@@ -395,12 +485,17 @@ const setLeaderSlideRef = (element, index) => {
 }
 
 const goToLeader = (index, behavior = 'smooth') => {
+  const container = leaderCarouselRef.value
   const target = leaderSlideRefs.value[index]
-  if (!target) return
-  target.scrollIntoView({
+  if (!container || !target) return
+
+  const targetLeft = target.offsetLeft - (container.clientWidth / 2) + (target.clientWidth / 2)
+  const maxScrollLeft = Math.max(0, container.scrollWidth - container.clientWidth)
+  const boundedLeft = Math.min(Math.max(targetLeft, 0), maxScrollLeft)
+
+  container.scrollTo({
+    left: boundedLeft,
     behavior,
-    block: 'nearest',
-    inline: 'center',
   })
   activeLeaderIndex.value = index
 }
@@ -468,7 +563,31 @@ const onLeaderPointerEnd = (event) => {
   pointerStartX.value = null
 }
 
-const onLeaderResize = () => goToLeader(activeLeaderIndex.value, 'auto')
+const onLeaderResize = () => {
+  if (window.innerWidth >= 1024) {
+    goToLeader(activeLeaderIndex.value, 'auto')
+  }
+  centerOrgChartViewport()
+}
+
+const openLeaderDetailModal = (index = activeLeaderIndex.value) => {
+  activeLeaderDetailIndex.value = index
+  isLeaderDetailModalOpen.value = true
+}
+
+const closeLeaderDetailModal = () => {
+  isLeaderDetailModalOpen.value = false
+}
+
+const centerOrgChartViewport = () => {
+  if (window.innerWidth > 640) return
+  const viewport = orgChartViewportRef.value
+  if (!viewport) return
+
+  const maxScrollLeft = viewport.scrollWidth - viewport.clientWidth
+  if (maxScrollLeft <= 0) return
+  viewport.scrollLeft = maxScrollLeft / 2
+}
 
 const setupScrollFadeAnimations = async () => {
   await nextTick()
@@ -501,6 +620,7 @@ onMounted(async () => {
   await nextTick()
   goToLeader(activeLeaderIndex.value, 'auto')
   setupScrollFadeAnimations()
+  centerOrgChartViewport()
   window.addEventListener('resize', onLeaderResize)
 })
 
@@ -605,11 +725,43 @@ onBeforeUnmount(() => {
   display: none;
 }
 
+.member-slide-fade-enter-active,
+.member-slide-fade-leave-active {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.member-slide-fade-enter-from,
+.member-slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.mobile-card-gradient {
+  background-color: #b8e3bc;
+  background-image:
+    conic-gradient(from 24deg at 14% 14%,
+      rgba(196, 239, 199, 0.7) 0deg 56deg,
+      rgba(167, 231, 202, 0.52) 56deg 132deg,
+      rgba(114, 199, 214, 0.36) 132deg 222deg,
+      rgba(58, 126, 225, 0.34) 222deg 318deg,
+      rgba(196, 239, 199, 0.56) 318deg 360deg),
+    conic-gradient(from 210deg at 82% 26%,
+      rgba(173, 235, 206, 0.5) 0deg 70deg,
+      rgba(128, 216, 212, 0.38) 70deg 170deg,
+      rgba(63, 147, 228, 0.36) 170deg 285deg,
+      rgba(151, 226, 209, 0.48) 285deg 360deg),
+    linear-gradient(150deg, #bee9bf 0%, #92e5cc 42%, #2f79e9 100%);
+  background-size: 170% 170%, 185% 185%, 125% 125%;
+}
+
+.org-chart-viewport {
+  width: 100%;
+}
+
 .org-chart {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-x: auto;
   width: 100%;
   max-width: 80rem;
   margin-inline: auto;
@@ -823,39 +975,28 @@ onBeforeUnmount(() => {
     min-height: 620px;
   }
 
+  .org-chart-viewport {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y pinch-zoom;
+    border-radius: 1rem;
+  }
+
+  .org-chart {
+    width: 920px;
+    max-width: 920px;
+    min-height: 1080px;
+    margin-inline: 0;
+    padding: 0.2rem 0.5rem 1rem;
+    zoom: 0.72;
+  }
+
   .org-split__through {
     margin-top: 0;
   }
 
   .org-stem--bridge {
     height: 1.75rem;
-  }
-
-  .org-split__cols {
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-  }
-
-  .org-split__cols:not(.org-split__cols--three) .org-split__col:first-child::after,
-  .org-split__cols:not(.org-split__cols--three) .org-split__col:last-child::after,
-  .org-split__cols--three::before {
-    display: none;
-  }
-
-  .org-split__drop {
-    display: none;
-  }
-
-  .org-split__col+.org-split__col {
-    margin-top: 0.5rem;
-  }
-
-  .org-split__col+.org-split__col::before {
-    content: '';
-    width: 2px;
-    height: 1rem;
-    background: var(--color-border, #dce6f2);
   }
 }
 </style>

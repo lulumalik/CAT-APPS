@@ -156,10 +156,10 @@
     <section id="leaders" class="my-10">
       <div class="max-w-7xl mx-auto fade-up fade-up-tight delay-2 relative">
         <div>
-          <div class="text-2xl md:text-4xl font-bold tracking-tight text-primary text-center">
+          <div class="text-2xl md:text-4xl font-bold tracking-tight text-white text-center">
             Profil pejabat dan pimpinan Pratistha Cendekia Prestasi
           </div>
-          <hr class="border-primary/60 mt-10 w-44 border-b-2 mx-auto" />
+          <hr class="border-white/60 mt-10 w-44 border-b-2 mx-auto" />
           <div class="relative z-30 p-10 md:p-0 grid gap-5 lg:grid-cols-[330px_1fr] lg:items-start md:mt-10">
             <div>
               <Transition :name="leaderTransitionName" mode="out-in">
@@ -201,7 +201,7 @@
             </div>
 
             <article
-              class="hidden lg:block rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 p-6 md:p-8 shadow-xl">
+              class="hidden lg:block rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 p-6 md:p-[3.6rem] shadow-xl">
               <div class="absolute inset-0 mobile-card-gradient md:hidden rounded-[2rem]"></div>
               <img :src="card2Url" alt="Card 2"
                 class="selayang-card-breathe hidden md:block w-full h-full md:h-[590px] object-cover z-10 rounded-[2rem] absolute top-0 left-0" />
@@ -223,8 +223,8 @@
                     <p class="mt-2 text-md font-bold relative z-20 text-center">{{ leaders[activeLeaderIndex].batch }}
                     </p>
 
-                    <div class="mt-5 rounded-xl backdrop-blur-[1px] text-center relative z-20">
-                      <p class="text-lg font-bold uppercase tracking-[0.14em]">Posisi Saat Ini</p>
+                    <div class="mt-7 rounded-xl backdrop-blur-[1px] text-center relative z-20">
+                      <p class="text-lg font-bold uppercase tracking-[0.14em] w-72 mx-auto border-b border-gray-300 pb-2">Posisi Saat Ini</p>
                       <p class="mt-1 text-base font-semibold leading-relaxed md:text-lg">
                         {{ leaders[activeLeaderIndex].position }}
                       </p>
@@ -232,7 +232,7 @@
 
                     <div class="md:mt-5 rounded-xl backdrop-blur-[1px] relative z-20">
                       <p
-                        class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-300 pb-2">
+                        class="text-lg font-bold uppercase tracking-[0.14em] text-center w-[600px] mx-auto border-b border-gray-300 pb-2">
                         Jabatan Terakhir</p>
                       <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed">
                         <li v-for="line in leaders[activeLeaderIndex].highlights" :key="line" class="text-center">
@@ -251,10 +251,10 @@
 
     <section id="members" class="pb-8 mt-10">
       <div class="max-w-7xl mx-auto fade-up fade-up-tight">
-        <div class="text-2xl md:text-4xl font-bold tracking-tight text-primary text-center">
+        <div class="text-2xl md:text-4xl font-bold tracking-tight text-white text-center">
           Staff pendukung program pembinaan Pratistha Cendekia Prestasi.
         </div>
-        <hr class="border-primary/60 my-10 w-44 border-b-2 mx-auto" />
+        <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
         <div class=" relative overflow-hidden mt-10">
           <div class="relative z-20 p-4 grid grid-cols-2 gap-4 md:flex md:flex-wrap md:justify-center md:gap-12">
             <article v-for="member in members" :key="member.name"
@@ -286,10 +286,10 @@
     <section id="programs" class="px-5 md:px-10 pb-8 mt-10">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
         <div>
-          <div class="text-3xl md:text-4xl font-bold tracking-tight text-primary text-center">
+          <div class="text-3xl md:text-4xl font-bold tracking-tight text-white text-center">
             Keunggulan Program
           </div>
-          <hr class="border-primary/60 my-10 w-44 border-b-2 mx-auto" />
+          <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
           <div class="grid md:grid-cols-2 gap-8 relative z-10 mt-10">
             <div v-for="feature in keyFeatures" :key="feature.title" class="relative">
               <div
@@ -623,7 +623,7 @@
               <XIcon class="h-5 w-5" />
             </button>
             <div
-              class="overflow-y-auto h-[600px] md:h-[700px] bg-cover bg-center absolute z-30 px-5 py-5 md:px-6 md:py-6">
+              class="overflow-y-auto h-[700px] bg-cover bg-center absolute z-30 px-5 py-5 md:px-6 md:py-6">
               <div class="rounded-2xl p-4 md:p-6">
                 <div class="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
                   <div class="relative mx-auto w-40 md:w-52">
@@ -1283,7 +1283,7 @@ onUnmounted(() => {
       rgba(210, 210, 210, 0.22) 70deg 150deg,
       rgba(134, 134, 134, 0.24) 150deg 238deg,
       rgba(60, 60, 60, 0.28) 238deg 360deg),
-    linear-gradient(160deg, #ffffff 0%, #d6d6d6 26%, #9b9b9b 48%, #525252 72%, #0f0f0f 100%);
+    linear-gradient(160deg, #878787 0%, #bababa 26%, #9b9b9b 48%, #525252 72%, #0f0f0f 100%);
   background-size: 190% 190%, 190% 190%, 220% 220%, 135% 135%;
   background-blend-mode: soft-light, overlay, multiply, normal;
   animation: homeMainGradientFlow 5s ease-in-out infinite;
