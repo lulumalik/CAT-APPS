@@ -167,7 +167,8 @@
                   <img :key="`leader-main-image-${activeLeaderIndex}`" :src="leaders[activeLeaderIndex].image"
                     :alt="leaders[activeLeaderIndex].name"
                     class="h-[450px] w-full rounded-[2rem] object-cover shadow-xl" />
-                  <div class="absolute bottom-0 left-0 block md:hidden right-0 bg-black/50 text-white text-center p-2 rounded-b-[2rem]">
+                  <div
+                    class="absolute bottom-0 left-0 block md:hidden right-0 bg-black/50 text-white text-center p-2 rounded-b-[2rem]">
                     <div>
                       {{ leaders[activeLeaderIndex].name }}
                     </div>
@@ -224,7 +225,9 @@
                     </p>
 
                     <div class="mt-7 rounded-xl backdrop-blur-[1px] text-center relative z-20">
-                      <p class="text-lg font-bold uppercase tracking-[0.14em] w-72 mx-auto border-b border-gray-300 pb-2">Posisi Saat Ini</p>
+                      <p
+                        class="text-lg font-bold uppercase tracking-[0.14em] w-72 mx-auto border-b border-gray-300 pb-2">
+                        Posisi Saat Ini</p>
                       <p class="mt-1 text-base font-semibold leading-relaxed md:text-lg">
                         {{ leaders[activeLeaderIndex].position }}
                       </p>
@@ -273,7 +276,7 @@
               </div>
               <h4 class="font-bold text-sm md:text-lg leading-snug text-text">{{ member.name }}</h4>
               <p class="text-xs md:text-base text-primary font-semibold mt-1 uppercase tracking-wide">{{ member.jabatan
-                }}</p>
+              }}</p>
               <span class="mt-3 inline-flex items-center text-[11px] md:text-xs font-semibold text-primary">
                 Lihat profil
               </span>
@@ -285,56 +288,67 @@
 
     <section id="programs" class="px-5 md:px-10 pb-8 mt-10">
       <div class="max-w-7xl mx-auto fade-up delay-2 relative">
-        <div>
-          <div class="text-3xl md:text-4xl font-bold tracking-tight text-white text-center">
-            Keunggulan Program
-          </div>
-          <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
-          <div class="grid md:grid-cols-2 gap-8 relative z-10 mt-10">
-            <div v-for="feature in keyFeatures" :key="feature.title" class="relative">
+        <div class="flex flex-col lg:flex-row gap-8 lg:items-center">
+          <div class=" gap-8 relative z-10 mt-10">
+            <div class="text-3xl md:text-4xl font-bold tracking-tight text-white md:w-full w-[80%]">
+              Keunggulan Program
+            </div>
+            <hr class="border-white/60 my-4 w-44 border-b-2" />
+            <div v-for="feature in keyFeatures" :key="feature.title" class="relative mt-2">
               <div
-                class="absolute inset-0 top-3 -left-3 rounded-2xl bg-white/40 backdrop-blur-sm -z-10 pointer-events-none">
+                class="absolute inset-0 top-3 -left-3 rounded-2xl bg-white/30 backdrop-blur-sm -z-10 pointer-events-none">
               </div>
               <button type="button"
-                class="feature-gradient-animated rounded-2xl relative z-10 p-6 text-left cursor-pointer transition-all translate-y-2 hover:-translate-y-2 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
+                class="service-gradient-animated rounded-2xl shadow-xl relative z-10 p-6 text-left cursor-pointer transition-all translate-y-2 hover:-translate-y-2 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
                 @click="openFeatureModal(feature)">
-                <div class="mb-3 inline-flex rounded-lg bg-[gold] p-2 text-primary relative z-20">
-                  <component :is="feature.icon" class="h-5 w-5" />
+                <div class="flex items-center gap-2">
+                  <div class="inline-flex rounded-lg bg-[gold] p-2 text-primary relative z-20">
+                    <component :is="feature.icon" class="h-5 w-5" />
+                  </div>
+                  <h3 class="font-bold text-lg relative text-xl z-20">{{ feature.title }}</h3>
                 </div>
-                <h3 class="font-bold text-lg relative text-xl z-20">{{ feature.title }}</h3>
                 <p class="text-gray-600 text-sm mt-2 text-lg leading-relaxed relative z-20 font-semibold">{{
                   feature.desc }}</p>
-                <span class="mt-4 inline-flex items-center text-md font-semibold text-primary relative z-20">
+                <span class="mt-2 inline-flex underline items-center text-sm font-semibold text-primary relative z-20">
                   Lihat detail
                 </span>
               </button>
             </div>
           </div>
-          <img :src="patternUrl" alt="Pattern" class="absolute z-0 w-28 bottom-0 right-0" />
+          <div class="absolute -top-20 -right-12 w-[80%] md:relative md:top-0 md:right-0">
+            <img :src="taruna" alt="Taruna" class="w-full h-full object-cover" />
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="services" class="px-5 md:px-10 pb-8 mt-10">
+    <section id="services" class="px-5 md:px-10 pb-8 mt-24 md:mt-10">
       <div class="max-w-7xl mx-auto fade-up delay-1 relative">
-        <div>
-          <div class="text-3xl md:text-4xl font-bold tracking-tight text-white text-center">
-            Layanan Pembinaan
+        <div class="flex flex-col lg:flex-row gap-8 lg:items-center">
+          <div class="absolute -top-20 -left-8 w-[50%] md:relative md:top-0 md:left-0">
+            <img :src="taruni" alt="Taruni" class="w-full h-full object-cover md:w-[70%]" />
           </div>
-          <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10 relative z-10">
-            <div v-for="service in services" :key="service.title" class="relative">
-              <div
-                class="absolute inset-0 top-3 -left-3 rounded-2xl bg-white/30 backdrop-blur-sm -z-10 pointer-events-none">
-              </div>
-              <article
-                class="service-gradient-animated rounded-2xl border border-border p-5 relative z-10 hover:-translate-y-1 hover:shadow-lg transition-all">
-                <div class="mb-3 inline-flex rounded-lg bg-sky p-2 text-primary">
-                  <component :is="service.icon" class="h-5 w-5" />
+          <div class="lg:w-[66%] relative z-10">
+            <div class="text-3xl md:text-4xl mb-12 font-bold tracking-tight text-white text-right relative">
+              Layanan <br class="md:hidden"> Pembinaan
+              <hr class="border-white/60 w-44 border-b-2 absolute -bottom-5 right-0" />
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4 md:gap-8 mt-8 relative z-10">
+              <div v-for="service in services" :key="service.title" class="relative">
+                <div
+                  class="absolute inset-0 top-3 -right-3 rounded-2xl bg-white/30 backdrop-blur-sm -z-10 pointer-events-none">
                 </div>
-                <h3 class="font-semibold text-xl text-text">{{ service.title }}</h3>
-                <p class="text-lg text-gray-600 mt-1">{{ service.desc }}</p>
-              </article>
+                <article
+                  class="service-gradient-animated rounded-2xl border border-border p-5 relative z-10 hover:-translate-y-1 hover:shadow-lg transition-all">
+                  <div class="flex items-center gap-2 mb-4">
+                    <div class="inline-flex rounded-lg bg-[gold] p-2 text-primary">
+                      <component :is="service.icon" class="h-5 w-5" />
+                    </div>
+                    <h3 class="font-semibold text-xl text-text">{{ service.title }}</h3>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-2 mb-4 leading-relaxed font-semibold">{{ service.desc }}</p>
+                </article>
+              </div>
             </div>
           </div>
         </div>
@@ -459,7 +473,8 @@
       <Transition name="member-slide-fade">
         <div v-if="isLeaderDetailModalOpen"
           class="fixed inset-0 z-[119] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
-          role="dialog" aria-modal="true" aria-labelledby="leader-detail-modal-title" @click.self="closeLeaderDetailModal">
+          role="dialog" aria-modal="true" aria-labelledby="leader-detail-modal-title"
+          @click.self="closeLeaderDetailModal">
           <article
             class="w-full max-w-2xl rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 p-6 shadow-xl">
             <div class="absolute inset-0 mobile-card-gradient rounded-[2rem]"></div>
@@ -486,7 +501,9 @@
                   </p>
 
                   <div class="mt-5 rounded-xl backdrop-blur-[1px] text-center relative z-20">
-                    <p class="text-md font-bold uppercase tracking-[0.14em] border-b border-gray-400 pb-2">Posisi Saat Ini</p>
+                    <p class="text-md font-bold uppercase tracking-[0.14em] border-b border-gray-400 pb-2">Posisi Saat
+                      Ini
+                    </p>
                     <p class="mt-1 text-sm font-semibold leading-relaxed">
                       {{ leaders[activeLeaderIndex].position }}
                     </p>
@@ -610,6 +627,8 @@
         </div>
       </Transition>
     </Teleport>
+    <TeacherModal :is-open="isTeacherModalOpen" :teachers="teachers" :cv-template-url="cvTemplateUrl"
+      @close="closeTeacherModal" />
     <Teleport to="body">
       <Transition name="member-slide-fade">
         <div v-if="activeMemberModal"
@@ -622,8 +641,7 @@
               aria-label="Tutup detail anggota">
               <XIcon class="h-5 w-5" />
             </button>
-            <div
-              class="overflow-y-auto h-[700px] bg-cover bg-center absolute z-30 px-5 py-5 md:px-6 md:py-6">
+            <div class="overflow-y-auto h-[700px] bg-cover bg-center absolute z-30 px-5 py-5 md:px-6 md:py-6">
               <div class="rounded-2xl p-4 md:p-6">
                 <div class="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
                   <div class="relative mx-auto w-40 md:w-52">
@@ -641,7 +659,7 @@
                     <h4 class="text-xl font-extrabold leading-tight text-text md:text-2xl">{{ activeMemberModal.name }}
                     </h4>
                     <p class="text-sm font-semibold uppercase tracking-wide text-primary">{{ activeMemberModal.jabatan
-                      }}
+                    }}
                     </p>
                     <div class="mt-3 space-y-1.5 text-sm text-gray-700">
                       <p><span class="font-semibold text-text">Tempat, Tanggal Lahir:</span> {{
@@ -710,6 +728,7 @@ import { storeToRefs } from 'pinia'
 import { BookOpenText, Brain, Check, Crown, Dumbbell, LineChart, MessageCircle, NotebookPen, ShieldCheck, UserCheck, Warehouse, X as XIcon } from 'lucide-vue-next'
 import { ONLINE_PROGRAMS } from '@/constants/onlinePrograms'
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
+import TeacherModal from '@/components/TeacherModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -723,11 +742,15 @@ const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).hre
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
+const djatmikoUrl = new URL('../../assets/pengajar/Djatmiko.jpg', import.meta.url).href
+const defaultTeacherUrl = new URL('../../assets/anggota/default.png', import.meta.url).href
 const cvTemplateUrl = new URL('../../assets/cv.png', import.meta.url).href
 const card2Url = new URL('../../assets/card2.png', import.meta.url).href
 const selayangCard = new URL('../../assets/selayangcard.png', import.meta.url).href
 const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
 const bannerUrl = new URL('../../assets/bg_1.png', import.meta.url).href
+const taruna = new URL('../../assets/anggota/taruna.png', import.meta.url).href
+const taruni = new URL('../../assets/anggota/taruni.png', import.meta.url).href
 const HERO_VIDEO_ID = 't2k3uwS2zyA'
 const heroVideoEmbedUrl = `https://www.youtube.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&controls=0&loop=1&playlist=${HERO_VIDEO_ID}&modestbranding=1&rel=0&playsinline=1`
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
@@ -743,6 +766,7 @@ const isMobileMenuOpen = ref(false)
 const isLeaderDetailModalOpen = ref(false)
 const isSelayangModalOpen = ref(false)
 const activeFeatureModal = ref(null)
+const isTeacherModalOpen = ref(false)
 const activeMemberModal = ref(null)
 const leaderCarouselRef = ref(null)
 const leaderSlideRefs = ref([])
@@ -940,6 +964,88 @@ const members = [
   },
 ]
 
+const teachers = [
+  {
+    id: 'djatmiko',
+    name: 'Djatmiko, M.Pd',
+    role: 'Pengajar Matematika',
+    image: djatmikoUrl,
+    birthPlaceDate: 'Bandung, 31 Mei 1968',
+    education: ['S1 UNWIR Fak. HK', 'S2 UNPAD HK. Bisnis', 'S3 UNPAR DIH'],
+    teaching: ['Mengajar di SMAN 23 Bandung'],
+  },
+  {
+    id: 'teacher-2',
+    name: 'Pengajar 2',
+    role: 'Pengajar',
+    image: defaultTeacherUrl,
+    birthPlaceDate: '-',
+    address: '-',
+    education: ['Profil akan diperbarui.'],
+    teaching: ['Data pengalaman mengajar akan diperbarui.'],
+  },
+  {
+    id: 'teacher-3',
+    name: 'Pengajar 3',
+    role: 'Pengajar',
+    image: defaultTeacherUrl,
+    birthPlaceDate: '-',
+    address: '-',
+    education: ['Profil akan diperbarui.'],
+    teaching: ['Data pengalaman mengajar akan diperbarui.'],
+  },
+  {
+    id: 'teacher-4',
+    name: 'Pengajar 4',
+    role: 'Pengajar',
+    image: defaultTeacherUrl,
+    birthPlaceDate: '-',
+    address: '-',
+    education: ['Profil akan diperbarui.'],
+    teaching: ['Data pengalaman mengajar akan diperbarui.'],
+  },
+  {
+    id: 'teacher-5',
+    name: 'Pengajar 5',
+    role: 'Pengajar',
+    image: defaultTeacherUrl,
+    birthPlaceDate: '-',
+    address: '-',
+    education: ['Profil akan diperbarui.'],
+    teaching: ['Data pengalaman mengajar akan diperbarui.'],
+  },
+  {
+    id: 'teacher-6',
+    name: 'Pengajar 6',
+    role: 'Pengajar',
+    image: defaultTeacherUrl,
+    birthPlaceDate: '-',
+    address: '-',
+    education: ['Profil akan diperbarui.'],
+    teaching: ['Data pengalaman mengajar akan diperbarui.'],
+  },
+  {
+    id: 'teacher-7',
+    name: 'Pengajar 7',
+    role: 'Pengajar',
+    image: defaultTeacherUrl,
+    birthPlaceDate: '-',
+    address: '-',
+    education: ['Profil akan diperbarui.'],
+    teaching: ['Data pengalaman mengajar akan diperbarui.'],
+  },
+  {
+    id: 'teacher-8',
+    name: 'Pengajar 8',
+    role: 'Pengajar',
+    image: defaultTeacherUrl,
+    birthPlaceDate: '-',
+    address: '-',
+    education: ['Profil akan diperbarui.'],
+    teaching: ['Data pengalaman mengajar akan diperbarui.'],
+  },
+]
+
 const services = [
   { icon: Brain, title: 'Tes Psikologi', desc: 'Pemetaan karakter, kestabilan emosi, dan kesiapan menghadapi seleksi.' },
   { icon: BookOpenText, title: 'Tes Akademik', desc: 'Latihan soal akademik terstruktur dengan simulasi CBT berkala.' },
@@ -962,6 +1068,7 @@ const heroSelayangPandang = {
 const keyFeatures = [
   {
     icon: UserCheck,
+    modal: 'teachers',
     title: 'Pengajar dari Ahli & Praktisi',
     desc: 'Tim pembina berpengalaman dari unsur purnawirawan, mentor akademik, dan pelatih kesiapan seleksi.',
     longDesc: 'Pendampingan peserta dilakukan oleh tim lintas bidang agar persiapan berjalan terarah, disiplin, dan sesuai kebutuhan seleksi terkini.',
@@ -1007,6 +1114,10 @@ const keyFeatures = [
 ]
 
 function openFeatureModal(feature) {
+  if (feature.modal === 'teachers') {
+    isTeacherModalOpen.value = true
+    return
+  }
   activeFeatureModal.value = feature
 }
 
@@ -1028,6 +1139,10 @@ function closeSelayangModal() {
 
 function closeFeatureModal() {
   activeFeatureModal.value = null
+}
+
+function closeTeacherModal() {
+  isTeacherModalOpen.value = false
 }
 
 function openMemberModal(member) {
@@ -1488,6 +1603,7 @@ onUnmounted(() => {
 }
 
 @keyframes ctaSelayangPulse {
+
   0%,
   100% {
     transform: translateY(0) scale(1);
