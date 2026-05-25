@@ -276,7 +276,7 @@
               </div>
               <h4 class="font-bold text-sm md:text-lg leading-snug text-text">{{ member.name }}</h4>
               <p class="text-xs md:text-base text-primary font-semibold mt-1 uppercase tracking-wide">{{ member.jabatan
-              }}</p>
+                }}</p>
               <span class="mt-3 inline-flex items-center text-[11px] md:text-xs font-semibold text-primary">
                 Lihat profil
               </span>
@@ -659,7 +659,7 @@
                     <h4 class="text-xl font-extrabold leading-tight text-text md:text-2xl">{{ activeMemberModal.name }}
                     </h4>
                     <p class="text-sm font-semibold uppercase tracking-wide text-primary">{{ activeMemberModal.jabatan
-                    }}
+                      }}
                     </p>
                     <div class="mt-3 space-y-1.5 text-sm text-gray-700">
                       <p><span class="font-semibold text-text">Tempat, Tanggal Lahir:</span> {{
@@ -743,6 +743,7 @@ const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
 const djatmikoUrl = new URL('../../assets/pengajar/Djatmiko.jpg', import.meta.url).href
+const iketaUrl = new URL('../../assets/pengajar/Iketutadipurnama.jpg', import.meta.url).href
 const defaultTeacherUrl = new URL('../../assets/anggota/default.png', import.meta.url).href
 const cvTemplateUrl = new URL('../../assets/cv.png', import.meta.url).href
 const card2Url = new URL('../../assets/card2.png', import.meta.url).href
@@ -966,33 +967,31 @@ const members = [
 
 const teachers = [
   {
+    id: 'iketutadipurnama',
+    name: 'Dr. I ketut Adi Purnama, S.H., M.H., C.M.C.',
+    role: 'Kewarganegaraan dan Undang-Undang Kepolisian',
+    image: iketaUrl,
+    birthPlaceDate: 'Denpasar, 27 November 1966',
+    education: ['S1 UNWIR Fak. HK', 'S2 UNPAD HK. Bisnis', 'S3 UNPAR DIH'],
+    teaching: ['Hukum Acara Pidana', 'Sistem Peradilan Pidana Indonesia', 'Keamanan Hukum Pidana'],
+  },
+  {
     id: 'djatmiko',
     name: 'Djatmiko, M.Pd',
     role: 'Pengajar Matematika',
-    image: djatmikoUrl,
+    image: defaultTeacherUrl,
     birthPlaceDate: 'Bandung, 31 Mei 1968',
-    education: ['S1 UNWIR Fak. HK', 'S2 UNPAD HK. Bisnis', 'S3 UNPAR DIH'],
+    education: ['S2 Pendidikan Matematika IKIP Siliwangi'],
     teaching: ['Mengajar di SMAN 23 Bandung'],
   },
   {
-    id: 'teacher-2',
-    name: 'Pengajar 2',
-    role: 'Pengajar',
-    image: defaultTeacherUrl,
-    birthPlaceDate: '-',
-    address: '-',
-    education: ['Profil akan diperbarui.'],
-    teaching: ['Data pengalaman mengajar akan diperbarui.'],
-  },
-  {
     id: 'teacher-3',
-    name: 'Pengajar 3',
-    role: 'Pengajar',
-    image: defaultTeacherUrl,
-    birthPlaceDate: '-',
-    address: '-',
-    education: ['Profil akan diperbarui.'],
-    teaching: ['Data pengalaman mengajar akan diperbarui.'],
+    name: 'Natasha Yunitap Pospos, S.H., M.T.C.P',
+    role: 'Pengajar Bahasa Inggris',
+    image: natashaUrl,
+    birthPlaceDate: 'Palembang, 15 Juni 1964',
+    education: ['SEPAMILSUKWAN VI, tamat 1989', 'UNLA Bandung, Fakultas Hukum, tamat 2007', 'Selapa Polri angkatan 39, tamat 2008', 'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, inagurasi 2009'],
+    teaching: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada  Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015'],
   },
   {
     id: 'teacher-4',

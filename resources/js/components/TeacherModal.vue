@@ -37,14 +37,14 @@
                 v-for="teacher in teachers"
                 :key="teacher.id"
                 type="button"
-                class="group rounded-2xl border border-border bg-gradient-to-br from-white to-sky/40 p-3 text-left shadow transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/35"
+                class="group flex h-full flex-col rounded-2xl border border-border bg-gradient-to-br from-white to-sky/40 p-3 text-left shadow transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/35"
                 @click="selectedTeacher = teacher"
               >
-                <div class="h-44 w-full overflow-hidden rounded-xl">
+                <div class="aspect-[9/12] w-full overflow-hidden rounded-xl bg-gray-100">
                   <img
                     :src="teacher.image"
                     :alt="teacher.name"
-                    class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
                 <h4 class="mt-3 text-sm font-bold leading-snug text-text">{{ teacher.name }}</h4>
@@ -132,14 +132,7 @@
                     class="rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/5"
                     @click="selectedTeacher = null"
                   >
-                    Kembali Lihat 8 Pengajar
-                  </button>
-                  <button
-                    type="button"
-                    class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
-                    @click="closeModal"
-                  >
-                    Tutup Modal
+                    Kembali
                   </button>
                 </div>
               </div>
