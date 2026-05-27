@@ -1,5 +1,5 @@
 <template>
-  <main class="h-screen text-text md:px-10 md:py-12 programs-themed-bg">
+  <main class="min-h-screen overflow-x-hidden overflow-y-auto text-text md:px-10 md:py-12 programs-themed-bg">
     <div class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
       <div
         class="mx-auto max-w-7xl rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-6 py-2 md:py-0">
@@ -58,16 +58,16 @@
         </div>
       </div>
     </div>
-    <div class="mx-auto space-y-8">
+    <div class="mx-auto space-y-8 pb-8">
       <section
         class="fade-up relative overflow-hidden text-center md:text-left md:rounded-[2rem] text-primary shadow-2xl shadow-[#123B8F]/35">
         <div class="relative z-10 p-7 md:p-10 pb-16">
-          <div class="max-w-7xl mx-auto flex flex-col md:flex-row mt-14 md:mt-10">
-            <div class="w-full md:w-4/12 flex justify-center mb-8 md:mb-0 relative">
+          <div class="max-w-7xl mx-auto flex flex-col md:flex-row mt-16 md:mt-10">
+            <div class="w-full md:w-4/12 flex justify-center mb-4 md:mb-0 relative">
               <img :src="taruna2" alt="Selayang Pandang"
-                class="block w-48 md:w-8/12 md:fixed md:-left-48 md:-bottom-10 object-cover" />
+                class="md:block hidden w-56 sm:w-64 md:w-8/12 md:fixed md:-left-48 md:-bottom-10 object-cover drop-shadow-2xl" />
             </div>
-            <div class="w-full md:w-8/12 py-8 text-left">
+            <div class="w-full md:w-8/12 py-6 md:py-8 text-left">
               <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white mb-3">Selayang Pandang</p>
               <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-white leading-tight">
                 Fondasi Terarah untuk Melangkah Menuju AKPOL

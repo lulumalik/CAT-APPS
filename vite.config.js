@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
+import { VitePWA } from 'vite-plugin-pwa';
 
 const usePolling =
     process.env.CHOKIDAR_USEPOLLING === 'true' ||
@@ -28,6 +29,42 @@ export default defineConfig({
             refresh: true,
         }),
         tailwindcss(),
+        VitePWA({
+            registerType: 'autoUpdate',
+            includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+            manifest: {
+                name: 'Pratistha Cendekia Prestasi',
+                short_name: 'Pratistha',
+                description: 'Platform pembinaan dan kursus persiapan AKPOL.',
+                theme_color: '#1a1a2d',
+                background_color: '#1a1a2d',
+                display: 'standalone',
+                scope: '/',
+                start_url: '/',
+                icons: [
+                    {
+                        src: '/icons/pwa-192x192.png',
+                        sizes: '192x192',
+                        type: 'image/png',
+                    },
+                    {
+                        src: '/icons/pwa-512x512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                    },
+                    {
+                        src: '/icons/pwa-512x512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'any maskable',
+                    },
+                ],
+            },
+            workbox: {
+                globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+                maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+            },
+        }),
     ],
     resolve: {
         alias: {

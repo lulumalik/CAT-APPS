@@ -24,7 +24,7 @@
           </div>
   
           <div class="md:hidden">
-            <div class="h-12 relative flex items-center justify-center gap-3">
+            <div class="h-12 relative flex items-center justify-center gap-2">
               <router-link to="/about-us"
                 class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors">
                 Tentang Kami
@@ -38,6 +38,11 @@
   
             <div v-if="isMobileMenuOpen" class="pb-3 pt-2 border-t border-border">
               <div class="grid gap-1 text-center">
+                <router-link to="/selayang-pandang"
+                  class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors"
+                  @click="isMobileMenuOpen = false">
+                  Selayang Pandang
+                </router-link>
                 <button v-for="item in quickNavItems" :key="`mobile-${item.id}`" type="button"
                   class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors"
                   @click="scrollToSection(item.id)">
