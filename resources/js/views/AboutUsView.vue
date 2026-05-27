@@ -71,7 +71,7 @@
         <div class="relative z-20">
           <h2
             class="mt-2 text-2xl md:text-4xl font-black text-center tracking-tight text-white flex items-center justify-center gap-3">
-            <Crown class="h-6 w-6 md:h-7 md:w-7 text-white hidden md:block" />
+            <!-- <Crown class="h-6 w-6 md:h-7 md:w-7 text-white hidden md:block" /> -->
             Pimpinan Pratistha Cendekia Prestasi
           </h2>
 
@@ -87,18 +87,15 @@
                 <div class="relative">
                   <img :src="leader.image" :alt="leader.name"
                     class="h-[360px] md:h-[420px] w-full object-cover object-top" />
-                  <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center p-2">
+                  <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center p-4">
                     <div>
                       {{ leader.name }}
                     </div>
-                    <button type="button"
+                    <!-- <button type="button"
                       class="text-xs text-white/80 mt-2 underline decoration-white/50 underline-offset-2 md:hidden"
                       @click.stop="openLeaderDetailModal(index)">
                       lihat detail
-                    </button>
-                    <div class="text-xs text-white/80 mt-2 hidden md:block">
-                      lihat detail
-                    </div>
+                    </button> -->
                   </div>
                 </div>
               </article>

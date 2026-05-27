@@ -284,9 +284,6 @@
             <router-link to="/signup"
               class="px-6 py-3 rounded-full bg-secondary text-white font-semibold cta-tryout-animated transition-all">Mulai
               Pendaftaran</router-link>
-            <router-link to="/about-us"
-              class="px-6 py-3 rounded-full bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 transition-all">Tentang
-              Kami</router-link>
           </div>
         </div>
       </section>

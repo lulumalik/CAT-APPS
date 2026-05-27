@@ -12,10 +12,6 @@
             </button>
           </div>
           <div class="flex items-center justify-end gap-2">
-            <router-link to="/selayang-pandang"
-              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap">
-              Selayang Pandang
-            </router-link>
             <router-link to="/about-us"
               class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap">
               Tentang Kami
@@ -111,7 +107,7 @@
         </div>
 
         <div class="relative overflow-hidden hidden md:block">
-          <div class="relative z-30 p-8 md:p-10 bg-gradient-to-b from-black to-primary">
+          <div class="relative z-30 p-8 md:p-10 bg-gradient-to-b from-black to-gray-500">
             <div class="max-w-7xl mx-auto flex fade-up delay-1">
               <div class="w-3/12">
                 &nbsp;
