@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen text-text md:px-10 md:py-12 about-us-gradient-animated">
+  <main class="min-h-screen text-text md:px-10 md:py-12 programs-themed-bg">
     <div class="mx-auto space-y-8">
       <section
         class="fade-up relative overflow-hidden text-center md:text-left md:rounded-[2rem] text-primary shadow-2xl shadow-[#123B8F]/35">
@@ -12,24 +12,24 @@
         <!-- <div class="absolute inset-0 z-0 bg-gradient-to-b from-white/40 via-white/55 to-white/70" /> -->
         <div class="relative z-10 p-7 md:p-10 pb-16">
           <router-link to="/"
-            class="inline-flex absolute left-5 top-2 items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
+            class="inline-flex absolute left-5 top-2 text-white md:text-primary/80 items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
             <ArrowLeft class="h-4 w-4" />
             Kembali ke Beranda
           </router-link>
           <div class="md:flex md:items-center md:justify-center md:gap-4">
             <div class="md:w-4/12 mt-8 md:mt-0">
               <div
-                class="rounded-full border-10 h-32 w-32 md:h-56 md:w-56 mx-auto border-primary/50 flex items-center bg-white/90 p-2 shadow-lg">
+                class="rounded-full h-32 w-32 md:h-56 md:w-56 mx-auto flex items-center bg-gradient-to-r from-primary to-secondary p-2 shadow-lg">
                 <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi"
                   class="mx-auto mb-4 h-16 w-16 md:h-36 md:w-36" />
               </div>
             </div>
             <div>
-              <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-primary/80">Tentang Kami</p>
-              <h1 class="mt-2 text-2xl md:text-5xl font-black leading-tight">
+              <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-white md:text-primary/80">Tentang Kami</p>
+              <h1 class="mt-2 text-2xl md:text-5xl font-black leading-tight text-white md:text-primary/90">
                 Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
               </h1>
-              <p class="mt-5 text-md md:text-2xl pb-4 font-bold text-primary/90 leading-relaxed">
+              <p class="mt-5 text-md md:text-2xl pb-4 font-bold text-white md:text-primary/90 leading-relaxed">
                 Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Cendekia Prestasi didukung oleh
                 legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan
                 profesionalisme
@@ -43,10 +43,10 @@
       <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
-            <FileBadge class="h-6 w-6 text-primary" />
-            <h2 class="text-2xl md:text-3xl text-primary font-bold tracking-tight">Legalitas Perusahaan</h2>
+            <FileBadge class="h-6 w-6 text-white" />
+            <h2 class="text-2xl md:text-3xl text-white font-bold tracking-tight">Legalitas Perusahaan</h2>
           </div>
-          <p class="mt-2 text-primary text-lg md:text-xl text-center">Berikut adalah nomor dokumen resmi perusahaan
+          <p class="mt-2 text-white text-lg md:text-xl text-center">Berikut adalah nomor dokumen resmi perusahaan
             kami:</p>
 
           <div class="mt-6 grid gap-6 md:grid-cols-3">
@@ -58,7 +58,7 @@
                   doc.label }}</p>
                 <p v-if="doc.subtitle"
                   class="mt-1 text-xs md:text-sm text-gray-600 font-bold text-center leading-relaxed text-md">{{
-                  doc.subtitle }}
+                    doc.subtitle }}
                 </p>
                 <p class="mt-3 text-sm md:text-lg font-bold text-text text-center break-words">{{ doc.value }}</p>
               </div>
@@ -70,8 +70,8 @@
       <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
           <h2
-            class="mt-2 text-2xl md:text-4xl font-black text-center tracking-tight text-primary flex items-center justify-center gap-3">
-            <Crown class="h-6 w-6 md:h-7 md:w-7 text-primary" />
+            class="mt-2 text-2xl md:text-4xl font-black text-center tracking-tight text-white flex items-center justify-center gap-3">
+            <Crown class="h-6 w-6 md:h-7 md:w-7 text-white hidden md:block" />
             Pimpinan Pratistha Cendekia Prestasi
           </h2>
 
@@ -85,7 +85,8 @@
                   ? 'scale-100 md:scale-[1.03] md:-translate-y-2 shadow-xl shadow-[#123B8F]/20 opacity-100'
                   : 'scale-[0.88] md:scale-[0.9] opacity-70'">
                 <div class="relative">
-                  <img :src="leader.image" :alt="leader.name" class="h-[360px] md:h-[420px] w-full object-cover object-top" />
+                  <img :src="leader.image" :alt="leader.name"
+                    class="h-[360px] md:h-[420px] w-full object-cover object-top" />
                   <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center p-2">
                     <div>
                       {{ leader.name }}
@@ -114,87 +115,119 @@
         </div>
       </section>
 
+      <section id="members" class="fade-up pb-8 mt-10 p-4 md:p-0">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-2xl md:text-4xl font-bold tracking-tight text-white text-center">
+            Staff pendukung program pembinaan Pratistha Cendekia Prestasi.
+          </div>
+          <hr class="border-white/60 my-10 w-44 border-b-2 mx-auto" />
+          <div class="relative overflow-hidden mt-10">
+            <div class="relative z-20 p-4 grid grid-cols-2 gap-4 md:flex md:flex-wrap md:justify-center md:gap-12">
+              <article v-for="member in members" :key="member.name"
+                class="group flex flex-col items-center text-center rounded-2xl border border-border bg-gradient-to-b from-white to-sky/80 p-5 w-full sm:w-[360px] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40"
+                role="button" tabindex="0" @click="openMemberModal(member)"
+                @keydown.enter.prevent="openMemberModal(member)" @keydown.space.prevent="openMemberModal(member)">
+                <div class="relative mb-4">
+                  <div
+                    class="w-32 h-32 md:w-64 md:h-64 rounded-full overflow-hidden ring-4 ring-white shadow-lg border-2 border-primary/15 group-hover:ring-primary/30 group-hover:border-primary/30 transition-all duration-300">
+                    <img :src="member.image" :alt="member.name"
+                      class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                  </div>
+                </div>
+                <h4 class="font-bold text-sm md:text-lg leading-snug text-text">{{ member.name }}</h4>
+                <p class="text-xs md:text-base text-primary font-semibold mt-1 uppercase tracking-wide">{{
+                  member.jabatan }}
+                </p>
+                <span class="mt-3 inline-flex items-center text-[11px] md:text-xs font-semibold text-primary">
+                  Lihat profil
+                </span>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="fade-up relative overflow-hidden mt-10 p-4 md:p-0">
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
-            <Users class="h-6 w-6 text-primary" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-primary">Struktur Organisasi</h2>
+            <Users class="h-6 w-6 text-white" />
+            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Struktur Organisasi</h2>
           </div>
 
           <div ref="orgChartViewportRef" class="org-chart-viewport my-12">
             <div class="org-chart">
-            <div class="org-node org-node-animated">
-              <p class="org-node__role">{{ orgChart.penasehat.role }}</p>
-              <p class="org-node__name">{{ orgChart.penasehat.name }}</p>
-            </div>
+              <div class="org-node org-node-animated">
+                <p class="org-node__role">{{ orgChart.penasehat.role }}</p>
+                <p class="org-node__name">{{ orgChart.penasehat.name }}</p>
+              </div>
 
-            <div class="org-stem" />
-
-            <div class="org-node org-node-animated">
-              <p class="org-node__role">{{ orgChart.komisaris.role }}</p>
-              <p class="org-node__name">{{ orgChart.komisaris.name }}</p>
-            </div>
-
-            <div class="org-stem" />
-
-            <div class="org-node org-node-animated">
-              <p class="org-node__role">{{ orgChart.direkturUtama.role }}</p>
-              <p class="org-node__name">{{ orgChart.direkturUtama.name }}</p>
-            </div>
-
-            <div class="org-stem" />
-
-            <div class="org-node org-node-animated">
-              <p class="org-node__role">{{ orgChart.direktur.role }}</p>
-              <p class="org-node__name">{{ orgChart.direktur.name }}</p>
-            </div>
-
-            <div class="org-split">
               <div class="org-stem" />
-              <div class="org-split__cols">
-                <div class="org-split__col">
-                  <div class="org-split__drop" />
-                  <div class="org-node org-node-animated">
-                    <p class="org-node__role">{{ orgChart.sekretaris.role }}</p>
-                    <p class="org-node__name">{{ orgChart.sekretaris.name }}</p>
-                  </div>
-                </div>
-                <div class="org-split__col">
-                  <div class="org-split__drop" />
-                  <div class="org-node org-node-animated">
-                    <p class="org-node__role">{{ orgChart.bendahara.role }}</p>
-                    <p class="org-node__name">{{ orgChart.bendahara.name }}</p>
-                  </div>
-                </div>
+
+              <div class="org-node org-node-animated">
+                <p class="org-node__role">{{ orgChart.komisaris.role }}</p>
+                <p class="org-node__name">{{ orgChart.komisaris.name }}</p>
               </div>
 
-              <div class="org-split__through">
-                <div class="org-stem org-stem--bridge" />
-                <div class="org-split__cols org-split__cols--three">
+              <div class="org-stem" />
+
+              <div class="org-node org-node-animated">
+                <p class="org-node__role">{{ orgChart.direkturUtama.role }}</p>
+                <p class="org-node__name">{{ orgChart.direkturUtama.name }}</p>
+              </div>
+
+              <div class="org-stem" />
+
+              <div class="org-node org-node-animated">
+                <p class="org-node__role">{{ orgChart.direktur.role }}</p>
+                <p class="org-node__name">{{ orgChart.direktur.name }}</p>
+              </div>
+
+              <div class="org-split">
+                <div class="org-stem" />
+                <div class="org-split__cols">
                   <div class="org-split__col">
                     <div class="org-split__drop" />
                     <div class="org-node org-node-animated">
-                      <p class="org-node__role">{{ orgChart.internal.role }}</p>
-                      <p class="org-node__name">{{ orgChart.internal.name }}</p>
+                      <p class="org-node__role">{{ orgChart.sekretaris.role }}</p>
+                      <p class="org-node__name">{{ orgChart.sekretaris.name }}</p>
                     </div>
                   </div>
                   <div class="org-split__col">
                     <div class="org-split__drop" />
                     <div class="org-node org-node-animated">
-                      <p class="org-node__role">{{ orgChart.eksternal.role }}</p>
-                      <p class="org-node__name">{{ orgChart.eksternal.name }}</p>
+                      <p class="org-node__role">{{ orgChart.bendahara.role }}</p>
+                      <p class="org-node__name">{{ orgChart.bendahara.name }}</p>
                     </div>
                   </div>
-                  <div class="org-split__col">
-                    <div class="org-split__drop" />
-                    <div class="org-node org-node-animated">
-                      <p class="org-node__role">{{ orgChart.digitalMarketing.role }}</p>
-                      <p class="org-node__name">{{ orgChart.digitalMarketing.name }}</p>
+                </div>
+
+                <div class="org-split__through">
+                  <div class="org-stem org-stem--bridge" />
+                  <div class="org-split__cols org-split__cols--three">
+                    <div class="org-split__col">
+                      <div class="org-split__drop" />
+                      <div class="org-node org-node-animated">
+                        <p class="org-node__role">{{ orgChart.internal.role }}</p>
+                        <p class="org-node__name">{{ orgChart.internal.name }}</p>
+                      </div>
+                    </div>
+                    <div class="org-split__col">
+                      <div class="org-split__drop" />
+                      <div class="org-node org-node-animated">
+                        <p class="org-node__role">{{ orgChart.eksternal.role }}</p>
+                        <p class="org-node__name">{{ orgChart.eksternal.name }}</p>
+                      </div>
+                    </div>
+                    <div class="org-split__col">
+                      <div class="org-split__drop" />
+                      <div class="org-node org-node-animated">
+                        <p class="org-node__role">{{ orgChart.digitalMarketing.role }}</p>
+                        <p class="org-node__name">{{ orgChart.digitalMarketing.name }}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
             </div>
           </div>
         </div>
@@ -223,7 +256,7 @@
 
       <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0">
         <div class="relative z-20">
-          <div class="flex items-center text-center gap-3">
+          <div class="flex items-center justify-center text-center gap-3">
             <Landmark class="h-6 w-6 text-white left-12 relative md:left-0" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Rekening Resmi Pembayaran</h2>
           </div>
@@ -248,7 +281,7 @@
                 || '-' }}</p>
               <p class="mt-4 text-sm font-semibold md:text-xl text-gray-600 text-center">Atas Nama</p>
               <p class="mt-1 text-sm font-bold md:text-xl text-text text-center leading-relaxed">{{ account.accountName
-                }}</p>
+              }}</p>
             </article>
           </div>
         </div>
@@ -270,54 +303,121 @@
         </div>
         <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
       </section>
-    <Teleport to="body">
-      <Transition name="member-slide-fade">
-        <div v-if="isLeaderDetailModalOpen"
-          class="fixed inset-0 z-[120] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
-          role="dialog" aria-modal="true" aria-labelledby="leader-detail-modal-title" @click.self="closeLeaderDetailModal">
-          <article
-            class="w-full max-w-2xl rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 p-6 shadow-xl">
-            <div class="absolute inset-0 mobile-card-gradient rounded-[2rem]"></div>
-            <div class="relative min-h-[390px]">
-              <div class="flex items-center justify-end">
-                <button type="button"
-                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 bg-white/12 text-white hover:bg-white/20 transition-colors"
-                  aria-label="Tutup detail pimpinan" @click="closeLeaderDetailModal">
-                  <XIcon class="h-4 w-4" />
-                </button>
-              </div>
-              <div class="mt-4">
-                <p id="leader-detail-modal-title"
-                  class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center">
-                  Profil {{ activeLeaderDetail.role }}
-                </p>
-                <h3 class="mt-2 text-2xl font-extrabold leading-tight tracking-tight relative z-20 text-center">
-                  {{ activeLeaderDetail.name }}
-                </h3>
-                <p class="mt-2 text-md font-bold relative z-20 text-center">{{ activeLeaderDetail.batch }}</p>
-
-                <div class="mt-5 rounded-xl backdrop-blur-[1px] text-center relative z-20">
-                  <p class="text-lg font-bold uppercase tracking-[0.14em]">Posisi Saat Ini</p>
-                  <p class="mt-1 text-base font-semibold leading-relaxed">
-                    {{ activeLeaderDetail.position }}
+      <Teleport to="body">
+        <Transition name="member-slide-fade">
+          <div v-if="isLeaderDetailModalOpen"
+            class="fixed inset-0 z-[120] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
+            role="dialog" aria-modal="true" aria-labelledby="leader-detail-modal-title"
+            @click.self="closeLeaderDetailModal">
+            <article
+              class="w-full max-w-2xl rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 p-6 shadow-xl">
+              <div class="absolute inset-0 mobile-card-gradient rounded-[2rem]"></div>
+              <div class="relative min-h-[390px]">
+                <div class="flex items-center justify-end">
+                  <button type="button"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 bg-white/12 text-white hover:bg-white/20 transition-colors"
+                    aria-label="Tutup detail pimpinan" @click="closeLeaderDetailModal">
+                    <XIcon class="h-4 w-4" />
+                  </button>
+                </div>
+                <div class="mt-4">
+                  <p id="leader-detail-modal-title"
+                    class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center">
+                    Profil {{ activeLeaderDetail.role }}
                   </p>
-                </div>
+                  <h3 class="mt-2 text-2xl font-extrabold leading-tight tracking-tight relative z-20 text-center">
+                    {{ activeLeaderDetail.name }}
+                  </h3>
+                  <p class="mt-2 text-md font-bold relative z-20 text-center">{{ activeLeaderDetail.batch }}</p>
 
-                <div class="mt-5 rounded-xl backdrop-blur-[1px] relative z-20">
-                  <p class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-300 pb-2">
-                    Jabatan Terakhir</p>
-                  <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed">
-                    <li v-for="line in activeLeaderDetail.highlights" :key="line" class="text-center">
-                      <span>{{ line }}</span>
-                    </li>
-                  </ul>
+                  <div class="mt-5 rounded-xl backdrop-blur-[1px] text-center relative z-20">
+                    <p class="text-lg font-bold uppercase tracking-[0.14em]">Posisi Saat Ini</p>
+                    <p class="mt-1 text-base font-semibold leading-relaxed">
+                      {{ activeLeaderDetail.position }}
+                    </p>
+                  </div>
+
+                  <div class="mt-5 rounded-xl backdrop-blur-[1px] relative z-20">
+                    <p class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-300 pb-2">
+                      Jabatan Terakhir</p>
+                    <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed">
+                      <li v-for="line in activeLeaderDetail.highlights" :key="line" class="text-center">
+                        <span>{{ line }}</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
+              </div>
+            </article>
+          </div>
+        </Transition>
+      </Teleport>
+      <Teleport to="body">
+        <Transition name="member-slide-fade">
+          <div v-if="activeMemberModal"
+            class="fixed inset-0 z-[125] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
+            role="dialog" aria-modal="true" aria-labelledby="member-modal-title" @click.self="closeMemberModal">
+            <div
+              class="about-member-cv-modal w-full max-w-5xl overflow-hidden rounded-2xl relative border border-border shadow-2xl shadow-black/30">
+              <button type="button" @click="closeMemberModal"
+                class="absolute right-3 top-3 z-40 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white shadow-lg transition hover:bg-black/85 focus:outline-none focus:ring-2 focus:ring-white/90"
+                aria-label="Tutup detail anggota">
+                <XIcon class="h-5 w-5" />
+              </button>
+
+              <div class="about-member-cv-layout">
+                <aside class="about-member-cv-sidebar relative left-24">
+                  <div class="about-member-cv-photo-frame">
+                    <img :src="activeMemberModal.image" :alt="activeMemberModal.name"
+                      class="about-member-cv-photo" />
+                  </div>
+
+                  <div class="about-member-cv-identity">
+                    <h4 id="member-modal-title" class="about-member-cv-name">{{ activeMemberModal.name }}</h4>
+                    <p class="about-member-cv-role">{{ activeMemberModal.jabatan }}</p>
+                  </div>
+
+                  <div class="about-member-cv-meta">
+                    <p><span class="font-semibold">Tempat, Tanggal Lahir:</span></p>
+                    <p>{{ activeMemberModal.profile.birthPlaceDate }}</p>
+                  </div>
+                </aside>
+
+                <section class="about-member-cv-content">
+                  <div class="about-member-cv-section">
+                    <h5 class="about-member-cv-heading">Profil</h5>
+                    <p class="about-member-cv-paragraph">
+                      {{ activeMemberModal.name }} menjabat sebagai {{ activeMemberModal.jabatan }} di Pratistha
+                      Cendekia Prestasi dengan fokus pada pembinaan terarah, disiplin, dan profesional.
+                    </p>
+                  </div>
+
+                  <div class="about-member-cv-section">
+                    <h5 class="about-member-cv-heading">Pendidikan</h5>
+                    <ul class="about-member-cv-list">
+                      <li v-for="item in activeMemberModal.profile.education" :key="item">{{ item }}</li>
+                    </ul>
+                  </div>
+
+                  <div class="about-member-cv-section">
+                    <h5 class="about-member-cv-heading">Riwayat Organisasi</h5>
+                    <ul class="about-member-cv-list">
+                      <li v-for="item in activeMemberModal.profile.organization" :key="item">{{ item }}</li>
+                    </ul>
+                  </div>
+
+                  <div class="about-member-cv-section">
+                    <h5 class="about-member-cv-heading">Pengalaman Kerja</h5>
+                    <ul class="about-member-cv-list">
+                      <li v-for="item in activeMemberModal.profile.work" :key="item">{{ item }}</li>
+                    </ul>
+                  </div>
+                </section>
               </div>
             </div>
-          </article>
-        </div>
-      </Transition>
-    </Teleport>
+          </div>
+        </Transition>
+      </Teleport>
     </div>
   </main>
 </template>
@@ -340,6 +440,11 @@ const activityBookUrl = new URL('../../assets/book.jpg', import.meta.url).href
 const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
 const tubagusUrl = new URL('../../assets/bpk_tubagus.jpg', import.meta.url).href
 const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
+const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
+const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).href
+const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
+const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
+const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
 const skKemenkumhamUrl = new URL('../../assets/legal/sk-kemenkumham.png', import.meta.url).href
 const npwpUrl = new URL('../../assets/legal/npwp.png', import.meta.url).href
 const nibUrl = new URL('../../assets/legal/nib.png', import.meta.url).href
@@ -399,6 +504,64 @@ const orgChart = {
   eksternal: { role: 'Eksternal', name: 'Kompol (P) Tutik' },
   digitalMarketing: { role: 'Digital Marketing', name: '-' },
 }
+
+const members = [
+  {
+    name: 'Gilang Nurfahradz Syahni Fasya, S.T',
+    image: gilangUrl,
+    jabatan: 'Direktur',
+    profile: {
+      birthPlaceDate: 'Bandung, 04 Agustus 1991',
+      education: ['Kimia Industri - SMK Negeri 7 Bandung (2009)', 'S1 Teknologi Pangan - Universitas Pasundan (2009)'],
+      organization: ['Ketua Bidang Regenerasi Ikatan Mahasiswa AMS JABAR (2009-2011)', 'Ketua Badan Eksekutif Mahasiswa Fakultas Teknik UNPAS (2012-2013)', 'Founder Badan Legislatif (DPM) Universitas Pasundan (2013)', 'Ketua Bidang Organisasi IKA TP UNPAS (2018 - sekarang)'],
+      work: ['R&D Specialist Chocolate PT. Mercolade Indonesia (2013-2015)', 'Konsultan Manufacture Kosmetik PT. Prapta Rekayasa Buana (2016)', 'Co. Founder PT. Magnolium Mandiri Indonesia (2015)', 'Head Factory PT. Magnolium Mandiri Indonesa dan PT. Nusantara Agro Horeca (2015-2021)'],
+    },
+  },
+  {
+    name: 'AKBP (P) Wahyu suhardini, S.IP',
+    image: wahyuUrl,
+    jabatan: 'Sekretaris',
+    profile: {
+      birthPlaceDate: 'Tasikmalaya, 20 Juni 1972',
+      education: ['S1 Ilmu Pemerintahan (S.IP)', 'Pelatihan Administrasi dan Kearsipan'],
+      organization: ['Pengurus Bidang Administrasi Yayasan', 'Tim Koordinasi Program'],
+      work: ['Sekretaris Pratistha Cendekia Prestasi', 'Pendamping Operasional Administrasi Program'],
+    },
+  },
+  {
+    name: 'KBP (P) Dra.Rina Regina',
+    image: rinaUrl,
+    jabatan: 'Bendahara',
+    profile: {
+      birthPlaceDate: 'Bandung, 31 Oktober 1975',
+      education: ['Sarjana Pendidikan Ikip Bdg', 'Sepamilksukwan Polri 1984', 'Selapa Polri 1997'],
+      organization: ['Pengurus Keuangan Yayasan', 'Tim Pengawasan Anggaran Program'],
+      work: ['Kasetum Polda Jabar', 'Kabag Binamitra Polwiltabes Bdg', 'Gadik SPN Cisarua', 'Kasubdit Kerma Dit Binmas Polda Jbr'],
+    },
+  },
+  {
+    name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P',
+    image: natashaUrl,
+    jabatan: 'Bidang Internal',
+    profile: {
+      birthPlaceDate: 'Palembang, 15 Juni 1964',
+      education: ['SEPAMILSUKWAN VI, tamat 1989', 'UNLA Bandung, Fakultas Hukum, tamat 2007', 'Selapa Polri angkatan 39, tamat 2008', 'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, inagurasi 2009'],
+      organization: ['Kasubdit Bintibluh Dit Binmas Polda Jabar, 2012-2015.', 'Kasubdit Pariwisata Dit Pam Obvit Polda Jabar, 2015-2017.', 'Kasubdit Kerma Dit Binmas Polda Jabar, 2017-2019.', 'Kasubdit Bhabinkamtibmas Polda Jabar, 2019-2022'],
+      work: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015'],
+    },
+  },
+  {
+    name: 'Kompol (P) Tutik',
+    image: tutikUrl,
+    jabatan: 'Bidang Eksternal',
+    profile: {
+      birthPlaceDate: 'Cirebon, 9 September 1971',
+      education: ['S1 Ilmu Sosial', 'Pelatihan Public Relations'],
+      organization: ['Pengurus Hubungan Eksternal', 'Tim Kemitraan Strategis'],
+      work: ['Koordinator Bidang Eksternal', 'Pengembang Jejaring Kolaborasi Program'],
+    },
+  },
+]
 
 const legalDocuments = [
   {
@@ -471,6 +634,7 @@ const orgChartViewportRef = ref(null)
 const leaderSlideRefs = ref([])
 const activeLeaderIndex = ref(Math.max(0, heroLeaders.findIndex((leader) => leader.featured)))
 const isLeaderDetailModalOpen = ref(false)
+const activeMemberModal = ref(null)
 const activeLeaderDetailIndex = ref(activeLeaderIndex.value)
 const touchStartX = ref(null)
 const pointerStartX = ref(null)
@@ -579,6 +743,14 @@ const closeLeaderDetailModal = () => {
   isLeaderDetailModalOpen.value = false
 }
 
+const openMemberModal = (member) => {
+  activeMemberModal.value = member
+}
+
+const closeMemberModal = () => {
+  activeMemberModal.value = null
+}
+
 const centerOrgChartViewport = () => {
   if (window.innerWidth > 640) return
   const viewport = orgChartViewportRef.value
@@ -633,31 +805,11 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.about-us-gradient-animated {
-  background-color: #262626;
+.programs-themed-bg {
   background-image:
-    conic-gradient(from 22deg at 13% 12%,
-      rgba(255, 255, 255, 0.38) 0deg 48deg,
-      rgba(230, 230, 230, 0.32) 48deg 108deg,
-      rgba(185, 185, 185, 0.28) 108deg 192deg,
-      rgba(130, 130, 130, 0.24) 192deg 278deg,
-      rgba(85, 85, 85, 0.22) 278deg 360deg),
-    conic-gradient(from 210deg at 78% 26%,
-      rgba(242, 242, 242, 0.28) 0deg 58deg,
-      rgba(196, 196, 196, 0.26) 58deg 146deg,
-      rgba(148, 148, 148, 0.24) 146deg 235deg,
-      rgba(98, 98, 98, 0.22) 235deg 320deg,
-      rgba(58, 58, 58, 0.2) 320deg 360deg),
-    conic-gradient(from 318deg at 52% 82%,
-      rgba(255, 255, 255, 0.2) 0deg 70deg,
-      rgba(210, 210, 210, 0.22) 70deg 150deg,
-      rgba(134, 134, 134, 0.24) 150deg 238deg,
-      rgba(60, 60, 60, 0.28) 238deg 360deg),
-    linear-gradient(160deg, #ffffff 0%, #d6d6d6 26%, #9b9b9b 48%, #525252 72%, #0f0f0f 100%);
-  background-size: 190% 190%, 190% 190%, 220% 220%, 135% 135%;
-  background-blend-mode: soft-light, overlay, multiply, normal;
-  animation: homeMainGradientFlow 5s ease-in-out infinite;
-  will-change: background-position;
+    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
+    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
+  background-size: 28px 28px, 100% 100%;
 }
 
 .about-hero-section {
@@ -734,6 +886,151 @@ onBeforeUnmount(() => {
 .member-slide-fade-leave-to {
   opacity: 0;
   transform: translateY(8px);
+}
+
+.about-member-cv-modal {
+  background: #898989;
+}
+
+.about-member-cv-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) 1fr;
+  height: min(86vh, 760px);
+  max-height: 86vh;
+  overflow: hidden;
+}
+
+.about-member-cv-sidebar {
+  background: #fff;
+  padding: 2rem 1.6rem;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.about-member-cv-photo-frame {
+  background: #ffffff;
+  padding: 0.75rem;
+}
+
+.about-member-cv-photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: top;
+}
+
+.about-member-cv-identity {
+  margin-top: 1.4rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.28);
+}
+
+.about-member-cv-name {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: #1e2430;
+  text-transform: uppercase;
+}
+
+.about-member-cv-role {
+  margin-top: 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: #4b5563;
+  text-transform: uppercase;
+}
+
+.about-member-cv-meta {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #374151;
+}
+
+.about-member-cv-content {
+  background-image:
+    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
+    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
+  background-size: 28px 28px, 100% 100%;
+  padding-left: 10rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  padding-right: 2rem;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.about-member-cv-section+.about-member-cv-section {
+  margin-top: 1.8rem;
+}
+
+.about-member-cv-heading {
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid rgba(31, 41, 55, 0.4);
+}
+
+.about-member-cv-paragraph {
+  margin-top: 0.8rem;
+  color: #fff;
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.about-member-cv-list {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.65rem;
+  padding-left: 1.1rem;
+  list-style: disc;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .about-member-cv-layout {
+    grid-template-columns: 1fr;
+    height: min(88vh, 860px);
+    max-height: 88vh;
+  }
+
+  .about-member-cv-sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+}
+
+.member-history-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.member-history-item {
+  position: relative;
+}
+
+.member-history-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 0.21rem;
+  top: 1.1rem;
+  bottom: -0.65rem;
+  width: 2px;
+  background: rgba(47, 107, 255, 0.42);
+}
+
+.member-history-dot {
+  position: relative;
+  z-index: 1;
 }
 
 .mobile-card-gradient {

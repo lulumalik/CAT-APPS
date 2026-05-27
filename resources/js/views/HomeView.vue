@@ -1,6 +1,6 @@
 <template>
-  <main class="home-main-gradient-animated min-h-screen text-text">
-    <!-- <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
+  <main class="bg-gradient-to-b from-gray-400 via-gray-500 via-50% to-primary min-h-screen text-text">
+    <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
       <div
         class="mx-auto max-w-7xl rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-6 py-2 md:py-0">
         <div class="hidden md:grid h-16 grid-cols-[1fr_auto_1fr] items-center gap-4">
@@ -11,13 +11,16 @@
               {{ item.label }}
             </button>
           </div>
-
-          <router-link to="/about-us"
-            class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap">
-            Tentang Kami
-          </router-link>
-
-
+          <div class="flex items-center justify-end gap-2">
+            <router-link to="/selayang-pandang"
+              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap">
+              Selayang Pandang
+            </router-link>
+            <router-link to="/about-us"
+              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap">
+              Tentang Kami
+            </router-link>
+          </div>
         </div>
 
         <div class="md:hidden">
@@ -49,7 +52,7 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
 
     <section id="hero" class="relative overflow-hidden rounded-none min-h-[560px] md:min-h-[700px]">
       <div class="absolute inset-0 overflow-hidden">
@@ -62,9 +65,9 @@
       <div class="absolute inset-0 rounded-none bg-gradient-to-b from-white/20 via-white/60 to-black/40" />
       <div
         class="relative z-10 mx-auto min-h-[560px] md:min-h-[700px] flex items-start md:items-center justify-center px-5 pt-10 pb-10 md:px-10">
-        <div class="text-center max-w-5xl fade-up">
+        <div class="text-center max-w-5xl fade-up mt-16">
           <div
-            class="rounded-full border-10 h-32 w-32 md:h-56 md:w-56 mx-auto border-primary/50 flex items-center bg-white/90 p-2 shadow-lg">
+            class="rounded-full h-32 w-32 md:h-56 md:w-56 mx-auto flex items-center bg-gradient-to-r from-primary to-secondary p-2 shadow-lg">
             <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi"
               class="mx-auto mb-4 h-16 w-16 md:h-36 md:w-36" />
           </div>
@@ -97,8 +100,8 @@
       </div>
     </section>
 
-    <section id="selayang-pandang-2" class="px-5 md:px-10 py-10">
-      <div class="max-w-7xl mx-auto fade-up delay-1 relative">
+    <section id="selayang-pandang-2">
+      <div class="w-full mx-auto relative">
         <div class="md:hidden px-3">
           <button type="button"
             class="w-full rounded-full cta-selayang-animated px-5 py-4 text-sm font-bold uppercase tracking-[0.14em] text-white shadow-lg transition-colors hover:bg-white"
@@ -107,53 +110,158 @@
           </button>
         </div>
 
-        <div
-          class="selayang-card-container rounded-[2rem] shadow-xl shadow-primary/8 relative overflow-hidden hidden md:block">
-          <img :src="selayangCard" alt="Selayang Pandang"
-            class="selayang-card-bg selayang-card-breathe hidden md:block w-full h-full absolute top-0 left-0 object-cover" />
-          <div class="relative z-30 p-8 md:p-10">
-            <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-3">Selayang Pandang</p>
-            <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-text leading-tight">
-              Fondasi Terarah untuk Melangkah Pasti Menuju AKPOL
-            </h2>
-            <div class="mt-6 space-y-4 font-semibold text-gray-700 leading-relaxed">
-              <p>
-                Selamat datang di <span class="font-bold text-text">Pratistha Cendekia Prestasi</span>, tempat lahirnya
-                calon taruna terbaik yang dipersiapkan secara terarah, disiplin, dan profesional untuk menghadapi
-                seleksi Akademi Kepolisian.
-              </p>
-              <p>
-                Kami berfokus pada pembinaan akademik, mental, fisik, dan karakter kepemimpinan. Dalam persaingan
-                seleksi yang semakin ketat, kami meyakini keberhasilan tidak hanya ditentukan oleh kecerdasan, tetapi
-                juga oleh strategi belajar yang tepat dan pembinaan yang konsisten.
-              </p>
-              <p>
-                Melalui metode kursus yang terstruktur, simulasi seleksi yang realistis, serta pendampingan mentor
-                berpengalaman, setiap peserta dipersiapkan agar <br> siap menghadapi seluruh tahapan seleksi AKPOL
-                secara
-                maksimal.
-              </p>
-              <p>
-                Nama <span class="font-bold text-text">Pratistha</span> melambangkan kehormatan, keteguhan, dan fondasi
-                kuat dalam meraih cita-cita. Nilai inilah yang kami tanamkan: semangat juang, <br> integritas,
-                kedisiplinan,
-                dan mental pantang menyerah.
-              </p>
-              <p>
-                Kami tidak hanya membina peserta untuk lulus seleksi, tetapi juga membentuk pribadi berkarakter yang
-                siap menjadi generasi pemimpin bangsa.
-              </p>
+        <div class="relative overflow-hidden hidden md:block">
+          <div class="relative z-30 p-8 md:p-10 bg-gradient-to-b from-black to-primary">
+            <div class="max-w-7xl mx-auto flex fade-up delay-1">
+              <div class="w-3/12">
+                &nbsp;
+                <img :src="taruna2" alt="Selayang Pandang"
+                  class="block w-7/12  absolute -left-56 -bottom-10" />
+              </div>
+              <div class="w-9/12 py-8">
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white mb-3">Selayang Pandang</p>
+                <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-white leading-tight">
+                  Fondasi Terarah untuk Melangkah Menuju AKPOL
+                </h2>
+                <div class="mt-6 space-y-4 font-semibold text-white leading-relaxed">
+                  <p>
+                    Selamat datang di <span class="font-bold">Pratistha Cendekia Prestasi</span>, tempat lahirnya
+                    calon taruna terbaik yang dipersiapkan secara terarah, disiplin, dan profesional untuk menghadapi
+                    seleksi Akademi Kepolisian.
+                  </p>
+                  <p>
+                    Kami berfokus pada pembinaan akademik, mental, fisik, dan karakter kepemimpinan. Dalam persaingan
+                    seleksi yang semakin ketat, kami meyakini keberhasilan tidak hanya ditentukan oleh kecerdasan,
+                    tetapi
+                    juga oleh strategi belajar yang tepat dan pembinaan yang konsisten.
+                  </p>
+                  <p>
+                    Melalui metode kursus yang terstruktur, simulasi seleksi yang realistis, serta pendampingan mentor
+                    berpengalaman, setiap peserta dipersiapkan agar siap menghadapi seluruh tahapan seleksi AKPOL
+                    secara
+                    maksimal.
+                  </p>
+                  <p>
+                    Nama <span class="font-bold">Pratistha</span> melambangkan kehormatan, keteguhan, dan fondasi
+                    kuat dalam meraih cita-cita. Nilai inilah yang kami tanamkan: semangat juang, integritas,
+                    kedisiplinan,
+                    dan mental pantang menyerah.
+                  </p>
+                  <p>
+                    Kami tidak hanya membina peserta untuk lulus seleksi, tetapi juga membentuk pribadi berkarakter yang
+                    siap menjadi generasi pemimpin bangsa.
+                  </p>
+                </div>
+                <!-- <p class="mt-6 text-lg font-bold text-white text-left">Bersama Pratistha Cendekia Prestasi, wujudkan
+                  langkah
+                  menuju AKPOL.</p> -->
+              </div>
             </div>
-            <p class="mt-6 text-lg font-bold text-primary text-center">Bersama Pratistha Cendekia Prestasi, wujudkan
-              langkah pasti
-              menuju AKPOL.</p>
           </div>
         </div>
       </div>
     </section>
 
+    <section id="leaders">
+      <div class="max-w-7xl mx-auto fade-up fade-up-tight delay-2 relative mt-14">
+        <div>
+          <div class="text-2xl md:text-4xl font-bold tracking-tight text-white text-center">
+            Profil pejabat dan pimpinan Pratistha Cendekia Prestasi
+          </div>
+          <hr class="border-white/60 mt-10 w-44 border-b-2 mx-auto" />
+          <div class="relative z-30 grid gap-5 lg:grid-cols-[330px_1fr] lg:items-start md:mt-10">
+            <div>
+              <Transition :name="leaderTransitionName" mode="out-in">
+                <div class="relative">
+                  <img :key="`leader-main-image-${activeLeaderIndex}`" :src="leaders[activeLeaderIndex].image"
+                    :alt="leaders[activeLeaderIndex].name"
+                    class="h-[450px] w-full rounded-[2rem] object-cover shadow-xl" />
+                  <div
+                    class="absolute bottom-0 left-0 block md:hidden right-0 bg-black/50 text-white text-center p-2 rounded-b-[2rem]">
+                    <div>
+                      {{ leaders[activeLeaderIndex].name }}
+                    </div>
+                    <button type="button"
+                      class="text-sm text-white/80 mt-2 underline decoration-white/50 underline-offset-2 lg:hidden"
+                      @click="openLeaderDetailModal">
+                      lihat detail
+                    </button>
+                  </div>
+                </div>
+              </Transition>
+              <div ref="leaderCarouselRef"
+                class="leader-vertical-carousel mt-4 grid grid-cols-3 max-h-[585px] gap-4 overflow-y-auto pr-2 snap-y snap-mandatory scroll-smooth"
+                @scroll.passive="onLeaderScroll">
+                <article v-for="(leader, index) in leaders" :key="leader.name"
+                  :ref="(el) => setLeaderSlideRef(el, index)"
+                  class="shrink-0 snap-center cursor-pointer overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-white to-sky/40 p-3 shadow transition-all duration-300"
+                  :class="activeLeaderIndex === index
+                    ? 'scale-[1.01] border-primary/50 shadow-lg shadow-primary/20'
+                    : 'opacity-70 hover:opacity-100'" @click="activeLeaderIndex = index">
+                  <img :src="leader.image" :alt="leader.name" class="h-24 w-full rounded-[2rem] object-cover" />
+                </article>
+              </div>
 
-    <section id="leaders" class="my-10">
+              <div class="mt-4 flex items-center justify-center gap-2">
+                <button v-for="(leader, index) in leaders" :key="`leader-dot-${leader.name}`" type="button"
+                  class="h-2.5 rounded-full transition-all duration-300"
+                  :class="activeLeaderIndex === index ? 'w-7 bg-primary' : 'w-2.5 bg-primary/30 hover:bg-primary/60'"
+                  :aria-label="`Pilih pimpinan ${index + 1}`" @click="goToLeader(index)" />
+              </div>
+            </div>
+
+            <article
+              class="hidden lg:block rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 shadow-xl">
+              <div class="absolute inset-0 mobile-card-gradient md:hidden rounded-[2rem]"></div>
+              <img :src="card2Url" alt="Card 2"
+                class="selayang-card-breathe hidden md:block w-full h-full md:h-[590px] object-cover z-10 rounded-[2rem] absolute top-0 left-0" />
+              <div class="relative min-h-[390px] md:min-h-[430px]">
+                <div v-if="isLeaderInfoSwitching" class="absolute inset-0 z-30 rounded-2xl">
+                  <div class="loader2 block mx-auto mt-45"></div>
+                </div>
+                <Transition :name="leaderTransitionName" mode="out-in" @before-leave="onLeaderInfoBeforeLeave"
+                  @after-enter="onLeaderInfoAfterEnter" @enter-cancelled="onLeaderInfoAfterEnter"
+                  @leave-cancelled="onLeaderInfoAfterEnter">
+                  <div :key="`leader-info-${activeLeaderIndex}`" class="md:mt-10">
+                    <p class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center">
+                      Profil {{ leaders[activeLeaderIndex].jabatan }}
+                    </p>
+                    <h3
+                      class="mt-2 text-2xl font-extrabold leading-tight tracking-tight md:text-3xl relative z-20 text-center">
+                      {{ leaders[activeLeaderIndex].name }}
+                    </h3>
+                    <p class="mt-2 text-md font-bold relative z-20 text-center">{{ leaders[activeLeaderIndex].batch }}
+                    </p>
+
+                    <div class="mt-7 rounded-xl backdrop-blur-[1px] text-center relative z-20">
+                      <p
+                        class="text-lg font-bold uppercase tracking-[0.14em] w-72 mx-auto border-b border-gray-300 pb-2">
+                        Posisi Saat Ini</p>
+                      <p class="mt-1 text-base font-semibold leading-relaxed md:text-lg">
+                        {{ leaders[activeLeaderIndex].position }}
+                      </p>
+                    </div>
+
+                    <div class="md:mt-5 rounded-xl backdrop-blur-[1px] relative z-20">
+                      <p
+                        class="text-lg font-bold uppercase tracking-[0.14em] text-center w-[600px] mx-auto border-b border-gray-300 pb-2">
+                        Jabatan Terakhir</p>
+                      <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed">
+                        <li v-for="line in leaders[activeLeaderIndex].highlights" :key="line" class="text-center">
+                          <span>{{ line }}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+<!-- 
+    <section id="leaders" class="my-14">
       <div class="max-w-7xl mx-auto fade-up fade-up-tight delay-2 relative">
         <div>
           <div class="text-2xl md:text-4xl font-bold tracking-tight text-white text-center">
@@ -250,7 +358,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <section id="members" class="pb-8 mt-10">
       <div class="max-w-7xl mx-auto fade-up fade-up-tight">
@@ -276,7 +384,7 @@
               </div>
               <h4 class="font-bold text-sm md:text-lg leading-snug text-text">{{ member.name }}</h4>
               <p class="text-xs md:text-base text-primary font-semibold mt-1 uppercase tracking-wide">{{ member.jabatan
-                }}</p>
+              }}</p>
               <span class="mt-3 inline-flex items-center text-[11px] md:text-xs font-semibold text-primary">
                 Lihat profil
               </span>
@@ -659,7 +767,7 @@
                     <h4 class="text-xl font-extrabold leading-tight text-text md:text-2xl">{{ activeMemberModal.name }}
                     </h4>
                     <p class="text-sm font-semibold uppercase tracking-wide text-primary">{{ activeMemberModal.jabatan
-                      }}
+                    }}
                     </p>
                     <div class="mt-3 space-y-1.5 text-sm text-gray-700">
                       <p><span class="font-semibold text-text">Tempat, Tanggal Lahir:</span> {{
@@ -744,6 +852,7 @@ const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
 const djatmikoUrl = new URL('../../assets/pengajar/Djatmiko.jpg', import.meta.url).href
 const iketaUrl = new URL('../../assets/pengajar/Iketutadipurnama.jpg', import.meta.url).href
+const yunusSufianUrl = new URL('../../assets/pengajar/YunusSufian.png', import.meta.url).href
 const defaultTeacherUrl = new URL('../../assets/anggota/default.png', import.meta.url).href
 const cvTemplateUrl = new URL('../../assets/cv.png', import.meta.url).href
 const card2Url = new URL('../../assets/card2.png', import.meta.url).href
@@ -751,6 +860,7 @@ const selayangCard = new URL('../../assets/selayangcard.png', import.meta.url).h
 const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
 const bannerUrl = new URL('../../assets/bg_1.png', import.meta.url).href
 const taruna = new URL('../../assets/anggota/taruna.png', import.meta.url).href
+const taruna2 = new URL('../../assets/anggota/taruna2.png', import.meta.url).href
 const taruni = new URL('../../assets/anggota/taruni.png', import.meta.url).href
 const HERO_VIDEO_ID = 't2k3uwS2zyA'
 const heroVideoEmbedUrl = `https://www.youtube.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&controls=0&loop=1&playlist=${HERO_VIDEO_ID}&modestbranding=1&rel=0&playsinline=1`
@@ -986,7 +1096,7 @@ const teachers = [
   },
   {
     id: 'teacher-3',
-    name: 'Natasha Yunitap Pospos, S.H., M.T.C.P',
+    name: 'AKBP (P) Dra.Natasha Yunitap Pospos, S.H., M.T.C.P',
     role: 'Pengajar Bahasa Inggris',
     image: natashaUrl,
     birthPlaceDate: 'Palembang, 15 Juni 1964',
@@ -995,13 +1105,24 @@ const teachers = [
   },
   {
     id: 'teacher-4',
-    name: 'Pengajar 4',
-    role: 'Pengajar',
-    image: defaultTeacherUrl,
+    name: 'YUNUS SUFIAN, S.H',
+    role: 'BRIPTU - BIDPROPAM POLDA JABAR',
+    image: yunusSufianUrl,
     birthPlaceDate: '-',
     address: '-',
-    education: ['Profil akan diperbarui.'],
-    teaching: ['Data pengalaman mengajar akan diperbarui.'],
+    education: [
+      'Pangkat: BRIPTU',
+      'Kesatuan: BIDPROPAM POLDA JABAR',
+      'Juara 2 10km Jalan Cepat Porda 2022',
+      'Juara 3 20km Jalan Cepat Porda 2022',
+      'Juara 1 5km Bandung Neighbor Fun Race 2022',
+    ],
+    teaching: [
+      'Lisensi Level 1 Kepelatihan Fisik Nasional',
+      'Pelatih Komunitas RIOT BANDUNG 2022 - sekarang',
+      'Pelatih Komunitas TEMAN SPORTY 2022 - 2024',
+      'Pelatih BINJAS PADJAJARANBDG 2024 - sekarang',
+    ],
   },
   {
     id: 'teacher-5',
