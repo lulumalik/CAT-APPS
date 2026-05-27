@@ -109,7 +109,7 @@
         <div class="page-shell px-4 md:px-0">
           <div class="overflow-hidden">
             <div class="leaders-demo-layout">
-              <div class="leaders-demo-content order-2 md:order-1">
+              <div class="leaders-demo-content order-2 xl:order-1">
                 <p class="leaders-demo-eyebrow">Profil</p>
                 <h3 class="leaders-demo-name">{{ leaders[activeLeaderIndex].name }}</h3>
                 <p class="leaders-demo-batch">{{ leaders[activeLeaderIndex].batch }}</p>
@@ -123,24 +123,24 @@
                 </ul>
               </div>
 
-              <div class="leaders-demo-visual rounded-md relative order-1 md:order-2 top-6 mb-24 md:mb-0 md:top-0">
+              <div class="leaders-demo-visual rounded-md relative order-1 xl:order-2 top-6 mb-24 xl:mb-0 xl:top-0">
                 <Transition :name="leaderTransitionName" mode="out-in">
-                  <div class="relative md:right-44 md:top-10 pb-16 md:pb-0">
+                  <div class="relative xl:right-44 xl:top-10 pb-16 xl:pb-0">
                     <img :key="`leader-main-image-${activeLeaderIndex}`" :src="leaders[activeLeaderIndex].image"
                       :alt="leaders[activeLeaderIndex].name"
                       class="leaders-demo-image rounded-md" />
                   </div>
                 </Transition>
                 <div ref="leaderCarouselRef"
-                  class="leader-vertical-carousel absolute -bottom-12 md:bottom-0 mt-4 z-20 grid grid-flow-col auto-cols-[6.4rem] grid-rows-1 gap-3 w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth md:absolute md:right-10 md:top-16 md:grid-flow-row md:auto-cols-auto md:grid-cols-1 md:w-28 md:max-h-[470px] md:overflow-x-hidden md:overflow-y-auto md:snap-y"
+                  class="leader-vertical-carousel absolute left-1/2 -translate-x-1/2 -bottom-12 xl:bottom-0 mt-4 z-20 grid grid-flow-col auto-cols-[6.4rem] grid-rows-1 gap-3 w-[calc(100%-1rem)] max-w-xl overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth xl:left-auto xl:translate-x-0 xl:right-10 xl:top-16 xl:grid-flow-row xl:auto-cols-auto xl:grid-cols-1 xl:w-28 xl:max-h-[470px] xl:overflow-x-hidden xl:overflow-y-auto xl:snap-y"
                   @scroll.passive="onLeaderScroll">
                   <article v-for="(leader, index) in leaders" :key="leader.name"
                     :ref="(el) => setLeaderSlideRef(el, index)"
-                    class="shrink-0 snap-center cursor-pointer overflow-hidden w-10/12 md:w-full mx-auto rounded-md border border-border bg-[#1c1d2f] p-0 md:p-3 shadow transition-all duration-300"
+                    class="shrink-0 snap-center cursor-pointer overflow-hidden w-10/12 xl:w-full mx-auto rounded-md border border-border bg-[#1c1d2f] p-0 xl:p-3 shadow transition-all duration-300"
                     :class="activeLeaderIndex === index
                       ? 'scale-[1.01] border-3 border-white shadow-lg shadow-white/20'
-                      : 'md:opacity-70 hover:opacity-100'" @click="activeLeaderIndex = index">
-                    <img :src="leader.image" :alt="leader.name" class="h-24 md:h-full w-full rounded-md object-cover" />
+                      : 'xl:opacity-70 hover:opacity-100'" @click="activeLeaderIndex = index">
+                    <img :src="leader.image" :alt="leader.name" class="h-24 xl:h-full w-full rounded-md object-cover" />
                   </article>
                 </div>
               </div>
@@ -178,11 +178,11 @@
                 </button>
               </div>
             </div>
-            <div class="hidden md:block absolute -top-20 -right-12 w-[80%] md:relative md:top-0 md:right-32">
+            <div class="hidden xl:block absolute -top-20 -right-12 w-[80%] xl:relative xl:top-0 xl:right-32">
               <img :src="taruna" alt="Taruna" class="w-full h-full object-cover" />
             </div>
-            <div class="hidden md:block absolute md:bottom-0 md:-right-44">
-              <img :src="taruni" alt="Taruni" class="w-full h-full object-cover md:w-[70%]" />
+            <div class="hidden xl:block absolute xl:bottom-0 xl:-right-44">
+              <img :src="taruni" alt="Taruni" class="w-full h-full object-cover xl:w-[70%]" />
             </div>
           </div>
         </div>
@@ -1197,7 +1197,9 @@
     }
 
     .leaders-demo-image {
-      height: 360px;
+      height: 550px;
+      width: 50%;
+      margin: 0px auto;
     }
     
     .leaders-demo-name {
@@ -1218,6 +1220,13 @@
         margin-bottom: 1rem;
     }
     
+  }
+
+  @media (max-width: 450px) {
+    .leaders-demo-image {
+      height: 450px;
+      width: 100%;
+    }
   }
   
   .selayang-card-container {
