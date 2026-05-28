@@ -154,6 +154,13 @@
           <div ref="orgChartViewportRef" class="org-chart-viewport my-12">
             <div class="org-chart">
               <div class="org-node org-node-animated">
+                <p class="org-node__role">{{ orgChart.dewanPembina.role }}</p>
+                <p class="org-node__name">{{ orgChart.dewanPembina.name }}</p>
+              </div>
+
+              <div class="org-stem" />
+
+              <div class="org-node org-node-animated">
                 <p class="org-node__role">{{ orgChart.penasehat.role }}</p>
                 <p class="org-node__name">{{ orgChart.penasehat.name }}</p>
               </div>
@@ -434,6 +441,7 @@ const wallpaper3Url = new URL('../../assets/wallpaper/3.webp', import.meta.url).
 const wallpaper4Url = new URL('../../assets/wallpaper/4.jpeg', import.meta.url).href
 const bannerUrl = new URL('../../assets/Banner.png', import.meta.url).href
 const activityBookUrl = new URL('../../assets/book.jpg', import.meta.url).href
+const haitiUrl = new URL('../../assets/bpk_haiti.jpg', import.meta.url).href
 const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
 const tubagusUrl = new URL('../../assets/bpk_tubagus.jpg', import.meta.url).href
 const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
@@ -449,6 +457,20 @@ const bcaLogoUrl = new URL('../../assets/logotransaksi/Logo BCA_Biru.png', impor
 const briLogoUrl = new URL('../../assets/logotransaksi/BRI_2025.png', import.meta.url).href
 
 const heroLeaders = [
+  {
+    name: 'Jenderal Polisi (Purn.) Tan Sri Drs. Badrodin Haiti',
+    role: 'Dewan Pembina',
+    batch: '-',
+    position: 'Dewan Pembina Pratistha Cendekia Prestasi',
+    highlights: [
+      'Kabaharkam Polri (2013–2014)',
+      'Wakapolri (2014–2015)',
+      'Kapolri (2015–2016)',
+      'Komisaris Utama PT Waskita Karya (Persero) Tbk (WSKT)',
+    ],
+    image: haitiUrl,
+    featured: true,
+  },
   {
     name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si',
     role: 'Komisaris',
@@ -473,7 +495,7 @@ const heroLeaders = [
       'Pembina strategis pendidikan dan pembinaan kepolisian',
     ],
     image: nanaUrl,
-    featured: true,
+    featured: false,
   },
 
   {
@@ -491,6 +513,7 @@ const heroLeaders = [
 ]
 
 const orgChart = {
+  dewanPembina: { role: 'Dewan Pembina', name: 'Jenderal Polisi (Purn.) Tan Sri Drs. Badrodin Haiti' },
   penasehat: { role: 'Penasehat', name: 'Komjen Pol (P) Drs. H. Nana S. Permana' },
   komisaris: { role: 'Komisaris', name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si' },
   direkturUtama: { role: 'Direktur Utama', name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH' },
