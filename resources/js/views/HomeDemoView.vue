@@ -642,13 +642,12 @@ const leaders = [
   {
     name: 'Jenderal Polisi (Purn.) Tan Sri Drs. Badrodin Haiti',
     batch: '',
-    position: 'Dewan Pembina Pratistha Cendekia Prestasi',
-    jabatan: 'Dewan Pembina',
+    position: 'Pembina Pratistha Cendekia Prestasi',
+    jabatan: 'Pembina',
     highlights: [
       'Kabaharkam Polri (2013–2014)',
       'Wakapolri (2014–2015)',
-      'Kapolri (2015–2016)',
-      'Komisaris Utama PT Waskita Karya (Persero) Tbk (WSKT)',
+      'Kapolri (2015–2016)'
     ],
     image: haitiUrl,
   },
