@@ -255,8 +255,9 @@
               </button>
             </div>
           </div>
-          <div class="hidden xl:block absolute -top-20 md:w-10/12 xl:relative xl:top-0 xl:right-0">
-            <img src="../../assets/group.png" alt="group" class="w-full h-full object-cover" />
+          <div class="hidden xl:block absolute  md:w-10/12 xl:relative xl:top-8 xl:left-0">
+            <img src="../../assets/group.png" alt="group" class="w-9/12 object-cover" />
+            <img src="../../assets/group2.png" alt="group2" class="w-[73%] object-cover absolute bottom-0 left-56" />
           </div>
         </div>
       </div>
