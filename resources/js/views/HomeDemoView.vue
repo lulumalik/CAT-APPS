@@ -361,9 +361,8 @@
           standar pembelajaran profesional.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
-          <router-link to="/signup"
-            class="px-6 py-3 rounded-full bg-secondary text-white font-semibold cta-tryout-animated transition-all">Mulai
-            Pendaftaran</router-link>
+          <router-link to="/free-tryout"
+            class="px-6 py-3 rounded-full bg-secondary text-white font-semibold cta-tryout-animated transition-all">Coba Tryout Gratis</router-link>
         </div>
       </div>
     </section>

@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-background text-text">
+  <div class="min-h-screen programs-themed-bg text-text">
     <Transition name="ft-cross" mode="out-in">
       <div v-if="step === 'choose'" key="landing" class="min-h-screen">
-        <section class="relative min-h-[420px] md:min-h-[480px] overflow-hidden rounded-none md:rounded-b-3xl border-b border-border">
+        <section class="relative min-h-[420px] md:min-h-[480px] overflow-hidden rounded-none">
           <img
             :src="bookUrl"
             alt=""
@@ -10,18 +10,13 @@
           />
           <div class="relative z-10 mx-auto max-w-6xl px-4 md:px-8 pt-6 pb-12 md:pb-16">
             <header
-              class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border/80 bg-white/90 px-4 py-3 shadow-sm shadow-primary/5 backdrop-blur-md"
+              class="flex flex-wrap items-center justify-between gap-4 rounded-full bg-white/90 px-8 py-3 shadow-sm shadow-primary/5 backdrop-blur-md"
             >
-              <router-link to="/" class="text-lg font-extrabold tracking-tight text-primary">
-                {{ t('app.name') }}
-              </router-link>
               <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-text">
                 <router-link to="/" class="hover:text-secondary transition-colors">Beranda</router-link>
-                <router-link to="/" class="inline-flex items-center gap-1 hover:text-secondary transition-colors">
+                <router-link to="/about-us" class="inline-flex items-center gap-1 hover:text-secondary transition-colors">
                   Tentang Kami
-                  <ChevronDown class="h-4 w-4 opacity-60" />
                 </router-link>
-                <router-link to="/" class="hover:text-secondary transition-colors">Kontak</router-link>
               </nav>
               <div class="flex items-center gap-2">
                 <router-link
@@ -70,10 +65,10 @@
           </div>
         </section>
 
-        <section id="tryout-list" class="bg-white py-12 md:py-16 px-4 md:px-8">
+        <section id="tryout-list" class="programs-themed-bg py-12 md:py-16 px-4 md:px-8">
           <div class="mx-auto max-w-6xl">
-            <h2 class="text-center text-2xl md:text-3xl font-black text-text">Sedang Berlangsung</h2>
-            <p class="mx-auto mt-2 max-w-lg text-center text-sm text-muted">
+            <h2 class="text-center text-2xl md:text-3xl font-black text-white">Sedang Berlangsung</h2>
+            <p class="mx-auto mt-2 max-w-lg text-center text-sm text-white">
               Pilih tryout yang sedang dibuka, periksa jadwal, lalu mulai saat periode aktif.
             </p>
 
@@ -144,13 +139,13 @@
         <img
           :src="bookUrl"
           alt=""
-          class="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover object-center"
+          class="pointer-events-none absolute z-0 h-full w-full object-cover object-center"
         />
-        <div class="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-background/95 via-background/90 to-background/95" />
+        <div class="pointer-events-none absolute inset-0 z-[1] programs-themed-bg" />
 
         <main class="relative z-20 mx-auto max-w-6xl px-4 py-8 md:px-8">
           <Transition name="ft-cross" mode="out-in">
-            <section v-if="step === 'form'" key="form" class="rounded-3xl border border-border bg-white p-6 shadow-sm">
+            <section v-if="step === 'form'" key="form" class="rounded-3xl bg-white border border-border p-6 shadow-sm">
               <div class="flex items-center justify-between gap-3">
                 <h2 class="text-xl font-bold text-text">Form Peserta Tryout</h2>
                 <button type="button" class="text-sm font-semibold text-secondary hover:text-primary" @click="backToChoose">
@@ -222,7 +217,7 @@
               </form>
             </section>
 
-            <section v-else-if="step === 'test'" key="test" class="rounded-3xl border border-border bg-white p-6 shadow-sm">
+            <section v-else-if="step === 'test'" key="test" class="rounded-3xl bg-white border border-border bg-white p-6 shadow-sm">
               <div class="flex items-center justify-between gap-3 mb-6">
                 <h2 class="text-xl font-bold text-text">{{ selectedTest?.name }}</h2>
                 <div class="text-sm text-muted">Soal {{ currentIndex + 1 }} / {{ questions.length }}</div>
@@ -573,5 +568,12 @@ onMounted(loadTests)
 .ft-fade-enter-from,
 .ft-fade-leave-to {
   opacity: 0;
+}
+
+.programs-themed-bg {
+  background-image:
+    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
+    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
+  background-size: 28px 28px, 100% 100%;
 }
 </style>

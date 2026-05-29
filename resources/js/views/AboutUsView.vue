@@ -261,7 +261,7 @@
       <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0">
         <div class="relative z-20">
           <div class="flex items-center justify-center text-center gap-3">
-            <Landmark class="h-6 w-6 text-white left-12 relative md:left-0" />
+            <Landmark class="h-6 w-6 text-white left-12 relative md:left-0 md:block hidden" />
             <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Rekening Resmi Pembayaran</h2>
           </div>
           <p class="mt-2 text-white text-lg md:text-xl text-center max-w-3xl mx-auto">
@@ -459,9 +459,9 @@ const briLogoUrl = new URL('../../assets/logotransaksi/BRI_2025.png', import.met
 const heroLeaders = [
   {
     name: 'Jenderal Polisi (Purn.) Tan Sri Drs. Badrodin Haiti',
-    role: 'Dewan Pembina',
+    role: 'Pembina',
     batch: '-',
-    position: 'Dewan Pembina Pratistha Cendekia Prestasi',
+    position: 'Pembina Pratistha Cendekia Prestasi',
     highlights: [
       'Kabaharkam Polri (2013–2014)',
       'Wakapolri (2014–2015)',
@@ -513,7 +513,7 @@ const heroLeaders = [
 ]
 
 const orgChart = {
-  dewanPembina: { role: 'Dewan Pembina', name: 'Jenderal Polisi (Purn.) Tan Sri Drs. Badrodin Haiti' },
+  dewanPembina: { role: 'Pembina', name: 'Jenderal Polisi (Purn.) Tan Sri Drs. Badrodin Haiti' },
   penasehat: { role: 'Penasehat', name: 'Komjen Pol (P) Drs. H. Nana S. Permana' },
   komisaris: { role: 'Komisaris', name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si' },
   direkturUtama: { role: 'Direktur Utama', name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH' },
