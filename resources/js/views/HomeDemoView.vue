@@ -71,10 +71,10 @@
               Program Persiapan Taruna Akademi POLRI
             </div>
             <h1 class="mt-5 text-3xl md:text-5xl font-black leading-[1.1] tracking-tight text-white">
-              Raih Cita-Cita Jadi Taruna Akademi POLRI
+              Persiapan AKPOL yang Intensif, Eksklusif, dan Terarah.
             </h1>
             <p class="mt-4 max-w-2xl text-sm md:text-base text-blue-100 font-semibold leading-relaxed">
-              {{ heroSelayangPandang.description }}
+              ​Bingung memulai persiapan AKPOL dari mana? Serahkan pada ahlinya. Pratistha Cendekia Prestasi menyediakan ekosistem belajar profesional dengan fasilitas premium untuk memastikan setiap calon peserta tampil maksimal di seluruh tahapan seleksi.
             </p>
             <p class="mt-3 max-w-2xl text-xs md:text-sm text-blue-50 font-semibold">
               Alamat kantor Jl. Sukamaju no. 142, Cipadung Kulon, Kec. Panyileukan, Kota Bandung - Jabar 40614
@@ -113,12 +113,12 @@
             <div
               class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[92%] rounded-2xl border border-white/25 bg-[#08295f]/90 px-4 py-3 text-center shadow-xl">
               <p class="text-3xl font-black text-white">100++</p>
-              <p class="text-sm font-semibold text-blue-100">Alumni Pratistha Cendekia Prestasi</p>
+              <p class="text-sm font-semibold text-blue-100">100% membentuk calon-calon polisi terbaik</p>
             </div>
           </div>
         </div>
 
-        <div class="relative z-10 mt-14 grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div class="relative z-10 mt-14 grid grid-cols-2 md:grid-cols-4 gap-3">
           <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
             <div class="flex items-center justify-center gap-2">
               <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white">
@@ -145,6 +145,15 @@
               <p class="text-3xl font-black text-white">20+</p>
             </div>
             <p class="mt-1 text-xs md:text-sm font-semibold text-blue-100">Tahun Pengalaman</p>
+          </article>
+          <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
+            <div class="flex items-center justify-center gap-2">
+              <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white">
+                <GraduationCap class="h-5 w-5" />
+              </div>
+              <p class="text-3xl font-black text-white">100%</p>
+            </div>
+            <p class="mt-1 text-xs md:text-sm font-semibold text-blue-100">Pengajar Profesional</p>
           </article>
         </div>
       </div>
@@ -561,7 +570,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
-import { BookOpenText, Brain, Check, ChevronLeft, ChevronRight, Crown, Dumbbell, LineChart, MessageCircle, NotebookPen, ShieldCheck, UserCheck, Warehouse, X as XIcon } from 'lucide-vue-next'
+import { BookOpenText, Brain, Check, ChevronLeft, ChevronRight, Crown, Dumbbell, LineChart, MessageCircle, NotebookPen, ShieldCheck, UserCheck, Warehouse, GraduationCap, X as XIcon } from 'lucide-vue-next'
 import { ONLINE_PROGRAMS } from '@/constants/onlinePrograms'
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
 import TeacherModal from '@/components/TeacherModal.vue'
