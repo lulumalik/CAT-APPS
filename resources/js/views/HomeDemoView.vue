@@ -112,7 +112,7 @@
             </div>
             <div
               class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[92%] rounded-2xl border border-white/25 bg-[#08295f]/90 px-4 py-3 text-center shadow-xl">
-              <p class="text-3xl font-black text-white">100++</p>
+              <p class="text-3xl font-black text-white">Garansi</p>
               <p class="text-sm font-semibold text-blue-100">100% membentuk calon-calon polisi terbaik</p>
             </div>
           </div>
