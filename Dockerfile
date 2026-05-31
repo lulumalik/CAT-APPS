@@ -24,6 +24,8 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql pdo_sqlite zip mbstring xml
 RUN a2enmod rewrite
+RUN echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf \
+    && a2enconf servername
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
