@@ -7,7 +7,7 @@ RUN npm install @rollup/rollup-linux-x64-musl lightningcss-linux-x64-musl @tailw
 COPY . .
 RUN npm run build
 
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
 # Install dependency system
 RUN apt-get update && apt-get install -y \
@@ -18,10 +18,12 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     curl \
-    libsqlite3-dev
+    libsqlite3-dev \
+    libpq-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql pdo_sqlite zip mbstring xml
+RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql pdo_sqlite zip mbstring xml
+RUN a2enmod rewrite
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -68,5 +70,10 @@ RUN mkdir -p storage/logs bootstrap/cache \
  && find bootstrap/cache -type d -exec chmod 775 {} \; \
  && find bootstrap/cache -type f -exec chmod 664 {} \;
 
-# Jalankan php-fpm (INI YANG BENAR)
-CMD ["php-fpm"]
+# Serve Laravel public/ directly via Apache.
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' \
+    /etc/apache2/sites-available/*.conf \
+    /etc/apache2/apache2.conf
+
+EXPOSE 80
+CMD ["apache2-foreground"]
