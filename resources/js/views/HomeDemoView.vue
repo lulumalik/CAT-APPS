@@ -852,14 +852,14 @@ const members = [
     },
   },
   {
-    name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P',
+    name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H. M.T.C.P',
     image: natashaUrl,
     jabatan: 'Bidang Internal',
     profile: {
       birthPlaceDate: 'Palembang, 15 Juni 1964',
-      education: ['SEPAMILSUKWAN VI, tamat 1989', 'UNLA Bandung, Fakultas Hukum, tamat 2007', 'Selapa Polri angkatan 39, tamat 2008', 'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, inagurasi 2009'],
-      organization: ['Kasubdit Bintibluh Dit Binmas Polda Jabar, 2012-2015.', 'Kasubdit Pariwisata Dit Pam Obvit Polda Jabar, 2015-2017.', 'Kasubdit Kerma Dit Binmas Polda Jabar, 2017-2019.', 'Kasubdit Bhabinkamtibmas Polda Jabar, 2019-2022'],
-      work: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada  Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015']
+      education: ['IKIP N Jakarta, Fakultas Bahasa Inggris, 1987', 'SEPAMILSUKWAN VI, 1989', 'UNLA Bandung, Fakultas Hukum, 2007', 'Selapa Polri angkatan 39, 2008', 'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, 2009.', 'Management Development Course (IPS, Problem Solving ), Akpol, London, 1989, 1999', 'Training on Police Reform, Japan, Singapore, 2002, 2009', 'Training Drugs and treatment, Australia, Thayland, 2003, 2004', 'Law Enforcement  Management  Program, Vietnam, 2012'],
+      organization: ['Dosen Muda, Akpol Smrg, 1989-1994', 'Dosen Muda, PTIK Jakarta, 1994-1996', 'Kasubbag Min Ops Pengawasan Orang Asing Dit IPP Polda Jabar, 1996-1999', 'Kasubbag Was Jas Pam (Satpam), Biro Bina Mitra Polda Jabar, 2008-2011', 'Kasubdit Bhabinkamtibmas Polda Jabar, 2019-2022'],
+      work: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015']
     },
   },
   {
@@ -896,7 +896,7 @@ const teachers = [
   },
   {
     id: 'teacher-3',
-    name: 'AKBP (P) Dra.Natasha Yunitap Pospos, S.H., M.T.C.P',
+    name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H., M.T.C.P',
     role: 'Pengajar Bahasa Inggris',
     image: natashaUrl,
     birthPlaceDate: 'Palembang, 15 Juni 1964',

@@ -1048,7 +1048,7 @@ const members = [
     },
   },
   {
-    name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P',
+    name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H. M.T.C.P',
     image: natashaUrl,
     jabatan: 'Bidang Internal',
     profile: {
@@ -1092,7 +1092,7 @@ const teachers = [
   },
   {
     id: 'teacher-3',
-    name: 'AKBP (P) Dra.Natasha Yunitap Pospos, S.H., M.T.C.P',
+    name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H., M.T.C.P',
     role: 'Pengajar Bahasa Inggris',
     image: natashaUrl,
     birthPlaceDate: 'Palembang, 15 Juni 1964',

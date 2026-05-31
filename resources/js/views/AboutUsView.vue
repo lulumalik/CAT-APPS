@@ -520,7 +520,7 @@ const orgChart = {
   direktur: { role: 'Direktur', name: 'Gilang Nurfahradz Syahni Fasya, S.T' },
   sekretaris: { role: 'Sekretaris', name: 'AKBP (P) Wahyu suhardini, S.IP' },
   bendahara: { role: 'Bendahara', name: 'KBP (P) Dra.Rina Regina' },
-  internal: { role: 'Internal', name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P' },
+  internal: { role: 'Internal', name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H. M.T.C.P' },
   eksternal: { role: 'Eksternal', name: 'Kompol (P) Tutik' },
   digitalMarketing: { role: 'Digital Marketing', name: '-' },
 }
