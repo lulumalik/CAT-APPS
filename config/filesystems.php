@@ -10,12 +10,7 @@ if (filled(env('AWS_ENDPOINT')) && in_array(strtolower($s3Region), ['auto', ''],
     $s3Region = 'us-east-1';
 }
 
-$uploadDiskDefault = (filled(env('AWS_ACCESS_KEY_ID'))
-    && filled(env('AWS_SECRET_ACCESS_KEY'))
-    && filled(env('AWS_BUCKET'))
-    && filled(env('AWS_ENDPOINT')))
-    ? 's3'
-    : 'public';
+$uploadDiskDefault = 'public';
 
 return [
 
@@ -37,8 +32,8 @@ return [
     | Disk for app uploads (questions, etc.)
     |--------------------------------------------------------------------------
     |
-    | Defaults to the S3-compatible disk when AWS_* is fully configured, else
-    | "public" (local storage/app/public + storage:link). Override with UPLOAD_FILESYSTEM_DISK.
+    | Defaults to "public" (local storage/app/public + storage:link).
+    | Override with UPLOAD_FILESYSTEM_DISK when needed.
     |
     */
 

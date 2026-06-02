@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return view('welcome');
@@ -93,5 +96,23 @@ Route::get('/storage/{path}', function (string $path) {
 
     return $disk->response($normalized);
 })->where('path', '.*');
+
+Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
+    if (! $request->hasValidSignature()) {
+        abort(403, 'Tautan verifikasi tidak valid atau sudah kedaluwarsa.');
+    }
+
+    $user = User::findOrFail($id);
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        abort(403, 'Hash verifikasi email tidak cocok.');
+    }
+
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+    }
+
+    return redirect('/login?verified=1');
+})->name('verification.verify');
 
 Route::view('/{any}', 'welcome')->where('any', '^(?!storage(?:$|/)).*');

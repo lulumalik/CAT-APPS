@@ -1,146 +1,103 @@
 <template>
-  <main class="min-h-screen bg-background font-sans text-text py-8 px-4 md:px-8">
-    <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-6 items-stretch min-h-[80vh]">
-      <section
-        class="fade-up rounded-[2rem] p-[2px] bg-gradient-to-br from-secondary via-secondary to-primary shadow-xl shadow-secondary/15"
-      >
-        <div
-          class="rounded-[calc(2rem-2px)] relative bg-white text-text p-8 md:p-10 flex flex-col justify-between h-full min-h-[280px]"
-        >
-          <div>
-            <router-link to="/" class="inline-flex items-center gap-2 mb-8 group">
-              <span class="text-2xl text-secondary font-bold tracking-tight">{{ t('app.name') }}</span>
-            </router-link>
-            <h1 class="text-3xl md:text-4xl font-bold leading-tight">Mulai pendaftaran calon peserta</h1>
-            <p class="mt-4 text-text/80 text-sm font-semibold leading-relaxed">
-              Pilih program pendaftaran, isi data awal, lalu lanjutkan verifikasi bertahap sampai siap masuk kelas.
-            </p>
-          </div>
-          <img :src="patternUrl" alt="" class="absolute w-32 bottom-0 right-0 opacity-80 pointer-events-none" />
-          <ul class="space-y-2 text-sm text-text/85 font-semibold">
-            <li v-for="p in ONLINE_PROGRAMS" :key="p.value">• {{ p.name }} — {{ p.mode }}</li>
-            <li>• Monitoring progress oleh admin</li>
-            <li>• Akses kelas aktif setelah pendaftaran selesai</li>
-          </ul>
-        </div>
-      </section>
+  <main class="bg-background h-screen overflow-hidden px-4 py-4 md:px-8">
+    <div class="auth-shell">
+      <section class="auth-left-pane">
+        <header class="auth-brand-nav">
+          <nav class="auth-nav-links justify-center w-full">
+            <router-link to="/" class="auth-nav-link">Beranda</router-link>
+            <router-link to="/about-us" class="auth-nav-link">Tentang Kami</router-link>
+          </nav>
+        </header>
 
-      <section
-        class="fade-up rounded-[2rem] p-[2px] bg-gradient-to-br from-secondary/90 via-secondary to-primary shadow-xl shadow-primary/10"
-      >
-        <div
-          class="rounded-[calc(2rem-2px)] bg-white py-8 px-4 sm:px-10 flex flex-col justify-center border border-transparent"
-        >
-          <h2 class="text-3xl font-bold tracking-tight text-text text-center">
-            {{ t('auth.signup.title') }}
-          </h2>
-          <div v-if="error" class="mb-4 p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm flex items-center gap-2">
+        <section class="auth-form-wrap text-center flex flex-col items-center">
+          <h1 class="text-[2.7rem] font-extrabold tracking-tight leading-none text-[#40136c]">{{ t('auth.signup.title') }}</h1>
+
+          <div v-if="error" class="mt-4 w-full rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700 flex items-center gap-2">
             <CircleAlert class="h-4 w-4" />
             {{ error }}
           </div>
 
-          <form class="space-y-6 mt-4" @submit.prevent="onSubmit">
-            <div>
-              <label for="program_category" class="block text-sm font-medium text-text ml-1 mb-1">{{ t('auth.signup.programLabel') }}</label>
-              <div class="mt-1 rounded-xl p-px bg-gradient-to-br from-secondary to-primary focus-within:ring-2 focus-within:ring-secondary/35 focus-within:ring-offset-0">
-                <select
-                  id="program_category"
-                  v-model="programCategory"
-                  required
-                  class="block w-full appearance-none rounded-[11px] border-0 bg-white px-4 py-3 text-sm text-text shadow-inner outline-none transition-shadow"
-                >
-                  <option v-for="p in ONLINE_PROGRAMS" :key="p.value" :value="p.value">
-                    {{ programSignupOptionLabel(p) }}
-                  </option>
-                </select>
-              </div>
-            </div>
+          <form class="mt-7 w-full space-y-3.5" @submit.prevent="onSubmit">
+            <select
+              id="program_category"
+              v-model="programCategory"
+              required
+              class="auth-input"
+            >
+              <option v-for="p in ONLINE_PROGRAMS" :key="p.value" :value="p.value">
+                {{ programSignupOptionLabel(p) }}
+              </option>
+            </select>
 
-            <div>
-              <label for="name" class="block text-sm font-medium text-text ml-1 mb-1">{{ t('auth.signup.nameLabel') }}</label>
-              <div class="mt-1 rounded-xl p-px bg-gradient-to-br from-secondary to-primary focus-within:ring-2 focus-within:ring-secondary/35 focus-within:ring-offset-0">
-                <input
-                  id="name"
-                  v-model="name"
-                  name="name"
-                  type="text"
-                  autocomplete="name"
-                  required
-                  class="block w-full appearance-none rounded-[11px] border-0 bg-white px-4 py-3 placeholder:text-muted/70 text-sm text-text shadow-inner outline-none transition-shadow"
-                  placeholder="John Doe"
-                />
-              </div>
-            </div>
+            <input
+              id="name"
+              v-model="name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              class="auth-input"
+              :placeholder="t('auth.signup.nameLabel')"
+            />
 
-            <div>
-              <label for="email" class="block text-sm font-medium text-text ml-1 mb-1">{{ t('auth.signup.emailLabel') }}</label>
-              <div class="mt-1 rounded-xl p-px bg-gradient-to-br from-secondary to-primary focus-within:ring-2 focus-within:ring-secondary/35 focus-within:ring-offset-0">
-                <input
-                  id="email"
-                  v-model="email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  required
-                  class="block w-full appearance-none rounded-[11px] border-0 bg-white px-4 py-3 placeholder:text-muted/70 text-sm text-text shadow-inner outline-none transition-shadow"
-                  placeholder="you@example.com"
-                />
-              </div>
-            </div>
+            <input
+              id="username"
+              v-model="username"
+              name="username"
+              type="text"
+              autocomplete="username"
+              required
+              class="auth-input"
+              :placeholder="t('auth.signup.usernameLabel')"
+            />
 
-            <div>
-              <label for="password" class="block text-sm font-medium text-text ml-1 mb-1">{{ t('auth.signup.passwordLabel') }}</label>
-              <div class="mt-1 rounded-xl p-px bg-gradient-to-br from-secondary to-primary focus-within:ring-2 focus-within:ring-secondary/35 focus-within:ring-offset-0">
-                <input
-                  id="password"
-                  v-model="password"
-                  name="password"
-                  type="password"
-                  required
-                  class="block w-full appearance-none rounded-[11px] border-0 bg-white px-4 py-3 placeholder:text-muted/70 text-sm text-text shadow-inner outline-none transition-shadow"
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
+            <input
+              id="email"
+              v-model="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              class="auth-input"
+              :placeholder="t('auth.signup.emailLabel')"
+            />
 
-            <div>
-              <button
-                type="submit"
-                :disabled="loading"
-                class="flex w-full justify-center rounded-full border border-transparent bg-secondary py-3 px-4 text-sm font-medium text-white shadow-lg shadow-secondary/25 hover:bg-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {{ loading ? t('auth.signup.submitting') : t('auth.signup.submit') }}
-              </button>
-            </div>
+            <input
+              id="password"
+              v-model="password"
+              name="password"
+              type="password"
+              required
+              class="auth-input"
+              :placeholder="t('auth.signup.passwordLabel')"
+            />
+
+            <button
+              type="submit"
+              :disabled="loading"
+              class="auth-submit-btn mt-2"
+            >
+              {{ loading ? t('auth.signup.submitting') : t('auth.signup.submit') }}
+            </button>
           </form>
 
-          <div class="mt-6">
-            <div class="relative">
-              <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t border-border" />
-              </div>
-              <div class="relative flex justify-center text-sm">
-                <span class="bg-white px-2 text-muted">{{ t('auth.signup.haveAccount') }}</span>
-              </div>
-            </div>
+          <p class="mt-5 text-sm text-[#4a3e5e] text-center">
+            {{ t('auth.signup.haveAccount') }}
+            <router-link to="/login" class="font-semibold text-[#541197] hover:text-[#30085c]">{{ t('auth.signup.signIn') }}</router-link>
+          </p>
+        </section>
+      </section>
 
-            <div class="mt-6">
-              <router-link
-                to="/login"
-                class="flex w-full justify-center items-center gap-2 rounded-full border border-border bg-white py-3 px-4 text-sm font-medium text-text shadow-sm hover:bg-background focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-all"
-              >
-                {{ t('auth.signup.signIn') }}
-              </router-link>
-            </div>
-          </div>
-        </div>
+      <section class="auth-right-pane">
+        <span class="auth-visual-stripe" />
+        <img src="../../assets/logo.png" alt="Login" class="w-72 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 object-cover" />
       </section>
     </div>
   </main>
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { CircleAlert } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
@@ -148,10 +105,9 @@ import { useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
 
-const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
-
 const programCategory = ref('regular')
 const name = ref('')
+const username = ref('')
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
@@ -160,34 +116,6 @@ const router = useRouter()
 const store = useAppStore()
 const toast = useToast()
 const { t } = useI18n()
-let fadeObserver
-
-const setupScrollFadeAnimations = async () => {
-  await nextTick()
-  const fadeTargets = document.querySelectorAll('.fade-up')
-  if (!fadeTargets.length) return
-
-  fadeTargets.forEach((el) => el.classList.add('fade-ready'))
-
-  if (typeof IntersectionObserver === 'undefined') {
-    fadeTargets.forEach((el) => el.classList.add('in-view'))
-    return
-  }
-
-  fadeObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        entry.target.classList.toggle('in-view', entry.isIntersecting)
-      })
-    },
-    {
-      threshold: 0.01,
-      rootMargin: '0px 0px -4% 0px',
-    },
-  )
-
-  fadeTargets.forEach((el) => fadeObserver.observe(el))
-}
 
 const onSubmit = async () => {
   loading.value = true
@@ -196,6 +124,7 @@ const onSubmit = async () => {
   const result = await store.register({
     program_category: programCategory.value,
     name: name.value,
+    username: username.value,
     email: email.value,
     password: password.value,
   })
@@ -203,7 +132,10 @@ const onSubmit = async () => {
   loading.value = false
 
   if (result.success) {
-    toast.success(t('auth.signup.toastSuccessTitle'), t('auth.signup.toastSuccessMessage'))
+    toast.success(
+      t('auth.signup.toastSuccessTitle'),
+      result.message || t('auth.signup.toastSuccessMessage')
+    )
     setTimeout(() => {
       router.push('/registration')
     }, 1000)
@@ -212,32 +144,5 @@ const onSubmit = async () => {
     toast.error(t('auth.signup.toastFailedTitle'), result.message || t('auth.signup.genericFailedMessage'))
   }
 }
-
-onMounted(() => {
-  setupScrollFadeAnimations()
-})
-
-onBeforeUnmount(() => {
-  if (fadeObserver) {
-    fadeObserver.disconnect()
-  }
-})
 </script>
 
-<style scoped>
-.fade-up {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.fade-up.fade-ready {
-  opacity: 0;
-  transform: translateY(20px) scale(0.985);
-  transition: opacity 0.55s ease, transform 0.55s ease;
-}
-
-.fade-up.fade-ready.in-view {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-</style>

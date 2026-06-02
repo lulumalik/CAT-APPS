@@ -1,10 +1,9 @@
 <template>
-  <main class="min-h-screen text-text md:px-10 md:py-12 programs-themed-bg">
+  <main class="min-h-screen text-text md:px-10 md:py-12 auth-right-pane">
     <div class="mx-auto space-y-8">
       <section
-        class="fade-up relative overflow-hidden text-center md:text-left md:rounded-[2rem] text-primary shadow-2xl shadow-[#123B8F]/35">
-        <img :src="backgroundAboutUrl" alt="Background About Us"
-          class="about-hero-bg absolute inset-0 z-0 h-full w-full object-cover md:block hidden" />
+        class="fade-up auth-right-pane relative overflow-hidden text-center md:text-left md:rounded-[2rem] text-primary shadow-2xl shadow-[#123B8F]/35">
+        <span class="auth-visual-stripe" />
         <img :src="accesoriseUrl" alt="Accessorise"
           class="about-hero-accesorise absolute top-0 right-0 h-32 w-32 object-cover md:hidden block" />
         <img :src="accesoriseUrl" alt="Accessorise"
@@ -12,7 +11,7 @@
         <!-- <div class="absolute inset-0 z-0 bg-gradient-to-b from-white/40 via-white/55 to-white/70" /> -->
         <div class="relative z-10 p-7 md:p-10 pb-16">
           <router-link to="/"
-            class="inline-flex absolute left-5 top-2 text-white md:text-primary/80 items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
+            class="inline-flex absolute left-5 top-2 text-white items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
             <ArrowLeft class="h-4 w-4" />
             Kembali ke Beranda
           </router-link>
@@ -25,11 +24,11 @@
               </div>
             </div>
             <div>
-              <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-white md:text-primary/80">Tentang Kami</p>
-              <h1 class="mt-2 text-2xl md:text-5xl font-black leading-tight text-white md:text-primary/90">
+              <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-white">Tentang Kami</p>
+              <h1 class="mt-2 text-2xl md:text-5xl font-black leading-tight text-white">
                 Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
               </h1>
-              <p class="mt-5 text-md md:text-2xl pb-4 font-bold text-white md:text-primary/90 leading-relaxed">
+              <p class="mt-5 text-md md:text-2xl pb-4 font-bold text-white leading-relaxed">
                 Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Cendekia Prestasi didukung oleh
                 legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan
                 profesionalisme
@@ -53,7 +52,7 @@
             <article v-for="doc in legalDocuments" :key="doc.label"
               class="rounded-xl border border-border bg-background shadow-lg overflow-hidden flex flex-col">
               <div
-                class="p-4 md:p-5 border-t border-border bg-gradient-to-br from-white to-sky flex-1 legal-gradient-animated">
+                class="p-4 md:p-5 border-t border-border bg-gradient-to-br from-white to-gray-500 flex-1 legal-gradient-animated">
                 <p class="text-xs md:text-lg uppercase tracking-[0.15em] font-bold text-primary text-center">{{
                   doc.label }}</p>
                 <p v-if="doc.subtitle"
@@ -121,7 +120,7 @@
           <div class="relative overflow-hidden mt-10">
             <div class="relative z-20 p-4 grid grid-cols-2 gap-4 md:flex md:flex-wrap md:justify-center md:gap-12">
               <article v-for="member in members" :key="member.name"
-                class="group flex flex-col items-center text-center rounded-2xl border border-border bg-gradient-to-b from-white to-sky/80 p-5 w-full sm:w-[360px] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40"
+                class="group flex flex-col items-center text-center rounded-2xl border border-border bg-gradient-to-b from-white via-gray-400 to-gray-500/80 p-5 w-full sm:w-[360px] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40"
                 role="button" tabindex="0" @click="openMemberModal(member)"
                 @keydown.enter.prevent="openMemberModal(member)" @keydown.space.prevent="openMemberModal(member)">
                 <div class="relative mb-4">
@@ -131,11 +130,11 @@
                       class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
                   </div>
                 </div>
-                <h4 class="font-bold text-sm md:text-lg leading-snug text-text">{{ member.name }}</h4>
-                <p class="text-xs md:text-base text-primary font-semibold mt-1 uppercase tracking-wide">{{
+                <h4 class="font-bold text-sm md:text-lg leading-snug text-white">{{ member.name }}</h4>
+                <p class="text-xs md:text-base text-white font-semibold mt-1 uppercase tracking-wide">{{
                   member.jabatan }}
                 </p>
-                <span class="mt-3 inline-flex items-center text-[11px] md:text-xs font-semibold text-primary">
+                <span class="mt-3 inline-flex items-center text-[11px] md:text-xs font-semibold text-white">
                   Lihat profil
                 </span>
               </article>
@@ -291,7 +290,7 @@
         </div>
       </section>
 
-      <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0">
+      <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0 relative z-10">
 
         <div class="relative z-20">
           <div class="flex items-center justify-center gap-3">
@@ -387,7 +386,7 @@
                   </div>
                 </aside>
 
-                <section class="about-member-cv-content">
+                <section class="about-member-cv-content ui-programs-bg">
                   <div class="about-member-cv-section">
                     <h5 class="about-member-cv-heading">Profil</h5>
                     <p class="about-member-cv-paragraph">
@@ -825,13 +824,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.programs-themed-bg {
-  background-image:
-    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
-    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
-  background-size: 28px 28px, 100% 100%;
-}
-
 .about-hero-section {
   min-height: 560px;
 }
@@ -868,7 +860,7 @@ onBeforeUnmount(() => {
 .legal-gradient-animated {
   background-image:
     radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 40%),
-    linear-gradient(130deg, #ffffff 0%, #f0f9ff 30%, #d8f0ff 55%, #bfe6ff 78%, #ffffff 100%);
+    linear-gradient(130deg, #ffffff 0%, #a8a8a8 30%, #c4c4c4 55%, #b5b5b5 78%, #ffffff 100%);
   background-size: 230% 230%;
   animation: legalGradientFlow 6.6s linear infinite;
   will-change: background-position;
@@ -972,10 +964,6 @@ onBeforeUnmount(() => {
 }
 
 .about-member-cv-content {
-  background-image:
-    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
-    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
-  background-size: 28px 28px, 100% 100%;
   padding-left: 10rem;
   padding-top: 2rem;
   padding-bottom: 2rem;
@@ -1098,7 +1086,7 @@ onBeforeUnmount(() => {
 .org-node-animated {
   background-image:
     radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 40%),
-    linear-gradient(130deg, #ffffff 0%, #f0f9ff 30%, #d8f0ff 55%, #bfe6ff 78%, #ffffff 100%);
+    linear-gradient(130deg, #ffffff 0%, #919191 30%, #c5c5c5 55%, #b9b9b9 78%, #9b9b9b 100%);
   background-size: 230% 230%;
   animation: legalGradientFlow 6.6s linear infinite;
   will-change: background-position;
@@ -1113,13 +1101,13 @@ onBeforeUnmount(() => {
 .bank-card-bca {
   background-image:
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 42%),
-    linear-gradient(132deg, #0066ae 0%, #6095ff 34%, #00eaff 62%, #388dc9 82%, #0066ae 100%);
+    linear-gradient(132deg, #d2d2d2 0%, #a7a7a7 34%, #b3b3b3 62%, #9b9b9b 82%, #c5c5c5 100%);
 }
 
 .bank-card-bri {
   background-image:
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 42%),
-    linear-gradient(132deg, #00529c 0%, #6095ff 34%, #00eaff 62%, #388dc9 82%, #00529c 100%);
+    linear-gradient(132deg, #d2d2d2 0%, #a7a7a7 34%, #b3b3b3 62%, #9b9b9b 82%, #c5c5c5 100%);
 }
 
 @keyframes homeMainGradientFlow {

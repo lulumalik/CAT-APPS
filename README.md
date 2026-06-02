@@ -32,6 +32,42 @@ docker compose -f docker-compose.prod.yml up -d --force-recreate app nginx
 docker compose --profile prod up -d nginx app
 ```
 
+## Backup Rutin (Dockerfile / non-compose)
+
+Project ini menyediakan script backup di `scripts/backup/backup.sh`.
+
+Yang di-backup:
+- PostgreSQL dump (`.sql.gz`) dari container database
+- Folder `storage` Laravel di host (`.tar.gz`)
+
+Langkah setup di VPS:
+1. Salin template env backup:
+   ```
+   cp scripts/backup/backup.env.example scripts/backup/backup.env
+   ```
+2. Edit `scripts/backup/backup.env` dan isi minimal:
+   - `DB_CONTAINER_NAME` (nama container postgres)
+   - `DB_PASSWORD`
+   - `STORAGE_SOURCE_DIR` (path host yang di-mount ke `/var/www/html/storage`)
+3. Buat executable:
+   ```
+   chmod +x scripts/backup/backup.sh
+   ```
+4. Test manual:
+   ```
+   set -a; source scripts/backup/backup.env; set +a
+   ./scripts/backup/backup.sh
+   ```
+
+Contoh cron harian jam 2 pagi:
+```
+0 2 * * * cd /path/to/CAT-APPS && set -a && source scripts/backup/backup.env && set +a && ./scripts/backup/backup.sh >> /var/log/catapps-backup-cron.log 2>&1
+```
+
+Catatan:
+- Simpan backup offsite (S3/R2/B2/server lain), jangan hanya di VPS yang sama.
+- Gunakan `RETENTION_DAYS` di `backup.env` untuk mengatur retensi.
+
 
 ## About Laravel
 

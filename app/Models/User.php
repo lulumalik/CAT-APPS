@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -19,12 +20,25 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'role',
         'program_category',
         'in_quarantine',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $user): void {
+            if (blank($user->username)) {
+                $user->username = self::generateUniqueUsername(
+                    (string) ($user->email ?? ''),
+                    (string) ($user->name ?? '')
+                );
+            }
+        });
+    }
 
     public const PROGRAM_VIP = 'vip';
 
@@ -92,6 +106,42 @@ class User extends Authenticatable
         $normalized = self::normalizeProgramCategory($programCategory);
 
         return $normalized === self::PROGRAM_VIP;
+    }
+
+    public static function normalizeUsername(?string $username): string
+    {
+        $normalized = Str::of((string) $username)
+            ->trim()
+            ->lower()
+            ->replaceMatches('/[^a-z0-9_]/', '_')
+            ->replaceMatches('/_+/', '_')
+            ->trim('_')
+            ->toString();
+
+        return $normalized !== '' ? $normalized : 'user';
+    }
+
+    public static function generateUniqueUsername(string $email = '', string $name = ''): string
+    {
+        $base = '';
+        if ($email !== '' && str_contains($email, '@')) {
+            $base = (string) Str::before($email, '@');
+        } elseif ($email !== '') {
+            $base = $email;
+        } elseif ($name !== '') {
+            $base = (string) Str::of($name)->replace(' ', '_');
+        }
+
+        $candidate = self::normalizeUsername($base);
+        $final = $candidate;
+        $counter = 1;
+
+        while (self::query()->where('username', $final)->exists()) {
+            $counter++;
+            $final = "{$candidate}_{$counter}";
+        }
+
+        return $final;
     }
 
     /**

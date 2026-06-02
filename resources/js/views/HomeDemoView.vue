@@ -1,5 +1,6 @@
 <template>
-  <main class="programs-themed-bg min-h-screen text-text">
+  <main class="auth-right-pane min-h-screen text-text">
+    <span class="auth-visual-stripe fixed top-0 left-0 w-full h-full" style="z-index: -10;" />
     <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
       <div
         class="page-shell rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-6 py-2 md:py-0">
@@ -61,7 +62,7 @@
 
     <section id="hero" class="relative overflow-hidden rounded-none px-4 md:px-10 pt-24 md:pt-28 pb-8">
       <div
-        class="page-shell relative overflow-hidden rounded-[2rem] border border-white/20 bg-gradient-to-r from-[#123b8f] via-[#0e3f98] to-[#0c72b5] px-5 py-8 md:px-10 md:py-12 shadow-2xl shadow-primary/30">
+        class="page-shell relative overflow-hidden rounded-[2rem] border border-white/20 bg-gradient-to-r from-[#333333] via-[#636363] to-[#595959] px-5 py-8 md:px-10 md:py-12 shadow-2xl shadow-primary/30">
         <div
           class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.18),transparent_48%),radial-gradient(circle_at_85%_80%,rgba(255,255,255,0.2),transparent_52%)]" />
         <div class="relative z-10 grid gap-8 lg:grid-cols-[1.25fr_0.95fr] items-center">
@@ -92,9 +93,9 @@
               </router-link>
             </div>
 
-            <div class="mt-6 rounded-2xl border border-red-200/40 bg-[#072e6f]/70 pr-4 pt-4 pb-4 pl-36 md:pl-40 backdrop-blur-sm relative">
+            <div class="mt-6 rounded-2xl border border-red-200/40 bg-orange-500/70 pr-4 pt-4 pb-4 pl-36 md:pl-40 backdrop-blur-sm relative">
               <img src="../../assets/promo.png" alt="Promo Early Bird" class=" absolute top-0 md:-top-8 -left-8 z-10 object-cover w-44" />
-              <p class="text-[11px] md:text-sm font-extrabold uppercase tracking-[0.16em] text-red-200">Promo Early Bird
+              <p class="text-[11px] md:text-sm font-extrabold uppercase tracking-[0.16em] text-white">Promo Early Bird
               </p>
               <p class="mt-1 text-sm md:text-base font-bold text-white">Dapatkan promo spesial untuk <b class="text-[gold]">10 Pendaftar
                 Pertama.</b></p>
@@ -103,15 +104,15 @@
 
           <div class="relative mx-auto w-full max-w-md">
             <div class="grid grid-cols-2 gap-3 rounded-3xl border border-white/25 bg-white/10 p-3 shadow-2xl">
-              <div class="overflow-hidden rounded-2xl bg-[#0c3577]">
+              <div class="overflow-hidden rounded-2xl bg-[#333]">
                 <img :src="taruna" alt="Taruna" class="h-[300px] w-full object-cover object-top" />
               </div>
-              <div class="overflow-hidden rounded-2xl bg-[#0c3577]">
+              <div class="overflow-hidden rounded-2xl bg-[#333]">
                 <img :src="taruni" alt="Taruni" class="h-[300px] w-full object-cover object-top" />
               </div>
             </div>
             <div
-              class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[92%] rounded-2xl border border-white/25 bg-[#08295f]/90 px-4 py-3 text-center shadow-xl">
+              class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[92%] rounded-2xl border border-white/25 bg-[#333]/90 px-4 py-3 text-center shadow-xl">
               <p class="text-3xl font-black text-white">Garansi</p>
               <p class="text-sm font-semibold text-blue-100">100% membentuk calon-calon polisi terbaik</p>
             </div>
@@ -161,12 +162,12 @@
 
     <div class="px-4 md:px-10 pb-6">
       <div
-        class="page-shell rounded-2xl border border-amber-200/50 bg-gradient-to-r from-[#153f96] to-[#2e6fe1] px-5 py-4 text-center shadow-lg shadow-primary/25">
+        class="page-shell rounded-2xl border border-amber-200/50 bg-gradient-to-r from-[#333333] to-[#595959] px-5 py-4 text-center shadow-lg shadow-primary/25">
         <p class="text-xl md:text-2xl font-black uppercase tracking-wide text-amber-200">
-          Diawasi Langsung Oleh Jendral Polri
+          Diawasi Langsung Oleh Purnawirawan Polri
         </p>
         <p class="mt-1 text-sm md:text-base text-blue-100 font-semibold">
-          Dibina langsung oleh jajaran purnawirawan dan pimpinan berpengalaman tingkat nasional.
+          Dibina langsung oleh para Purnawirawan POLRI yang berpengalaman.
         </p>
       </div>
     </div>
@@ -298,7 +299,7 @@
       </div>
     </section>
 
-    <section id="comparison" class="px-5 md:px-10 pb-8 mt-10">
+    <section id="comparison" class="px-5 md:px-10 pb-8 mt-10 relative z-10">
       <div class="page-shell fade-up delay-2 relative">
         <div class="rounded-[2rem] bg-white border border-blue-100/60 shadow-xl shadow-primary/6 p-8 md:p-10">
           <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Tabel Perbandingan Fasilitas Kelas Kursus</h2>
@@ -308,8 +309,8 @@
           <div class="overflow-x-auto rounded-2xl border border-border relative z-20">
             <table class="min-w-[980px] w-full border-collapse">
               <thead>
-                <tr class="bg-blue-500/20">
-                  <th class="text-left px-4 py-3 font-bold text-text border-b border-border min-w-[290px]">Fasilitas
+                <tr class="bg-gray-500">
+                  <th class="text-left px-4 py-3 font-bold text-white border-b border-border min-w-[290px]">Fasilitas
                     Program</th>
                   <th v-for="col in classComparisonColumns" :key="col.key"
                     class="px-4 py-3 border-b border-border text-center">
@@ -321,7 +322,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="row in classComparisonRows" :key="row.label" class="odd:bg-white even:bg-blue-500/20">
+                <tr v-for="row in classComparisonRows" :key="row.label" class="odd:bg-white even:bg-gray-400/40">
                   <th class="text-left px-4 py-3 text-sm md:text-base font-semibold text-text border-b border-border">{{
                     row.label }}</th>
                   <td v-for="col in classComparisonColumns" :key="`${row.label}-${col.key}`"
@@ -330,7 +331,7 @@
                     @click="handleComparisonCellClick(row)">
                     <template v-if="typeof row.values[col.key] === 'boolean'">
                       <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border"
-                        :class="row.values[col.key] ? 'bg-mint text-primary border-border' : 'bg-rose-50 text-rose-500 border-rose-100'">
+                        :class="row.values[col.key] ? 'bg-green-500 text-white border-border' : 'bg-red-500 text-white border-border'">
                         <Check v-if="row.values[col.key]" class="h-4 w-4" />
                         <XIcon v-else class="h-4 w-4" />
                       </span>
@@ -352,9 +353,9 @@
       </div>
     </section>
 
-    <section class="px-5 md:px-10 pb-14">
+    <section class="px-5 md:px-10 pb-14 relative z-10">
       <div
-        class="page-shell rounded-[2rem] bg-primary text-white p-8 md:p-10 shadow-2xl shadow-[#123B8F]/30 fade-up delay-3">
+        class="page-shell rounded-[2rem] bg-black text-white p-8 md:p-10 shadow-2xl shadow-[#000] fade-up delay-3">
         <h2 class="text-2xl md:text-3xl font-bold mb-3">Bagaimana Siap naik level untuk persiapan Akademi Kepolisian?</h2>
         <p class="text-white/80">
           Bergabung sebagai peserta, lengkapi pendaftaran secara bertahap, lalu ikuti program kelas kursus online dengan
@@ -362,7 +363,7 @@
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <router-link to="/free-tryout"
-            class="px-6 py-3 rounded-full bg-secondary text-white font-semibold cta-tryout-animated transition-all">Coba Tryout Gratis</router-link>
+            class="px-6 py-3 rounded-full bg-yellow-500 text-white font-semibold cta-tryout-animated transition-all">Coba Tryout Gratis</router-link>
         </div>
       </div>
     </section>
@@ -588,6 +589,7 @@ const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).hre
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
+const natashateacherUrl = new URL('../../assets/pengajar/natashateacher.jpg', import.meta.url).href
 const djatmikoUrl = new URL('../../assets/pengajar/Djatmiko.jpg', import.meta.url).href
 const iketaUrl = new URL('../../assets/pengajar/Iketutadipurnama.jpg', import.meta.url).href
 const yunusSufianUrl = new URL('../../assets/pengajar/YunusSufian.png', import.meta.url).href
@@ -898,7 +900,7 @@ const teachers = [
     id: 'teacher-3',
     name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H., M.T.C.P',
     role: 'Pengajar Bahasa Inggris',
-    image: natashaUrl,
+    image: natashateacherUrl,
     birthPlaceDate: 'Palembang, 15 Juni 1964',
     education: ['SEPAMILSUKWAN VI, tamat 1989', 'UNLA Bandung, Fakultas Hukum, tamat 2007', 'Selapa Polri angkatan 39, tamat 2008', 'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, inagurasi 2009'],
     teaching: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada  Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015'],
@@ -923,47 +925,7 @@ const teachers = [
       'Pelatih Komunitas TEMAN SPORTY 2022 - 2024',
       'Pelatih BINJAS PADJAJARANBDG 2024 - sekarang',
     ],
-  },
-  {
-    id: 'teacher-5',
-    name: 'Pengajar 5',
-    role: 'Pengajar',
-    image: defaultTeacherUrl,
-    birthPlaceDate: '-',
-    address: '-',
-    education: ['Profil akan diperbarui.'],
-    teaching: ['Data pengalaman mengajar akan diperbarui.'],
-  },
-  {
-    id: 'teacher-6',
-    name: 'Pengajar 6',
-    role: 'Pengajar',
-    image: defaultTeacherUrl,
-    birthPlaceDate: '-',
-    address: '-',
-    education: ['Profil akan diperbarui.'],
-    teaching: ['Data pengalaman mengajar akan diperbarui.'],
-  },
-  {
-    id: 'teacher-7',
-    name: 'Pengajar 7',
-    role: 'Pengajar',
-    image: defaultTeacherUrl,
-    birthPlaceDate: '-',
-    address: '-',
-    education: ['Profil akan diperbarui.'],
-    teaching: ['Data pengalaman mengajar akan diperbarui.'],
-  },
-  {
-    id: 'teacher-8',
-    name: 'Pengajar 8',
-    role: 'Pengajar',
-    image: defaultTeacherUrl,
-    birthPlaceDate: '-',
-    address: '-',
-    education: ['Profil akan diperbarui.'],
-    teaching: ['Data pengalaman mengajar akan diperbarui.'],
-  },
+  }
 ]
 
 const services = [
@@ -1287,13 +1249,6 @@ onUnmounted(() => {
   height: 500px;
 }
 
-.programs-themed-bg {
-  background-image:
-    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
-    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
-  background-size: 28px 28px, 100% 100%;
-}
-
 .leaders-demo-eyebrow {
   font-size: 2rem;
   font-weight: 600;
@@ -1429,9 +1384,9 @@ onUnmounted(() => {
   justify-content: center;
   overflow: hidden;
   isolation: isolate;
-  background-image: linear-gradient(120deg, #2f6bff 0%, #5f0ad7 45%, #13c1fc 100%);
+  background-image: linear-gradient(120deg, #ffee00 0%, #e0c200 45%, #dcc600 100%);
   background-size: 220% 220%;
-  box-shadow: 0 12px 30px -14px rgba(47, 107, 255, 0.8);
+  box-shadow: 0 12px 30px -14px rgba(168, 168, 168, 0.8);
   animation: ctaTryoutBgFlow 4.8s ease-in-out infinite, ctaTryoutPulse 1.9s ease-in-out infinite;
   will-change: transform, background-position, box-shadow;
 }
@@ -1757,7 +1712,7 @@ onUnmounted(() => {
 .service-gradient-animated {
   background-image:
     radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 38%),
-    linear-gradient(138deg, #ffffff 0%, #ecf8ff 28%, #cfefff 54%, #a8e6ff 74%, #e7f7ff 100%);
+    linear-gradient(138deg, #a8a8a8 0%, #a5a5a5 28%, #dcdcdc 54%, #bdbdbd 74%, #c4c4c4 100%);
   background-size: 230% 230%;
   animation: serviceGradientFlow 6.2s linear infinite;
   will-change: background-position;

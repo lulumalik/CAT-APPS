@@ -2,12 +2,7 @@
 
 $registrationDiskDefault = env('REGISTRATION_FILESYSTEM_DISK')
     ?: env('UPLOAD_FILESYSTEM_DISK')
-    ?: ((
-        filled(env('AWS_ACCESS_KEY_ID'))
-        && filled(env('AWS_SECRET_ACCESS_KEY'))
-        && filled(env('AWS_BUCKET'))
-        && filled(env('AWS_ENDPOINT'))
-    ) ? 's3' : 'public');
+    ?: 'public';
 
 return [
 
@@ -18,8 +13,7 @@ return [
     |
     | REGISTRATION_FILESYSTEM_DISK overrides everything (e.g. "public" for local only).
     | Otherwise UPLOAD_FILESYSTEM_DISK is used if set.
-    | Otherwise: S3/R2 when AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_BUCKET, and
-    | AWS_ENDPOINT are set; else "public" (storage:link).
+    | Otherwise defaults to "public" (storage:link).
     |
     */
 

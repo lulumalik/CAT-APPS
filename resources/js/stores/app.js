@@ -79,7 +79,7 @@ export const useAppStore = defineStore('app', {
         const response = await axios.post('/api/register', payload)
         if (response.data.success) {
           this.setUser(response.data.user)
-          return { success: true }
+          return { success: true, message: response.data.message }
         }
         return { success: false, message: response.data.message }
       } catch (error) {

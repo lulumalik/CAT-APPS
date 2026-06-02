@@ -1,14 +1,9 @@
 <template>
-  <div class="min-h-screen programs-themed-bg text-text">
+  <div class="min-h-screen auth-right-pane text-text">
     <Transition name="ft-cross" mode="out-in">
       <div v-if="step === 'choose'" key="landing" class="min-h-screen">
-        <section class="relative min-h-[420px] md:min-h-[480px] overflow-hidden rounded-none">
-          <img
-            :src="bookUrl"
-            alt=""
-            class="absolute inset-0 h-full w-full object-cover object-center"
-          />
-          <div class="relative z-10 mx-auto max-w-6xl px-4 md:px-8 pt-6 pb-12 md:pb-16">
+        <section class="relative overflow-hidden rounded-none">
+          <div class="relative z-10 mx-auto max-w-6xl px-4 md:px-8 pt-6">
             <header
               class="flex flex-wrap items-center justify-between gap-4 rounded-full bg-white/90 px-8 py-3 shadow-sm shadow-primary/5 backdrop-blur-md"
             >
@@ -65,7 +60,7 @@
           </div>
         </section>
 
-        <section id="tryout-list" class="programs-themed-bg py-12 md:py-16 px-4 md:px-8">
+        <section id="tryout-list" class=" px-4 md:px-8 relative z-10 mt-14">
           <div class="mx-auto max-w-6xl">
             <h2 class="text-center text-2xl md:text-3xl font-black text-white">Sedang Berlangsung</h2>
             <p class="mx-auto mt-2 max-w-lg text-center text-sm text-white">
@@ -570,10 +565,4 @@ onMounted(loadTests)
   opacity: 0;
 }
 
-.programs-themed-bg {
-  background-image:
-    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
-    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
-  background-size: 28px 28px, 100% 100%;
-}
 </style>

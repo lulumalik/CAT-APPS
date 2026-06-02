@@ -5,14 +5,52 @@ namespace App\Http\Controllers;
 use App\Models\RegistrationProgress;
 use App\Models\User;
 use App\Models\UserNotification;
+use App\Notifications\RegistrationProgressStatusNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class RegistrationProgressController extends Controller
 {
+    private function sendRegistrationEmailStatus(
+        User $user,
+        string $event,
+        string $step,
+        ?string $adminNote = null,
+        ?string $nextStep = null
+    ): void {
+        try {
+            $user->notify(new RegistrationProgressStatusNotification(
+                event: $event,
+                step: $step,
+                adminNote: $adminNote,
+                nextStep: $nextStep,
+            ));
+        } catch (Throwable $e) {
+            Log::warning('Failed sending registration progress email.', [
+                'user_id' => $user->id,
+                'event' => $event,
+                'step' => $step,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function nextStepAfterApproval(string $step): ?string
+    {
+        return match ($step) {
+            'administration' => 'psychology',
+            'psychology' => 'health',
+            'health' => 'physical',
+            'physical' => 'completed',
+            default => null,
+        };
+    }
+
     /** @var array<string, string> input name => administration_data path key */
     private const ADMIN_FILE_FIELDS = [
         'id_document' => 'id_document_path',
@@ -226,6 +264,11 @@ class RegistrationProgressController extends Controller
 
         $progress->{$statusCol} = 'submitted';
         $progress->save();
+        $this->sendRegistrationEmailStatus(
+            $request->user(),
+            'submitted',
+            $step
+        );
 
         return response()->json($this->serializeRegistrationProgress($progress->fresh()));
     }
@@ -315,6 +358,12 @@ class RegistrationProgressController extends Controller
                     'step' => $step,
                 ],
             ]);
+            $this->sendRegistrationEmailStatus(
+                $user,
+                'revision_requested',
+                $step,
+                $data['admin_note'] ?? null
+            );
 
             return response()->json($this->serializeRegistrationProgress(
                 $progress->fresh()->load('user:id,name,email,program_category')
@@ -335,6 +384,13 @@ class RegistrationProgressController extends Controller
         }
 
         $progress->save();
+        $this->sendRegistrationEmailStatus(
+            $user,
+            $progress->fully_completed ? 'completed' : 'approved',
+            $step,
+            $data['admin_note'] ?? null,
+            $progress->fully_completed ? null : $this->nextStepAfterApproval($step)
+        );
 
         UserNotification::create([
             'user_id' => $user->id,

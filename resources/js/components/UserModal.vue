@@ -21,6 +21,11 @@
         </div>
 
         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.user.usernameLabel') }}</label>
+          <input v-model="form.username" type="text" :placeholder="t('modals.user.usernamePlaceholder')" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" required />
+        </div>
+
+        <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.user.emailLabel') }}</label>
           <input v-model="form.email" type="email" :placeholder="t('modals.user.emailPlaceholder')" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" required />
         </div>
@@ -73,6 +78,7 @@ const isEdit = computed(() => !!props.initial)
 
 const form = reactive({
   name: '',
+  username: '',
   email: '',
   role: 'user',
   password: '',
@@ -82,12 +88,14 @@ const form = reactive({
 watch(() => props.initial, (val) => {
   if (val) {
     form.name = val.name
+    form.username = val.username || ''
     form.email = val.email
     form.role = val.role
     form.password = ''
     form.program_category = normalizeProgramCategory(val.program_category)
   } else {
     form.name = ''
+    form.username = ''
     form.email = ''
     form.role = 'user'
     form.password = ''

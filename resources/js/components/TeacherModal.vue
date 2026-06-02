@@ -66,7 +66,7 @@
                 </div>
               </aside>
 
-              <section class="teacher-cv-content">
+              <section class="teacher-cv-content ui-programs-bg">
                 <div class="teacher-cv-section">
                   <h5 class="teacher-cv-heading">Profil</h5>
                   <p class="teacher-cv-paragraph">
@@ -133,13 +133,6 @@ watch(
 </script>
 
 <style scoped>
-.programs-themed-bg {
-  background-image:
-    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
-    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
-  background-size: 28px 28px, 100% 100%;
-}
-
 .teacher-modal-fade-enter-active,
 .teacher-modal-fade-leave-active {
   transition: all 0.28s ease;
@@ -220,10 +213,6 @@ watch(
 }
 
 .teacher-cv-content {
-  background-image:
-    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
-    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
-  background-size: 28px 28px, 100% 100%;
   padding-left: 10rem;
   padding-top: 2rem;
   padding-bottom: 2rem;

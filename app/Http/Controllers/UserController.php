@@ -18,14 +18,16 @@ class UserController extends Controller
         if ($request->filled('search')) {
             $s = $request->string('search')->toString();
             $q->where(function ($x) use ($s) {
-                $x->where('name', 'like', "%{$s}%")->orWhere('email', 'like', "%{$s}%");
+                $x->where('name', 'like', "%{$s}%")
+                    ->orWhere('email', 'like', "%{$s}%")
+                    ->orWhere('username', 'like', "%{$s}%");
             });
         }
 
         return response()->json(
             $q->orderBy('name')
                 ->limit(30)
-                ->get(['id', 'name', 'email', 'program_category', 'in_quarantine'])
+                ->get(['id', 'name', 'username', 'email', 'program_category', 'in_quarantine'])
         );
     }
 
@@ -36,7 +38,8 @@ class UserController extends Controller
         if ($search = $request->input('search')) {
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('username', 'like', "%{$search}%");
             });
         }
 
@@ -49,6 +52,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'username' => 'required|string|min:3|max:32|regex:/^[a-zA-Z0-9_]+$/|unique:users,username',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,user,mentor',
@@ -58,6 +62,7 @@ class UserController extends Controller
 
         $user = User::create([
             'name' => $validated['name'],
+            'username' => User::normalizeUsername($validated['username']),
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
@@ -76,6 +81,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'username' => ['required', 'string', 'min:3', 'max:32', 'regex:/^[a-zA-Z0-9_]+$/', Rule::unique('users', 'username')->ignore($user->id)],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'role' => 'required|in:admin,user,mentor',
             'password' => 'nullable|string|min:8',
@@ -84,6 +90,7 @@ class UserController extends Controller
         ]);
 
         $user->name = $validated['name'];
+        $user->username = User::normalizeUsername($validated['username']);
         $user->email = $validated['email'];
         $user->role = $validated['role'];
 
@@ -166,6 +173,7 @@ class UserController extends Controller
 
             $payload = [
                 'name' => $name,
+                'username' => User::generateUniqueUsername($email, $name),
                 'role' => $role,
                 'program_category' => $programCategory,
                 'in_quarantine' => User::supportsQuarantine($programCategory) ? $inQuarantine : false,

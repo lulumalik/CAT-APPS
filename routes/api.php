@@ -68,6 +68,28 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/user', [AuthController::class, 'user']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+    if ($request->user() === null) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Anda harus login terlebih dahulu.',
+        ], 401);
+    }
+
+    if ($request->user()->hasVerifiedEmail()) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Email sudah terverifikasi.',
+        ]);
+    }
+
+    $request->user()->sendEmailVerificationNotification();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Email verifikasi telah dikirim ulang.',
+    ]);
+})->middleware(['auth', 'throttle:6,1']);
 
 // Public test routes (accessible to authenticated users)
 Route::get('/incoming-tests', [TestDefinitionController::class, 'incoming']);

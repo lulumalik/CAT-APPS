@@ -130,10 +130,4 @@ const goToHomeSection = (id) => {
 </script>
 
 <style scoped>
-.programs-themed-bg {
-  background-image:
-    radial-gradient(circle at 8% 10%, rgba(255, 255, 255, 0.1) 0 2px, transparent 2px 100%),
-    linear-gradient(130deg, #1a1a2d 0%, #202239 55%, #262743 100%);
-  background-size: 28px 28px, 100% 100%;
-}
 </style>

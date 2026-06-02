@@ -9,7 +9,7 @@ export const ONLINE_PROGRAMS = [
     mode: 'Premium',
     summary: 'Pendampingan intensif dengan kontrol progres harian dan strategi personal.',
     points: ['Mentoring prioritas', 'Monitoring ketat', 'Pendalaman psikologi & akademik'],
-    textColor: '#3b1f00',
+    textColor: '#fff',
     boxShadow: '0 8px 32px rgba(180,140,30,0.45), 0 2px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.4)',
     backgroundColor: [
       'radial-gradient(ellipse at 20% 18%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.15) 25%, transparent 52%)',
@@ -17,7 +17,7 @@ export const ONLINE_PROGRAMS = [
       'linear-gradient(155deg, rgba(255,255,255,0.25) 0%, transparent 32%)',
       'linear-gradient(245deg, rgba(255,255,255,0.14) 0%, transparent 28%)',
       'linear-gradient(335deg, rgba(0,0,0,0.1) 0%, transparent 40%)',
-      'linear-gradient(105deg, #bf953f 0%, #fcf6ba 30%, #b38728 50%, #fbf5b7 70%, #aa771c 100%)',
+      'linear-gradient(105deg,rgb(209, 189, 59) 0%,rgb(181, 166, 0) 30%,rgb(226, 203, 0) 50%,rgb(227, 210, 25) 70%,rgb(184, 119, 8) 100%)',
     ].join(', '),
   },
   {
@@ -26,7 +26,7 @@ export const ONLINE_PROGRAMS = [
     mode: 'Reguler',
     summary: 'Program online fleksibel dengan kurikulum inti untuk persiapan seleksi.',
     points: ['Kelas terjadwal', 'Latihan CBT periodik', 'Diskusi materi dan evaluasi'],
-    textColor: 'rgba(1, 6, 36, 1)',
+    textColor: 'rgb(255, 255, 255)',
     boxShadow: '0 8px 32px rgba(80,100,220,0.45), 0 2px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.25)',
     backgroundColor: [
       'radial-gradient(ellipse at 20% 18%, rgba(255,255,255,0.48) 0%, rgba(255,255,255,0.12) 25%, transparent 52%)',
@@ -34,7 +34,7 @@ export const ONLINE_PROGRAMS = [
       'linear-gradient(155deg, rgba(255,255,255,0.22) 0%, transparent 32%)',
       'linear-gradient(245deg, rgba(255,255,255,0.12) 0%, transparent 28%)',
       'linear-gradient(335deg, rgba(0,0,0,0.12) 0%, transparent 40%)',
-      'linear-gradient(105deg, #667eea 0%, #c9d0fb 30%, #5166d8 50%, #bec7fa 70%, #3d54c4 100%)',
+      'linear-gradient(105deg,rgb(154, 154, 154) 0%,rgb(117, 117, 117) 30%,rgb(96, 96, 96) 50%,rgb(135, 135, 135) 70%,rgb(142, 142, 142) 100%)',
     ].join(', '),
   },
   {
