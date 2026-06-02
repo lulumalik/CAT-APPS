@@ -62,7 +62,8 @@ export default defineConfig({
             },
             workbox: {
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-                maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+                // Keep build stable when large marketing images are emitted.
+                maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
             },
         }),
     ],

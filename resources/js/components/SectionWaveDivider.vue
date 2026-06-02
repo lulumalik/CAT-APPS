@@ -20,6 +20,6 @@ const props = defineProps({
   },
 })
 
-const vecteezyWaveUrl = new URL('../../assets/bgvector.png', import.meta.url).href
+const vecteezyWaveUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const imageClass = computed(() => (props.variant === 'inverse' ? 'brightness-0 invert opacity-85' : 'opacity-100'))
 </script>
