@@ -1,5 +1,5 @@
 <template>
-  <main class="bg-background h-screen overflow-hidden px-4 py-4 md:px-8">
+  <main class="bg-background h-screen overflow-auto rounded-3xl md:flex md:items-center px-4 py-4 md:px-8">
     <div class="auth-shell">
       <section class="auth-left-pane">
         <header class="auth-brand-nav">
@@ -10,7 +10,7 @@
         </header>
 
         <section class="auth-form-wrap text-center flex flex-col items-center">
-          <h1 class="text-[2.7rem] font-extrabold tracking-tight leading-none text-[#40136c]">{{ t('auth.signup.title') }}</h1>
+          <h1 class="text-[1.5rem] md:text-[2.7rem] font-extrabold tracking-tight leading-none text-[#333]">{{ t('auth.signup.title') }}</h1>
 
           <div v-if="error" class="mt-4 w-full rounded-xl border border-red-100 bg-red-50 p-3 text-sm text-red-700 flex items-center gap-2">
             <CircleAlert class="h-4 w-4" />
@@ -83,14 +83,14 @@
 
           <p class="mt-5 text-sm text-[#4a3e5e] text-center">
             {{ t('auth.signup.haveAccount') }}
-            <router-link to="/login" class="font-semibold text-[#541197] hover:text-[#30085c]">{{ t('auth.signup.signIn') }}</router-link>
+            <router-link to="/login" class="font-semibold text-[#333] hover:text-[#30085c]">{{ t('auth.signup.signIn') }}</router-link>
           </p>
         </section>
       </section>
 
       <section class="auth-right-pane">
         <span class="auth-visual-stripe" />
-        <img src="../../assets/logo.png" alt="Login" class="w-72 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 object-cover" />
+        <img src="../../assets/logo.png" alt="Login" class="w-44 relative z-20 mx-auto top-6 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-30 object-cover" />
       </section>
     </div>
   </main>

@@ -635,7 +635,7 @@
           class="fixed inset-0 z-[118] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
           role="dialog" aria-modal="true" aria-labelledby="selayang-modal-title" @click.self="closeSelayangModal">
           <div
-            class="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-border bg-white shadow-2xl shadow-black/20">
+            class="relative w-full max-w-5xl overflow-hidden rounded-3xl border border-border bg-white shadow-2xl shadow-black/20">
             <div class="absolute inset-0 bg-white/85 backdrop-blur-[1px]" />
             <div
               class="relative z-10 flex items-center justify-between gap-4 border-b border-border bg-gradient-to-r from-sky/85 to-white/85 px-5 py-4">
@@ -739,7 +739,7 @@
           class="fixed inset-0 z-[125] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
           role="dialog" aria-modal="true" aria-labelledby="member-modal-title" @click.self="closeMemberModal">
           <div
-            class="w-full max-w-3xl overflow-hidden rounded-3xl relative border border-border bg-white shadow-2xl shadow-black/20">
+            class="w-full max-w-5xl overflow-hidden rounded-3xl relative border border-border bg-white shadow-2xl shadow-black/20">
             <button type="button" @click="closeMemberModal"
               class="absolute right-3 top-3 z-40 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/65 text-white shadow-lg transition hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/90"
               aria-label="Tutup detail anggota">
@@ -769,14 +769,30 @@
                       <p><span class="font-semibold text-text">Tempat, Tanggal Lahir:</span> {{
                         activeMemberModal.profile.birthPlaceDate }}</p>
                     </div>
+                    <p v-if="activeMemberModal.profile.summary" class="mt-3 text-sm text-gray-700 leading-relaxed">
+                      {{ activeMemberModal.profile.summary }}
+                    </p>
                   </div>
+                </div>
+
+                <div v-if="activeMemberModal.profile.personal?.length" class="mt-6 rounded-xl">
+                  <p
+                    class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white px-4 py-1 rounded-full mb-2 inline-block">
+                    Data Pribadi</p>
+                  <ul class="member-history-list mt-3 text-sm text-gray-700">
+                    <li v-for="item in activeMemberModal.profile.personal" :key="item"
+                      class="member-history-item flex items-start gap-2">
+                      <span class="member-history-dot mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary" />
+                      <span>{{ item }}</span>
+                    </li>
+                  </ul>
                 </div>
 
                 <div class="mt-8 grid gap-4 grid-cols-1 md:grid-cols-2">
                   <div class="rounded-xl">
                     <p
                       class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white px-4 py-1 rounded-full mb-2">
-                      Riwayat Pendidikan</p>
+                      Riwayat Pendidikan Formal</p>
                     <ul class="member-history-list mt-3 text-sm text-gray-700">
                       <li v-for="item in activeMemberModal.profile.education" :key="item"
                         class="member-history-item flex items-start gap-2">
@@ -786,10 +802,10 @@
                     </ul>
                   </div>
 
-                  <div class="rounded-xl">
+                  <div v-if="activeMemberModal.profile.organization?.length" class="rounded-xl">
                     <p
                       class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white px-4 py-1 rounded-full mb-2">
-                      Riwayat Organisasi</p>
+                      {{ activeMemberModal.profile.organizationHeading || 'Riwayat Organisasi' }}</p>
                     <ul class="member-history-list mt-3 text-sm text-gray-700">
                       <li v-for="item in activeMemberModal.profile.organization" :key="item"
                         class="member-history-item flex items-start gap-2">
@@ -1026,14 +1042,41 @@ const members = [
     },
   },
   {
-    name: 'AKBP (P) Wahyu suhardini, S.IP',
+    name: 'AKBP (P) Wahyu Suhardini, SIP',
     image: wahyuUrl,
     jabatan: 'Sekretaris',
     profile: {
-      birthPlaceDate: 'Tasikmalaya, 20 Juni 1972',
-      education: ['S1 Ilmu Pemerintahan (S.IP)', 'Pelatihan Administrasi dan Kearsipan'],
-      organization: ['Pengurus Bidang Administrasi Yayasan', 'Tim Koordinasi Program'],
-      work: ['Sekretaris Pratistha Cendekia Prestasi', 'Pendamping Operasional Administrasi Program'],
+      birthPlaceDate: 'Purwokerto, 3 Oktober 1961',
+      summary:
+        'Wahyu Suhardini, SIP menjabat sebagai Sekretaris Pratistha Cendekia Prestasi. Saat ini juga menjabat sebagai Waka Biro SDM PP Polri Daerah Jawa Barat.',
+      personal: [
+        'NIK: 3273204310610001',
+        'Alamat: Perumahan Alam Melati Residence Kav. B No.9 RT 02 RW 24 Antapani Tengah Bandung',
+        'Telepon: 081361100057',
+        'Email: suhardiniwahyu@gmail.com',
+        'Tinggi / Berat Badan: 164 cm / 61 kg',
+      ],
+      education: ['1973: SD', '1976: SMP', '1979/1980: SMA', '2009: S1'],
+      organizationHeading: 'Pendidikan Non Formal',
+      organization: [
+        'Seba Milsuk ANK V Th 1982',
+        'Secapa Polri REG ANK XIX Th 1992',
+        'Dikjur Bimmas Th 1985',
+        'TOT Pengadaan Barang dan Jasa LKPP',
+      ],
+      work: [
+        '1982–1987: BA Rumwattik Siwi Polda Metro Jaya',
+        '1987–1992: BA Subbag Watpers Res Lospalos Tim Tim',
+        '1992–1997: Kasubbag Minpers Res Lospalos Tim Tim',
+        '1997–2001: Kataud Denma Polda Jabar',
+        '2001–2003: Kasat Yanum Denma Polda Jabar',
+        '2003–2004: Kasat Yanma Denma Polda Jabar',
+        '2004–2011: Kasubbag Kapor Bekum Rolog Polda Jabar',
+        '2011–2018: Kasubbag Fasjas Bag Info Sarpras',
+        '2006–2019: PPK dan Pokja Pengadaan Barang Jasa',
+        '2018–2019: Kasubbag LP Bag Ada Birolog',
+        '2024–sekarang: Waka Biro SDM PP Polri Daerah Jawa Barat',
+      ],
     },
   },
   {

@@ -215,7 +215,15 @@
     </div>
 
     <TestCreateModal v-if="showCreateModal" :categories="categories" :initial="selectedTest" @close="closeCreate" @submit="createTest" />
-    <TestAssignQuestionsModal v-if="showAssignModal" :test="selectedTest" :questions="questions" @close="closeAssign" @submit="assignQuestions" />
+    <TestAssignQuestionsModal
+      v-if="showAssignModal"
+      :test="selectedTest"
+      :questions="questions"
+      :refreshing="assignRefreshing"
+      @close="closeAssign"
+      @submit="assignQuestions"
+      @refresh="refreshAssignData"
+    />
     <SubmissionsModal v-if="showSubmissionsModal" :test="selectedTest" @close="closeSubmissions" />
     <FreeTryoutResultsModal v-if="showFreeTryoutResultsModal" :test="selectedTest" @close="closeTryoutResults" />
   </main>
@@ -243,6 +251,7 @@ const search = ref('')
 
 const showCreateModal = ref(false)
 const showAssignModal = ref(false)
+const assignRefreshing = ref(false)
 const showSubmissionsModal = ref(false)
 const showFreeTryoutResultsModal = ref(false)
 const selectedTest = ref(null)
@@ -455,6 +464,30 @@ const viewTryoutResults = (test) => {
 const closeTryoutResults = () => {
   showFreeTryoutResultsModal.value = false
   selectedTest.value = null
+}
+
+const refreshAssignData = async () => {
+  if (!selectedTest.value?.id) return
+  assignRefreshing.value = true
+  try {
+    const [qRes, testRes] = await Promise.all([
+      window.axios.get('/api/questions'),
+      window.axios.get(`/api/tests/${selectedTest.value.id}`),
+    ])
+    questions.value = qRes.data.items || []
+    const fresh = testRes.data
+    selectedTest.value = {
+      ...selectedTest.value,
+      ...fresh,
+      questionIds: Array.isArray(fresh?.question_ids) ? fresh.question_ids : (fresh?.questionIds || []),
+      isActive: fresh?.is_active ?? fresh?.isActive ?? false,
+    }
+    toast.success('Success', t('modals.testAssign.refreshDone'))
+  } catch (e) {
+    toast.error('Error', t('modals.testAssign.refreshFailed'))
+  } finally {
+    assignRefreshing.value = false
+  }
 }
 
 const closeAssign = () => {

@@ -31,7 +31,7 @@
     --color-sky: #DDF4FF;
     --color-mint: #DDF7EF;
     --color-cream: #F6EEDB;
-    --color-background: #F9FCFF;
+    --color-background: #fff;
     --color-text: #1D2B4F;
     --color-muted: #6B7280;
     --color-border: #DCE6F2;
@@ -181,7 +181,7 @@
     border-radius: 9999px;
     border: none;
     color: #ffffff;
-    background: linear-gradient(90deg, #3b0c77 0%, #541197 56%, #3b0c77 100%);
+    background: linear-gradient(90deg, #4e4e4e 0%, #797979 56%, #505050 100%);
     padding: 0.72rem 1rem;
     font-size: 0.94rem;
     font-weight: 700;

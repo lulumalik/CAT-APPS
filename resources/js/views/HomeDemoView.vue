@@ -1,5 +1,5 @@
 <template>
-  <main class="auth-right-pane min-h-screen text-text">
+  <main class="auth-right-pane min-h-screen text-text rounded-3xl">
     <span class="auth-visual-stripe fixed top-0 left-0 w-full h-full" style="z-index: -10;" />
     <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
       <div
@@ -164,10 +164,7 @@
       <div
         class="page-shell rounded-2xl border border-amber-200/50 bg-gradient-to-r from-[#333333] to-[#595959] px-5 py-4 text-center shadow-lg shadow-primary/25">
         <p class="text-xl md:text-2xl font-black uppercase tracking-wide text-amber-200">
-          Diawasi Langsung Oleh Purnawirawan Polri
-        </p>
-        <p class="mt-1 text-sm md:text-base text-blue-100 font-semibold">
-          Dibina langsung oleh para Purnawirawan POLRI yang berpengalaman.
+          Dibina dan dimonitor oleh para jenderal purnawirawan polri
         </p>
       </div>
     </div>
@@ -511,14 +508,30 @@
                       <p><span class="font-semibold text-text">Tempat, Tanggal Lahir:</span> {{
                         activeMemberModal.profile.birthPlaceDate }}</p>
                     </div>
+                    <p v-if="activeMemberModal.profile.summary" class="mt-3 text-sm text-gray-700 leading-relaxed">
+                      {{ activeMemberModal.profile.summary }}
+                    </p>
                   </div>
+                </div>
+
+                <div v-if="activeMemberModal.profile.personal?.length" class="mt-6 rounded-xl">
+                  <p
+                    class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white px-4 py-1 rounded-full mb-2 inline-block">
+                    Data Pribadi</p>
+                  <ul class="member-history-list mt-3 text-sm text-gray-700">
+                    <li v-for="item in activeMemberModal.profile.personal" :key="item"
+                      class="member-history-item flex items-start gap-2">
+                      <span class="member-history-dot mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary" />
+                      <span>{{ item }}</span>
+                    </li>
+                  </ul>
                 </div>
 
                 <div class="mt-8 grid gap-4 grid-cols-1 md:grid-cols-2">
                   <div class="rounded-xl">
                     <p
                       class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white px-4 py-1 rounded-full mb-2">
-                      Riwayat Pendidikan</p>
+                      Riwayat Pendidikan Formal</p>
                     <ul class="member-history-list mt-3 text-sm text-gray-700">
                       <li v-for="item in activeMemberModal.profile.education" :key="item"
                         class="member-history-item flex items-start gap-2">
@@ -528,10 +541,10 @@
                     </ul>
                   </div>
 
-                  <div class="rounded-xl">
+                  <div v-if="activeMemberModal.profile.organization?.length" class="rounded-xl">
                     <p
                       class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white px-4 py-1 rounded-full mb-2">
-                      Riwayat Organisasi</p>
+                      {{ activeMemberModal.profile.organizationHeading || 'Riwayat Organisasi' }}</p>
                     <ul class="member-history-list mt-3 text-sm text-gray-700">
                       <li v-for="item in activeMemberModal.profile.organization" :key="item"
                         class="member-history-item flex items-start gap-2">
@@ -832,14 +845,41 @@ const members = [
     },
   },
   {
-    name: 'AKBP (P) Wahyu suhardini, S.IP',
+    name: 'AKBP (P) Wahyu Suhardini, SIP',
     image: wahyuUrl,
     jabatan: 'Sekretaris',
     profile: {
-      birthPlaceDate: 'Tasikmalaya, 20 Juni 1972',
-      education: ['S1 Ilmu Pemerintahan (S.IP)', 'Pelatihan Administrasi dan Kearsipan'],
-      organization: ['Pengurus Bidang Administrasi Yayasan', 'Tim Koordinasi Program'],
-      work: ['Sekretaris Pratistha Cendekia Prestasi', 'Pendamping Operasional Administrasi Program'],
+      birthPlaceDate: 'Purwokerto, 3 Oktober 1961',
+      summary:
+        'Wahyu Suhardini, SIP menjabat sebagai Sekretaris Pratistha Cendekia Prestasi. Saat ini juga menjabat sebagai Waka Biro SDM PP Polri Daerah Jawa Barat.',
+      personal: [
+        'NIK: 3273204310610001',
+        'Alamat: Perumahan Alam Melati Residence Kav. B No.9 RT 02 RW 24 Antapani Tengah Bandung',
+        'Telepon: 081361100057',
+        'Email: suhardiniwahyu@gmail.com',
+        'Tinggi / Berat Badan: 164 cm / 61 kg',
+      ],
+      education: ['1973: SD', '1976: SMP', '1979/1980: SMA', '2009: S1'],
+      organizationHeading: 'Pendidikan Non Formal',
+      organization: [
+        'Seba Milsuk ANK V Th 1982',
+        'Secapa Polri REG ANK XIX Th 1992',
+        'Dikjur Bimmas Th 1985',
+        'TOT Pengadaan Barang dan Jasa LKPP',
+      ],
+      work: [
+        '1982–1987: BA Rumwattik Siwi Polda Metro Jaya',
+        '1987–1992: BA Subbag Watpers Res Lospalos Tim Tim',
+        '1992–1997: Kasubbag Minpers Res Lospalos Tim Tim',
+        '1997–2001: Kataud Denma Polda Jabar',
+        '2001–2003: Kasat Yanum Denma Polda Jabar',
+        '2003–2004: Kasat Yanma Denma Polda Jabar',
+        '2004–2011: Kasubbag Kapor Bekum Rolog Polda Jabar',
+        '2011–2018: Kasubbag Fasjas Bag Info Sarpras',
+        '2006–2019: PPK dan Pokja Pengadaan Barang Jasa',
+        '2018–2019: Kasubbag LP Bag Ada Birolog',
+        '2024–sekarang: Waka Biro SDM PP Polri Daerah Jawa Barat',
+      ],
     },
   },
   {
@@ -1384,7 +1424,7 @@ onUnmounted(() => {
   justify-content: center;
   overflow: hidden;
   isolation: isolate;
-  background-image: linear-gradient(120deg, #ffee00 0%, #e0c200 45%, #dcc600 100%);
+  background-image: linear-gradient(120deg, #ffbb00 0%, #e0c200 45%, #dcc600 100%);
   background-size: 220% 220%;
   box-shadow: 0 12px 30px -14px rgba(168, 168, 168, 0.8);
   animation: ctaTryoutBgFlow 4.8s ease-in-out infinite, ctaTryoutPulse 1.9s ease-in-out infinite;
@@ -1403,7 +1443,7 @@ onUnmounted(() => {
 
 .cta-tryout-animated:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 18px 36px -16px rgba(47, 107, 255, 0.92);
+  box-shadow: 0 18px 36px -16px rgba(122, 122, 122, 0.92);
 }
 
 .cta-tryout-animated:active {
@@ -1633,12 +1673,12 @@ onUnmounted(() => {
   0%,
   100% {
     transform: translateY(0) scale(1);
-    box-shadow: 0 12px 30px -14px rgba(47, 107, 255, 0.8);
+    box-shadow: 0 12px 30px -14px rgba(189, 189, 189, 0.8);
   }
 
   50% {
     transform: translateY(-1px) scale(1.025);
-    box-shadow: 0 16px 34px -14px rgba(47, 107, 255, 0.95);
+    box-shadow: 0 16px 34px -14px rgba(129, 129, 129, 0.95);
   }
 }
 

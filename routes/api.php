@@ -13,6 +13,7 @@ use App\Http\Controllers\ClassActivityController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\RankingController;
 
 // Public material routes
 Route::get('/materials/public', [MaterialController::class, 'publicIndex']);
@@ -98,6 +99,10 @@ Route::get('/free-tryout/tests', [TestDefinitionController::class, 'freeTryoutLi
 Route::get('/free-tryout/tests/{test}', [TestDefinitionController::class, 'freeTryoutShow']);
 Route::post('/free-tryout/tests/{test}/submit', [TestDefinitionController::class, 'freeTryoutSubmit']);
 
+Route::get('/rankings/categories', [RankingController::class, 'categories']);
+Route::get('/rankings/filters', [RankingController::class, 'filters']);
+Route::get('/rankings', [RankingController::class, 'index']);
+
 // Test operations (requires authentication via session)
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard/overview', [DashboardController::class, 'overview']);
@@ -142,6 +147,11 @@ Route::middleware('role:admin')->group(function () {
 });
 
 Route::middleware('role:admin,mentor')->group(function () {
+    Route::get('/rankings/manual', [RankingController::class, 'manualList']);
+    Route::post('/rankings/manual', [RankingController::class, 'manualStore']);
+    Route::put('/rankings/manual/{entry}', [RankingController::class, 'manualUpdate']);
+    Route::delete('/rankings/manual/{entry}', [RankingController::class, 'manualDestroy']);
+
     Route::get('/students/search', [UserController::class, 'searchableStudents']);
 
     Route::get('/questions', [QuestionController::class, 'index']);

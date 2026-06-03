@@ -1,17 +1,31 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity" @click="$emit('close')"></div>
-    <div class="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[2rem] bg-white p-8 shadow-2xl shadow-black/10 border border-gray-100 transform transition-all">
+    <div class="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-[2rem] bg-white p-8 shadow-2xl shadow-black/10 border border-gray-100 transform transition-all">
       <div class="flex items-center justify-between mb-6">
         <div>
           <h2 class="text-2xl font-bold text-gray-900 tracking-tight">{{ t('modals.testAssign.title') }}</h2>
           <p class="text-gray-500 mt-1">{{ t('modals.testAssign.subtitle') }}</p>
         </div>
-        <button class="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600" @click="$emit('close')">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-100 transition-colors disabled:opacity-50"
+            :disabled="refreshing"
+            :title="t('modals.testAssign.refreshHint')"
+            @click="$emit('refresh')"
+          >
+            <svg class="w-4 h-4" :class="{ 'animate-spin': refreshing }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            {{ refreshing ? t('modals.testAssign.refreshing') : t('modals.testAssign.refresh') }}
+          </button>
+          <button class="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600" @click="$emit('close')">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div class="space-y-6">
@@ -82,8 +96,9 @@ import { useI18n } from '@/composables/useI18n'
 const props = defineProps({
   test: { type: Object, required: true },
   questions: { type: Array, default: () => [] },
+  refreshing: { type: Boolean, default: false },
 })
-const emit = defineEmits(['close','submit'])
+const emit = defineEmits(['close', 'submit', 'refresh'])
 const { t } = useI18n()
 
 const selected = ref([])
@@ -130,6 +145,13 @@ watch(() => props.test, (t) => {
   category.value = t?.category || ''
   difficulty.value = ''
 }, { immediate: true })
+
+watch(() => props.questions, () => {
+  const ids = Array.isArray(props.test?.questionIds)
+    ? props.test.questionIds
+    : (Array.isArray(props.test?.question_ids) ? props.test.question_ids : [])
+  selected.value = Array.from(new Set(ids))
+}, { deep: true })
 
 const submit = () => {
   emit('submit', {

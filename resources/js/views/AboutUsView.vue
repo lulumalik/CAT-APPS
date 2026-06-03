@@ -17,10 +17,8 @@
           </router-link>
           <div class="md:flex md:items-center md:justify-center md:gap-4">
             <div class="md:w-4/12 mt-8 md:mt-0">
-              <div
-                class="rounded-full h-32 w-32 md:h-56 md:w-56 mx-auto flex items-center bg-gradient-to-r from-primary to-secondary p-2 shadow-lg">
-                <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi"
-                  class="mx-auto mb-4 h-16 w-16 md:h-36 md:w-36" />
+              <div class="w-64">
+                <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi" class="mx-auto mb-4 w-16 md:w-56" />
               </div>
             </div>
             <div>
@@ -284,7 +282,7 @@
                 || '-' }}</p>
               <p class="mt-4 text-sm font-semibold md:text-xl text-gray-600 text-center">Atas Nama</p>
               <p class="mt-1 text-sm font-bold md:text-xl text-text text-center leading-relaxed">{{ account.accountName
-              }}</p>
+                }}</p>
             </article>
           </div>
         </div>
@@ -371,8 +369,7 @@
               <div class="about-member-cv-layout">
                 <aside class="about-member-cv-sidebar relative left-24">
                   <div class="about-member-cv-photo-frame">
-                    <img :src="activeMemberModal.image" :alt="activeMemberModal.name"
-                      class="about-member-cv-photo" />
+                    <img :src="activeMemberModal.image" :alt="activeMemberModal.name" class="about-member-cv-photo" />
                   </div>
 
                   <div class="about-member-cv-identity">
@@ -390,20 +387,32 @@
                   <div class="about-member-cv-section">
                     <h5 class="about-member-cv-heading">Profil</h5>
                     <p class="about-member-cv-paragraph">
-                      {{ activeMemberModal.name }} menjabat sebagai {{ activeMemberModal.jabatan }} di Pratistha
-                      Cendekia Prestasi dengan fokus pada pembinaan terarah, disiplin, dan profesional.
+                      {{
+                        activeMemberModal.profile.summary
+                        || `${activeMemberModal.name} menjabat sebagai ${activeMemberModal.jabatan} di Pratistha Cendekia
+                      Prestasi dengan fokus pada pembinaan terarah, disiplin, dan profesional.`
+                      }}
                     </p>
                   </div>
 
+                  <div v-if="activeMemberModal.profile.personal?.length" class="about-member-cv-section">
+                    <h5 class="about-member-cv-heading">Data Pribadi</h5>
+                    <ul class="about-member-cv-list">
+                      <li v-for="item in activeMemberModal.profile.personal" :key="item">{{ item }}</li>
+                    </ul>
+                  </div>
+
                   <div class="about-member-cv-section">
-                    <h5 class="about-member-cv-heading">Pendidikan</h5>
+                    <h5 class="about-member-cv-heading">Riwayat Pendidikan Formal</h5>
                     <ul class="about-member-cv-list">
                       <li v-for="item in activeMemberModal.profile.education" :key="item">{{ item }}</li>
                     </ul>
                   </div>
 
-                  <div class="about-member-cv-section">
-                    <h5 class="about-member-cv-heading">Riwayat Organisasi</h5>
+                  <div v-if="activeMemberModal.profile.organization?.length" class="about-member-cv-section">
+                    <h5 class="about-member-cv-heading">
+                      {{ activeMemberModal.profile.organizationHeading || 'Riwayat Organisasi' }}
+                    </h5>
                     <ul class="about-member-cv-list">
                       <li v-for="item in activeMemberModal.profile.organization" :key="item">{{ item }}</li>
                     </ul>
@@ -517,7 +526,7 @@ const orgChart = {
   komisaris: { role: 'Komisaris', name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si' },
   direkturUtama: { role: 'Direktur Utama', name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH' },
   direktur: { role: 'Direktur', name: 'Gilang Nurfahradz Syahni Fasya, S.T' },
-  sekretaris: { role: 'Sekretaris', name: 'AKBP (P) Wahyu suhardini, S.IP' },
+  sekretaris: { role: 'Sekretaris', name: 'AKBP (P) Wahyu Suhardini, SIP' },
   bendahara: { role: 'Bendahara', name: 'KBP (P) Dra.Rina Regina' },
   internal: { role: 'Internal', name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H. M.T.C.P' },
   eksternal: { role: 'Eksternal', name: 'Kompol (P) Tutik' },
@@ -537,14 +546,30 @@ const members = [
     },
   },
   {
-    name: 'AKBP (P) Wahyu suhardini, S.IP',
+    name: 'AKBP (P) Wahyu Suhardini, SIP',
     image: wahyuUrl,
     jabatan: 'Sekretaris',
     profile: {
-      birthPlaceDate: 'Tasikmalaya, 20 Juni 1972',
-      education: ['S1 Ilmu Pemerintahan (S.IP)', 'Pelatihan Administrasi dan Kearsipan'],
-      organization: ['Pengurus Bidang Administrasi Yayasan', 'Tim Koordinasi Program'],
-      work: ['Sekretaris Pratistha Cendekia Prestasi', 'Pendamping Operasional Administrasi Program'],
+      birthPlaceDate: 'Purwokerto, 3 Oktober 1961',
+      summary:
+        'Wahyu Suhardini, SIP menjabat sebagai Sekretaris Pratistha Cendekia Prestasi. Saat ini juga menjabat sebagai Waka Biro SDM PP Polri Daerah Jawa Barat, dengan pengalaman panjang di bidang administrasi, logistik, dan pengadaan barang/jasa di lingkungan Polri.',
+      education: [
+        '1979/1980 Menyelesaikan masa SMA',
+        '2009 - Menyelesaikan masa S1',
+      ],
+      organizationHeading: 'Pendidikan Non Formal',
+      organization: [
+        'Seba Milsuk ANK V Th 1982',
+        'Secapa Polri REG ANK XIX Th 1992',
+        'Dikjur Bimmas Th 1985',
+        'TOT Pengadaan Barang dan Jasa LKPP',
+      ],
+      work: [
+        '2011–2018: Kasubbag Fasjas Bag Info Sarpras',
+        '2006–2019: PPK dan Pokja Pengadaan Barang Jasa',
+        '2018–2019: Kasubbag LP Bag Ada Birolog',
+        '2024–sekarang: Waka Biro SDM PP Polri Daerah Jawa Barat',
+      ],
     },
   },
   {
