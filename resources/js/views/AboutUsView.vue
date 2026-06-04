@@ -458,6 +458,7 @@ const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).hre
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
+const azharUrl = new URL('../../assets/anggota/azhar.jpg', import.meta.url).href
 const skKemenkumhamUrl = new URL('../../assets/legal/sk-kemenkumham.png', import.meta.url).href
 const npwpUrl = new URL('../../assets/legal/npwp.png', import.meta.url).href
 const nibUrl = new URL('../../assets/legal/nib.png', import.meta.url).href
@@ -603,6 +604,32 @@ const members = [
       education: ['S1 Ilmu Sosial', 'Pelatihan Public Relations'],
       organization: ['Pengurus Hubungan Eksternal', 'Tim Kemitraan Strategis'],
       work: ['Koordinator Bidang Eksternal', 'Pengembang Jejaring Kolaborasi Program'],
+    },
+  },
+  {
+    name: 'Iqbal Azhar Ramehani, S. T',
+    image: azharUrl,
+    jabatan: 'Chief Marketing Officer (CMO)',
+    profile: {
+      birthPlaceDate: '-',
+      summary:
+        'Menjabat sebagai CMO (Chief Marketing Officer). Bertanggung jawab penuh atas seluruh aktivitas pemasaran, pengembangan merek (branding), dan strategi periklanan untuk mendorong pertumbuhan bisnis.',
+      education: [
+        'D3 Teknik Perancangan Mesin – Politeknik Manufaktur Bandung (2011)',
+        'S1 Teknik Industri – Widyatama (2016)',
+      ],
+      organizationHeading: 'Pengalaman Organisasi',
+      organization: [
+        'Ketua Bisnis Incubator POLMAN (2012–2013)',
+        'Ketua Asosiasi Bisnis Mahasiswa Bandung Utara (2011–2013)',
+      ],
+      work: [
+        'Sect Spv Boiler Indofood (2014–2017)',
+        'R&D Design PT Pudak (2017–2020)',
+        'Cost Estimator PT Pudak (2021–2026)',
+        'Digital Marketing Practitioner and Trainer',
+        'Konsultan Digital Marketing and Branding (2019–2026)',
+      ],
     },
   },
 ]

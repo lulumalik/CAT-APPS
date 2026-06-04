@@ -145,11 +145,10 @@ class MaterialController extends Controller
     }
 
     // Public Endpoints
-    public function publicIndex()
+    public function publicIndex(Request $request)
     {
         $materials = Material::with('creator:id,name')
-            ->where('status', 'published')
-            ->where('visibility', 'public')
+            ->publishedForBlog($request->user())
             ->latest()
             ->get();
 

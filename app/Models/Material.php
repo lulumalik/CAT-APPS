@@ -37,9 +37,38 @@ class Material extends Model
             return false;
         }
 
+        if (in_array($user->role, ['admin', 'mentor'], true)) {
+            return true;
+        }
+
         return $this->bimbleClasses()->whereHas('students', function ($q) use ($user) {
             $q->where('users.id', $user->id);
         })->exists();
+    }
+
+    public function scopePublishedForBlog($query, ?\App\Models\User $user)
+    {
+        $query->where('status', 'published');
+
+        if ($user && in_array($user->role, ['admin', 'mentor'], true)) {
+            return $query;
+        }
+
+        if ($user) {
+            return $query->where(function ($builder) use ($user) {
+                $builder->where('visibility', 'public')
+                    ->orWhere(function ($restricted) use ($user) {
+                        $restricted->where('visibility', 'class_only')
+                            ->whereHas('bimbleClasses', function ($classQuery) use ($user) {
+                                $classQuery->whereHas('students', function ($studentQuery) use ($user) {
+                                    $studentQuery->where('users.id', $user->id);
+                                });
+                            });
+                    });
+            });
+        }
+
+        return $query->where('visibility', 'public');
     }
 
     protected static function boot()
