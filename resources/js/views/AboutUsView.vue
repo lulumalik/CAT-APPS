@@ -356,10 +356,10 @@
       <Teleport to="body">
         <Transition name="member-slide-fade">
           <div v-if="activeMemberModal"
-            class="fixed inset-0 z-[125] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
+            class="fixed inset-0 z-[125] flex items-start sm:items-center justify-center bg-black/55 p-3 sm:p-4 backdrop-blur-[2px] overflow-y-auto"
             role="dialog" aria-modal="true" aria-labelledby="member-modal-title" @click.self="closeMemberModal">
             <div
-              class="about-member-cv-modal w-full max-w-5xl overflow-hidden rounded-2xl relative border border-border shadow-2xl shadow-black/30">
+              class="about-member-cv-modal w-full max-w-5xl overflow-hidden rounded-2xl relative border border-border shadow-2xl shadow-black/30 my-3 sm:my-0">
               <button type="button" @click="closeMemberModal"
                 class="absolute right-3 top-3 z-40 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white shadow-lg transition hover:bg-black/85 focus:outline-none focus:ring-2 focus:ring-white/90"
                 aria-label="Tutup detail anggota">
@@ -367,7 +367,7 @@
               </button>
 
               <div class="about-member-cv-layout">
-                <aside class="about-member-cv-sidebar relative left-24">
+                <aside class="about-member-cv-sidebar">
                   <div class="about-member-cv-photo-frame">
                     <img :src="activeMemberModal.image" :alt="activeMemberModal.name" class="about-member-cv-photo" />
                   </div>
@@ -437,7 +437,7 @@
 <script setup>
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
 import { ArrowLeft, Crown, FileBadge, Globe, Image, Instagram, Landmark, Mail, Music2, Phone, Users, X as XIcon } from 'lucide-vue-next'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const accesoriseUrl = new URL('../../assets/accessorise.png', import.meta.url).href
@@ -531,7 +531,7 @@ const orgChart = {
   bendahara: { role: 'Bendahara', name: 'KBP (P) Dra.Rina Regina' },
   internal: { role: 'Internal', name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H. M.T.C.P' },
   eksternal: { role: 'Eksternal', name: 'Kompol (P) Tutik' },
-  digitalMarketing: { role: 'Digital Marketing', name: '-' },
+  digitalMarketing: { role: 'Chief Marketing Officer (CMO)', name: 'Iqbal Azhar Ramadhani, S. T' },
 }
 
 const members = [
@@ -590,8 +590,25 @@ const members = [
     jabatan: 'Bidang Internal',
     profile: {
       birthPlaceDate: 'Palembang, 15 Juni 1964',
-      education: ['SEPAMILSUKWAN VI, tamat 1989', 'UNLA Bandung, Fakultas Hukum, tamat 2007', 'Selapa Polri angkatan 39, tamat 2008', 'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, inagurasi 2009'],
-      organization: ['Kasubdit Bintibluh Dit Binmas Polda Jabar, 2012-2015.', 'Kasubdit Pariwisata Dit Pam Obvit Polda Jabar, 2015-2017.', 'Kasubdit Kerma Dit Binmas Polda Jabar, 2017-2019.', 'Kasubdit Bhabinkamtibmas Polda Jabar, 2019-2022'],
+      education: [
+        'IKIP N Jakarta, Fakultas Bahasa Inggris, 1987',
+        'SEPAMILSUKWAN VI, 1989',
+        'UNLA Bandung, Fakultas Hukum, 2007',
+        'Selapa Polri angkatan 39, 2008',
+        'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, 2009.',
+        'Management Development Course (IPS, Problem Solving), Akpol, London, 1989, 1999',
+        'Taining on Police Reform, Japan, Singapore, 2002, 2009',
+        'Training Drugs and treatment, Australia, Thayland, 2003, 2004',
+        'Law Enforcement Management Program, Vietnam, 2012',
+      ],
+      organization: [
+        'Dosen Muda, Akpol Smrg, IKIP Jkt, 1989-1996.',
+        'Kasubbag Min Ops Pengawasan Orang Asing Dit IPP Polda Jabar, 1996-1999.',
+        'Kasubbag Was Jas Pam (Satpam), Biro Bina Mitra Polda Jabar, 2008-2011.',
+        'Kasubdit Bhabinkamtibmas Polda Jabar, 2019-2022',
+        'Pelatih Interpersonal Skill, Service Excellent dan Tanggap darurat sejak 1990 s/d 2022 di Sekolah Gada Pratama, Gada Madya, Gada Utama',
+        'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015',
+      ],
       work: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015'],
     },
   },
@@ -607,11 +624,11 @@ const members = [
     },
   },
   {
-    name: 'Iqbal Azhar Ramehani, S. T',
+    name: 'Iqbal Azhar Ramadhani , S. T',
     image: azharUrl,
     jabatan: 'Chief Marketing Officer (CMO)',
     profile: {
-      birthPlaceDate: '-',
+      birthPlaceDate: 'Bandung, 4 Maret 1994',
       summary:
         'Menjabat sebagai CMO (Chief Marketing Officer). Bertanggung jawab penuh atas seluruh aktivitas pemasaran, pengembangan merek (branding), dan strategi periklanan untuk mendorong pertumbuhan bisnis.',
       education: [
@@ -707,6 +724,7 @@ const activeLeaderIndex = ref(Math.max(0, heroLeaders.findIndex((leader) => lead
 const isLeaderDetailModalOpen = ref(false)
 const activeMemberModal = ref(null)
 const activeLeaderDetailIndex = ref(activeLeaderIndex.value)
+const previousBodyOverflow = ref('')
 const touchStartX = ref(null)
 const pointerStartX = ref(null)
 const swipeThreshold = 45
@@ -822,6 +840,16 @@ const closeMemberModal = () => {
   activeMemberModal.value = null
 }
 
+watch(activeMemberModal, (member) => {
+  if (typeof document === 'undefined') return
+  if (member) {
+    previousBodyOverflow.value = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return
+  }
+  document.body.style.overflow = previousBodyOverflow.value || ''
+})
+
 const centerOrgChartViewport = () => {
   if (window.innerWidth > 640) return
   const viewport = orgChartViewportRef.value
@@ -871,6 +899,9 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', onLeaderResize)
   if (fadeObserver) {
     fadeObserver.disconnect()
+  }
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = previousBodyOverflow.value || ''
   }
 })
 </script>
@@ -959,17 +990,14 @@ onBeforeUnmount(() => {
 .about-member-cv-layout {
   display: grid;
   grid-template-columns: minmax(260px, 320px) 1fr;
-  height: min(86vh, 760px);
-  max-height: 86vh;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .about-member-cv-sidebar {
   background: #fff;
   padding: 2rem 1.6rem;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
-  overflow-y: auto;
-  min-height: 0;
+  overflow: visible;
 }
 
 .about-member-cv-photo-frame {
@@ -1020,8 +1048,7 @@ onBeforeUnmount(() => {
   padding-top: 2rem;
   padding-bottom: 2rem;
   padding-right: 2rem;
-  overflow-y: auto;
-  min-height: 0;
+  overflow: visible;
 }
 
 .about-member-cv-section+.about-member-cv-section {
@@ -1059,13 +1086,16 @@ onBeforeUnmount(() => {
 @media (max-width: 900px) {
   .about-member-cv-layout {
     grid-template-columns: 1fr;
-    height: min(88vh, 860px);
-    max-height: 88vh;
   }
 
   .about-member-cv-sidebar {
     border-right: none;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 1.15rem 1rem;
+  }
+
+  .about-member-cv-content {
+    padding: 1rem;
   }
 }
 

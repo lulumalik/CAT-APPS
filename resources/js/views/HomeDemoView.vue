@@ -7,18 +7,18 @@
         <div class="hidden md:flex h-16 items-center justify-center gap-1 lg:gap-2 flex-wrap">
           <div class="flex items-center gap-1">
             <button v-for="item in quickNavItems" :key="item.id" type="button"
-              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap"
+              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap"
               @click="scrollToSection(item.id)">
               {{ item.label }}
             </button>
           </div>
           <div class="flex items-center gap-2">
             <router-link to="/selayang-pandang"
-              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap">
+              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
               Selayang Pandang
             </router-link>
             <router-link to="/about-us"
-              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors whitespace-nowrap">
+              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
               Tentang Kami
             </router-link>
           </div>
@@ -27,11 +27,11 @@
         <div class="md:hidden">
           <div class="h-12 relative flex items-center justify-center gap-2">
             <router-link to="/about-us"
-              class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors">
+              class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors">
               Tentang Kami
             </router-link>
             <button type="button"
-              class="absolute right-0 inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-text hover:bg-sky transition-colors"
+              class="absolute right-0 inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-text hover:bg-gray-300 transition-colors"
               aria-label="Toggle menu" @click="isMobileMenuOpen = !isMobileMenuOpen">
               <span class="text-xl leading-none">{{ isMobileMenuOpen ? 'x' : '=' }}</span>
             </button>
@@ -40,12 +40,12 @@
           <div v-if="isMobileMenuOpen" class="pb-3 pt-2 border-t border-border">
             <div class="grid gap-1 text-center">
               <router-link to="/selayang-pandang"
-                class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors"
+                class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors"
                 @click="isMobileMenuOpen = false">
                 Selayang Pandang
               </router-link>
               <button v-for="item in quickNavItems" :key="`mobile-${item.id}`" type="button"
-                class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-sky hover:text-primary transition-colors"
+                class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors"
                 @click="scrollToSection(item.id)">
                 {{ item.label }}
               </button>
@@ -75,7 +75,9 @@
               Persiapan AKPOL yang Intensif, Eksklusif, dan Terarah.
             </h1>
             <p class="mt-4 max-w-2xl text-sm md:text-base text-blue-100 font-semibold leading-relaxed">
-              ​Bingung memulai persiapan AKPOL dari mana? Serahkan pada ahlinya. Pratistha Cendekia Prestasi menyediakan ekosistem belajar profesional dengan fasilitas premium untuk memastikan setiap calon peserta tampil maksimal di seluruh tahapan seleksi.
+              ​Bingung memulai persiapan AKPOL dari mana? Serahkan pada ahlinya. Pratistha Cendekia Prestasi menyediakan
+              ekosistem belajar profesional dengan fasilitas premium untuk memastikan setiap calon peserta tampil
+              maksimal di seluruh tahapan seleksi.
             </p>
             <p class="mt-3 max-w-2xl text-xs md:text-sm text-blue-50 font-semibold">
               Alamat kantor Jl. Sukamaju no. 142, Cipadung Kulon, Kec. Panyileukan, Kota Bandung - Jabar 40614
@@ -93,12 +95,15 @@
               </router-link>
             </div>
 
-            <div class="mt-6 rounded-2xl border border-red-200/40 bg-orange-500/70 pr-4 pt-4 pb-4 pl-36 md:pl-40 backdrop-blur-sm relative">
-              <img src="../../assets/promo.png" alt="Promo Early Bird" class=" absolute top-0 md:-top-8 -left-8 z-10 object-cover w-44" />
+            <div
+              class="mt-6 rounded-2xl border border-red-200/40 bg-orange-500/70 pr-4 pt-4 pb-4 pl-36 md:pl-40 backdrop-blur-sm relative">
+              <img src="../../assets/promo.png" alt="Promo Early Bird"
+                class=" absolute top-0 md:-top-8 -left-8 z-10 object-cover w-44" />
               <p class="text-[11px] md:text-sm font-extrabold uppercase tracking-[0.16em] text-white">Promo Early Bird
               </p>
-              <p class="mt-1 text-sm md:text-base font-bold text-white">Dapatkan promo spesial untuk <b class="text-[gold]">10 Pendaftar
-                Pertama.</b></p>
+              <p class="mt-1 text-sm md:text-base font-bold text-white">Dapatkan promo spesial untuk <b
+                  class="text-[gold]">10 Pendaftar
+                  Pertama.</b></p>
             </div>
           </div>
 
@@ -203,7 +208,8 @@
                   :class="activeLeaderIndex === index
                     ? 'scale-[1.01] border-3 border-white shadow-lg shadow-white/20'
                     : 'xl:opacity-70 hover:opacity-100'" @click="goToLeader(index)">
-                  <img :src="leader.image" :alt="leader.name" class="h-24 md:h-28 xl:h-full w-full rounded-md object-cover" />
+                  <img :src="leader.image" :alt="leader.name"
+                    class="h-24 md:h-28 xl:h-full w-full rounded-md object-cover" />
                 </article>
               </div>
               <div class="xl:hidden absolute -bottom-24 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
@@ -214,7 +220,8 @@
                 </button>
                 <button type="button"
                   class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-[#1c1d2f]/85 text-white shadow transition disabled:opacity-45 disabled:cursor-not-allowed"
-                  :disabled="activeLeaderIndex >= leaders.length - 1" @click="stepLeader(1)" aria-label="Leader berikutnya">
+                  :disabled="activeLeaderIndex >= leaders.length - 1" @click="stepLeader(1)"
+                  aria-label="Leader berikutnya">
                   <ChevronRight class="h-4 w-4" />
                 </button>
               </div>
@@ -253,9 +260,9 @@
               </button>
             </div>
           </div>
-          <div class="hidden xl:block absolute  md:w-10/12 xl:relative xl:top-8 xl:left-0">
-            <img src="../../assets/group.png" alt="group" class="w-9/12 object-cover" />
-            <img src="../../assets/group2.png" alt="group2" class="w-[73%] object-cover absolute bottom-0 left-56" />
+          <div class="hidden xl:block absolute md:w-10/12 xl:relative">
+            <img src="../../assets/group.png" alt="group"
+              class="w-full absolute -top-[300px] -right-12 object-cover h-[700px]" />
           </div>
         </div>
       </div>
@@ -351,16 +358,17 @@
     </section>
 
     <section class="px-5 md:px-10 pb-14 relative z-10">
-      <div
-        class="page-shell rounded-[2rem] bg-black text-white p-8 md:p-10 shadow-2xl shadow-[#000] fade-up delay-3">
-        <h2 class="text-2xl md:text-3xl font-bold mb-3">Bagaimana Siap naik level untuk persiapan Akademi Kepolisian?</h2>
+      <div class="page-shell rounded-[2rem] bg-black text-white p-8 md:p-10 shadow-2xl shadow-[#000] fade-up delay-3">
+        <h2 class="text-2xl md:text-3xl font-bold mb-3">Bagaimana Siap naik level untuk persiapan Akademi Kepolisian?
+        </h2>
         <p class="text-white/80">
           Bergabung sebagai peserta, lengkapi pendaftaran secara bertahap, lalu ikuti program kelas kursus online dengan
           standar pembelajaran profesional.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <router-link to="/free-tryout"
-            class="px-6 py-3 rounded-full bg-yellow-500 text-white font-semibold cta-tryout-animated transition-all">Coba Tryout Gratis</router-link>
+            class="px-6 py-3 rounded-full bg-yellow-500 text-white font-semibold cta-tryout-animated transition-all">Coba
+            Tryout Gratis</router-link>
         </div>
       </div>
     </section>
@@ -502,7 +510,7 @@
                     <h4 class="text-xl font-extrabold leading-tight text-text md:text-2xl">{{ activeMemberModal.name }}
                     </h4>
                     <p class="text-sm font-semibold uppercase tracking-wide text-primary">{{ activeMemberModal.jabatan
-                    }}
+                      }}
                     </p>
                     <div class="mt-3 space-y-1.5 text-sm text-gray-700">
                       <p><span class="font-semibold text-text">Tempat, Tanggal Lahir:</span> {{
@@ -608,7 +616,6 @@ const iketaUrl = new URL('../../assets/pengajar/Iketutadipurnama.jpg', import.me
 const yunusSufianUrl = new URL('../../assets/pengajar/YunusSufian.png', import.meta.url).href
 const defaultTeacherUrl = new URL('../../assets/anggota/default.png', import.meta.url).href
 const cvTemplateUrl = new URL('../../assets/cv.png', import.meta.url).href
-const card2Url = new URL('../../assets/group2.png', import.meta.url).href
 const selayangCard = new URL('../../assets/selayangcard.png', import.meta.url).href
 const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
 const bannerUrl = new URL('../../assets/Banner.png', import.meta.url).href
@@ -899,8 +906,25 @@ const members = [
     jabatan: 'Bidang Internal',
     profile: {
       birthPlaceDate: 'Palembang, 15 Juni 1964',
-      education: ['IKIP N Jakarta, Fakultas Bahasa Inggris, 1987', 'SEPAMILSUKWAN VI, 1989', 'UNLA Bandung, Fakultas Hukum, 2007', 'Selapa Polri angkatan 39, 2008', 'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, 2009.', 'Management Development Course (IPS, Problem Solving ), Akpol, London, 1989, 1999', 'Training on Police Reform, Japan, Singapore, 2002, 2009', 'Training Drugs and treatment, Australia, Thayland, 2003, 2004', 'Law Enforcement  Management  Program, Vietnam, 2012'],
-      organization: ['Dosen Muda, Akpol Smrg, 1989-1994', 'Dosen Muda, PTIK Jakarta, 1994-1996', 'Kasubbag Min Ops Pengawasan Orang Asing Dit IPP Polda Jabar, 1996-1999', 'Kasubbag Was Jas Pam (Satpam), Biro Bina Mitra Polda Jabar, 2008-2011', 'Kasubdit Bhabinkamtibmas Polda Jabar, 2019-2022'],
+      education: [
+        'IKIP N Jakarta, Fakultas Bahasa Inggris, 1987',
+        'SEPAMILSUKWAN VI, 1989',
+        'UNLA Bandung, Fakultas Hukum, 2007',
+        'Selapa Polri angkatan 39, 2008',
+        'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, 2009.',
+        'Management Development Course (IPS, Problem Solving), Akpol, London, 1989, 1999',
+        'Taining on Police Reform, Japan, Singapore, 2002, 2009',
+        'Training Drugs and treatment, Australia, Thayland, 2003, 2004',
+        'Law Enforcement Management Program, Vietnam, 2012',
+      ],
+      organization: [
+        'Dosen Muda, Akpol Smrg, IKIP Jkt, 1989-1996.',
+        'Kasubbag Min Ops Pengawasan Orang Asing Dit IPP Polda Jabar, 1996-1999.',
+        'Kasubbag Was Jas Pam (Satpam), Biro Bina Mitra Polda Jabar, 2008-2011.',
+        'Kasubdit Bhabinkamtibmas Polda Jabar, 2019-2022',
+        'Pelatih Interpersonal Skill, Service Excellent dan Tanggap darurat sejak 1990 s/d 2022 di Sekolah Gada Pratama, Gada Madya, Gada Utama',
+        'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015',
+      ],
       work: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015']
     },
   },
@@ -942,7 +966,17 @@ const teachers = [
     role: 'Pengajar Bahasa Inggris',
     image: natashateacherUrl,
     birthPlaceDate: 'Palembang, 15 Juni 1964',
-    education: ['SEPAMILSUKWAN VI, tamat 1989', 'UNLA Bandung, Fakultas Hukum, tamat 2007', 'Selapa Polri angkatan 39, tamat 2008', 'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, inagurasi 2009'],
+    education: [
+      'IKIP N Jakarta, Fakultas Bahasa Inggris, 1987',
+      'SEPAMILSUKWAN VI, 1989',
+      'UNLA Bandung, Fakultas Hukum, 2007',
+      'Selapa Polri angkatan 39, 2008',
+      'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, 2009.',
+      'Management Development Course (IPS, Problem Solving), Akpol, London, 1989, 1999',
+      'Taining on Police Reform, Japan, Singapore, 2002, 2009',
+      'Training Drugs and treatment, Australia, Thayland, 2003, 2004',
+      'Law Enforcement Management Program, Vietnam, 2012',
+    ],
     teaching: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada  Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015'],
   },
   {

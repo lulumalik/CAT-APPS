@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '@/views/HomeView.vue';
 import HomeDemoView from '@/views/HomeDemoView.vue';  
 import AboutUsView from '@/views/AboutUsView.vue';
 import SelayangPandangView from '@/views/SelayangPandangView.vue';
@@ -27,7 +26,6 @@ import { useAppStore } from '@/stores/app';
 
 const routes = [
   { path: '/', name: 'home-demo', component: HomeDemoView },
-  { path: '/home', name: 'home', component: HomeView },
   { path: '/about-us', name: 'about-us', component: AboutUsView },
   { path: '/selayang-pandang', name: 'selayang-pandang', component: SelayangPandangView },
   { path: '/login', name: 'login', component: LoginView },
