@@ -99,20 +99,22 @@ Route::get('/storage/{path}', function (string $path) {
 
 Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
     if (! $request->hasValidSignature()) {
-        abort(403, 'Tautan verifikasi tidak valid atau sudah kedaluwarsa.');
+        return redirect('/email/verified?status=expired');
     }
 
-    $user = User::findOrFail($id);
-    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-        abort(403, 'Hash verifikasi email tidak cocok.');
+    $user = User::find($id);
+    if ($user === null || ! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        return redirect('/email/verified?status=invalid');
     }
 
-    if (! $user->hasVerifiedEmail()) {
-        $user->markEmailAsVerified();
-        event(new Verified($user));
+    if ($user->hasVerifiedEmail()) {
+        return redirect('/email/verified?status=already');
     }
 
-    return redirect('/login?verified=1');
+    $user->markEmailAsVerified();
+    event(new Verified($user));
+
+    return redirect('/email/verified?status=success');
 })->name('verification.verify');
 
 Route::view('/{any}', 'welcome')->where('any', '^(?!storage(?:$|/)).*');

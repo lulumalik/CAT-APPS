@@ -20,6 +20,7 @@ import BimbleClassesManageView from '@/views/BimbleClassesManageView.vue';
 import BimbleClassRoomView from '@/views/BimbleClassRoomView.vue';
 import MyBimbleClassesView from '@/views/MyBimbleClassesView.vue';
 import ProfileView from '@/views/ProfileView.vue';
+import EmailVerifiedView from '@/views/EmailVerifiedView.vue';
 import NotificationsView from '@/views/NotificationsView.vue';
 import CertificateManagementView from '@/views/CertificateManagementView.vue';
 import ParentJoinView from '@/views/ParentJoinView.vue';
@@ -50,6 +51,7 @@ const routes = [
   { path: '/quick-test/:id', name: 'quick-test', component: TestRunnerView, meta: { requiresAuth: true } },
   { path: '/registration', name: 'registration', component: RegistrationWizardView, meta: { requiresAuth: true } },
   { path: '/profile', name: 'profile', component: ProfileView, meta: { requiresAuth: true } },
+  { path: '/email/verified', name: 'email-verified', component: EmailVerifiedView },
   { path: '/notifications', name: 'notifications', component: NotificationsView, meta: { requiresAuth: true } },
   { path: '/admin/registration', name: 'admin-registration', component: AdminRegistrationView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/certificates', name: 'admin-certificates', component: CertificateManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
@@ -102,6 +104,7 @@ router.beforeEach(async (to, from, next) => {
       'about-us',
       'selayang-pandang',
       'profile',
+      'email-verified',
       'registration',
       'dashboard',
       'my-classes',
@@ -128,6 +131,7 @@ router.beforeEach(async (to, from, next) => {
       'child-detail',
       'notifications',
       'blog-detail',
+      'email-verified',
     ];
     if (!allowedForParent.includes(String(to.name))) {
       next({ name: 'dashboard' });
