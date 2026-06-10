@@ -22,6 +22,10 @@ import MyBimbleClassesView from '@/views/MyBimbleClassesView.vue';
 import ProfileView from '@/views/ProfileView.vue';
 import NotificationsView from '@/views/NotificationsView.vue';
 import CertificateManagementView from '@/views/CertificateManagementView.vue';
+import ParentJoinView from '@/views/ParentJoinView.vue';
+import ChildDetailView from '@/views/ChildDetailView.vue';
+import GuardianManageView from '@/views/GuardianManageView.vue';
+import StudentReportsManageView from '@/views/StudentReportsManageView.vue';
 import { useAppStore } from '@/stores/app';
 
 const routes = [
@@ -38,7 +42,11 @@ const routes = [
   { path: '/blog', name: 'blog', component: BlogView },
   { path: '/blog/:slug', name: 'blog-detail', component: BlogDetailView },
   { path: '/free-tryout', name: 'free-tryout', component: FreeTryoutView },
-  { path: '/rankings', name: 'rankings', component: RankingsView },
+  { path: '/rankings', name: 'rankings', component: RankingsView, meta: { requiresAuth: true, requiresStaff: true } },
+  { path: '/parent/join/:token', name: 'parent-join', component: ParentJoinView },
+  { path: '/child/:id', name: 'child-detail', component: ChildDetailView, meta: { requiresAuth: true } },
+  { path: '/admin/guardians', name: 'admin-guardians', component: GuardianManageView, meta: { requiresAuth: true, requiresStaff: true } },
+  { path: '/admin/student-reports', name: 'admin-student-reports', component: StudentReportsManageView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/quick-test/:id', name: 'quick-test', component: TestRunnerView, meta: { requiresAuth: true } },
   { path: '/registration', name: 'registration', component: RegistrationWizardView, meta: { requiresAuth: true } },
   { path: '/profile', name: 'profile', component: ProfileView, meta: { requiresAuth: true } },
@@ -104,6 +112,24 @@ router.beforeEach(async (to, from, next) => {
       'notifications',
     ];
     if (!allowedForStudent.includes(String(to.name))) {
+      next({ name: 'dashboard' });
+      return;
+    }
+  }
+
+  // Parents can only access their dashboard, children detail, and public info pages.
+  if (store.role === 'parent') {
+    const allowedForParent = [
+      'home-demo',
+      'home',
+      'about-us',
+      'selayang-pandang',
+      'dashboard',
+      'child-detail',
+      'notifications',
+      'blog-detail',
+    ];
+    if (!allowedForParent.includes(String(to.name))) {
       next({ name: 'dashboard' });
       return;
     }

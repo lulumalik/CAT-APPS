@@ -268,6 +268,63 @@
       </div>
     </section>
 
+    
+    <section id="gallery" class="px-5 md:px-10 pb-8 mt-10 relative z-10">
+      <div class="page-shell fade-up delay-2">
+        <div
+          class="relative overflow-hidden rounded-[2rem] border border-white/20 bg-gradient-to-r from-[#333333] via-[#4a4a4a] to-[#595959] px-5 py-8 md:px-10 md:py-12 shadow-2xl shadow-primary/30">
+          <div
+            class="pointer-events-none absolute -top-10 -left-10 h-40 w-40 rounded-full bg-yellow-300/20 blur-2xl floating-orb" />
+          <div
+            class="pointer-events-none absolute bottom-0 right-1/3 h-32 w-32 rounded-full bg-secondary/30 blur-2xl floating-orb" />
+          <div class="relative z-10 grid gap-8 lg:grid-cols-[1.45fr_0.9fr] items-center">
+            <div class="gallery-mosaic">
+              <button v-for="(img, i) in galleryPreview" :key="`gallery-tile-${i}`" type="button"
+                class="gallery-tile group" :class="`gallery-tile-${i}`" @click="openGallery(i)"
+                :aria-label="`Buka dokumentasi kegiatan ${i + 1}`">
+                <img :src="img" :alt="`Dokumentasi kegiatan ${i + 1}`" class="gallery-tile-img" loading="lazy" />
+                <span class="gallery-tile-overlay">
+                  <Maximize2 class="h-5 w-5 text-white" />
+                </span>
+                <span v-if="i === 0"
+                  class="absolute left-3 bottom-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-yellow-400 text-[#333] shadow-lg shadow-black/30 transition-transform group-hover:scale-110">
+                  <Play class="h-5 w-5 fill-current" />
+                </span>
+              </button>
+              <button type="button" class="gallery-tile gallery-tile-more group" @click="openGallery(0)"
+                aria-label="Lihat semua dokumentasi kegiatan">
+                <img :src="galleryMoreImage" alt="Lihat semua dokumentasi" class="gallery-tile-img opacity-50"
+                  loading="lazy" />
+                <span class="gallery-more-overlay">
+                  <span class="text-2xl md:text-3xl font-black leading-none">+{{ galleryMoreCount }}</span>
+                  <span class="mt-1 text-[10px] md:text-xs font-bold uppercase tracking-[0.16em]">Lihat Semua</span>
+                </span>
+              </button>
+            </div>
+
+            <div class="text-center lg:text-left">
+              <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-yellow-200">Galeri Kegiatan</p>
+              <h2 class="mt-3 text-4xl md:text-5xl font-black leading-[0.95] text-white">
+                Momen<br />Pembinaan
+              </h2>
+              <div class="mt-5 flex items-start justify-center lg:justify-start gap-3">
+                <Quote class="h-7 w-7 shrink-0 text-yellow-300/80" />
+                <p class="text-sm md:text-base font-semibold text-blue-100 leading-relaxed max-w-md">
+                  Dokumentasi nyata proses belajar, pembinaan jasmani, dan kebersamaan calon taruna Pratistha Cendekia
+                  Prestasi.
+                </p>
+              </div>
+              <button type="button" @click="openGallery(0)"
+                class="mt-7 inline-flex items-center gap-2.5 rounded-2xl border-2 border-yellow-300/80 bg-yellow-300/10 px-6 py-3 text-sm md:text-base font-bold text-white transition-all hover:bg-yellow-300/20 hover:-translate-y-0.5">
+                <Images class="h-5 w-5" />
+                Jelajahi {{ galleryImages.length }} Foto
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="choices" class="px-5 md:px-10 pb-8 relative mt-10">
       <div class="page-shell fade-up delay-2 relative">
         <div>
@@ -478,6 +535,64 @@
         </div>
       </Transition>
     </Teleport>
+    <Teleport to="body">
+      <Transition name="member-slide-fade">
+        <div v-if="isGalleryOpen" class="fixed inset-0 z-[130] flex flex-col bg-black/92 backdrop-blur-sm"
+          role="dialog" aria-modal="true" aria-label="Galeri Kegiatan" @click.self="closeGallery">
+          <div class="flex items-center justify-between gap-3 px-4 md:px-8 py-4">
+            <p class="text-sm md:text-base font-bold text-white">
+              Galeri Kegiatan
+              <span class="ml-2 text-white/60 font-semibold">{{ activeGalleryIndex + 1 }} / {{ galleryImages.length
+                }}</span>
+            </p>
+            <div class="flex items-center gap-2">
+              <button type="button" @click="toggleGallerySlideshow"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition hover:bg-white/20"
+                :aria-label="isGallerySlideshow ? 'Hentikan slideshow' : 'Mulai slideshow'">
+                <Pause v-if="isGallerySlideshow" class="h-4 w-4" />
+                <Play v-else class="h-4 w-4" />
+              </button>
+              <button type="button" @click="closeGallery"
+                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition hover:bg-white/20"
+                aria-label="Tutup galeri">
+                <XIcon class="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
+          <div class="relative flex-1 flex items-center justify-center px-4 md:px-20 overflow-hidden">
+            <button type="button" @click="prevGalleryImage"
+              class="absolute left-2 md:left-6 z-10 inline-flex h-11 w-11 md:h-14 md:w-14 items-center justify-center rounded-full border border-white/30 bg-black/50 text-white transition hover:bg-black/70 hover:scale-105"
+              aria-label="Foto sebelumnya">
+              <ChevronLeft class="h-6 w-6" />
+            </button>
+            <Transition :name="galleryTransitionName" mode="out-in">
+              <img :key="`gallery-main-${activeGalleryIndex}`" :src="galleryImages[activeGalleryIndex]"
+                :alt="`Dokumentasi kegiatan ${activeGalleryIndex + 1}`"
+                class="max-h-[68vh] max-w-full rounded-2xl object-contain shadow-2xl shadow-black/60" />
+            </Transition>
+            <button type="button" @click="nextGalleryImage"
+              class="absolute right-2 md:right-6 z-10 inline-flex h-11 w-11 md:h-14 md:w-14 items-center justify-center rounded-full border border-white/30 bg-black/50 text-white transition hover:bg-black/70 hover:scale-105"
+              aria-label="Foto berikutnya">
+              <ChevronRight class="h-6 w-6" />
+            </button>
+          </div>
+
+          <div class="px-4 md:px-8 py-4">
+            <div class="flex gap-2 overflow-x-auto pb-1 gallery-thumb-strip">
+              <button v-for="(img, i) in galleryImages" :key="`gallery-thumb-${i}`" type="button"
+                @click="goToGalleryImage(i)"
+                class="relative shrink-0 h-14 w-20 md:h-16 md:w-24 overflow-hidden rounded-lg border-2 transition"
+                :class="activeGalleryIndex === i ? 'border-yellow-300 opacity-100 scale-105' : 'border-transparent opacity-55 hover:opacity-90'"
+                :aria-label="`Lihat foto ${i + 1}`">
+                <img :src="img" :alt="`Thumbnail ${i + 1}`" class="h-full w-full object-cover" loading="lazy" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
     <TeacherModal :is-open="isTeacherModalOpen" :teachers="teachers" :cv-template-url="cvTemplateUrl"
       @close="closeTeacherModal" />
     <Teleport to="body">
@@ -592,7 +707,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
-import { BookOpenText, Brain, Check, ChevronLeft, ChevronRight, Crown, Dumbbell, LineChart, MessageCircle, NotebookPen, ShieldCheck, UserCheck, Warehouse, GraduationCap, X as XIcon } from 'lucide-vue-next'
+import { BookOpenText, Brain, Check, ChevronLeft, ChevronRight, Crown, Dumbbell, Images, LineChart, Maximize2, MessageCircle, NotebookPen, Pause, Play, Quote, ShieldCheck, UserCheck, Warehouse, GraduationCap, X as XIcon } from 'lucide-vue-next'
 import { ONLINE_PROGRAMS } from '@/constants/onlinePrograms'
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
 import TeacherModal from '@/components/TeacherModal.vue'
@@ -632,6 +747,25 @@ const wallpaperModules = import.meta.glob('../../assets/wallpaper/*.{jpg,jpeg,pn
 const wallpaperSlides = Object.entries(wallpaperModules)
   .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
   .map(([, src]) => src)
+const galleryModules = import.meta.glob('../../assets/galery/*.{jpg,jpeg,png,webp}', {
+  eager: true,
+  import: 'default',
+})
+const galleryImages = Object.entries(galleryModules)
+  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
+  .map(([, src]) => src)
+const GALLERY_PREVIEW_COUNT = 6
+const galleryPreview = computed(() => galleryImages.slice(0, GALLERY_PREVIEW_COUNT))
+const galleryMoreCount = computed(() => Math.max(galleryImages.length - GALLERY_PREVIEW_COUNT, 0))
+const galleryMoreImage = computed(() => galleryImages[GALLERY_PREVIEW_COUNT] || galleryImages[0])
+const isGalleryOpen = ref(false)
+const activeGalleryIndex = ref(0)
+const isGallerySlideshow = ref(false)
+let gallerySlideshowTimer = null
+const galleryTransitionName = computed(() => {
+  const variants = ['leader-swap-slide', 'leader-swap-pop', 'leader-swap-tilt']
+  return variants[activeGalleryIndex.value % variants.length]
+})
 const activeWallpaperIndex = ref(0)
 const isMobileMenuOpen = ref(false)
 const isLeaderDetailModalOpen = ref(false)
@@ -658,6 +792,7 @@ const quickNavItems = [
   // { id: 'services', label: 'Layanan Pembinaan' },
   { id: 'choices', label: 'Pilihan Kursus' },
   { id: 'comparison', label: 'Perbandingan Kelas' },
+  { id: 'gallery', label: 'Galeri Kegiatan' },
 ]
 
 const leaders = [
@@ -1140,6 +1275,57 @@ function closeTeacherModal() {
   isTeacherModalOpen.value = false
 }
 
+function openGallery(index = 0) {
+  if (!galleryImages.length) return
+  activeGalleryIndex.value = index
+  isGalleryOpen.value = true
+  document.body.style.overflow = 'hidden'
+}
+
+function closeGallery() {
+  isGalleryOpen.value = false
+  stopGallerySlideshow()
+  document.body.style.overflow = ''
+}
+
+function nextGalleryImage() {
+  if (!galleryImages.length) return
+  activeGalleryIndex.value = (activeGalleryIndex.value + 1) % galleryImages.length
+}
+
+function prevGalleryImage() {
+  if (!galleryImages.length) return
+  activeGalleryIndex.value = (activeGalleryIndex.value - 1 + galleryImages.length) % galleryImages.length
+}
+
+function goToGalleryImage(index) {
+  activeGalleryIndex.value = index
+}
+
+function stopGallerySlideshow() {
+  isGallerySlideshow.value = false
+  if (gallerySlideshowTimer) {
+    clearInterval(gallerySlideshowTimer)
+    gallerySlideshowTimer = null
+  }
+}
+
+function toggleGallerySlideshow() {
+  if (isGallerySlideshow.value) {
+    stopGallerySlideshow()
+    return
+  }
+  isGallerySlideshow.value = true
+  gallerySlideshowTimer = setInterval(nextGalleryImage, 2600)
+}
+
+function onGalleryKeydown(event) {
+  if (!isGalleryOpen.value) return
+  if (event.key === 'Escape') closeGallery()
+  else if (event.key === 'ArrowRight') nextGalleryImage()
+  else if (event.key === 'ArrowLeft') prevGalleryImage()
+}
+
 function openMemberModal(member) {
   activeMemberModal.value = member
 }
@@ -1267,6 +1453,7 @@ onMounted(async () => {
   await nextTick()
   goToLeader(activeLeaderIndex.value, 'auto')
   window.addEventListener('resize', onLeaderResize)
+  window.addEventListener('keydown', onGalleryKeydown)
   if (wallpaperSlides.length > 1) {
     wallpaperInterval = setInterval(() => {
       activeWallpaperIndex.value = (activeWallpaperIndex.value + 1) % wallpaperSlides.length
@@ -1276,6 +1463,9 @@ onMounted(async () => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', onLeaderResize)
+  window.removeEventListener('keydown', onGalleryKeydown)
+  stopGallerySlideshow()
+  document.body.style.overflow = ''
   if (leaderAutoScrollTimer) {
     clearTimeout(leaderAutoScrollTimer)
   }
@@ -1299,6 +1489,113 @@ onUnmounted(() => {
 .page-shell {
   width: min(100%, 80rem);
   margin-inline: auto;
+}
+
+.gallery-mosaic {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 6.5rem;
+  gap: 0.6rem;
+}
+
+.gallery-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #1c1d2f;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+}
+
+.gallery-tile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.gallery-tile:hover .gallery-tile-img {
+  transform: scale(1.08);
+}
+
+.gallery-tile-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 55%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-tile:hover .gallery-tile-overlay {
+  opacity: 1;
+}
+
+.gallery-more-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(18, 59, 143, 0.55);
+  backdrop-filter: blur(1px);
+  transition: background 0.3s ease;
+}
+
+.gallery-tile-more:hover .gallery-more-overlay {
+  background: rgba(18, 59, 143, 0.72);
+}
+
+.gallery-tile-0 {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.gallery-tile-1 {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.gallery-tile-4 {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.gallery-thumb-strip {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+}
+
+.gallery-thumb-strip::-webkit-scrollbar {
+  height: 6px;
+}
+
+.gallery-thumb-strip::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+}
+
+@media (max-width: 640px) {
+  .gallery-mosaic {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 6rem;
+  }
+
+  .gallery-tile-1,
+  .gallery-tile-4 {
+    grid-column: span 1;
+  }
 }
 
 .leaders-demo-frame {

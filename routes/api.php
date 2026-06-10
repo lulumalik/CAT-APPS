@@ -14,6 +14,9 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\GuardianController;
+use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\StudentReportController;
 
 // Public material routes
 Route::get('/materials/public', [MaterialController::class, 'publicIndex']);
@@ -99,9 +102,9 @@ Route::get('/free-tryout/tests', [TestDefinitionController::class, 'freeTryoutLi
 Route::get('/free-tryout/tests/{test}', [TestDefinitionController::class, 'freeTryoutShow']);
 Route::post('/free-tryout/tests/{test}/submit', [TestDefinitionController::class, 'freeTryoutSubmit']);
 
-Route::get('/rankings/categories', [RankingController::class, 'categories']);
-Route::get('/rankings/filters', [RankingController::class, 'filters']);
-Route::get('/rankings', [RankingController::class, 'index']);
+// Public guardian invitation (accept link sent by the team via WhatsApp)
+Route::get('/guardian-invite/{token}', [GuardianController::class, 'showInvite']);
+Route::post('/guardian-invite/{token}/accept', [GuardianController::class, 'accept']);
 
 // Test operations (requires authentication via session)
 Route::middleware('auth')->group(function () {
@@ -126,6 +129,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/tests/{test}/submit', [TestDefinitionController::class, 'submit']);
     Route::get('/my-tests', [TestDefinitionController::class, 'myTests']);
     Route::get('/certificates/{certificateIssue}/download', [CertificateController::class, 'download']);
+
+    // Private progress / results / reports — visible only to the student, their
+    // linked parent, or staff (authorization handled inside the controller).
+    Route::get('/parent/children', [ProgressController::class, 'children']);
+    Route::get('/students/{student}/progress', [ProgressController::class, 'studentProgress']);
+    Route::get('/students/{student}/results', [ProgressController::class, 'studentResults']);
+    Route::get('/students/{student}/reports', [ProgressController::class, 'studentReports']);
 });
 
 Route::middleware('role:admin')->group(function () {
@@ -147,10 +157,27 @@ Route::middleware('role:admin')->group(function () {
 });
 
 Route::middleware('role:admin,mentor')->group(function () {
+    // Internal leaderboard (staff only — scores are private and not exposed publicly)
+    Route::get('/rankings/categories', [RankingController::class, 'categories']);
+    Route::get('/rankings/filters', [RankingController::class, 'filters']);
+    Route::get('/rankings', [RankingController::class, 'index']);
     Route::get('/rankings/manual', [RankingController::class, 'manualList']);
     Route::post('/rankings/manual', [RankingController::class, 'manualStore']);
     Route::put('/rankings/manual/{entry}', [RankingController::class, 'manualUpdate']);
     Route::delete('/rankings/manual/{entry}', [RankingController::class, 'manualDestroy']);
+
+    // Guardian (parent) invitations
+    Route::get('/guardians/eligible-students', [GuardianController::class, 'eligibleStudents']);
+    Route::get('/guardians', [GuardianController::class, 'index']);
+    Route::post('/guardians', [GuardianController::class, 'store']);
+    Route::patch('/guardians/{guardian}/sent', [GuardianController::class, 'markSent']);
+    Route::delete('/guardians/{guardian}', [GuardianController::class, 'destroy']);
+
+    // Student reports (daily + weekly summary)
+    Route::get('/student-reports', [StudentReportController::class, 'index']);
+    Route::post('/student-reports', [StudentReportController::class, 'store']);
+    Route::post('/student-reports/weekly', [StudentReportController::class, 'generateWeekly']);
+    Route::delete('/student-reports/{report}', [StudentReportController::class, 'destroy']);
 
     Route::get('/students/search', [UserController::class, 'searchableStudents']);
 

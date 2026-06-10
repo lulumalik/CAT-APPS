@@ -2,8 +2,8 @@
   <main class="min-h-screen text-text md:px-10 md:py-12 auth-right-pane">
     <div class="mx-auto space-y-8">
       <section
-        class="fade-up auth-right-pane relative overflow-hidden text-center md:text-left md:rounded-[2rem] text-primary shadow-2xl shadow-[#123B8F]/35">
-        <span class="auth-visual-stripe" />
+        class="fade-up relative overflow-hidden text-center md:text-left border-b-2 border-white/20 text-primary">
+        <!-- <span class="auth-visual-stripe" /> -->
         <img :src="accesoriseUrl" alt="Accessorise"
           class="about-hero-accesorise absolute top-0 right-0 h-32 w-32 object-cover md:hidden block" />
         <img :src="accesoriseUrl" alt="Accessorise"
@@ -11,26 +11,23 @@
         <!-- <div class="absolute inset-0 z-0 bg-gradient-to-b from-white/40 via-white/55 to-white/70" /> -->
         <div class="relative z-10 p-7 md:p-10 pb-16">
           <router-link to="/"
-            class="inline-flex absolute left-5 top-2 text-white items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
+            class="inline-flex absolute left-5 top-2 text-black items-center gap-2 rounded-full bg-white/65 px-4 py-2 text-sm font-semibold hover:bg-white/25 transition-colors">
             <ArrowLeft class="h-4 w-4" />
             Kembali ke Beranda
           </router-link>
-          <div class="md:flex md:items-center md:justify-center md:gap-4">
-            <div class="md:w-4/12 mt-8 md:mt-0">
-              <div class="w-64">
+          <div class="flex flex-col items-center justify-center gap-4 w-full">
+            <div class=" mt-8 md:mt-0">
+              <div class="w-64 h-64 flex items-center justify-center rounded-full bg-[#333]">
                 <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi" class="mx-auto mb-4 w-16 md:w-56" />
               </div>
             </div>
             <div>
-              <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-white">Tentang Kami</p>
-              <h1 class="mt-2 text-2xl md:text-5xl font-black leading-tight text-white">
+              <p class="mt-5 text-xs font-bold uppercase tracking-[0.2em] text-white text-center">Tentang Kami</p>
+              <h1 class="mt-2 text-2xl md:text-4xl font-black leading-tight text-white text-center">
                 Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
               </h1>
-              <p class="mt-5 text-md md:text-2xl pb-4 font-bold text-white leading-relaxed">
-                Sebagai lembaga yang mengedepankan kualitas serta kepercayaan, Pratistha Cendekia Prestasi didukung oleh
-                legalitas usaha yang jelas dan terdaftar secara resmi. Kami percaya bahwa transparansi dan
-                profesionalisme
-                merupakan fondasi penting dalam membangun kepercayaan peserta didik maupun orang tua.
+              <p class="mt-5 text-md md:text-xl pb-4 font-bold text-white leading-relaxed text-center">
+                Simbol Keunggulan &amp; Integritas merepresentasikan visi bimbingan belajar Akademi Polisi yang presisi, tangguh, dan berorientasi pada prestasi tertinggi. Kami hadir untuk mendampingi setiap calon taruna melalui pembinaan akademik yang terstruktur, latihan soal CAT yang terukur, serta evaluasi berkala yang memetakan perkembangan belajar secara nyata. Dengan kurikulum yang dirancang sesuai standar seleksi, pengajar berpengalaman, dan teknologi pembelajaran yang adaptif, kami berkomitmen membentuk generasi penerus yang berkarakter, disiplin, dan siap bersaing meraih kursi terbaik di institusi kepolisian.
               </p>
             </div>
           </div>
@@ -73,37 +70,25 @@
           </h2>
 
           <div class="mt-8 md:mt-16">
-            <div ref="leaderCarouselRef"
-              class="leader-carousel flex gap-5 md:gap-8 overflow-x-auto px-[11%] md:px-[16%] py-6 snap-x snap-mandatory scroll-smooth">
-              <article v-for="(leader, index) in heroLeaders" :key="leader.name" @click="goToLeader(index)"
-                :ref="(el) => setLeaderSlideRef(el, index)"
-                class="shrink-0 basis-[78%] md:basis-[52%] lg:basis-[42%] snap-center rounded-2xl border border-border shadow-xl bg-background overflow-hidden transition-all duration-300"
-                :class="activeLeaderIndex === index
-                  ? 'scale-100 md:scale-[1.03] md:-translate-y-2 shadow-xl shadow-[#123B8F]/20 opacity-100'
-                  : 'scale-[0.88] md:scale-[0.9] opacity-70'">
+            <div class="grid grid-cols-2 gap-4 md:gap-12 max-w-5xl mx-auto">
+              <article v-for="(leader, index) in heroLeaders" :key="leader.name"
+                @click="openLeaderDetailModal(index)"
+                class="group cursor-pointer rounded-2xl border border-border shadow-xl bg-background overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#123B8F]/25 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                role="button" tabindex="0"
+                @keydown.enter.prevent="openLeaderDetailModal(index)"
+                @keydown.space.prevent="openLeaderDetailModal(index)">
                 <div class="relative">
                   <img :src="leader.image" :alt="leader.name"
-                    class="h-[360px] md:h-[420px] w-full object-cover object-top" />
-                  <div class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center p-4">
-                    <div>
-                      {{ leader.name }}
-                    </div>
-                    <!-- <button type="button"
-                      class="text-xs text-white/80 mt-2 underline decoration-white/50 underline-offset-2 md:hidden"
-                      @click.stop="openLeaderDetailModal(index)">
+                    class="h-[220px] sm:h-[320px] md:h-[520px] w-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-500" />
+                  <div class="absolute bottom-0 left-0 right-0 bg-black/55 text-white text-center p-3 md:p-4">
+                    <p class="text-[11px] md:text-sm uppercase tracking-wide text-white/80">{{ leader.role }}</p>
+                    <div class="text-xs md:text-base font-semibold leading-snug">{{ leader.name }}</div>
+                    <!-- <span class="mt-1 inline-block text-[10px] md:text-xs text-white/70 underline underline-offset-2">
                       lihat detail
-                    </button> -->
+                    </span> -->
                   </div>
                 </div>
               </article>
-            </div>
-
-            <div class="mt-3 flex items-center justify-center gap-2">
-              <button v-for="(leader, index) in heroLeaders" :key="`dot-${leader.name}`"
-                class="h-2.5 rounded-full transition-all duration-300" :class="activeLeaderIndex === index
-                  ? 'w-7 bg-primary'
-                  : 'w-2.5 bg-primary/30 hover:bg-primary/60'" :aria-label="`Pilih slide ${index + 1}`"
-                @click="goToLeader(index)" />
             </div>
           </div>
         </div>
@@ -255,7 +240,7 @@
         </div>
       </section>
 
-      <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0">
+      <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0 relative z-50">
         <div class="relative z-20">
           <div class="flex items-center justify-center text-center gap-3">
             <Landmark class="h-6 w-6 text-white left-12 relative md:left-0 md:block hidden" />
@@ -288,22 +273,6 @@
         </div>
       </section>
 
-      <section class="fade-up relative overflow-hidden mt-16 p-4 md:p-0 relative z-10">
-
-        <div class="relative z-20">
-          <div class="flex items-center justify-center gap-3">
-            <Image class="h-6 w-6 text-white" />
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white">Galeri Kegiatan</h2>
-          </div>
-          <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <article v-for="photo in galleryPhotos" :key="photo.src"
-              class="rounded-2xl overflow-hidden border border-border bg-background shadow-lg">
-              <img :src="photo.src" :alt="photo.alt" class="h-56 w-full object-cover" />
-            </article>
-          </div>
-        </div>
-        <SectionWaveDivider class="absolute -bottom-5 md:-bottom-30 left-0 right-0 z-10" />
-      </section>
       <Teleport to="body">
         <Transition name="member-slide-fade">
           <div v-if="isLeaderDetailModalOpen"
@@ -481,6 +450,18 @@ const heroLeaders = [
     featured: true,
   },
   {
+    name: 'Komjen Pol (P) Drs. H. Nana S. Permana',
+    role: 'Penasehat',
+    batch: 'Batalion Dharma Angkatan 1968',
+    position: 'Ketua Pembina Yayasan Pendidikan Tribakti Langlang Buana',
+    highlights: [
+      'Wakapolri tahun 1998 - 2000',
+      'Pembina strategis pendidikan dan pembinaan kepolisian',
+    ],
+    image: nanaUrl,
+    featured: false,
+  },
+  {
     name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si',
     role: 'Komisaris',
     batch: 'Bataliyon Anindhita Tahun 1981',
@@ -494,19 +475,6 @@ const heroLeaders = [
     image: tubagusUrl,
     featured: false,
   },
-  {
-    name: 'Komjen Pol (P) Drs. H. Nana S. Permana',
-    role: 'Penasehat',
-    batch: 'Batalion Dharma Angkatan 1968',
-    position: 'Ketua Pembina Yayasan Pendidikan Tribakti Langlang Buana',
-    highlights: [
-      'Wakapolri tahun 1998 - 2000',
-      'Pembina strategis pendidikan dan pembinaan kepolisian',
-    ],
-    image: nanaUrl,
-    featured: false,
-  },
-
   {
     name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH',
     role: 'Direktur Utama',
@@ -526,19 +494,19 @@ const orgChart = {
   penasehat: { role: 'Penasehat', name: 'Komjen Pol (P) Drs. H. Nana S. Permana' },
   komisaris: { role: 'Komisaris', name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si' },
   direkturUtama: { role: 'Direktur Utama', name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH' },
-  direktur: { role: 'Direktur', name: 'Gilang Nurfahradz Syahni Fasya, S.T' },
-  sekretaris: { role: 'Sekretaris', name: 'AKBP (P) Wahyu Suhardini, SIP' },
-  bendahara: { role: 'Bendahara', name: 'KBP (P) Dra.Rina Regina' },
-  internal: { role: 'Internal', name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H. M.T.C.P' },
-  eksternal: { role: 'Eksternal', name: 'Kompol (P) Tutik' },
-  digitalMarketing: { role: 'Chief Marketing Officer (CMO)', name: 'Iqbal Azhar Ramadhani, S. T' },
+  direktur: { role: 'Executive Director', name: 'Gilang Nurfahradz Syahni Fasya, S.T' },
+  sekretaris: { role: 'Corporate Secretary', name: 'AKBP (P) Wahyu Suhardini, SIP' },
+  bendahara: { role: 'Chief Financial Officer', name: 'KBP (P) Dra.Rina Regina' },
+  internal: { role: 'Chief Academic Officer', name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H. M.T.C.P' },
+  eksternal: { role: 'Chief Operating Officer', name: 'Kompol (P) Tutik' },
+  digitalMarketing: { role: 'Chief Marketing Officer', name: 'Iqbal Azhar Ramadhani, S. T' },
 }
 
 const members = [
   {
     name: 'Gilang Nurfahradz Syahni Fasya, S.T',
     image: gilangUrl,
-    jabatan: 'Direktur',
+    jabatan: 'Executive Director',
     profile: {
       birthPlaceDate: 'Bandung, 04 Agustus 1991',
       education: ['Kimia Industri - SMK Negeri 7 Bandung (2009)', 'S1 Teknologi Pangan - Universitas Pasundan (2009)'],
@@ -549,7 +517,7 @@ const members = [
   {
     name: 'AKBP (P) Wahyu Suhardini, SIP',
     image: wahyuUrl,
-    jabatan: 'Sekretaris',
+    jabatan: 'Corporate Secretary',
     profile: {
       birthPlaceDate: 'Purwokerto, 3 Oktober 1961',
       summary:
@@ -576,7 +544,7 @@ const members = [
   {
     name: 'KBP (P) Dra.Rina Regina',
     image: rinaUrl,
-    jabatan: 'Bendahara',
+    jabatan: 'Chief Financial Officer',
     profile: {
       birthPlaceDate: 'Bandung, 31 Oktober 1975',
       education: ['Sarjana Pendidikan Ikip Bdg', 'Sepamilksukwan Polri 1984', 'Selapa Polri 1997'],
@@ -587,7 +555,7 @@ const members = [
   {
     name: 'AKBP (P) Dra.NATASHA YUNITA POSPOS, S.H. M.T.C.P',
     image: natashaUrl,
-    jabatan: 'Bidang Internal',
+    jabatan: 'Chief Academic Officer',
     profile: {
       birthPlaceDate: 'Palembang, 15 Juni 1964',
       education: [
@@ -615,7 +583,7 @@ const members = [
   {
     name: 'Kompol (P) Tutik',
     image: tutikUrl,
-    jabatan: 'Bidang Eksternal',
+    jabatan: 'Chief Operating Officer',
     profile: {
       birthPlaceDate: 'Cirebon, 9 September 1971',
       education: ['S1 Ilmu Sosial', 'Pelatihan Public Relations'],
@@ -626,7 +594,7 @@ const members = [
   {
     name: 'Iqbal Azhar Ramadhani , S. T',
     image: azharUrl,
-    jabatan: 'Chief Marketing Officer (CMO)',
+    jabatan: 'Chief Marketing Officer',
     profile: {
       birthPlaceDate: 'Bandung, 4 Maret 1994',
       summary:

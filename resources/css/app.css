@@ -115,6 +115,36 @@
     background: linear-gradient(90deg, rgba(143, 64, 232, 0.18) 0%, rgba(60, 60, 60, 0.72) 50%, rgba(50, 50, 50, 0.92) 100%);
     box-shadow: 0 -16px 34px rgba(0, 0, 0, 0.28);
   }
+
+  .aboutus-bg-pane {
+    position: relative;
+    background: linear-gradient(160deg, #7c7c7c 0%, #525252 45%, #535353 100%);
+    overflow: hidden;
+  }
+  .aboutus-bg-pane::before,
+  .aboutus-bg-pane::after {
+    content: '';
+    position: absolute;
+    border-radius: 9999px;
+    opacity: 0.76;
+    transform: rotate(-38deg);
+  }
+  .aboutus-bg-pane::before {
+    width: 145%;
+    height: 14rem;
+    top: 2.2rem;
+    left: -42%;
+    background: linear-gradient(90deg, rgba(196, 125, 255, 0.24) 0%, rgba(127, 127, 127, 0.75) 48%, rgba(103, 103, 103, 0.86) 100%);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.32);
+  }
+  .aboutus-bg-pane::after {
+    width: 165%;
+    height: 14rem;
+    bottom: 2rem;
+    right: -58%;
+    background: linear-gradient(90deg, rgba(143, 64, 232, 0.18) 0%, rgba(60, 60, 60, 0.72) 50%, rgba(50, 50, 50, 0.92) 100%);
+    box-shadow: 0 -16px 34px rgba(0, 0, 0, 0.28);
+  }
   .auth-visual-stripe {
     position: absolute;
     inset: auto;

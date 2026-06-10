@@ -189,4 +189,21 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserNotification::class);
     }
+
+    /** Guardian links where this user is the student. */
+    public function guardianLinks()
+    {
+        return $this->hasMany(StudentGuardian::class, 'student_user_id');
+    }
+
+    /** Guardian links where this user is the parent/guardian account. */
+    public function childLinks()
+    {
+        return $this->hasMany(StudentGuardian::class, 'guardian_user_id');
+    }
+
+    public function isParent(): bool
+    {
+        return $this->role === 'parent';
+    }
 }

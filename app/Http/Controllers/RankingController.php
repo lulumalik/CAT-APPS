@@ -9,6 +9,7 @@ use App\Models\TestDefinition;
 use App\Models\TestSubmission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -24,6 +25,10 @@ class RankingController extends Controller
 
     public function filters(Request $request)
     {
+        if (! Schema::hasTable('bimble_classes')) {
+            return response()->json(['classes' => [], 'cohorts' => []]);
+        }
+
         $classes = BimbleClass::query()
             ->orderBy('name')
             ->get(['id', 'name', 'class_code', 'academic_period'])
@@ -34,17 +39,19 @@ class RankingController extends Controller
                 'academic_period' => $c->academic_period,
             ]);
 
-        $cohorts = RegistrationProgress::query()
-            ->whereNotNull('administration_data')
-            ->get(['administration_data'])
-            ->map(function ($row) {
-                $data = $row->administration_data ?? [];
+        $cohorts = Schema::hasTable('registration_progress')
+            ? RegistrationProgress::query()
+                ->whereNotNull('administration_data')
+                ->get(['administration_data'])
+                ->map(function ($row) {
+                    $data = $row->administration_data ?? [];
 
-                return $data['angkatan'] ?? $data['cohort'] ?? $data['batch'] ?? null;
-            })
-            ->filter()
-            ->unique()
-            ->values();
+                    return $data['angkatan'] ?? $data['cohort'] ?? $data['batch'] ?? null;
+                })
+                ->filter()
+                ->unique()
+                ->values()
+            : collect();
 
         $fromClasses = $classes->pluck('academic_period')->filter()->unique();
         $cohorts = $cohorts->merge($fromClasses)->unique()->sort()->values();
@@ -100,6 +107,10 @@ class RankingController extends Controller
     public function manualList(Request $request)
     {
         $validated = $this->validateRankingContext($request);
+
+        if (! Schema::hasTable('manual_ranking_entries')) {
+            return response()->json(['items' => []]);
+        }
 
         $entries = ManualRankingEntry::query()
             ->where($this->manualContextWhere($validated))
@@ -289,6 +300,10 @@ class RankingController extends Controller
             return null;
         }
 
+        if (! Schema::hasTable('bimble_classes')) {
+            return collect();
+        }
+
         if ($scope === 'class' && $classId) {
             $class = BimbleClass::with('students:id')->find($classId);
             if (! $class) {
@@ -299,15 +314,17 @@ class RankingController extends Controller
         }
 
         if ($scope === 'cohort' && $cohort) {
-            $ids = RegistrationProgress::query()
-                ->get(['user_id', 'administration_data'])
-                ->filter(function ($row) use ($cohort) {
-                    $data = $row->administration_data ?? [];
-                    $value = $data['angkatan'] ?? $data['cohort'] ?? $data['batch'] ?? null;
+            $ids = Schema::hasTable('registration_progress')
+                ? RegistrationProgress::query()
+                    ->get(['user_id', 'administration_data'])
+                    ->filter(function ($row) use ($cohort) {
+                        $data = $row->administration_data ?? [];
+                        $value = $data['angkatan'] ?? $data['cohort'] ?? $data['batch'] ?? null;
 
-                    return $value && (string) $value === (string) $cohort;
-                })
-                ->pluck('user_id');
+                        return $value && (string) $value === (string) $cohort;
+                    })
+                    ->pluck('user_id')
+                : collect();
 
             $classUserIds = BimbleClass::query()
                 ->where('academic_period', $cohort)
@@ -326,6 +343,10 @@ class RankingController extends Controller
      */
     private function buildManualLeaderboard(array $context, array $sub): array
     {
+        if (! Schema::hasTable('manual_ranking_entries')) {
+            return [];
+        }
+
         $unit = $sub['unit'] ?? null;
         $sortAsc = ($sub['sort'] ?? 'desc') === 'asc';
 
@@ -344,7 +365,7 @@ class RankingController extends Controller
                 'user_id' => $entry->user_id,
                 'name' => $entry->user->name,
                 'score' => $value,
-                'display' => $this->formatScoreDisplay($value, $entry->unit ?? $unit, ($sub['sort'] ?? 'desc') === 'asc' ? null : '%'),
+                'display' => $this->formatScoreDisplay($value, $entry->unit ?? $unit, null),
                 'unit' => $entry->unit ?? $unit,
                 'source' => 'manual',
                 'manual_id' => $entry->id,
@@ -395,6 +416,10 @@ class RankingController extends Controller
      */
     private function buildPhysicalLeaderboard(array $sub, ?Collection $userIds): array
     {
+        if (! Schema::hasTable('registration_progress')) {
+            return [];
+        }
+
         $subId = $sub['id'];
         $sortAsc = ($sub['sort'] ?? 'desc') === 'asc';
         $unit = $sub['unit'] ?? null;
@@ -443,7 +468,7 @@ class RankingController extends Controller
     private function buildAcademicLeaderboard(array $sub, ?Collection $userIds): array
     {
         $categories = $sub['test_categories'] ?? [];
-        if ($categories === []) {
+        if ($categories === [] || ! Schema::hasTable('test_definitions') || ! Schema::hasTable('test_submissions')) {
             return [];
         }
 

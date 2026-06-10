@@ -114,6 +114,46 @@
         </section>
       </template>
 
+      <!-- PARENT -->
+      <template v-else-if="isParent">
+        <div v-if="!overview.children?.length" class="rounded-[2rem] border border-gray-100 bg-white p-8 text-center">
+          <p class="text-gray-600 font-medium">Belum ada peserta yang terhubung.</p>
+          <p class="text-sm text-gray-500 mt-1">Hubungi tim kami untuk menghubungkan akun Anda dengan ananda.</p>
+        </div>
+        <template v-else>
+          <h2 class="font-bold text-lg mb-4">Ananda Anda</h2>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <router-link v-for="c in overview.children" :key="c.link_id" :to="`/child/${c.student.id}`"
+              class="block rounded-2xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
+              <div class="font-semibold text-[#1A1A1A]">{{ c.student.name }}</div>
+              <div class="text-xs text-gray-500 mt-0.5">{{ c.relationship }} · {{ formatProgram(c.student.program_category) }}</div>
+              <div class="mt-3 text-xs text-gray-600">
+                Laporan terbaru:
+                <span class="font-medium">{{ c.latest_report?.title || 'Belum ada laporan' }}</span>
+              </div>
+              <span class="inline-block mt-3 text-xs font-semibold text-[#9DB359]">Lihat perkembangan →</span>
+            </router-link>
+          </div>
+
+          <section class="bg-white border border-gray-100 rounded-2xl p-5 mt-6">
+            <h2 class="font-bold text-lg mb-4">Laporan Terbaru</h2>
+            <div v-if="!overview.recent_reports?.length" class="text-sm text-gray-500">Belum ada laporan.</div>
+            <div v-else class="space-y-3">
+              <div v-for="r in overview.recent_reports" :key="r.id" class="rounded-xl border border-gray-100 p-3">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="font-semibold text-sm">{{ r.title }}</div>
+                  <span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full"
+                    :class="r.type === 'weekly_summary' ? 'bg-[#9DB359]/15 text-[#6f8235]' : 'bg-gray-100 text-gray-500'">
+                    {{ r.type === 'weekly_summary' ? 'Mingguan' : 'Harian' }}
+                  </span>
+                </div>
+                <div class="text-xs text-gray-500 mt-0.5">{{ r.student }} · {{ formatDate(r.report_date) }}</div>
+              </div>
+            </div>
+          </section>
+        </template>
+      </template>
+
       <!-- STUDENT/USER -->
       <template v-else>
         <div class="grid lg:grid-cols-2 gap-6">
@@ -144,6 +184,11 @@
             </div>
           </section>
         </div>
+
+        <div class="mt-8">
+          <h2 class="font-bold text-lg mb-4">Perkembangan Saya</h2>
+          <StudentProgressPanel v-if="user?.id" :student-id="user.id" />
+        </div>
       </template>
     </template>
   </main>
@@ -155,6 +200,7 @@ import { storeToRefs } from 'pinia'
 import { LockKeyhole } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { getProgramBadge, programCategoryLabel, registrationCompleted } from '@/utils/userMeta'
+import StudentProgressPanel from '@/components/StudentProgressPanel.vue'
 
 const store = useAppStore()
 const { user } = storeToRefs(store)
@@ -165,6 +211,7 @@ const overview = ref({})
 
 const isAdmin = computed(() => user.value?.role === 'admin')
 const isMentor = computed(() => user.value?.role === 'mentor')
+const isParent = computed(() => user.value?.role === 'parent')
 const isLockedForStudent = computed(() => user.value?.role === 'user' && !registrationCompleted(user.value))
 const programBadge = computed(() => getProgramBadge(user.value))
 const formatProgram = (programType) => programCategoryLabel(programType)

@@ -121,6 +121,7 @@ const isMenuOpen = ref(false)
 const unreadCount = ref(0)
 const isAdmin = computed(() => role.value === 'admin')
 const isStudent = computed(() => role.value === 'user')
+const isParent = computed(() => role.value === 'parent')
 const onboardingDone = computed(() => registrationCompleted(user.value))
 const programBadge = computed(() => getProgramBadge(user.value))
 
@@ -128,8 +129,14 @@ const navItems = computed(() => {
   if (!isAuthenticated.value) {
     return [
       { to: '/', label: t('nav.home') },
-      { to: '/rankings', label: t('nav.rankings') },
       { to: '/blog', label: t('nav.materials') },
+    ]
+  }
+
+  if (isParent.value) {
+    return [
+      { to: '/dashboard', label: 'Dashboard' },
+      { to: '/notifications', label: 'Notifikasi' },
     ]
   }
 
@@ -149,9 +156,9 @@ const navItems = computed(() => {
     { to: '/materials', label: t('nav.manageMaterials') },
     { to: '/tests', label: t('nav.tests') },
     { to: '/question-bank', label: t('nav.questionBank') },
-    // { to: '/blog', label: t('nav.materials') },
     { to: '/rankings', label: t('nav.rankings') },
-    // { to: '/notifications', label: 'Notifikasi' },
+    { to: '/admin/guardians', label: 'Undang Orang Tua' },
+    { to: '/admin/student-reports', label: 'Laporan Peserta' },
   ]
 
   if (isAdmin.value) {
