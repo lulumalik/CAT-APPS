@@ -13,17 +13,23 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">Cari Peserta (sudah registrasi)</label>
         <input v-model="studentSearch" type="text" placeholder="Nama / email / username"
           class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm mb-2 outline-none focus:border-[#9DB359]"
-          @input="searchStudents" />
+          @input="searchStudents" @focus="searchStudents" />
 
-        <div v-if="students.length" class="border border-gray-100 rounded-xl divide-y divide-gray-50 mb-4 max-h-48 overflow-y-auto">
-          <button v-for="s in students" :key="s.id" type="button"
-            class="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50"
-            :class="form.student_user_id === s.id ? 'bg-[#9DB359]/10 font-semibold' : ''"
-            @click="selectStudent(s)">
-            {{ s.name }}
-            <span class="text-xs text-gray-400">· {{ s.username || s.email }}</span>
-          </button>
-        </div>
+        <select v-model="form.student_user_id"
+          class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm mb-2 outline-none focus:border-[#9DB359]">
+          <option :value="null">Pilih peserta</option>
+          <option v-for="s in studentOptions" :key="s.id" :value="s.id">
+            {{ s.name }} · {{ s.username || s.email }}
+          </option>
+        </select>
+
+        <p v-if="searchingStudents" class="text-xs text-gray-400 mb-2">Mencari peserta...</p>
+        <p v-else-if="studentSearch && !studentOptions.length" class="text-xs text-amber-600 mb-2">
+          Tidak ada peserta yang cocok. Hanya peserta dengan registrasi selesai yang bisa diundang.
+        </p>
+        <p v-else-if="!studentOptions.length" class="text-xs text-gray-400 mb-2">
+          Belum ada peserta yang menyelesaikan registrasi.
+        </p>
 
         <form @submit.prevent="createInvite" class="space-y-3">
           <div>
@@ -117,9 +123,10 @@ const toast = useToast()
 const { confirm } = useModal()
 
 const studentSearch = ref('')
-const students = ref([])
+const studentOptions = ref([])
 const invites = ref([])
 const saving = ref(false)
+const searchingStudents = ref(false)
 let searchTimer = null
 
 const form = reactive({
@@ -131,24 +138,28 @@ const form = reactive({
 })
 
 const selectedStudentName = computed(() => {
-  const s = students.value.find((x) => x.id === form.student_user_id)
+  const s = studentOptions.value.find((x) => x.id === form.student_user_id)
   return s?.name || ''
 })
 
-function searchStudents() {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(async () => {
-    try {
-      const { data } = await axios.get('/api/guardians/eligible-students', { params: { search: studentSearch.value } })
-      students.value = data.items || []
-    } catch (e) {
-      students.value = []
-    }
-  }, 300)
+async function fetchStudents() {
+  searchingStudents.value = true
+  try {
+    const { data } = await axios.get('/api/guardians/eligible-students', {
+      params: { search: studentSearch.value || undefined },
+    })
+    studentOptions.value = data.items || []
+  } catch (e) {
+    studentOptions.value = []
+    toast.error('Gagal', e?.response?.data?.message || 'Tidak bisa memuat daftar peserta.')
+  } finally {
+    searchingStudents.value = false
+  }
 }
 
-function selectStudent(s) {
-  form.student_user_id = s.id
+function searchStudents() {
+  clearTimeout(searchTimer)
+  searchTimer = setTimeout(fetchStudents, 300)
 }
 
 async function loadInvites() {
@@ -227,5 +238,7 @@ function statusClass(s) {
   }[s] || 'bg-gray-100 text-gray-600'
 }
 
-onMounted(loadInvites)
+onMounted(async () => {
+  await Promise.all([loadInvites(), fetchStudents()])
+})
 </script>
