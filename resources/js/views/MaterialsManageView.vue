@@ -138,24 +138,26 @@ const toast = useToast()
 const { confirm } = useModal()
 
 const categories = [
-  'Pendidikan Agama dan Budi Pekerti',
-  'Pendidikan Pancasila',
-  'Bahasa Indonesia',
+  'Kewarganegaraan & Undang-Undang Kepolisian',
   'Matematika',
-  'Fisika',
-  'Kimia',
-  'Biologi',
-  'Sosiologi',
-  'Ekonomi',
-  'Sejarah',
-  'Geografi',
   'Bahasa Inggris',
-  'Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)',
-  'Informatika',
-  'Seni dan Prakarya (Seni Musik, Rupa, Teater, atau Tari)',
-  'Muatan Lokal',
-  'Matematika Tingkat Lanjut',
-  'Antropologi'
+  'Interpersonal Skill',
+  // 'Pendidikan Agama dan Budi Pekerti',
+  // 'Pendidikan Pancasila',
+  // 'Bahasa Indonesia',
+  // 'Fisika',
+  // 'Kimia',
+  // 'Biologi',
+  // 'Sosiologi',
+  // 'Ekonomi',
+  // 'Sejarah',
+  // 'Geografi',
+  // 'Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)',
+  // 'Informatika',
+  // 'Seni dan Prakarya (Seni Musik, Rupa, Teater, atau Tari)',
+  // 'Muatan Lokal',
+  // 'Matematika Tingkat Lanjut',
+  // 'Antropologi',
 ]
 
 const form = reactive({

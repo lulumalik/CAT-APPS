@@ -91,7 +91,16 @@ const emit = defineEmits(['close','submit'])
 const isEdit = computed(() => !!props.initial)
 const { t } = useI18n()
 
-const categories = ['Geography','Math','Science','History','IT']
+const categories = [
+  'Kewarganegaraan',
+  'Math',
+  'English',
+  'Interpersonal Skill',
+  // 'Geography',
+  // 'Science',
+  // 'History',
+  // 'IT',
+]
 const base = () => ({ 
   question: '', 
   category: '', 

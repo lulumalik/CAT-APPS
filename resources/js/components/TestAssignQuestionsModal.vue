@@ -128,11 +128,14 @@ const filtered = computed(() => {
 })
 function mapCategories(cat) {
   const m = {
-    'Science': ['Science','Physics','Chemistry'],
-    'Math': ['Math','Mathematics'],
-    'IT': ['IT','General Knowledge'],
-    'Geography': ['Geography'],
-    'History': ['History'],
+    'Kewarganegaraan': ['Kewarganegaraan', 'Citizenship', 'Law', 'Hukum'],
+    'Math': ['Math', 'Mathematics', 'Matematika'],
+    'English': ['English', 'Bahasa Inggris'],
+    'Interpersonal Skill': ['Interpersonal Skill', 'Interpersonal'],
+    // 'Science': ['Science', 'Physics', 'Chemistry'],
+    // 'IT': ['IT', 'General Knowledge'],
+    // 'Geography': ['Geography'],
+    // 'History': ['History'],
   }
   if (!cat) return []
   return m[cat] || [cat]

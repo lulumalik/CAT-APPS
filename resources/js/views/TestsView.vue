@@ -258,7 +258,17 @@ const selectedTest = ref(null)
 const editingIndex = ref(-1)
 const deletingId = ref(null)
 
-const categories = ['Science', 'Math', 'IT', 'Geography', 'History', 'General Knowledge']
+const categories = [
+  'Kewarganegaraan',
+  'Math',
+  'English',
+  'Interpersonal Skill',
+  // 'Science',
+  // 'IT',
+  // 'Geography',
+  // 'History',
+  // 'General Knowledge',
+]
 
 const filtered = computed(() => {
   if (!search.value) return tests.value

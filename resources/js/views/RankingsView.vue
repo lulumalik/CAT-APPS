@@ -238,9 +238,9 @@ const entries = ref([])
 
 const loadingCategories = ref(true)
 const loadingEntries = ref(false)
-const expandedGroup = ref('jasmani')
-const selectedGroupId = ref('jasmani')
-const selectedSubId = ref('sprint')
+const expandedGroup = ref('akademik')
+const selectedGroupId = ref('akademik')
+const selectedSubId = ref('kewarganegaraan')
 const selectedClassId = ref('')
 const selectedCohort = ref('')
 

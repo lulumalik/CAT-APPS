@@ -1098,7 +1098,7 @@ const teachers = [
   {
     id: 'teacher-3',
     name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H., M.T.C.P',
-    role: 'Pengajar Bahasa Inggris',
+    role: 'Pengajar Bahasa Inggris & Interpersonal Skill',
     image: natashateacherUrl,
     birthPlaceDate: 'Palembang, 15 Juni 1964',
     education: [
@@ -1112,8 +1112,15 @@ const teachers = [
       'Training Drugs and treatment, Australia, Thayland, 2003, 2004',
       'Law Enforcement Management Program, Vietnam, 2012',
     ],
-    teaching: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada  Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015'],
+    teaching: [
+      'Pengajar Bahasa Inggris',
+      'Pengajar Interpersonal Skill',
+      'Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada Madya',
+      'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama',
+      'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015',
+    ],
   },
+  /*
   {
     id: 'teacher-4',
     name: 'YUNUS SUFIAN, S.H',
@@ -1134,7 +1141,8 @@ const teachers = [
       'Pelatih Komunitas TEMAN SPORTY 2022 - 2024',
       'Pelatih BINJAS PADJAJARANBDG 2024 - sekarang',
     ],
-  }
+  },
+  */
 ]
 
 const services = [

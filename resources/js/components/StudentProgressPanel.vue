@@ -11,19 +11,21 @@
             empty-text="Belum ada nilai tes." />
         </section>
 
-        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm lg:col-span-2">
           <h3 class="font-bold text-base mb-1">Nilai per Mata Pelajaran</h3>
           <p class="text-xs text-gray-500 mb-3">Nilai terbaik per bidang akademik</p>
           <ProgressChart type="hbars" :data="progress.academic_subjects || []" color="#2F6BFF"
             empty-text="Belum ada nilai akademik." />
         </section>
 
+        <!-- Hasil Jasmani — dinonaktifkan sementara
         <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
           <h3 class="font-bold text-base mb-1">Hasil Jasmani</h3>
           <p class="text-xs text-gray-500 mb-3">Hasil tes fisik terakhir</p>
           <ProgressChart type="bars" :data="progress.physical || []" color="#9DB359"
             empty-text="Belum ada hasil jasmani." />
         </section>
+        -->
 
         <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
           <h3 class="font-bold text-base mb-1">Materi Kelas</h3>

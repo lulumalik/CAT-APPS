@@ -14,11 +14,15 @@ return [
     |   academic = test_submissions
     */
     'class_subject_guide' => [
-        'jasmani' => 'Gunakan materi kelas untuk panduan latihan. Nilai peringkat diinput manual di halaman ini atau lewat progres pendaftaran — bukan bank soal.',
+        // 'jasmani' => 'Gunakan materi kelas untuk panduan latihan. Nilai peringkat diinput manual di halaman ini atau lewat progres pendaftaran — bukan bank soal.',
         'akademik' => 'Lampirkan materi di kelas, lalu buat tes CAT untuk penilaian dan peringkat otomatis.',
-        'psikologi' => 'Materi + tes khusus bila ada; bisa juga input manual untuk tes offline.',
+        // 'psikologi' => 'Materi + tes khusus bila ada; bisa juga input manual untuk tes offline.',
     ],
     'groups' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Jasmani — dinonaktifkan sementara
+        |--------------------------------------------------------------------------
         [
             'id' => 'jasmani',
             'label' => 'Jasmani',
@@ -33,19 +37,27 @@ return [
                 ['id' => 'renang', 'label' => 'Renang', 'unit' => 'detik', 'sort' => 'asc'],
             ],
         ],
+        */
         [
             'id' => 'akademik',
             'label' => 'Akademik',
             'scoring_mode' => 'test',
             'source' => 'academic',
             'subcategories' => [
-                ['id' => 'math', 'label' => 'Matematika', 'test_categories' => ['Math', 'Mathematics']],
-                ['id' => 'science', 'label' => 'IPA / Sains', 'test_categories' => ['Science', 'Physics', 'Chemistry']],
-                ['id' => 'geography', 'label' => 'Geografi', 'test_categories' => ['Geography']],
-                ['id' => 'history', 'label' => 'Sejarah', 'test_categories' => ['History']],
-                ['id' => 'it', 'label' => 'IT / Pengetahuan Umum', 'test_categories' => ['IT', 'General Knowledge']],
+                ['id' => 'kewarganegaraan', 'label' => 'Kewarganegaraan & Undang-Undang Kepolisian', 'test_categories' => ['Kewarganegaraan', 'Citizenship', 'Law', 'Hukum']],
+                ['id' => 'math', 'label' => 'Matematika', 'test_categories' => ['Math', 'Mathematics', 'Matematika']],
+                ['id' => 'english', 'label' => 'Bahasa Inggris', 'test_categories' => ['English', 'Bahasa Inggris']],
+                ['id' => 'interpersonal', 'label' => 'Interpersonal Skill', 'test_categories' => ['Interpersonal Skill', 'Interpersonal']],
+                // ['id' => 'science', 'label' => 'IPA / Sains', 'test_categories' => ['Science', 'Physics', 'Chemistry']],
+                // ['id' => 'geography', 'label' => 'Geografi', 'test_categories' => ['Geography']],
+                // ['id' => 'history', 'label' => 'Sejarah', 'test_categories' => ['History']],
+                // ['id' => 'it', 'label' => 'IT / Pengetahuan Umum', 'test_categories' => ['IT', 'General Knowledge']],
             ],
         ],
+        /*
+        |--------------------------------------------------------------------------
+        | Psikologi — dinonaktifkan sementara
+        |--------------------------------------------------------------------------
         [
             'id' => 'psikologi',
             'label' => 'Psikologi',
@@ -55,5 +67,6 @@ return [
                 ['id' => 'psikologi_umum', 'label' => 'Psikologi Umum', 'test_categories' => ['Psychology', 'Psikologi']],
             ],
         ],
+        */
     ],
 ];
