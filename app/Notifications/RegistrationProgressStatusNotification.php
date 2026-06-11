@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class RegistrationProgressStatusNotification extends Notification
@@ -23,7 +22,7 @@ class RegistrationProgressStatusNotification extends Notification
         return ['mail'];
     }
 
-    public function toMail(object $notifiable): MailMessage
+    public function toMail(object $notifiable): AppMailMessage
     {
         $stepLabel = $this->stepLabel($this->step);
         $subject = 'Update pendaftaran Anda';
@@ -46,7 +45,7 @@ class RegistrationProgressStatusNotification extends Notification
             $message = 'Akun Anda sudah aktif. Silakan verifikasi email untuk melanjutkan proses pendaftaran.';
         }
 
-        $mail = (new MailMessage())
+        $mail = (new AppMailMessage())
             ->subject($subject)
             ->greeting('Halo, '.($notifiable->name ?? 'Peserta').'!')
             ->line($message)

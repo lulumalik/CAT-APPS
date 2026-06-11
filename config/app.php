@@ -13,7 +13,19 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'CAT - Platform'),
+    'name' => env('APP_NAME', 'Pratistha Cendekia Prestasi'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mail Salutation
+    |--------------------------------------------------------------------------
+    |
+    | Closing line shown at the bottom of Laravel notification emails instead
+    | of the default "Regards, {app name}" footer.
+    |
+    */
+
+    'mail_salutation' => env('MAIL_SALUTATION', 'Admin Pratistha Cendekia Prestasi'),
 
     /*
     |--------------------------------------------------------------------------
