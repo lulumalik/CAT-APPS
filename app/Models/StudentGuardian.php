@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 
 class StudentGuardian extends Model
 {
+    protected $table = 'student_guardians';
+
     public const STATUS_PENDING = 'pending';
 
     public const STATUS_SENT = 'sent';

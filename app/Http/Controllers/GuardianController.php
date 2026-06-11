@@ -24,21 +24,36 @@ class GuardianController extends Controller
         $query = User::query()->where('role', 'user');
 
         if (Schema::hasTable('registration_progress')) {
-            $query->whereHas('registrationProgress', fn ($q) => $q->where('fully_completed', true));
+            $query->whereHas('registrationProgress', fn ($q) => $q->where(function ($inner) {
+                $inner->where('fully_completed', true)
+                    ->orWhere('current_step', 'completed');
+            }));
         }
 
-        if ($search = $request->input('search')) {
+        if ($search = trim((string) $request->input('search', ''))) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('username', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
+
+                if (Schema::hasColumn('users', 'username')) {
+                    $q->orWhere('username', 'like', "%{$search}%");
+                }
             });
         }
 
-        $students = $query->withCount(['guardianLinks as guardians_count'])
-            ->orderBy('name')
-            ->limit(50)
-            ->get(['id', 'name', 'username', 'email', 'program_category']);
+        if (Schema::hasTable('student_guardians')) {
+            $query->withCount(['guardianLinks as guardians_count']);
+        }
+
+        $columns = ['id', 'name', 'email'];
+        if (Schema::hasColumn('users', 'username')) {
+            $columns[] = 'username';
+        }
+        if (Schema::hasColumn('users', 'program_category')) {
+            $columns[] = 'program_category';
+        }
+
+        $students = $query->orderBy('name')->limit(50)->get($columns);
 
         return response()->json(['items' => $students]);
     }
@@ -79,7 +94,10 @@ class GuardianController extends Controller
 
         if (Schema::hasTable('registration_progress')) {
             $completed = RegistrationProgress::where('user_id', $student->id)
-                ->where('fully_completed', true)
+                ->where(function ($q) {
+                    $q->where('fully_completed', true)
+                        ->orWhere('current_step', 'completed');
+                })
                 ->exists();
             if (! $completed) {
                 return response()->json([
