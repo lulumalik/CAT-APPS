@@ -14,15 +14,11 @@ return [
     |   academic = test_submissions
     */
     'class_subject_guide' => [
-        // 'jasmani' => 'Gunakan materi kelas untuk panduan latihan. Nilai peringkat diinput manual di halaman ini atau lewat progres pendaftaran — bukan bank soal.',
+        'jasmani' => 'Gunakan materi kelas untuk panduan latihan. Nilai peringkat diinput manual di halaman ini atau lewat progres pendaftaran — bukan bank soal.',
         'akademik' => 'Lampirkan materi di kelas, lalu buat tes CAT untuk penilaian dan peringkat otomatis.',
         // 'psikologi' => 'Materi + tes khusus bila ada; bisa juga input manual untuk tes offline.',
     ],
     'groups' => [
-        /*
-        |--------------------------------------------------------------------------
-        | Jasmani — dinonaktifkan sementara
-        |--------------------------------------------------------------------------
         [
             'id' => 'jasmani',
             'label' => 'Jasmani',
@@ -37,7 +33,6 @@ return [
                 ['id' => 'renang', 'label' => 'Renang', 'unit' => 'detik', 'sort' => 'asc'],
             ],
         ],
-        */
         [
             'id' => 'akademik',
             'label' => 'Akademik',

@@ -7,6 +7,8 @@ use App\Models\ManualRankingEntry;
 use App\Models\RegistrationProgress;
 use App\Models\TestDefinition;
 use App\Models\TestSubmission;
+use App\Models\User;
+use App\Services\AutoStudentReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
@@ -134,6 +136,8 @@ class RankingController extends Controller
 
         $entry->load('user:id,name,email');
 
+        $this->autoReportFromManualEntry($entry, $sub);
+
         return response()->json($this->serializeManualEntry($entry), 201);
     }
 
@@ -155,6 +159,18 @@ class RankingController extends Controller
         ]);
 
         $entry->load('user:id,name,email');
+
+        if ($entry->group_id === 'jasmani' && $entry->user) {
+            app(AutoStudentReportService::class)->fromJasmaniScore(
+                $entry->user,
+                $sub,
+                (float) $entry->score,
+                $request->user()->id,
+                $entry->notes,
+                null,
+                $entry->bimble_class_id,
+            );
+        }
 
         return response()->json($this->serializeManualEntry($entry));
     }
@@ -601,5 +617,22 @@ class RankingController extends Controller
             'notes' => $entry->notes,
             'updated_at' => $entry->updated_at?->toIso8601String(),
         ];
+    }
+
+    private function autoReportFromManualEntry(ManualRankingEntry $entry, array $sub): void
+    {
+        if ($entry->group_id !== 'jasmani' || ! $entry->user) {
+            return;
+        }
+
+        app(AutoStudentReportService::class)->fromJasmaniScore(
+            $entry->user,
+            $sub,
+            (float) $entry->score,
+            $entry->created_by,
+            $entry->notes,
+            $entry->id,
+            $entry->bimble_class_id,
+        );
     }
 }

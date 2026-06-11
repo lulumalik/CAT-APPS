@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\RegistrationProgress;
-use App\Models\StudentGuardian;
 use App\Models\StudentReport;
 use App\Models\TestSubmission;
 use App\Models\User;
-use App\Models\UserNotification;
+use App\Services\AutoStudentReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
@@ -60,7 +59,7 @@ class StudentReportController extends Controller
             'metrics' => $data['metrics'] ?? null,
         ]);
 
-        $this->notify($report, 'Laporan harian baru');
+        app(AutoStudentReportService::class)->notify($report, 'Laporan harian baru');
 
         $report->load(['student:id,name', 'creator:id,name', 'bimbleClass:id,name']);
 
@@ -107,7 +106,7 @@ class StudentReportController extends Controller
             'metrics' => $metrics,
         ]);
 
-        $this->notify($report, 'Ringkasan mingguan tersedia');
+        app(AutoStudentReportService::class)->notify($report, 'Ringkasan mingguan tersedia');
 
         $report->load(['student:id,name', 'creator:id,name']);
 
@@ -194,39 +193,6 @@ class StudentReportController extends Controller
         }
 
         return implode(' ', $parts);
-    }
-
-    private function notify(StudentReport $report, string $title): void
-    {
-        if (! Schema::hasTable('user_notifications')) {
-            return;
-        }
-
-        $recipients = [$report->student_user_id];
-
-        if (Schema::hasTable('student_guardians')) {
-            $guardianIds = StudentGuardian::query()
-                ->where('student_user_id', $report->student_user_id)
-                ->where('invite_status', StudentGuardian::STATUS_ACCEPTED)
-                ->whereNotNull('guardian_user_id')
-                ->pluck('guardian_user_id')
-                ->all();
-            $recipients = array_merge($recipients, $guardianIds);
-        }
-
-        foreach (array_unique($recipients) as $userId) {
-            UserNotification::create([
-                'user_id' => $userId,
-                'type' => 'student_report',
-                'title' => $title,
-                'message' => $report->title,
-                'payload' => [
-                    'report_id' => $report->id,
-                    'student_user_id' => $report->student_user_id,
-                    'type' => $report->type,
-                ],
-            ]);
-        }
     }
 
     private function serialize(StudentReport $report): array

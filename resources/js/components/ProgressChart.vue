@@ -2,14 +2,14 @@
   <div class="w-full">
     <!-- BAR CHART (vertical) -->
     <div v-if="type === 'bars'">
-      <div v-if="!hasData" class="text-sm text-gray-400 py-6 text-center">{{ emptyText }}</div>
+      <div v-if="!normalizedBars.length" class="text-sm text-gray-400 py-6 text-center">{{ emptyText }}</div>
       <div v-else class="flex items-end gap-2 sm:gap-3 h-44 px-1">
-        <div v-for="(item, i) in normalizedBars" :key="i" class="flex-1 flex flex-col items-center justify-end h-full">
+        <div v-for="(item, i) in normalizedBars" :key="i" class="flex-1 flex flex-col items-center justify-end h-full min-w-0">
           <span class="text-[11px] font-semibold text-gray-700 mb-1">{{ item.display }}</span>
           <div class="w-full rounded-t-lg transition-all duration-500"
             :style="{ height: item.height + '%', background: color }"
             :class="item.height === 0 ? 'opacity-30' : ''"></div>
-          <span class="mt-2 text-[10px] text-gray-500 text-center leading-tight">{{ item.label }}</span>
+          <span class="mt-2 text-[10px] text-gray-500 text-center leading-tight line-clamp-2">{{ item.label }}</span>
         </div>
       </div>
     </div>
@@ -32,17 +32,19 @@
 
     <!-- HORIZONTAL bars (subjects) -->
     <div v-else class="space-y-3">
-      <div v-if="!hasData" class="text-sm text-gray-400 py-6 text-center">{{ emptyText }}</div>
-      <div v-for="(item, i) in normalizedBars" :key="i">
-        <div class="flex justify-between text-xs mb-1">
-          <span class="text-gray-600">{{ item.label }}</span>
-          <span class="font-semibold text-gray-800">{{ item.display }}</span>
+      <div v-if="!normalizedBars.length" class="text-sm text-gray-400 py-6 text-center">{{ emptyText }}</div>
+      <template v-else>
+        <div v-for="(item, i) in normalizedBars" :key="i">
+          <div class="flex justify-between text-xs mb-1 gap-3">
+            <span class="text-gray-600">{{ item.label }}</span>
+            <span class="font-semibold text-gray-800 shrink-0">{{ item.display }}</span>
+          </div>
+          <div class="h-2.5 rounded-full bg-gray-100 overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500"
+              :style="{ width: item.height + '%', background: color }"></div>
+          </div>
         </div>
-        <div class="h-2.5 rounded-full bg-gray-100 overflow-hidden">
-          <div class="h-full rounded-full transition-all duration-500"
-            :style="{ width: item.height + '%', background: color }"></div>
-        </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>

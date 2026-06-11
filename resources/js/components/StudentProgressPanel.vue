@@ -3,43 +3,49 @@
     <div v-if="loading" class="py-10 text-center text-gray-500">Memuat perkembangan...</div>
     <template v-else>
       <!-- Charts -->
-      <div class="grid lg:grid-cols-2 gap-6">
-        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+      <div class="grid sm:grid-cols-2 gap-6">
+        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]">
           <h3 class="font-bold text-base mb-1">Nilai Tes / Ujian Kelas</h3>
           <p class="text-xs text-gray-500 mb-3">Perkembangan persentase nilai dari waktu ke waktu</p>
-          <ProgressChart type="line" :data="progress.academic_timeline || []" color="#2F6BFF"
-            empty-text="Belum ada nilai tes." />
+          <div class="flex-1">
+            <ProgressChart type="line" :data="progress.academic_timeline || []" color="#2F6BFF"
+              empty-text="Belum ada nilai tes." />
+          </div>
         </section>
 
-        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm lg:col-span-2">
+        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]">
           <h3 class="font-bold text-base mb-1">Nilai per Mata Pelajaran</h3>
           <p class="text-xs text-gray-500 mb-3">Nilai terbaik per bidang akademik</p>
-          <ProgressChart type="hbars" :data="progress.academic_subjects || []" color="#2F6BFF"
-            empty-text="Belum ada nilai akademik." />
+          <div class="flex-1">
+            <ProgressChart type="hbars" :data="progress.academic_subjects || []" color="#2F6BFF"
+              empty-text="Belum ada nilai akademik." />
+          </div>
         </section>
 
-        <!-- Hasil Jasmani — dinonaktifkan sementara
-        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]">
           <h3 class="font-bold text-base mb-1">Hasil Jasmani</h3>
           <p class="text-xs text-gray-500 mb-3">Hasil tes fisik terakhir</p>
-          <ProgressChart type="bars" :data="progress.physical || []" color="#9DB359"
-            empty-text="Belum ada hasil jasmani." />
+          <div class="flex-1">
+            <ProgressChart type="bars" :data="progress.physical || []" color="#9DB359"
+              empty-text="Belum ada hasil jasmani." />
+          </div>
         </section>
-        -->
 
-        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+        <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]">
           <h3 class="font-bold text-base mb-1">Materi Kelas</h3>
           <p class="text-xs text-gray-500 mb-3">Jumlah materi & aktivitas per kelas</p>
-          <div v-if="!(progress.materials || []).length" class="text-sm text-gray-400 py-6 text-center">
-            Belum tergabung di kelas.
-          </div>
-          <div v-else class="space-y-3">
-            <div v-for="c in progress.materials" :key="c.id" class="rounded-xl border border-gray-100 p-3">
-              <div class="font-semibold text-sm">{{ c.name }}</div>
-              <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mt-1">
-                <span>{{ c.materials_count }} materi</span>
-                <span>{{ c.sessions_count }} sesi</span>
-                <span>{{ c.activities_count }} aktivitas</span>
+          <div class="flex-1">
+            <div v-if="!(progress.materials || []).length" class="text-sm text-gray-400 py-6 text-center">
+              Belum tergabung di kelas.
+            </div>
+            <div v-else class="space-y-3">
+              <div v-for="c in progress.materials" :key="c.id" class="rounded-xl border border-gray-100 p-3">
+                <div class="font-semibold text-sm">{{ c.name }}</div>
+                <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mt-1">
+                  <span>{{ c.materials_count }} materi</span>
+                  <span>{{ c.sessions_count }} sesi</span>
+                  <span>{{ c.activities_count }} aktivitas</span>
+                </div>
               </div>
             </div>
           </div>

@@ -1,0 +1,76 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Question;
+use App\Models\StudentGuardian;
+use App\Models\StudentReport;
+use App\Models\TestDefinition;
+use App\Models\User;
+use App\Models\UserNotification;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class AutoStudentReportTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_test_submission_creates_auto_daily_report_and_notifies_parent(): void
+    {
+        $student = User::factory()->create(['role' => 'user']);
+        $parent = User::factory()->create(['role' => 'parent']);
+
+        StudentGuardian::create([
+            'student_user_id' => $student->id,
+            'guardian_user_id' => $parent->id,
+            'guardian_name' => 'Bapak Test',
+            'relationship' => 'ayah',
+            'invite_status' => StudentGuardian::STATUS_ACCEPTED,
+            'accepted_at' => now(),
+        ]);
+
+        $question = Question::create([
+            'question' => '2 + 2 = ?',
+            'category' => 'Math',
+            'difficulty' => 'Easy',
+            'type' => 'multiple_choice',
+            'options' => ['A' => '3', 'B' => '4', 'C' => '5', 'D' => '6'],
+            'correct' => 'B',
+            'created_by' => $student->id,
+        ]);
+
+        $start = now()->subHour();
+        $end = now()->addHour();
+
+        $test = TestDefinition::create([
+            'name' => 'Tryout Matematika',
+            'description' => 'Tes otomatis',
+            'category' => 'Math',
+            'duration' => 30,
+            'schedule_at' => $start,
+            'start_time' => $start,
+            'end_time' => $end,
+            'is_active' => true,
+            'question_ids' => [$question->id],
+            'created_by' => $student->id,
+        ]);
+
+        $response = $this->actingAs($student)->postJson("/api/tests/{$test->id}/submit", [
+            'answers' => [(string) $question->id => 'B'],
+        ]);
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('student_reports', [
+            'student_user_id' => $student->id,
+            'type' => StudentReport::TYPE_DAILY,
+            'title' => 'Hasil tes: Tryout Matematika',
+        ]);
+
+        $this->assertDatabaseHas('user_notifications', [
+            'user_id' => $parent->id,
+            'type' => 'student_report',
+            'title' => 'Update nilai tes',
+        ]);
+    }
+}

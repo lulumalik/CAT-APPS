@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TestDefinition;
 use App\Models\FreeTryoutSubmission;
 use App\Models\TestSubmission;
+use App\Services\AutoStudentReportService;
 use Illuminate\Http\Request;
 
 class TestDefinitionController extends Controller
@@ -302,6 +303,13 @@ class TestDefinitionController extends Controller
             'score' => $score,
             'submitted_at' => now()
         ]);
+
+        app(AutoStudentReportService::class)->fromTestSubmission(
+            $user,
+            $test,
+            $submission,
+            $user->id,
+        );
 
         return response()->json([
             'message' => 'Test berhasil disubmit',
