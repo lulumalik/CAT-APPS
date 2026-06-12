@@ -332,28 +332,12 @@
             Pilihan Kelas Kursus
           </div>
           <hr class="border-white/60 mt-4 w-44 border-b-2" />
-          <div class="grid md:grid-cols-2 gap-5 relative z-30 mt-10">
-            <article v-for="program in onlinePrograms" :key="program.value"
-              class="program-gradient-animated rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1" :style="{
-                backgroundImage: program.backgroundColor,
-                color: program.textColor,
-                boxShadow: program.boxShadow,
-                border: '1px solid rgba(255,255,255,0.18)',
-              }">
-              <div class="flex items-center justify-between gap-3">
-                <h3 class="font-bold text-lg md:whitespace-nowrap">{{ program.name }}</h3>
-                <span
-                  class="inline-flex shrink-0 items-center gap-1 text-xs px-2.5 py-1 rounded-full font-bold backdrop-blur-sm"
-                  :style="programBadgeStyle(program)">
-                  <Crown v-if="program.mode === 'Premium'" class="h-3.5 w-3.5" />
-                  {{ program.mode }}
-                </span>
-              </div>
-              <p class="text-sm mt-2 opacity-90 font-semibold">{{ program.summary }}</p>
-              <ul class="mt-3 text-sm list-disc pl-5 space-y-1 opacity-85 font-semibold">
-                <li v-for="point in program.points" :key="point">{{ point }}</li>
-              </ul>
-            </article>
+          <div class="grid md:grid-cols-2 gap-6 md:gap-8 relative z-30 mt-10">
+            <CourseCreditCard
+              v-for="program in onlinePrograms"
+              :key="program.value"
+              :program="program"
+            />
           </div>
           <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-28 bottom-0 right-0" />
         </div>
@@ -711,6 +695,7 @@ import { BookOpenText, Brain, Check, ChevronLeft, ChevronRight, Crown, Dumbbell,
 import { ONLINE_PROGRAMS } from '@/constants/onlinePrograms'
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
 import TeacherModal from '@/components/TeacherModal.vue'
+import CourseCreditCard from '@/components/CourseCreditCard.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -1392,21 +1377,6 @@ const programBadge = (program) => {
     return { label: mode, isVip: false, className: 'bg-cream text-text border-border' }
   }
   return { label: mode, isVip: false, className: 'bg-background text-text border-border' }
-}
-
-const programBadgeStyle = (program) => {
-  if (program.mode === 'Premium') {
-    return {
-      background: 'rgba(255,255,255,0.88)',
-      color: '#7a4a00',
-      border: '1px solid rgba(180,140,30,0.5)',
-    }
-  }
-  return {
-    background: 'rgba(255,255,255,0.18)',
-    color: program.textColor,
-    border: '1px solid rgba(255,255,255,0.35)',
-  }
 }
 
 const scrollToHash = () => {
