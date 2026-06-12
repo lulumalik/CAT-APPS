@@ -11,23 +11,34 @@
         <h2 class="font-bold text-lg mb-4">Buat Undangan</h2>
 
         <label class="block text-sm font-medium text-gray-700 mb-1">Cari Peserta (sudah registrasi)</label>
-        <input v-model="studentSearch" type="text" placeholder="Nama / email / username"
-          class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm mb-2 outline-none focus:border-[#9DB359]"
-          @input="searchStudents" @focus="searchStudents" />
+        <div class="relative mb-2">
+          <input v-model="studentSearch" type="text" placeholder="Nama / email / username"
+            class="w-full rounded-xl border border-gray-200 px-4 py-2.5 pr-10 text-sm outline-none focus:border-[#9DB359]"
+            @input="onStudentSearchInput" @focus="openStudentDropdown" @blur="closeStudentDropdown" />
+          <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+          <ul v-if="showStudentDropdown && (searchingStudents || studentOptions.length)"
+            class="absolute z-10 mt-1 w-full rounded-xl border border-gray-100 bg-white shadow-lg max-h-48 overflow-y-auto">
+            <li v-if="searchingStudents" class="px-4 py-2.5 text-xs text-gray-400">Mencari peserta...</li>
+            <li v-for="s in studentOptions" :key="s.id">
+              <button type="button"
+                class="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50"
+                :class="form.student_user_id === s.id ? 'bg-[#9DB359]/10 font-semibold' : ''"
+                @mousedown.prevent="selectStudent(s)">
+                {{ s.name }} <span class="text-xs text-gray-400">· {{ s.username || s.email }}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
 
-        <select v-model="form.student_user_id"
-          class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm mb-2 outline-none focus:border-[#9DB359]">
-          <option :value="null">Pilih peserta</option>
-          <option v-for="s in studentOptions" :key="s.id" :value="s.id">
-            {{ s.name }} · {{ s.username || s.email }}
-          </option>
-        </select>
-
-        <p v-if="searchingStudents" class="text-xs text-gray-400 mb-2">Mencari peserta...</p>
-        <p v-else-if="studentSearch && !studentOptions.length" class="text-xs text-amber-600 mb-2">
+        <p v-if="!searchingStudents && showStudentDropdown && studentSearch && !studentOptions.length"
+          class="text-xs text-amber-600 mb-2">
           Tidak ada peserta yang cocok. Hanya peserta dengan registrasi selesai yang bisa diundang.
         </p>
-        <p v-else-if="!studentOptions.length" class="text-xs text-gray-400 mb-2">
+        <p v-else-if="!searchingStudents && showStudentDropdown && !studentSearch && !studentOptions.length"
+          class="text-xs text-gray-400 mb-2">
           Belum ada peserta yang menyelesaikan registrasi.
         </p>
 
@@ -124,6 +135,8 @@ const { confirm } = useModal()
 
 const studentSearch = ref('')
 const studentOptions = ref([])
+const selectedStudent = ref(null)
+const showStudentDropdown = ref(false)
 const invites = ref([])
 const saving = ref(false)
 const searchingStudents = ref(false)
@@ -137,10 +150,36 @@ const form = reactive({
   email: '',
 })
 
-const selectedStudentName = computed(() => {
-  const s = studentOptions.value.find((x) => x.id === form.student_user_id)
-  return s?.name || ''
-})
+const selectedStudentName = computed(() => selectedStudent.value?.name || '')
+
+function studentLabel(s) {
+  return `${s.name} · ${s.username || s.email}`
+}
+
+function onStudentSearchInput() {
+  form.student_user_id = null
+  selectedStudent.value = null
+  showStudentDropdown.value = true
+  searchStudents()
+}
+
+function openStudentDropdown() {
+  showStudentDropdown.value = true
+  searchStudents()
+}
+
+function closeStudentDropdown() {
+  setTimeout(() => {
+    showStudentDropdown.value = false
+  }, 150)
+}
+
+function selectStudent(s) {
+  form.student_user_id = s.id
+  selectedStudent.value = s
+  studentSearch.value = studentLabel(s)
+  showStudentDropdown.value = false
+}
 
 async function fetchStudents() {
   searchingStudents.value = true

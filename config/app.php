@@ -68,6 +68,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Public Frontend URL
+    |--------------------------------------------------------------------------
+    |
+    | Base URL for links shared with end users (e.g. parent invite links).
+    | Defaults to APP_URL so invite links never use the incoming request host
+    | (which may be localhost:3000 during Vite dev or an internal proxy host).
+    |
+    */
+
+    'frontend_url' => env('FRONTEND_URL', env('APP_URL', 'http://localhost')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

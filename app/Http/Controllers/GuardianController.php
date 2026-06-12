@@ -270,7 +270,7 @@ class GuardianController extends Controller
 
     private function serialize(Request $request, StudentGuardian $link): array
     {
-        $base = rtrim(config('app.frontend_url') ?: $request->getSchemeAndHttpHost(), '/');
+        $base = rtrim((string) config('app.frontend_url'), '/');
 
         return [
             'id' => $link->id,
