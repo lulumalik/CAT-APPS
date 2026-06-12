@@ -126,6 +126,12 @@ class RankingController extends Controller
 
     public function manualStore(Request $request)
     {
+        if (! Schema::hasTable('manual_ranking_entries')) {
+            return response()->json([
+                'message' => 'Tabel peringkat manual belum tersedia. Jalankan migrasi database di server.',
+            ], 503);
+        }
+
         $validated = $this->validateManualPayload($request);
         $sub = $this->resolveSubcategory($validated['group_id'], $validated['subcategory_id']);
 

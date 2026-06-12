@@ -18,6 +18,7 @@ class ManualRankingEntry extends Model
         'unit',
         'notes',
         'created_by',
+        'context_key',
     ];
 
     protected function casts(): array

@@ -156,7 +156,7 @@ Route::middleware('role:admin')->group(function () {
     Route::get('/admin/certificates/issues', [CertificateController::class, 'listIssues']);
 });
 
-Route::middleware('role:admin,mentor')->group(function () {
+Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     // Internal leaderboard (staff only — scores are private and not exposed publicly)
     Route::get('/rankings/categories', [RankingController::class, 'categories']);
     Route::get('/rankings/filters', [RankingController::class, 'filters']);
