@@ -21,6 +21,10 @@
               class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
               Tentang Kami
             </router-link>
+            <router-link to="/login"
+              class="text-[11px] lg:text-xs bg-primary text-white font-bold uppercase tracking-wide px-4 py-2 rounded-md cursor-pointer hover:bg-primary/80 hover:text-white transition-colors whitespace-nowrap">
+              Login
+            </router-link>
           </div>
         </div>
 

@@ -17,6 +17,7 @@ class ManualRankingEntry extends Model
         'score',
         'unit',
         'notes',
+        'score_date',
         'created_by',
         'context_key',
     ];
@@ -25,6 +26,7 @@ class ManualRankingEntry extends Model
     {
         return [
             'score' => 'float',
+            'score_date' => 'date',
         ];
     }
 
@@ -45,6 +47,11 @@ class ManualRankingEntry extends Model
 
     public static function buildContextKey(array $data): string
     {
+        $scoreDate = $data['score_date'] ?? '';
+        if ($scoreDate instanceof \DateTimeInterface) {
+            $scoreDate = $scoreDate->format('Y-m-d');
+        }
+
         return implode('|', [
             $data['scope'] ?? '',
             $data['group_id'] ?? '',
@@ -52,6 +59,7 @@ class ManualRankingEntry extends Model
             (string) ($data['bimble_class_id'] ?? ''),
             (string) ($data['cohort'] ?? ''),
             (string) ($data['user_id'] ?? ''),
+            (string) $scoreDate,
         ]);
     }
 }

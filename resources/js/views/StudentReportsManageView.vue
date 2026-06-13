@@ -112,8 +112,6 @@ const { confirm } = useModal()
 const categoryKeys = [
   { key: 'akademik', label: 'Catatan Akademik' },
   { key: 'jasmani', label: 'Catatan Jasmani' },
-  { key: 'kedisiplinan', label: 'Kedisiplinan / Sikap' },
-  { key: 'kehadiran', label: 'Kehadiran' },
 ]
 
 const studentSearch = ref('')

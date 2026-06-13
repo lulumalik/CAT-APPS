@@ -153,16 +153,34 @@ class RankingController extends Controller
             'score' => 'required|numeric',
             'unit' => 'nullable|string|max:32',
             'notes' => 'nullable|string|max:2000',
+            'score_date' => 'nullable|date',
         ]);
 
         $sub = $this->resolveSubcategory($entry->group_id, $entry->subcategory_id);
         $unit = $validated['unit'] ?? $sub['unit'] ?? null;
 
-        $entry->update([
+        $attrs = [
             'score' => $validated['score'],
             'unit' => $unit,
             'notes' => $validated['notes'] ?? null,
-        ]);
+        ];
+
+        if ($entry->group_id === 'jasmani' && array_key_exists('score_date', $validated)) {
+            $attrs['score_date'] = $validated['score_date'] ?? $entry->score_date?->toDateString() ?? now()->toDateString();
+        }
+
+        $entry->update($attrs);
+
+        // Tanggal bisa berubah saat edit, jadi context_key disinkronkan ulang.
+        $entry->update(['context_key' => ManualRankingEntry::buildContextKey([
+            'scope' => $entry->scope,
+            'group_id' => $entry->group_id,
+            'subcategory_id' => $entry->subcategory_id,
+            'bimble_class_id' => $entry->bimble_class_id,
+            'cohort' => $entry->cohort,
+            'user_id' => $entry->user_id,
+            'score_date' => $entry->score_date,
+        ])]);
 
         $entry->load('user:id,name,email');
 
@@ -175,6 +193,7 @@ class RankingController extends Controller
                 $entry->notes,
                 null,
                 $entry->bimble_class_id,
+                $entry->score_date?->toDateString(),
             );
         }
 
@@ -217,7 +236,14 @@ class RankingController extends Controller
             'score' => 'required|numeric',
             'unit' => 'nullable|string|max:32',
             'notes' => 'nullable|string|max:2000',
+            'score_date' => 'nullable|date',
         ]));
+
+        // Jasmani disimpan per tanggal sehingga riwayat (timeline) bisa dibentuk.
+        // Akademik tetap satu entri per peserta (score_date null).
+        $validated['score_date'] = $validated['group_id'] === 'jasmani'
+            ? ($validated['score_date'] ?? now()->toDateString())
+            : null;
 
         $key = ManualRankingEntry::buildContextKey([
             'scope' => $validated['scope'],
@@ -226,11 +252,14 @@ class RankingController extends Controller
             'bimble_class_id' => $validated['scope'] === 'class' ? ($validated['class_id'] ?? null) : null,
             'cohort' => $validated['scope'] === 'cohort' ? ($validated['cohort'] ?? null) : null,
             'user_id' => $validated['user_id'],
+            'score_date' => $validated['score_date'],
         ]);
 
         if (ManualRankingEntry::where('context_key', $key)->exists()) {
             throw ValidationException::withMessages([
-                'user_id' => ['Peringkat manual untuk peserta ini sudah ada. Gunakan ubah.'],
+                'user_id' => [$validated['group_id'] === 'jasmani'
+                    ? 'Nilai jasmani peserta ini pada tanggal tersebut sudah ada. Gunakan ubah atau pilih tanggal lain.'
+                    : 'Peringkat manual untuk peserta ini sudah ada. Gunakan ubah.'],
             ]);
         }
 
@@ -252,6 +281,7 @@ class RankingController extends Controller
             'score' => $validated['score'],
             'unit' => $validated['unit'] ?? $sub['unit'] ?? null,
             'notes' => $validated['notes'] ?? null,
+            'score_date' => $validated['score_date'] ?? null,
         ];
 
         $attrs['context_key'] = ManualRankingEntry::buildContextKey($attrs);
@@ -377,13 +407,21 @@ class RankingController extends Controller
             ->with('user:id,name')
             ->get();
 
-        $rows = [];
+        // Peserta bisa punya beberapa entri (mis. jasmani per tanggal); untuk
+        // peringkat ambil nilai terbaik sesuai arah pengurutan subkategori.
+        $bestByUser = [];
         foreach ($entries as $entry) {
             if (! $entry->user) {
                 continue;
             }
             $value = (float) $entry->score;
-            $rows[] = [
+            $existing = $bestByUser[$entry->user_id] ?? null;
+            $isBetter = $existing === null
+                || ($sortAsc ? $value < $existing['score'] : $value > $existing['score']);
+            if (! $isBetter) {
+                continue;
+            }
+            $bestByUser[$entry->user_id] = [
                 'user_id' => $entry->user_id,
                 'name' => $entry->user->name,
                 'score' => $value,
@@ -394,6 +432,8 @@ class RankingController extends Controller
                 'notes' => $entry->notes,
             ];
         }
+
+        $rows = array_values($bestByUser);
 
         usort($rows, function ($a, $b) use ($sortAsc) {
             return $sortAsc
@@ -621,6 +661,7 @@ class RankingController extends Controller
             'score' => $entry->score,
             'unit' => $entry->unit,
             'notes' => $entry->notes,
+            'score_date' => $entry->score_date?->toDateString(),
             'updated_at' => $entry->updated_at?->toIso8601String(),
         ];
     }
@@ -639,6 +680,7 @@ class RankingController extends Controller
             $entry->notes,
             $entry->id,
             $entry->bimble_class_id,
+            $entry->score_date?->toDateString(),
         );
     }
 }

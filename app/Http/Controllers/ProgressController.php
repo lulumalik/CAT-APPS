@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BimbleClass;
+use App\Models\ManualRankingEntry;
 use App\Models\RegistrationProgress;
 use App\Models\StudentGuardian;
 use App\Models\StudentReport;
@@ -127,9 +128,114 @@ class ProgressController extends Controller
             'student' => ['id' => $student->id, 'name' => $student->name],
             'academic_timeline' => $this->academicTimeline($student),
             'academic_subjects' => $this->academicSubjects($student),
+            'academic_subject_timeline' => $this->academicSubjectTimeline($student),
             'physical' => $this->physicalBars($student),
+            'physical_timeline' => $this->physicalTimeline($student),
             'materials' => $this->materialsPerClass($student),
         ];
+    }
+
+    /**
+     * Per-subject academic scores over time (percentage), one series per subject.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function academicSubjectTimeline(User $student): array
+    {
+        if (! Schema::hasTable('test_submissions')) {
+            return [];
+        }
+
+        $akademik = collect(config('rankings.groups', []))->firstWhere('id', 'akademik');
+        $subcategories = $akademik['subcategories'] ?? [];
+        if ($subcategories === []) {
+            return [];
+        }
+
+        $submissions = TestSubmission::query()
+            ->where('user_id', $student->id)
+            ->whereNotNull('score')
+            ->with('testDefinition:id,category,question_ids')
+            ->orderBy('submitted_at')
+            ->orderBy('id')
+            ->get();
+
+        $series = [];
+        foreach ($subcategories as $sub) {
+            $categories = $sub['test_categories'] ?? [];
+            $points = [];
+            foreach ($submissions as $submission) {
+                $cat = $submission->testDefinition?->category;
+                if (! $cat || ! in_array($cat, $categories, true)) {
+                    continue;
+                }
+                $total = count($submission->testDefinition?->question_ids ?? []);
+                if ($total < 1) {
+                    continue;
+                }
+                $points[] = [
+                    'date' => optional($submission->submitted_at ?? $submission->created_at)->toDateString(),
+                    'percent' => round(((float) $submission->score / $total) * 100, 1),
+                ];
+            }
+
+            $series[] = [
+                'id' => $sub['id'],
+                'label' => $sub['label'],
+                'points' => $points,
+            ];
+        }
+
+        return $series;
+    }
+
+    /**
+     * Per-subcategory jasmani scores over time, one series per component.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function physicalTimeline(User $student): array
+    {
+        if (! Schema::hasTable('manual_ranking_entries')) {
+            return [];
+        }
+
+        $jasmani = collect(config('rankings.groups', []))->firstWhere('id', 'jasmani');
+        $subcategories = $jasmani['subcategories'] ?? [];
+        if ($subcategories === []) {
+            return [];
+        }
+
+        $entries = ManualRankingEntry::query()
+            ->where('group_id', 'jasmani')
+            ->where('user_id', $student->id)
+            ->orderBy('score_date')
+            ->orderBy('id')
+            ->get();
+
+        $series = [];
+        foreach ($subcategories as $sub) {
+            $points = [];
+            foreach ($entries as $entry) {
+                if ($entry->subcategory_id !== $sub['id']) {
+                    continue;
+                }
+                $points[] = [
+                    'date' => optional($entry->score_date ?? $entry->created_at)->toDateString(),
+                    'value' => (float) $entry->score,
+                ];
+            }
+
+            $series[] = [
+                'id' => $sub['id'],
+                'label' => $sub['label'],
+                'unit' => $sub['unit'] ?? null,
+                'sort' => $sub['sort'] ?? 'desc',
+                'points' => $points,
+            ];
+        }
+
+        return $series;
     }
 
     /**

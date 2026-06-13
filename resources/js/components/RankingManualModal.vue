@@ -59,6 +59,17 @@
           </div>
         </div>
 
+        <div v-if="isJasmani">
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.manualDate') }}</label>
+          <input
+            v-model="form.score_date"
+            type="date"
+            required
+            class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
+          />
+          <p class="text-xs text-gray-400 mt-1">{{ t('rankings.manualDateHint') }}</p>
+        </div>
+
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.manualNotes') }}</label>
           <textarea
@@ -104,6 +115,8 @@ const emit = defineEmits(['close', 'saved'])
 const { t } = useI18n()
 
 const isEdit = computed(() => !!props.initial?.id)
+const isJasmani = computed(() => props.context?.group_id === 'jasmani')
+const today = () => new Date().toISOString().slice(0, 10)
 const saving = ref(false)
 const errorMessage = ref('')
 const studentSearch = ref('')
@@ -117,6 +130,7 @@ const form = reactive({
   score: '',
   unit: '',
   notes: '',
+  score_date: today(),
 })
 
 watch(
@@ -127,12 +141,14 @@ watch(
       form.score = val.score
       form.unit = val.unit || ''
       form.notes = val.notes || ''
+      form.score_date = val.score_date || today()
       selectedStudentName.value = val.user?.name || ''
     } else {
       form.user_id = null
       form.score = ''
       form.unit = props.unitPlaceholder || ''
       form.notes = ''
+      form.score_date = today()
       selectedStudentName.value = ''
       studentSearch.value = ''
     }
@@ -170,11 +186,13 @@ async function submit() {
   errorMessage.value = ''
   try {
     if (isEdit.value) {
-      await axios.put(`/api/rankings/manual/${props.initial.id}`, {
+      const payload = {
         score: form.score,
         unit: form.unit || undefined,
         notes: form.notes || null,
-      })
+      }
+      if (isJasmani.value) payload.score_date = form.score_date
+      await axios.put(`/api/rankings/manual/${props.initial.id}`, payload)
     } else {
       const payload = {
         scope: props.context.scope,
@@ -187,6 +205,7 @@ async function submit() {
       }
       if (props.context.scope === 'class') payload.class_id = props.context.class_id
       if (props.context.scope === 'cohort') payload.cohort = props.context.cohort
+      if (isJasmani.value) payload.score_date = form.score_date
       await axios.post('/api/rankings/manual', payload)
     }
     emit('saved')

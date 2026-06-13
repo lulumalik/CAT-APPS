@@ -77,6 +77,7 @@ class AutoStudentReportService
         ?string $notes = null,
         ?int $manualEntryId = null,
         ?int $bimbleClassId = null,
+        ?string $scoreDate = null,
     ): ?StudentReport {
         if (! Schema::hasTable('student_reports')) {
             return null;
@@ -107,7 +108,7 @@ class AutoStudentReportService
             'bimble_class_id' => $bimbleClassId,
             'created_by' => $createdBy,
             'type' => StudentReport::TYPE_DAILY,
-            'report_date' => now()->toDateString(),
+            'report_date' => $scoreDate ?: now()->toDateString(),
             'title' => sprintf('Update jasmani: %s', $label),
             'summary' => implode(' ', $summaryParts),
             'categories' => [

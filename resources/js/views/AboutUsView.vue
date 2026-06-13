@@ -257,7 +257,7 @@
             menerima pembayaran melalui rekening pribadi, e-wallet, atau metode lain di luar rekening resmi perusahaan.
           </div>
 
-          <div class="mt-6 grid sm:grid-cols-2 gap-4 max-w-5xl mx-auto">
+          <div class="mt-6 grid sm:grid-cols-1 gap-4 max-w-xl mx-auto">
             <article v-for="account in officialBankAccounts" :key="account.bank"
               class="rounded-xl shadow-xl p-5 bank-card-animated" :class="account.themeClass">
               <div><img :src="account.logo" :alt="account.logoAlt" class="h-24 w-32 mx-auto object-contain" />
@@ -650,14 +650,14 @@ const legalDocuments = [
 ]
 
 const officialBankAccounts = [
-  {
-    bank: 'Bank BCA',
-    accountNumber: '-',
-    accountName: 'PT. Pratistha Training Center Indonesia',
-    logo: bcaLogoUrl,
-    logoAlt: 'Logo Bank BCA',
-    themeClass: 'bank-card-bca',
-  },
+  // {
+  //   bank: 'Bank BCA',
+  //   accountNumber: '-',
+  //   accountName: 'PT. Pratistha Training Center Indonesia',
+  //   logo: bcaLogoUrl,
+  //   logoAlt: 'Logo Bank BCA',
+  //   themeClass: 'bank-card-bca',
+  // },
   {
     bank: 'Bank BRI',
     accountNumber: '-',

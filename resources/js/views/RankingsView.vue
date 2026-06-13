@@ -5,19 +5,6 @@
       <p class="text-gray-500 mt-2">{{ t('rankings.subtitle') }}</p>
     </div>
 
-    <div class="flex flex-wrap gap-2 mb-6">
-      <button
-        v-for="tab in scopeTabs"
-        :key="tab.id"
-        type="button"
-        class="px-5 py-2.5 rounded-full text-sm font-medium transition-all"
-        :class="scope === tab.id ? 'bg-[#1A1A1A] text-white shadow-lg shadow-black/10' : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'"
-        @click="setScope(tab.id)"
-      >
-        {{ tab.label }}
-      </button>
-    </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <aside class="lg:col-span-4 space-y-4">
         <div class="bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
@@ -62,7 +49,7 @@
           {{ classGuide }}
         </div>
 
-        <div v-if="scope === 'class'" class="bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
+        <div class="bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.selectClass') }}</label>
           <select v-model="selectedClassId" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0">
             <option value="">{{ t('rankings.selectClassPlaceholder') }}</option>
@@ -71,14 +58,6 @@
           <p v-if="selectedClassMeta" class="text-xs text-gray-500 mt-2">
             {{ t('rankings.classPeriod') }}: {{ selectedClassMeta.academic_period || '—' }}
           </p>
-        </div>
-
-        <div v-if="scope === 'cohort'" class="bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.selectCohort') }}</label>
-          <select v-model="selectedCohort" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0">
-            <option value="">{{ t('rankings.selectCohortPlaceholder') }}</option>
-            <option v-for="cohort in cohorts" :key="cohort" :value="cohort">{{ cohort }}</option>
-          </select>
         </div>
       </aside>
 
@@ -222,18 +201,10 @@ const toast = useToast()
 
 const isStaff = computed(() => ['admin', 'mentor'].includes(store.role))
 
-const scopeTabs = computed(() => [
-  { id: 'global', label: t('rankings.scopeGlobal') },
-  { id: 'class', label: t('rankings.scopeClass') },
-  { id: 'cohort', label: t('rankings.scopeCohort') },
-])
-
-const scope = ref('global')
 const groups = ref([])
 const classGuides = ref({})
 const classGuide = ref('')
 const classes = ref([])
-const cohorts = ref([])
 const entries = ref([])
 
 const loadingCategories = ref(true)
@@ -242,7 +213,6 @@ const expandedGroup = ref('akademik')
 const selectedGroupId = ref('akademik')
 const selectedSubId = ref('kewarganegaraan')
 const selectedClassId = ref('')
-const selectedCohort = ref('')
 
 const showManualModal = ref(false)
 const editingManual = ref(null)
@@ -258,37 +228,30 @@ const selectedClassMeta = computed(() =>
 )
 
 const rankingContext = computed(() => ({
-  scope: scope.value,
+  scope: 'class',
   group_id: selectedGroupId.value,
   subcategory_id: selectedSubId.value,
-  class_id: scope.value === 'class' ? selectedClassId.value : null,
-  cohort: scope.value === 'cohort' ? selectedCohort.value : null,
+  class_id: selectedClassId.value,
+  cohort: null,
 }))
 
 const manualContextLabel = computed(() => {
   const parts = [activeGroupLabel.value, activeSubLabel.value, scopeLabel.value]
-  if (scope.value === 'class' && selectedClassMeta.value) parts.push(selectedClassMeta.value.name)
-  if (scope.value === 'cohort' && selectedCohort.value) parts.push(selectedCohort.value)
+  if (selectedClassMeta.value) parts.push(selectedClassMeta.value.name)
   return parts.filter(Boolean).join(' · ')
 })
 
-const scopeLabel = computed(() => {
-  if (scope.value === 'class') return t('rankings.scopeClass')
-  if (scope.value === 'cohort') return t('rankings.scopeCohort')
-  return t('rankings.scopeGlobal')
-})
+const scopeLabel = computed(() => t('rankings.scopeClass'))
 
 const canLoad = computed(() => {
   if (!selectedGroupId.value || !selectedSubId.value) return false
-  if (scope.value === 'class' && !selectedClassId.value) return false
-  if (scope.value === 'cohort' && !selectedCohort.value) return false
+  if (!selectedClassId.value) return false
   return true
 })
 
 const scopeHint = computed(() => {
   if (!selectedSubId.value) return t('rankings.pickSubcategory')
-  if (scope.value === 'class' && !selectedClassId.value) return t('rankings.selectClassPlaceholder')
-  if (scope.value === 'cohort' && !selectedCohort.value) return t('rankings.selectCohortPlaceholder')
+  if (!selectedClassId.value) return t('rankings.selectClassPlaceholder')
   return ''
 })
 
@@ -313,10 +276,6 @@ function selectSubcategory(groupId, subId) {
   selectedSubId.value = subId
   expandedGroup.value = groupId
   classGuide.value = classGuides.value[groupId] || ''
-}
-
-function setScope(id) {
-  scope.value = id
 }
 
 function rankBadgeClass(rank) {
@@ -348,10 +307,8 @@ async function loadFilters() {
   try {
     const { data } = await axios.get('/api/rankings/filters')
     classes.value = data.classes || []
-    cohorts.value = data.cohorts || []
   } catch {
     classes.value = []
-    cohorts.value = []
   }
 }
 
@@ -360,12 +317,11 @@ async function loadEntries() {
   loadingEntries.value = true
   try {
     const params = {
-      scope: scope.value,
+      scope: 'class',
       group_id: selectedGroupId.value,
       subcategory_id: selectedSubId.value,
+      class_id: selectedClassId.value,
     }
-    if (scope.value === 'class') params.class_id = selectedClassId.value
-    if (scope.value === 'cohort') params.cohort = selectedCohort.value
 
     const { data } = await axios.get('/api/rankings', { params })
     entries.value = data.entries || []
@@ -441,7 +397,7 @@ async function deleteManual(row) {
   }
 }
 
-watch([scope, selectedGroupId, selectedSubId, selectedClassId, selectedCohort], () => {
+watch([selectedGroupId, selectedSubId, selectedClassId], () => {
   if (canLoad.value) loadEntries()
 })
 

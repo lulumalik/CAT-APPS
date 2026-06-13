@@ -30,6 +30,41 @@
       </div>
     </div>
 
+    <!-- MULTI-LINE CHART (timeline per series) -->
+    <div v-else-if="type === 'multiline'">
+      <div v-if="!activeSeries.length" class="text-sm text-gray-400 py-6 text-center">{{ emptyText }}</div>
+      <template v-else>
+        <div class="flex gap-2">
+          <div class="flex flex-col justify-between h-44 py-1 text-[9px] text-gray-400 text-right shrink-0 w-8">
+            <span>{{ yLabel(1) }}</span>
+            <span>{{ yLabel(0.5) }}</span>
+            <span>{{ yLabel(0) }}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <svg viewBox="0 0 320 160" class="w-full h-44" preserveAspectRatio="none">
+              <line v-for="(g, gi) in [0, 0.25, 0.5, 0.75, 1]" :key="gi"
+                :x1="0" :x2="320" :y1="yForFrac(g)" :y2="yForFrac(g)" stroke="#eef0f2" stroke-width="1" />
+              <g v-for="(s, si) in seriesPaths" :key="si">
+                <polyline v-if="s.dots.length > 1" :points="s.polyline" fill="none" :stroke="s.color"
+                  stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+                <circle v-for="(d, di) in s.dots" :key="di" :cx="d.x" :cy="d.y" r="3" :fill="s.color" />
+              </g>
+            </svg>
+            <div class="flex justify-between mt-1 px-1 text-[10px] text-gray-400">
+              <span>{{ fmtDate(allDates[0]) }}</span>
+              <span v-if="allDates.length > 1">{{ fmtDate(allDates[allDates.length - 1]) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-x-3 gap-y-1 mt-3">
+          <span v-for="(s, i) in seriesPaths" :key="i" class="inline-flex items-center gap-1.5 text-[11px] text-gray-600">
+            <span class="inline-block w-3 h-1.5 rounded-full" :style="{ background: s.color }"></span>
+            {{ s.label }}<span v-if="s.unit && valueMode !== 'percent'" class="text-gray-400"> ({{ s.unit }})</span>
+          </span>
+        </div>
+      </template>
+    </div>
+
     <!-- HORIZONTAL bars (subjects) -->
     <div v-else class="space-y-3">
       <div v-if="!normalizedBars.length" class="text-sm text-gray-400 py-6 text-center">{{ emptyText }}</div>
@@ -53,12 +88,16 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  type: { type: String, default: 'hbars' }, // 'bars' | 'line' | 'hbars'
+  type: { type: String, default: 'hbars' }, // 'bars' | 'line' | 'multiline' | 'hbars'
   data: { type: Array, default: () => [] },
+  series: { type: Array, default: () => [] }, // multiline: [{ label, unit, points: [{ date, value|percent }] }]
+  valueMode: { type: String, default: 'percent' }, // 'percent' (0–100) | 'value' (auto max)
   color: { type: String, default: '#9DB359' },
   emptyText: { type: String, default: 'Belum ada data.' },
   max: { type: Number, default: null },
 })
+
+const palette = ['#2F6BFF', '#9DB359', '#E8833A', '#8B5CF6', '#EC4899', '#14B8A6', '#F59E0B', '#0EA5E9']
 
 const hasData = computed(() => props.data.some((d) => d.value != null || d.percent != null))
 
@@ -102,4 +141,69 @@ const polyline = computed(() => svgPoints.value.map((p) => `${p.x},${p.y}`).join
 function yFor(percent) {
   return 160 - (Math.min(100, Math.max(0, percent)) / 100) * 150 - 5
 }
+
+// ---- multiline ----
+const cleanSeries = computed(() =>
+  (props.series || []).map((s, idx) => ({
+    label: s.label,
+    unit: s.unit || null,
+    color: s.color || palette[idx % palette.length],
+    points: (s.points || [])
+      .map((p) => ({ date: p.date || '', value: Number(p.percent != null ? p.percent : p.value) }))
+      .filter((p) => p.date && !Number.isNaN(p.value)),
+  })),
+)
+
+const activeSeries = computed(() => cleanSeries.value.filter((s) => s.points.length))
+
+const allDates = computed(() => {
+  const set = new Set()
+  activeSeries.value.forEach((s) => s.points.forEach((p) => set.add(p.date)))
+  return Array.from(set).sort()
+})
+
+const multiMax = computed(() => {
+  if (props.valueMode === 'percent') return 100
+  let m = 0
+  activeSeries.value.forEach((s) => s.points.forEach((p) => { if (p.value > m) m = p.value }))
+  return m > 0 ? m : 1
+})
+
+function xForDate(date) {
+  const n = allDates.value.length
+  if (n <= 1) return 160
+  return (allDates.value.indexOf(date) / (n - 1)) * 320
+}
+
+function yForFrac(frac) {
+  return 160 - Math.min(1, Math.max(0, frac)) * 150 - 5
+}
+
+function yForValue(v) {
+  return yForFrac(v / multiMax.value)
+}
+
+function yLabel(frac) {
+  const v = Math.round(multiMax.value * frac)
+  return props.valueMode === 'percent' ? `${v}%` : `${v}`
+}
+
+function fmtDate(d) {
+  if (!d) return ''
+  const parts = String(d).split('-')
+  return parts.length === 3 ? `${parts[2]}/${parts[1]}` : d
+}
+
+const seriesPaths = computed(() =>
+  activeSeries.value.map((s) => {
+    const dots = s.points.map((p) => ({ x: xForDate(p.date), y: yForValue(p.value) }))
+    return {
+      color: s.color,
+      label: s.label,
+      unit: s.unit,
+      polyline: dots.map((d) => `${d.x},${d.y}`).join(' '),
+      dots,
+    }
+  }),
+)
 </script>

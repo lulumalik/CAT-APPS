@@ -15,18 +15,18 @@
 
         <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]">
           <h3 class="font-bold text-base mb-1">Nilai per Mata Pelajaran</h3>
-          <p class="text-xs text-gray-500 mb-3">Nilai terbaik per bidang akademik</p>
+          <p class="text-xs text-gray-500 mb-3">Perkembangan nilai (%) tiap mata pelajaran dari waktu ke waktu</p>
           <div class="flex-1">
-            <ProgressChart type="hbars" :data="progress.academic_subjects || []" color="#2F6BFF"
+            <ProgressChart type="multiline" :series="progress.academic_subject_timeline || []" value-mode="percent"
               empty-text="Belum ada nilai akademik." />
           </div>
         </section>
 
         <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]">
           <h3 class="font-bold text-base mb-1">Hasil Jasmani</h3>
-          <p class="text-xs text-gray-500 mb-3">Hasil tes fisik terakhir</p>
+          <p class="text-xs text-gray-500 mb-3">Perkembangan nilai jasmani peserta dari waktu ke waktu</p>
           <div class="flex-1">
-            <ProgressChart type="bars" :data="progress.physical || []" color="#9DB359"
+            <ProgressChart type="multiline" :series="progress.physical_timeline || []" value-mode="value"
               empty-text="Belum ada hasil jasmani." />
           </div>
         </section>
