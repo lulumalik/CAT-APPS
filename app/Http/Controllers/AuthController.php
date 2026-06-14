@@ -15,12 +15,18 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        $phoneRules = ['required', 'string', 'max:64', 'regex:/^628[0-9]{7,12}$/'];
         $data = $request->validate([
             'name' => 'required|string|max:100',
             'username' => 'required|string|min:3|max:32|regex:/^[a-zA-Z0-9_]+$/|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'program_category' => 'required|in:'.implode(',', User::programCategories()),
+            'whatsapp' => $phoneRules,
+            'phone' => $phoneRules,
+        ], [
+            'whatsapp.regex' => 'Format nomor WhatsApp harus diawali 628 dan hanya angka (contoh: 6281234567890).',
+            'phone.regex' => 'Format nomor telepon orang tua harus diawali 628 dan hanya angka (contoh: 6281234567890).',
         ]);
         $programCategory = User::normalizeProgramCategory($data['program_category']);
 
@@ -45,6 +51,10 @@ class AuthController extends Controller
                 'user_id' => $user->id,
                 'current_step' => 'administration',
                 'administration_status' => 'not_started',
+                'administration_data' => [
+                    'whatsapp' => $data['whatsapp'],
+                    'phone' => $data['phone'],
+                ],
                 'psychology_status' => 'not_started',
                 'health_status' => 'not_started',
                 'physical_status' => 'not_started',

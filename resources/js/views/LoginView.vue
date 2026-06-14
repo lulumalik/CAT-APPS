@@ -1,6 +1,11 @@
 <template>
   <main class="bg-background h-screen overflow-auto rounded-3xl md:flex md:items-center px-4 py-4 md:px-8">
     <div class="auth-shell">
+      <section class="auth-right-pane">
+        <span class="auth-visual-stripe" />
+        <img src="../../assets/logo.png" alt="Login" class="w-44 relative z-20 mx-auto top-10 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-30 object-cover" />
+      </section>
+
       <section class="auth-left-pane">
         <header class="auth-brand-nav">
           <nav class="auth-nav-links w-full justify-center">
@@ -71,11 +76,6 @@
             <router-link to="/signup" class="font-semibold text-[#333] hover:text-[#30085c]">{{ t('auth.login.createAccount') }}</router-link>
           </p>
         </section>
-      </section>
-
-      <section class="auth-right-pane">
-        <span class="auth-visual-stripe" />
-        <img src="../../assets/logo.png" alt="Login" class="w-44 relative z-20 mx-auto top-10 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-30 object-cover" />
       </section>
     </div>
   </main>

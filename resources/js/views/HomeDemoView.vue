@@ -128,16 +128,7 @@
           </div>
         </div>
 
-        <div class="relative z-10 mt-14 grid grid-cols-2 md:grid-cols-4 gap-3">
-          <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
-            <div class="flex items-center justify-center gap-2">
-              <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white">
-                <Check class="h-5 w-5" />
-              </div>
-              <p class="text-3xl font-black text-white">92%</p>
-            </div>
-            <p class="mt-1 text-xs md:text-sm font-semibold text-blue-100">Tingkat Kelulusan</p>
-          </article>
+        <div class="relative z-10 mt-14 grid grid-cols-2 md:grid-cols-3 gap-3">
           <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
             <div class="flex items-center justify-center gap-2">
               <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white">
@@ -418,7 +409,7 @@
       </div>
     </section>
 
-    <a href="https://wa.me/6285124156748" target="_blank" rel="noopener noreferrer"
+    <a href="https://wa.me/628138964488" target="_blank" rel="noopener noreferrer"
       class="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-white shadow-xl shadow-[#2F6BFF]/30 transition hover:scale-105 hover:bg-primary"
       aria-label="Chat WhatsApp" title="Chat WhatsApp">
       <MessageCircle class="h-7 w-7" />

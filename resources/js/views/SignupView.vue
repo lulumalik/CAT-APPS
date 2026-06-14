@@ -1,6 +1,11 @@
 <template>
   <main class="bg-background h-screen overflow-auto rounded-3xl md:flex md:items-center px-4 py-4 md:px-8">
     <div class="auth-shell">
+      <section class="auth-right-pane">
+        <span class="auth-visual-stripe" />
+        <img src="../../assets/logo.png" alt="Login" class="w-44 relative z-20 mx-auto top-6 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-30 object-cover" />
+      </section>
+
       <section class="auth-left-pane">
         <header class="auth-brand-nav">
           <nav class="auth-nav-links justify-center w-full">
@@ -62,6 +67,46 @@
               :placeholder="t('auth.signup.emailLabel')"
             />
 
+            <div
+              class="flex w-full items-center overflow-hidden rounded-full border border-[#c8bfd8] bg-white transition-colors focus-within:border-[#6f2fc9] focus-within:shadow-[0_0_0_3px_rgba(111,47,201,0.16)]"
+            >
+              <span class="shrink-0 border-r border-[#c8bfd8] px-4 py-3 text-sm text-gray-500 select-none">+62</span>
+              <input
+                id="whatsapp"
+                v-model="whatsapp"
+                name="whatsapp"
+                type="text"
+                inputmode="numeric"
+                autocomplete="tel-national"
+                required
+                :placeholder="t('auth.signup.whatsappLabel')"
+                class="w-full min-w-0 border-0 bg-transparent px-4 py-3 text-sm text-[#2f223f] focus:outline-none focus:ring-0"
+              />
+            </div>
+            <p v-if="whatsapp && !isValidPhoneLocal(whatsapp)" class="w-full text-left text-xs text-red-500 -mt-1">
+              Nomor WhatsApp tidak valid. Contoh: 812345678
+            </p>
+
+            <div
+              class="flex w-full items-center overflow-hidden rounded-full border border-[#c8bfd8] bg-white transition-colors focus-within:border-[#6f2fc9] focus-within:shadow-[0_0_0_3px_rgba(111,47,201,0.16)]"
+            >
+              <span class="shrink-0 border-r border-[#c8bfd8] px-4 py-3 text-sm text-gray-500 select-none">+62</span>
+              <input
+                id="parent_phone"
+                v-model="parentPhone"
+                name="parent_phone"
+                type="text"
+                inputmode="numeric"
+                autocomplete="tel-national"
+                required
+                :placeholder="t('auth.signup.parentPhoneLabel')"
+                class="w-full min-w-0 border-0 bg-transparent px-4 py-3 text-sm text-[#2f223f] focus:outline-none focus:ring-0"
+              />
+            </div>
+            <p v-if="parentPhone && !isValidPhoneLocal(parentPhone)" class="w-full text-left text-xs text-red-500 -mt-1">
+              Nomor telepon orang tua tidak valid. Contoh: 812345678
+            </p>
+
             <input
               id="password"
               v-model="password"
@@ -87,17 +132,12 @@
           </p>
         </section>
       </section>
-
-      <section class="auth-right-pane">
-        <span class="auth-visual-stripe" />
-        <img src="../../assets/logo.png" alt="Login" class="w-44 relative z-20 mx-auto top-6 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-30 object-cover" />
-      </section>
     </div>
   </main>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { CircleAlert } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
@@ -109,6 +149,8 @@ const programCategory = ref('regular')
 const name = ref('')
 const username = ref('')
 const email = ref('')
+const whatsapp = ref('')
+const parentPhone = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
@@ -117,15 +159,49 @@ const store = useAppStore()
 const toast = useToast()
 const { t } = useI18n()
 
+function normalizePhoneLocal(rawPhone) {
+  const digitsOnly = String(rawPhone || '').replace(/\D/g, '')
+  if (digitsOnly.startsWith('62')) return digitsOnly.slice(2)
+  if (digitsOnly.startsWith('0')) return digitsOnly.slice(1)
+  return digitsOnly
+}
+
+function isValidPhoneLocal(localPhone) {
+  return /^8\d{8,11}$/.test(String(localPhone || ''))
+}
+
+function formatPhoneForBackend(localPhone) {
+  const normalized = normalizePhoneLocal(localPhone)
+  return normalized ? `62${normalized}` : ''
+}
+
+watch(whatsapp, (value) => {
+  const normalized = normalizePhoneLocal(value)
+  if (value !== normalized) whatsapp.value = normalized
+})
+
+watch(parentPhone, (value) => {
+  const normalized = normalizePhoneLocal(value)
+  if (value !== normalized) parentPhone.value = normalized
+})
+
 const onSubmit = async () => {
   loading.value = true
   error.value = ''
+
+  if (!isValidPhoneLocal(whatsapp.value) || !isValidPhoneLocal(parentPhone.value)) {
+    loading.value = false
+    error.value = 'Format nomor WhatsApp atau telepon orang tua tidak valid. Gunakan format seperti 812345678.'
+    return
+  }
 
   const result = await store.register({
     program_category: programCategory.value,
     name: name.value,
     username: username.value,
     email: email.value,
+    whatsapp: formatPhoneForBackend(whatsapp.value),
+    phone: formatPhoneForBackend(parentPhone.value),
     password: password.value,
   })
 

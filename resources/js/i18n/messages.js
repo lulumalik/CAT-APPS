@@ -97,8 +97,8 @@ export const messages = {
       },
     },
     dashboard: {
-      welcomeBack: 'Selamat datang kembali',
-      welcomeBackName: 'Selamat datang kembali, {name}!',
+      welcomeBack: 'Selamat datang',
+      welcomeBackName: 'Selamat datang, {name}!',
       todayIs: 'Hari ini',
       averageScore: 'Rata-rata skor',
       testsCompleted: 'Tes selesai',
@@ -361,7 +361,7 @@ export const messages = {
     },
     auth: {
       login: {
-        title: 'Selamat datang kembali',
+        title: 'Selamat datang',
         subtitle: 'Masuk untuk mengakses dashboard Anda',
         usernameLabel: 'Username',
         passwordLabel: 'Kata sandi',
@@ -384,6 +384,8 @@ export const messages = {
         nameLabel: 'Nama lengkap',
         usernameLabel: 'Username',
         emailLabel: 'Alamat email',
+        whatsappLabel: 'Nomor WhatsApp',
+        parentPhoneLabel: 'Nomor telepon orang tua',
         passwordLabel: 'Kata sandi',
         confirmPasswordLabel: 'Konfirmasi kata sandi',
         submit: 'Daftar',
@@ -423,7 +425,7 @@ export const messages = {
       fields: {
         fullName: 'Nama lengkap (sesuai dokumen)',
         fullNameKk: 'Nama lengkap (sesuai kartu keluarga)',
-        phone: 'Nomor telepon',
+        phone: 'Nomor telepon orang tua',
         whatsapp: 'Nomor WhatsApp',
         address: 'Alamat lengkap',
         addressKk: 'Alamat lengkap sesuai kartu keluarga',
@@ -599,8 +601,8 @@ export const messages = {
       },
     },
     dashboard: {
-      welcomeBack: 'Welcome back',
-      welcomeBackName: 'Welcome back, {name}!',
+      welcomeBack: 'Welcome',
+      welcomeBackName: 'Welcome, {name}!',
       todayIs: 'Today is',
       averageScore: 'Average score',
       testsCompleted: 'Tests completed',
@@ -863,7 +865,7 @@ export const messages = {
     },
     auth: {
       login: {
-        title: 'Welcome back',
+        title: 'Welcome',
         subtitle: 'Login to access your dashboard',
         usernameLabel: 'Username',
         passwordLabel: 'Password',
@@ -886,6 +888,8 @@ export const messages = {
         nameLabel: 'Full Name',
         usernameLabel: 'Username',
         emailLabel: 'Email address',
+        whatsappLabel: 'WhatsApp number',
+        parentPhoneLabel: 'Parent phone number',
         passwordLabel: 'Password',
         confirmPasswordLabel: 'Confirm Password',
         submit: 'Sign up',
@@ -925,7 +929,7 @@ export const messages = {
       fields: {
         fullName: 'Full name (as on documents)',
         fullNameKk: 'Full name (as on family card)',
-        phone: 'Phone number',
+        phone: 'Parent phone number',
         whatsapp: 'WhatsApp number',
         address: 'Full address',
         addressKk: 'Full address (as on family card)',

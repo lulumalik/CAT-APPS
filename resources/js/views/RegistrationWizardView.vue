@@ -415,7 +415,7 @@ async function submitStep() {
   const step = progress.value.current_step
   if (step !== 'administration') return
   if (!isValidPhoneLocal(form.administration.whatsapp) || !isValidPhoneLocal(form.administration.phone)) {
-    errorMessage.value = 'Format nomor telepon tidak valid. Gunakan format seperti 812345678.'
+    errorMessage.value = 'Format nomor WhatsApp atau telepon orang tua tidak valid. Gunakan format seperti 812345678.'
     return
   }
   saving.value = true

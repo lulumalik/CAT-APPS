@@ -250,7 +250,7 @@ class RegistrationProgressController extends Controller
                 'weight_kg' => 'required|numeric|min:15|max:250',
             ], [
                 'whatsapp.regex' => 'Format nomor WhatsApp harus diawali 628 dan hanya angka (contoh: 6281234567890).',
-                'phone.regex' => 'Format nomor telepon harus diawali 628 dan hanya angka (contoh: 6281234567890).',
+                'phone.regex' => 'Format nomor telepon orang tua harus diawali 628 dan hanya angka (contoh: 6281234567890).',
             ]);
 
             $merged = $this->scrubLegacyAdministrationUrls(array_merge(

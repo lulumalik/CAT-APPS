@@ -18,7 +18,7 @@
           <div class="flex flex-col items-center justify-center gap-4 w-full">
             <div class=" mt-8 md:mt-0">
               <div class="w-64 h-64 flex items-center justify-center rounded-full bg-[#333]">
-                <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi" class="mx-auto mb-4 w-16 md:w-56" />
+                <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi" class="mx-auto mb-4 w-56" />
               </div>
             </div>
             <div>
@@ -405,7 +405,7 @@
 
 <script setup>
 import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
-import { ArrowLeft, Crown, FileBadge, Globe, Image, Instagram, Landmark, Mail, Music2, Phone, Users, X as XIcon } from 'lucide-vue-next'
+import { ArrowLeft, Crown, FileBadge, Globe, Image, Instagram, Landmark, Mail, Phone, Users, X as XIcon } from 'lucide-vue-next'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
@@ -660,7 +660,7 @@ const officialBankAccounts = [
   // },
   {
     bank: 'Bank BRI',
-    accountNumber: '-',
+    accountNumber: '1107-01-000931-56-9',
     accountName: 'PT. Pratistha Training Center Indonesia',
     logo: briLogoUrl,
     logoAlt: 'Logo Bank BRI',
@@ -669,11 +669,11 @@ const officialBankAccounts = [
 ]
 
 const contactChannels = [
-  { label: 'Website', value: '-', icon: Globe },
-  { label: 'Email', value: '-', icon: Mail },
-  { label: 'Telepon / WhatsApp', value: '-', icon: Phone },
-  { label: 'Instagram', value: '-', icon: Instagram },
-  { label: 'TikTok', value: '-', icon: Music2 },
+  { label: 'Website', value: 'pratisthaindonesia.com', icon: Globe },
+  { label: 'Email', value: 'administrator@pratisthaindonesia.com, admin.pratistha@gmail.com', icon: Mail },
+  { label: 'Telepon / WhatsApp', value: '+628138964488', icon: Phone },
+  { label: 'Instagram', value: 'pratistha.cendikia', icon: Instagram },
+  // { label: 'TikTok', value: '-', icon: Music2 },
 ]
 
 const galleryPhotos = [
