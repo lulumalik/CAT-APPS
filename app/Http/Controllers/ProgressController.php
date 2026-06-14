@@ -72,22 +72,58 @@ class ProgressController extends Controller
     {
         $this->authorizeAccess($request, $student);
 
+        $emptyDaily = [
+            'data' => [],
+            'current_page' => 1,
+            'last_page' => 1,
+            'total' => 0,
+            'per_page' => 10,
+            'date' => $request->input('date', now()->toDateString()),
+        ];
+
         if (! Schema::hasTable('student_reports')) {
-            return response()->json(['daily' => [], 'weekly' => []]);
+            return response()->json([
+                'student' => ['id' => $student->id, 'name' => $student->name],
+                'daily' => $emptyDaily,
+                'weekly' => [],
+            ]);
         }
 
-        $reports = StudentReport::query()
+        $date = $request->input('date', now()->toDateString());
+        $perPage = min(50, max(5, (int) $request->input('per_page', 10)));
+
+        $daily = StudentReport::query()
             ->where('student_user_id', $student->id)
+            ->where('type', StudentReport::TYPE_DAILY)
+            ->whereDate('report_date', $date)
             ->with(['creator:id,name', 'bimbleClass:id,name'])
             ->orderByDesc('report_date')
+            ->orderByDesc('created_at')
             ->orderByDesc('id')
-            ->limit(120)
-            ->get();
+            ->paginate($perPage);
+
+        $weekly = StudentReport::query()
+            ->where('student_user_id', $student->id)
+            ->where('type', StudentReport::TYPE_WEEKLY)
+            ->with(['creator:id,name', 'bimbleClass:id,name'])
+            ->orderByDesc('report_date')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(20)
+            ->get()
+            ->map(fn ($r) => $this->serializeReport($r));
 
         return response()->json([
             'student' => ['id' => $student->id, 'name' => $student->name],
-            'daily' => $reports->where('type', StudentReport::TYPE_DAILY)->values()->map(fn ($r) => $this->serializeReport($r)),
-            'weekly' => $reports->where('type', StudentReport::TYPE_WEEKLY)->values()->map(fn ($r) => $this->serializeReport($r)),
+            'daily' => [
+                'data' => collect($daily->items())->map(fn ($r) => $this->serializeReport($r))->values(),
+                'current_page' => $daily->currentPage(),
+                'last_page' => $daily->lastPage(),
+                'total' => $daily->total(),
+                'per_page' => $daily->perPage(),
+                'date' => $date,
+            ],
+            'weekly' => $weekly,
         ]);
     }
 
@@ -423,6 +459,7 @@ class ProgressController extends Controller
             'report_date' => $report->report_date?->toDateString(),
             'period_start' => $report->period_start?->toDateString(),
             'period_end' => $report->period_end?->toDateString(),
+            'created_at' => $report->created_at?->toIso8601String(),
             'class' => $report->bimbleClass ? ['id' => $report->bimbleClass->id, 'name' => $report->bimbleClass->name] : null,
             'created_by' => $report->creator?->name,
         ];
