@@ -3,7 +3,7 @@
     <div class="auth-shell">
       <section class="auth-right-pane">
         <span class="auth-visual-stripe" />
-        <img src="../../assets/logo.png" alt="Login" class="w-44 relative z-20 mx-auto top-10 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-30 object-cover" />
+        <img src="../../assets/logo.png" alt="Login" class="w-44 md:w-72 relative z-20 mx-auto top-10 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-30 object-cover" />
       </section>
 
       <section class="auth-left-pane">

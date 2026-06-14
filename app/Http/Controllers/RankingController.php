@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Services\AutoStudentReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -31,37 +33,43 @@ class RankingController extends Controller
             return response()->json(['classes' => [], 'cohorts' => []]);
         }
 
-        $classes = BimbleClass::query()
-            ->orderBy('name')
-            ->get(['id', 'name', 'class_code', 'academic_period'])
-            ->map(fn ($c) => [
-                'id' => $c->id,
-                'name' => $c->name,
-                'class_code' => $c->class_code,
-                'academic_period' => $c->academic_period,
+        try {
+            $query = BimbleClass::query()->orderBy('name');
+            $user = $request->user();
+            if ($user && $user->role === 'mentor') {
+                $query->where(function ($inner) use ($user) {
+                    $inner->where('created_by', $user->id);
+                    if (Schema::hasColumn('bimble_classes', 'instructor_id')) {
+                        $inner->orWhere('instructor_id', $user->id);
+                    }
+                });
+            }
+
+            $classes = $query
+                ->get()
+                ->map(fn (BimbleClass $c) => $this->serializeClassForFilter($c))
+                ->values();
+
+            $cohorts = $this->extractRegistrationCohorts();
+            $fromClasses = $classes->pluck('academic_period')->filter()->unique();
+            $cohorts = $cohorts->merge($fromClasses)->filter()->unique()->sort()->values();
+
+            return response()->json([
+                'classes' => $classes,
+                'cohorts' => $cohorts,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Failed to load ranking filters.', [
+                'error' => $e->getMessage(),
+                'user_id' => $request->user()?->id,
             ]);
 
-        $cohorts = Schema::hasTable('registration_progress')
-            ? RegistrationProgress::query()
-                ->whereNotNull('administration_data')
-                ->get(['administration_data'])
-                ->map(function ($row) {
-                    $data = $row->administration_data ?? [];
-
-                    return $data['angkatan'] ?? $data['cohort'] ?? $data['batch'] ?? null;
-                })
-                ->filter()
-                ->unique()
-                ->values()
-            : collect();
-
-        $fromClasses = $classes->pluck('academic_period')->filter()->unique();
-        $cohorts = $cohorts->merge($fromClasses)->unique()->sort()->values();
-
-        return response()->json([
-            'classes' => $classes,
-            'cohorts' => $cohorts,
-        ]);
+            return response()->json([
+                'message' => 'Gagal memuat filter kelas. Silakan muat ulang halaman.',
+                'classes' => [],
+                'cohorts' => [],
+            ], 500);
+        }
     }
 
     public function index(Request $request)
@@ -682,5 +690,62 @@ class RankingController extends Controller
             $entry->bimble_class_id,
             $entry->score_date?->toDateString(),
         );
+    }
+
+    /**
+     * @return array{id: int, name: string, class_code: string, academic_period: ?string}
+     */
+    private function serializeClassForFilter(BimbleClass $class): array
+    {
+        $period = $class->academic_period;
+        $start = $class->academic_period_start;
+        $end = $class->academic_period_end;
+        if (! $period && $start && $end) {
+            $startLabel = $start instanceof \DateTimeInterface ? $start->format('Y-m-d') : (string) $start;
+            $endLabel = $end instanceof \DateTimeInterface ? $end->format('Y-m-d') : (string) $end;
+            $period = "{$startLabel} - {$endLabel}";
+        }
+
+        return [
+            'id' => $class->id,
+            'name' => $class->name,
+            'class_code' => $class->class_code,
+            'academic_period' => $period,
+        ];
+    }
+
+    private function extractRegistrationCohorts(): Collection
+    {
+        if (! Schema::hasTable('registration_progress')
+            || ! Schema::hasColumn('registration_progress', 'administration_data')) {
+            return collect();
+        }
+
+        try {
+            return DB::table('registration_progress')
+                ->whereNotNull('administration_data')
+                ->pluck('administration_data')
+                ->map(function ($raw) {
+                    if (is_string($raw)) {
+                        $raw = json_decode($raw, true);
+                    }
+
+                    if (! is_array($raw)) {
+                        return null;
+                    }
+
+                    return $raw['angkatan'] ?? $raw['cohort'] ?? $raw['batch'] ?? null;
+                })
+                ->filter(fn ($value) => filled($value))
+                ->map(fn ($value) => (string) $value)
+                ->unique()
+                ->values();
+        } catch (\Throwable $e) {
+            Log::warning('Failed to extract registration cohorts for ranking filters.', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return collect();
+        }
     }
 }

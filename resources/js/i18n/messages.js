@@ -37,7 +37,7 @@ export const messages = {
     },
     nav: {
       home: 'Beranda',
-      rankings: 'Peringkat',
+      rankings: 'Nilai & Peringkat Siswa',
       dashboard: 'Dashboard',
       questionBank: 'Bank Soal',
       tests: 'Tes',
@@ -123,9 +123,9 @@ export const messages = {
       endTimeLabel: 'Waktu selesai',
     },
     rankings: {
-      title: 'Manajemen Peringkat',
-      subtitle: 'Input nilai per kelas (jasmani & akademik)',
-      categoryManagement: 'Kategori peringkat',
+      title: 'Manajemen Nilai dan Peringkat Siswa',
+      subtitle: 'Kelola nilai dan peringkat peserta per kelas (jasmani & akademik)',
+      categoryManagement: 'Kategori nilai & peringkat',
       scopeGlobal: 'Global',
       scopeClass: 'Kelas',
       scopeCohort: 'Angkatan',
@@ -541,7 +541,7 @@ export const messages = {
     },
     nav: {
       home: 'Home',
-      rankings: 'Rankings',
+      rankings: 'Student Scores & Rankings',
       dashboard: 'Dashboard',
       questionBank: 'Question Bank',
       tests: 'Tests',
@@ -627,9 +627,9 @@ export const messages = {
       endTimeLabel: 'End time',
     },
     rankings: {
-      title: 'Rankings Management',
-      subtitle: 'Input scores per class (physical & academic)',
-      categoryManagement: 'Ranking categories',
+      title: 'Student Score & Ranking Management',
+      subtitle: 'Manage student scores and rankings per class (physical & academic)',
+      categoryManagement: 'Score & ranking categories',
       scopeGlobal: 'Global',
       scopeClass: 'Class',
       scopeCohort: 'Cohort',

@@ -51,10 +51,17 @@
 
         <div class="bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.selectClass') }}</label>
-          <select v-model="selectedClassId" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0">
-            <option value="">{{ t('rankings.selectClassPlaceholder') }}</option>
+          <select
+            v-model="selectedClassId"
+            :disabled="loadingFilters"
+            class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0 disabled:opacity-60"
+          >
+            <option value="">{{ loadingFilters ? `${t('common.refresh')}…` : t('rankings.selectClassPlaceholder') }}</option>
             <option v-for="c in classes" :key="c.id" :value="c.id">{{ c.name }} ({{ c.class_code }})</option>
           </select>
+          <p v-if="!loadingFilters && classes.length === 0" class="text-xs text-amber-700 mt-2">
+            Belum ada kelas tersedia. Buat kelas di menu Kelas kursus terlebih dahulu.
+          </p>
           <p v-if="selectedClassMeta" class="text-xs text-gray-500 mt-2">
             {{ t('rankings.classPeriod') }}: {{ selectedClassMeta.academic_period || '—' }}
           </p>
@@ -208,6 +215,7 @@ const classes = ref([])
 const entries = ref([])
 
 const loadingCategories = ref(true)
+const loadingFilters = ref(false)
 const loadingEntries = ref(false)
 const expandedGroup = ref('akademik')
 const selectedGroupId = ref('akademik')
@@ -304,11 +312,19 @@ async function loadCategories() {
 }
 
 async function loadFilters() {
+  loadingFilters.value = true
   try {
     const { data } = await axios.get('/api/rankings/filters')
     classes.value = data.classes || []
-  } catch {
+    if (classes.value.length === 1 && !selectedClassId.value) {
+      selectedClassId.value = String(classes.value[0].id)
+    }
+  } catch (error) {
     classes.value = []
+    const message = error?.response?.data?.message || 'Gagal memuat daftar kelas.'
+    toast.error('Error', message)
+  } finally {
+    loadingFilters.value = false
   }
 }
 
