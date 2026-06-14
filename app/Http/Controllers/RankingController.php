@@ -86,17 +86,32 @@ class RankingController extends Controller
             return response()->json(['message' => 'Subkategori tidak ditemukan.'], 404);
         }
 
+        $availableDates = $this->availableScoreDates($validated);
+        $isJasmani = ($group['id'] ?? '') === 'jasmani';
+        $scoreDate = $validated['score_date'] ?? null;
+
+        if ($isJasmani) {
+            if (! $scoreDate && $availableDates->isNotEmpty()) {
+                $scoreDate = $availableDates->first();
+            }
+            $validated['score_date'] = $scoreDate;
+        }
+
         $userIds = $this->resolveUserIds($validated['scope'], $validated['class_id'] ?? null, $validated['cohort'] ?? null);
 
-        $auto = ($group['source'] ?? '') === 'physical'
-            ? $this->buildPhysicalLeaderboard($sub, $userIds)
-            : $this->buildAcademicLeaderboard($sub, $userIds);
+        $auto = ($isJasmani && $scoreDate)
+            ? []
+            : (($group['source'] ?? '') === 'physical'
+                ? $this->buildPhysicalLeaderboard($sub, $userIds)
+                : $this->buildAcademicLeaderboard($sub, $userIds));
 
-        $manual = $this->buildManualLeaderboard($validated, $sub);
+        $manual = $this->buildManualLeaderboard($validated, $sub, $group['id']);
         $entries = $this->mergeLeaderboards($auto, $manual, $sub);
 
         return response()->json([
             'scope' => $validated['scope'],
+            'score_date' => $scoreDate,
+            'available_dates' => $availableDates->values()->all(),
             'group' => [
                 'id' => $group['id'],
                 'label' => $group['label'],
@@ -122,9 +137,16 @@ class RankingController extends Controller
             return response()->json(['items' => []]);
         }
 
-        $entries = ManualRankingEntry::query()
+        $query = ManualRankingEntry::query()
             ->where($this->manualContextWhere($validated))
-            ->with('user:id,name,email')
+            ->with('user:id,name,email');
+
+        if (! empty($validated['score_date'])) {
+            $query->whereDate('score_date', $validated['score_date']);
+        }
+
+        $entries = $query
+            ->orderByDesc('score_date')
             ->orderByDesc('updated_at')
             ->get()
             ->map(fn ($e) => $this->serializeManualEntry($e));
@@ -177,18 +199,26 @@ class RankingController extends Controller
             $attrs['score_date'] = $validated['score_date'] ?? $entry->score_date?->toDateString() ?? now()->toDateString();
         }
 
-        $entry->update($attrs);
-
-        // Tanggal bisa berubah saat edit, jadi context_key disinkronkan ulang.
-        $entry->update(['context_key' => ManualRankingEntry::buildContextKey([
+        $contextKey = ManualRankingEntry::buildContextKey([
             'scope' => $entry->scope,
             'group_id' => $entry->group_id,
             'subcategory_id' => $entry->subcategory_id,
             'bimble_class_id' => $entry->bimble_class_id,
             'cohort' => $entry->cohort,
             'user_id' => $entry->user_id,
-            'score_date' => $entry->score_date,
-        ])]);
+            'score_date' => $attrs['score_date'] ?? $entry->score_date,
+        ]);
+
+        if (ManualRankingEntry::where('context_key', $contextKey)->where('id', '!=', $entry->id)->exists()) {
+            throw ValidationException::withMessages([
+                'score_date' => [$entry->group_id === 'jasmani'
+                    ? 'Nilai jasmani peserta ini pada tanggal tersebut sudah ada. Pilih tanggal lain.'
+                    : 'Peringkat manual untuk peserta ini sudah ada.'],
+            ]);
+        }
+
+        $attrs['context_key'] = $contextKey;
+        $entry->update($attrs);
 
         $entry->load('user:id,name,email');
 
@@ -233,6 +263,7 @@ class RankingController extends Controller
                 'string',
                 'max:120',
             ],
+            'score_date' => 'nullable|date',
         ]);
     }
 
@@ -401,7 +432,7 @@ class RankingController extends Controller
     /**
      * @return list<array<string, mixed>>
      */
-    private function buildManualLeaderboard(array $context, array $sub): array
+    private function buildManualLeaderboard(array $context, array $sub, ?string $groupId = null): array
     {
         if (! Schema::hasTable('manual_ranking_entries')) {
             return [];
@@ -409,14 +440,51 @@ class RankingController extends Controller
 
         $unit = $sub['unit'] ?? null;
         $sortAsc = ($sub['sort'] ?? 'desc') === 'asc';
+        $groupKey = $groupId ?? ($context['group_id'] ?? '');
+        $isJasmani = $groupKey === 'jasmani';
+        $scoreDate = $context['score_date'] ?? null;
 
-        $entries = ManualRankingEntry::query()
+        $query = ManualRankingEntry::query()
             ->where($this->manualContextWhere($context))
-            ->with('user:id,name')
-            ->get();
+            ->with('user:id,name');
 
-        // Peserta bisa punya beberapa entri (mis. jasmani per tanggal); untuk
-        // peringkat ambil nilai terbaik sesuai arah pengurutan subkategori.
+        if ($isJasmani && $scoreDate) {
+            $query->whereDate('score_date', $scoreDate);
+        }
+
+        $entries = $query->get();
+
+        if ($isJasmani && $scoreDate) {
+            $rows = [];
+            foreach ($entries as $entry) {
+                if (! $entry->user) {
+                    continue;
+                }
+                $value = (float) $entry->score;
+                $rows[] = [
+                    'user_id' => $entry->user_id,
+                    'name' => $entry->user->name,
+                    'score' => $value,
+                    'display' => $this->formatScoreDisplay($value, $entry->unit ?? $unit, null),
+                    'unit' => $entry->unit ?? $unit,
+                    'source' => 'manual',
+                    'manual_id' => $entry->id,
+                    'notes' => $entry->notes,
+                    'score_date' => $entry->score_date?->toDateString(),
+                ];
+            }
+
+            usort($rows, function ($a, $b) use ($sortAsc) {
+                return $sortAsc
+                    ? $a['score'] <=> $b['score']
+                    : $b['score'] <=> $a['score'];
+            });
+
+            return $rows;
+        }
+
+        // Peserta bisa punya beberapa entri (mis. jasmani per tanggal); tanpa filter
+        // tanggal, ambil nilai terbaik sesuai arah pengurutan subkategori.
         $bestByUser = [];
         foreach ($entries as $entry) {
             if (! $entry->user) {
@@ -438,6 +506,7 @@ class RankingController extends Controller
                 'source' => 'manual',
                 'manual_id' => $entry->id,
                 'notes' => $entry->notes,
+                'score_date' => $entry->score_date?->toDateString(),
             ];
         }
 
@@ -747,5 +816,28 @@ class RankingController extends Controller
 
             return collect();
         }
+    }
+
+    private function availableScoreDates(array $context): Collection
+    {
+        if (! Schema::hasTable('manual_ranking_entries')
+            || ! Schema::hasColumn('manual_ranking_entries', 'score_date')) {
+            return collect();
+        }
+
+        return ManualRankingEntry::query()
+            ->where($this->manualContextWhere($context))
+            ->whereNotNull('score_date')
+            ->orderByDesc('score_date')
+            ->pluck('score_date')
+            ->map(function ($date) {
+                if ($date instanceof \DateTimeInterface) {
+                    return $date->format('Y-m-d');
+                }
+
+                return (string) $date;
+            })
+            ->unique()
+            ->values();
     }
 }

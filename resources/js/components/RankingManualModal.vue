@@ -208,7 +208,9 @@ async function submit() {
       if (isJasmani.value) payload.score_date = form.score_date
       await axios.post('/api/rankings/manual', payload)
     }
-    emit('saved')
+    emit('saved', {
+      score_date: isJasmani.value ? form.score_date : null,
+    })
     emit('close')
   } catch (e) {
     const msg = e?.response?.data?.message

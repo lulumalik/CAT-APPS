@@ -78,9 +78,25 @@
               <p class="text-sm text-gray-500 mt-0.5">
                 <span v-if="activeGroupLabel">{{ activeGroupLabel }} · </span>
                 {{ scopeLabel }}
+                <span v-if="isJasmaniGroup && selectedScoreDate"> · {{ formatScoreDate(selectedScoreDate) }}</span>
               </p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
+              <div v-if="isJasmaniGroup" class="flex items-center gap-2">
+                <label class="sr-only" for="score-date-filter">{{ t('rankings.selectScoreDate') }}</label>
+                <input
+                  id="score-date-filter"
+                  v-model="selectedScoreDate"
+                  type="date"
+                  list="score-date-options"
+                  class="rounded-full border border-gray-100 bg-gray-50 px-4 py-2 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
+                  :title="t('rankings.selectScoreDate')"
+                  @change="loadEntries"
+                />
+                <datalist id="score-date-options">
+                  <option v-for="d in availableDates" :key="d" :value="d" />
+                </datalist>
+              </div>
               <button
                 v-if="isStaff && canLoad"
                 type="button"
@@ -105,6 +121,19 @@
 
           <div v-if="!canLoad" class="p-12 text-center text-gray-500 text-sm">
             {{ scopeHint }}
+          </div>
+          <div v-else-if="isJasmaniGroup && !selectedScoreDate && availableDates.length === 0" class="p-12 text-center">
+            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">📅</div>
+            <p class="text-gray-600 font-medium">{{ t('rankings.selectScoreDatePlaceholder') }}</p>
+            <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">{{ t('rankings.emptyManualHint') }}</p>
+            <button
+              v-if="isStaff"
+              type="button"
+              class="mt-4 px-5 py-2 rounded-full bg-[#1A1A1A] text-white text-sm font-medium"
+              @click="openManualAdd"
+            >
+              + {{ t('rankings.manualAdd') }}
+            </button>
           </div>
           <div v-else-if="loadingEntries" class="p-12 text-center text-gray-400">{{ t('rankings.loading') }}</div>
           <div v-else-if="entries.length === 0" class="p-12 text-center">
@@ -133,7 +162,7 @@
               <tbody>
                 <tr
                   v-for="row in entries"
-                  :key="`${row.user_id}-${row.rank}`"
+                  :key="`${row.manual_id || row.user_id}-${row.rank}-${row.score_date || ''}`"
                   class="border-t border-gray-50 hover:bg-[#9DB359]/5 transition-colors"
                   :class="{ 'bg-yellow-50/60': row.rank <= 3 }"
                 >
@@ -165,12 +194,12 @@
                       </button>
                     </template>
                     <button
-                      v-else
+                      v-else-if="isStaff"
                       type="button"
                       class="text-xs font-medium text-[#9DB359] hover:underline"
                       @click="openManualAddForUser(row)"
                     >
-                      {{ t('rankings.manualOverride') }}
+                      {{ isJasmaniGroup ? t('rankings.manualAddForUser') : t('rankings.manualOverride') }}
                     </button>
                   </td>
                 </tr>
@@ -213,6 +242,7 @@ const classGuides = ref({})
 const classGuide = ref('')
 const classes = ref([])
 const entries = ref([])
+const availableDates = ref([])
 
 const loadingCategories = ref(true)
 const loadingFilters = ref(false)
@@ -221,6 +251,7 @@ const expandedGroup = ref('akademik')
 const selectedGroupId = ref('akademik')
 const selectedSubId = ref('kewarganegaraan')
 const selectedClassId = ref('')
+const selectedScoreDate = ref('')
 
 const showManualModal = ref(false)
 const editingManual = ref(null)
@@ -230,6 +261,7 @@ const activeGroup = computed(() => groups.value.find((g) => g.id === selectedGro
 const activeSub = computed(() => activeGroup.value?.subcategories?.find((s) => s.id === selectedSubId.value))
 const activeGroupLabel = computed(() => activeGroup.value?.label || '')
 const activeSubLabel = computed(() => activeSub.value?.label || '')
+const isJasmaniGroup = computed(() => selectedGroupId.value === 'jasmani')
 
 const selectedClassMeta = computed(() =>
   classes.value.find((c) => String(c.id) === String(selectedClassId.value)),
@@ -249,7 +281,13 @@ const manualContextLabel = computed(() => {
   return parts.filter(Boolean).join(' · ')
 })
 
-const scopeLabel = computed(() => t('rankings.scopeClass'))
+const scopeLabel = computed(() => {
+  const base = t('rankings.scopeClass')
+  if (selectedClassMeta.value?.name) {
+    return `${base}: ${selectedClassMeta.value.name}`
+  }
+  return base
+})
 
 const canLoad = computed(() => {
   if (!selectedGroupId.value || !selectedSubId.value) return false
@@ -260,6 +298,7 @@ const canLoad = computed(() => {
 const scopeHint = computed(() => {
   if (!selectedSubId.value) return t('rankings.pickSubcategory')
   if (!selectedClassId.value) return t('rankings.selectClassPlaceholder')
+  if (isJasmaniGroup.value && !selectedScoreDate.value) return t('rankings.selectScoreDatePlaceholder')
   return ''
 })
 
@@ -291,6 +330,19 @@ function rankBadgeClass(rank) {
   if (rank === 2) return 'bg-gray-300 text-gray-800'
   if (rank === 3) return 'bg-amber-600 text-white'
   return 'bg-gray-100 text-gray-600'
+}
+
+function formatScoreDate(value) {
+  if (!value) return '—'
+  try {
+    return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${value}T00:00:00`))
+  } catch {
+    return value
+  }
+}
+
+function todayIso() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 async function loadCategories() {
@@ -338,14 +390,31 @@ async function loadEntries() {
       subcategory_id: selectedSubId.value,
       class_id: selectedClassId.value,
     }
+    if (isJasmaniGroup.value && selectedScoreDate.value) {
+      params.score_date = selectedScoreDate.value
+    }
 
     const { data } = await axios.get('/api/rankings', { params })
     entries.value = data.entries || []
     if (data.class_guide) classGuide.value = data.class_guide
 
+    if (isJasmaniGroup.value) {
+      availableDates.value = data.available_dates || []
+      if (!selectedScoreDate.value && data.score_date) {
+        selectedScoreDate.value = data.score_date
+      }
+    } else {
+      selectedScoreDate.value = ''
+      availableDates.value = []
+    }
+
     if (isStaff.value) {
       try {
-        const manualRes = await axios.get('/api/rankings/manual', { params })
+        const manualParams = { ...params }
+        if (isJasmaniGroup.value && selectedScoreDate.value) {
+          manualParams.score_date = selectedScoreDate.value
+        }
+        const manualRes = await axios.get('/api/rankings/manual', { params: manualParams })
         manualEntriesCache.value = manualRes.data.items || []
       } catch {
         manualEntriesCache.value = []
@@ -367,8 +436,9 @@ function openManualAddForUser(row) {
   editingManual.value = {
     user_id: row.user_id,
     user: { id: row.user_id, name: row.name },
-    score: row.score,
-    unit: row.unit,
+    score: '',
+    unit: row.unit || activeSub.value?.unit || '',
+    score_date: isJasmaniGroup.value ? todayIso() : undefined,
   }
   showManualModal.value = true
 }
@@ -382,6 +452,7 @@ function openManualEdit(row) {
     score: row.score,
     unit: row.unit,
     notes: row.notes,
+    score_date: row.score_date,
   }
   showManualModal.value = true
 }
@@ -391,8 +462,11 @@ function closeManualModal() {
   editingManual.value = null
 }
 
-function onManualSaved() {
+function onManualSaved(payload) {
   toast.success('OK', t('rankings.manualSaved'))
+  if (isJasmaniGroup.value && payload?.score_date) {
+    selectedScoreDate.value = payload.score_date
+  }
   loadEntries()
 }
 
@@ -414,6 +488,10 @@ async function deleteManual(row) {
 }
 
 watch([selectedGroupId, selectedSubId, selectedClassId], () => {
+  if (isJasmaniGroup.value) {
+    selectedScoreDate.value = ''
+    availableDates.value = []
+  }
   if (canLoad.value) loadEntries()
 })
 
