@@ -27,6 +27,8 @@ Daftar Akun → Verifikasi Email → Pendaftaran (Administrasi → Psikologi →
 Dashboard terbuka → Kelas Saya → Ruang Kelas (materi & tes)
     ↓
 Staff input nilai & laporan → Orang tua pantau perkembangan ananda
+    ↓
+Peserta / admin unduh laporan dashboard sebagai PDF
 ```
 
 ---
@@ -40,7 +42,8 @@ Staff input nilai & laporan → Orang tua pantau perkembangan ananda
 | Alur pendaftaran | ✅ | — | — | — |
 | Kelas & materi | ✅* | — | ✅ | ✅ |
 | Kerjakan tes | ✅* | — | — | — |
-| Dashboard perkembangan | ✅* | ✅** | — | — |
+| Dashboard perkembangan | ✅* | ✅** | — | ✅*** |
+| Unduh laporan PDF dashboard | ✅* | — | — | ✅*** |
 | Kelola kelas | — | — | ✅ | ✅ |
 | Input nilai & peringkat | — | — | ✅ | ✅ |
 | Laporan harian peserta | — | — | ✅ | ✅ |
@@ -49,7 +52,8 @@ Staff input nilai & laporan → Orang tua pantau perkembangan ananda
 | Manajemen user & sertifikat | — | — | — | ✅ |
 
 \* Setelah pendaftaran selesai disetujui  
-\** Hanya untuk ananda yang sudah terhubung
+\** Hanya untuk ananda yang sudah terhubung  
+\*** Melalui menu Pengguna → Dashboard Siswa (`/dashboard/student/{id}`)
 
 ---
 

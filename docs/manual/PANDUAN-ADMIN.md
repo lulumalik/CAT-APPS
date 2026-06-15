@@ -18,6 +18,7 @@ Admin memiliki akses **penuh** ke seluruh fitur:
 - **Undang orang tua**
 - **Sertifikat**
 - Dashboard statistik
+- **Dashboard siswa** (lihat & unduh laporan PDF per peserta)
 
 ---
 
@@ -77,6 +78,19 @@ Menu **Pengguna** (`/users`)
 
 - Ubah role, program, atau reset data
 - Hapus user jika diperlukan (hati-hati — data terkait ikut terpengaruh)
+
+### Lihat Dashboard Siswa
+
+Untuk peserta (`role: user`):
+
+1. Di tabel **Pengguna**, klik **Dashboard Siswa** pada baris peserta
+2. Anda diarahkan ke `/dashboard/student/{id}` — tampilan sama seperti dashboard peserta:
+   - Kelas & aktivitas
+   - Perkembangan (laporan harian/mingguan, materi, grafik nilai)
+3. Klik **Download PDF** untuk menyimpan laporan lengkap (nama file memakai nama peserta)
+4. Gunakan **Kembali ke Manajemen User** untuk kembali ke daftar pengguna
+
+> **Catatan:** Nomor WhatsApp dan telepon orang tua **tidak** diisi saat signup — peserta mengisinya di tahap **Administrasi** (`/registration`).
 
 ### Role yang Tersedia
 
@@ -221,6 +235,7 @@ Sama seperti panduan mentor — admin punya akses penuh:
 1. **Laporan harian** — judul, tanggal, ringkasan, kategori
 2. **Ringkasan mingguan** — generate otomatis dari laporan harian
 3. Laporan tampil di dashboard peserta & orang tua (dengan pagination & filter tanggal)
+4. Admin dapat membuka **Dashboard Siswa** dari menu Pengguna dan **mengunduh PDF** laporan lengkap
 
 ---
 
@@ -245,7 +260,9 @@ Menu **Sertifikat** (`/admin/certificates`)
 
 ## 13. Dashboard Admin
 
-Dashboard menampilkan statistik:
+### Dashboard utama (`/dashboard`)
+
+Menampilkan statistik:
 
 | Metrik | Keterangan |
 |--------|------------|
@@ -255,6 +272,17 @@ Dashboard menampilkan statistik:
 | Kelas Dibuat | Total kelas |
 | Daftar Kelas | Ringkasan per kelas |
 | Aktivitas Terbaru | Log aktivitas semua kelas |
+
+### Dashboard siswa (`/dashboard/student/{id}`)
+
+Akses dari menu **Pengguna** → **Dashboard Siswa**:
+
+| Bagian | Keterangan |
+|--------|------------|
+| Kelas Saya | Kelas yang diikuti peserta |
+| Aktivitas Kelas | Log aktivitas terbaru |
+| Perkembangan Saya | Laporan harian/mingguan, materi, grafik nilai |
+| Download PDF | Unduh laporan dashboard peserta sebagai file PDF |
 
 ---
 
@@ -286,6 +314,7 @@ Dashboard menampilkan statistik:
 | Email verifikasi tidak terkirim | Cek konfigurasi SMTP di `.env` |
 | Upload berkas gagal | Cek permission folder `storage/`, max upload size |
 | Peserta dashboard terkunci | Cek `fully_completed` di admin pendaftaran |
+| Download PDF gagal | Pastikan build frontend terbaru; coba refresh halaman lalu unduh lagi |
 | API error 500 | Cek `storage/logs/laravel.log`, jalankan `php artisan migrate` |
 
 ### Perintah Berguna (Server)
@@ -315,7 +344,7 @@ php artisan storage:link
 | Nama | PT. Pratistha Training Center Indonesia |
 | Brand | Pratistha Cendekia Prestasi |
 | Website | pratisthaindonesia.com |
-| Email | administrator@pratisthaindonesia.com |
+| Email | administrator@pratisthaindonesia.com, admin.pratistha@gmail.com |
 | WhatsApp | +628138964488 |
 | Alamat | Jl. Sukamaju no. 142, Cipadung Kulon, Panyileukan, Bandung 40614 |
 | Rekening BRI | 1107-01-000931-56-9 |

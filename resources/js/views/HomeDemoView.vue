@@ -165,10 +165,10 @@
         class="page-shell rounded-2xl bg-gradient-to-r from-[#1a1a1a] via-[#2d2d2d] to-[#3d3d3d] px-5 md:px-8 py-5 md:py-6 shadow-lg shadow-primary/25 overflow-hidden relative">
         <div class="relative z-10 flex justify-center">
           <div class="text-left">
-            <p class="text-2xl md:text-4xl lg:text-5xl text-center md:text-left font-black uppercase tracking-wide text-[gold]/90 leading-none">
+            <p class="gold-shimmer-text text-2xl md:text-4xl lg:text-5xl text-center md:text-left font-black uppercase tracking-wide text-[gold]/90 leading-none">
               Dibina dan dimonitor oleh
             </p>
-            <p class="mt-2 text-center text-sm md:text-xl lg:text-2xl font-semibold uppercase tracking-wide text-[gold] leading-tight">
+            <p class="gold-shimmer-text mt-2 text-center text-sm md:text-xl lg:text-5xl font-semibold uppercase tracking-wide text-[gold] leading-tight">
               para jenderal
             </p>
             <p class="gold-shimmer-text mt-2 text-2xl md:text-4xl lg:text-5xl text-center md:text-center font-black uppercase tracking-wide text-[gold]/90 leading-none">

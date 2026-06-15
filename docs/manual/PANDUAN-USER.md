@@ -23,8 +23,8 @@ Siapkan dokumen dan data berikut:
 | Item | Keterangan |
 |------|------------|
 | Email aktif | Untuk verifikasi akun |
-| Nomor WhatsApp | Nomor pribadi peserta |
-| Nomor telepon orang tua | Untuk keperluan administrasi |
+| Nomor WhatsApp | Diisi nanti di tahap **Administrasi** pendaftaran |
+| Nomor telepon orang tua | Diisi nanti di tahap **Administrasi** pendaftaran |
 | KTP / Kartu Pelajar | Scan/foto (JPG, PNG, atau PDF) |
 | Kartu Keluarga (KK) | Scan/foto |
 | Rapor terakhir | Scan/foto |
@@ -54,14 +54,13 @@ Siapkan dokumen dan data berikut:
    - **Nama lengkap**
    - **Username** — hanya huruf, angka, dan underscore (contoh: `ahmad_taruna`)
    - **Email**
-   - **Nomor WhatsApp** — format: angka setelah +62 (contoh: `8138964488`)
-   - **Nomor telepon orang tua** — format sama
    - **Kata sandi** — minimal 6 karakter
+   - **Konfirmasi kata sandi** — harus sama dengan kata sandi
 3. Klik **Daftar**
-4. Anda akan **otomatis masuk** ke sistem
+4. Anda akan **otomatis masuk** ke sistem dan diarahkan ke **Alur Pendaftaran**
 5. **Cek email** — klik tautan verifikasi yang dikirim ke inbox Anda
 
-> **Tips:** Simpan username dan password di tempat aman. Jika email tidak masuk, cek folder Spam/Promosi.
+> **Tips:** Nomor WhatsApp dan telepon orang tua diisi di tahap **Administrasi** (`/registration`), bukan saat buat akun. Simpan username dan password di tempat aman. Jika email tidak masuk, cek folder Spam/Promosi.
 
 ---
 
@@ -75,7 +74,8 @@ Pendaftaran terdiri dari **4 tahap**:
 
 1. Lengkapi data:
    - Nama lengkap (sesuai KK)
-   - Nomor WhatsApp & telepon orang tua
+   - **Nomor WhatsApp** — format: angka setelah +62 (contoh: `8138964488`)
+   - **Nomor telepon orang tua** — format sama
    - Alamat KK & alamat domisili
    - Jenis kelamin, tinggi & berat badan
 2. **Unggah berkas:**
@@ -120,6 +120,7 @@ Setelah **seluruh tahap pendaftaran disetujui**:
    - Kelas yang Anda ikuti
    - Aktivitas kelas terbaru
    - **Perkembangan Saya** (laporan, nilai, grafik)
+3. Klik **Download PDF** di kanan atas untuk menyimpan laporan dashboard sebagai file PDF
 
 ### Urutan informasi di Perkembangan Saya
 
@@ -194,7 +195,13 @@ A: Cek Spam. Hubungi admin via WhatsApp **+628138964488** jika masih bermasalah.
 A: Pastikan format JPG/PNG/WebP/PDF dan ukuran maksimal 12 MB per berkas.
 
 **Q: Nomor WhatsApp ditolak?**  
-A: Gunakan format angka Indonesia: awali dengan 8 setelah +62 (contoh: `8138964488`).
+A: Isi di tahap **Administrasi** (`/registration`), bukan saat buat akun. Gunakan format angka Indonesia: awali dengan 8 setelah +62 (contoh: `8138964488`).
+
+**Q: Kata sandi tidak bisa didaftarkan?**  
+A: Pastikan **Konfirmasi kata sandi** sama persis dengan kata sandi (minimal 6 karakter).
+
+**Q: Download PDF gagal?**  
+A: Refresh halaman dashboard, tunggu data selesai dimuat, lalu coba lagi. Jika masih gagal, hubungi admin.
 
 **Q: Kapan orang tua bisa melihat progress saya?**  
 A: Setelah staff mengundang orang tua dan orang tua menerima undangan via link.
@@ -206,7 +213,7 @@ A: Setelah staff mengundang orang tua dan orang tua menerima undangan via link.
 | Kanal | Informasi |
 |-------|-----------|
 | WhatsApp | +628138964488 |
-| Email | administrator@pratisthaindonesia.com |
+| Email | administrator@pratisthaindonesia.com, admin.pratistha@gmail.com |
 | Alamat | Jl. Sukamaju no. 142, Cipadung Kulon, Panyileukan, Bandung 40614 |
 
 ---

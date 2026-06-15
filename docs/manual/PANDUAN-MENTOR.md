@@ -226,7 +226,7 @@ Jika butuh akses tambahan, pembuatan tes, atau bantuan teknis:
 | Kanal | Informasi |
 |-------|-----------|
 | WhatsApp | +628138964488 |
-| Email | administrator@pratisthaindonesia.com |
+| Email | administrator@pratisthaindonesia.com, admin.pratistha@gmail.com |
 
 ---
 
