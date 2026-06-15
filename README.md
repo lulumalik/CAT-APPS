@@ -4,35 +4,95 @@ $env:PHP_INI_SCAN_DIR = "d:\Project\CAT-APPS\php-additional-ini"; composer insta
 cd $env:USERPROFILE\scoop\apps\mariadb\current\bin
 net start MariaDB
 
-# Pastikan MariaDB berjalan di host dan Nginx (jika ada) dikonfigurasi untuk proxy ke port 9000.
+## Deploy production
 
-jalanin apps dev (fast untuk local Windows)
-1) jalanin backend Laravel di container:
+### Coolify (disarankan)
+
+Pakai **Build Pack: Dockerfile**, port **80**, dan **Persistent Storage** wajib:
+
+| Setting | Nilai |
+|---------|--------|
+| Build Pack | Dockerfile |
+| Port | `80` |
+| Persistent Storage → Destination | `/var/www/html/storage` |
+
+Panduan lengkap: **[docs/deploy/COOLIFY.md](docs/deploy/COOLIFY.md)**
+
+Post-deploy (Coolify → Post-deployment command atau Terminal):
+
+```bash
+php artisan migrate --force
+php artisan config:cache
+php artisan registration:migrate-public-files
 ```
-docker compose -f docker-compose.local.yml up -d --build app
+
+Env penting: `REGISTRATION_FILESYSTEM_DISK=local`, `APP_URL` tanpa trailing slash.
+
+---
+
+### Docker manual (tanpa Coolify)
+
+Build image:
+
+```bash
+docker build -t cat-apps .
 ```
-2) jalanin Vite di host (bukan container) agar HMR cepat:
+
+Jalankan container — **wajib** mount `storage` agar upload tidak hilang saat rebuild:
+
+```bash
+mkdir -p /data/cat-apps/storage
+
+docker run -d \
+  --name cat-apps \
+  --restart unless-stopped \
+  -p 80:80 \
+  -v /data/cat-apps/storage:/var/www/html/storage \
+  --env-file .env \
+  cat-apps
 ```
+
+Atau pakai helper script:
+
+```bash
+chmod +x scripts/docker-run.sh
+STORAGE_DIR=/data/cat-apps/storage ENV_FILE=.env ./scripts/docker-run.sh
+```
+
+Setelah container jalan (sekali):
+
+```bash
+docker exec cat-apps php artisan migrate --force
+docker exec cat-apps php artisan config:cache
+docker exec cat-apps php artisan registration:migrate-public-files
+```
+
+Update deploy (rebuild image, storage tetap di host):
+
+```bash
+docker build -t cat-apps .
+docker rm -f cat-apps
+docker run -d \
+  --name cat-apps \
+  --restart unless-stopped \
+  -p 80:80 \
+  -v /data/cat-apps/storage:/var/www/html/storage \
+  --env-file .env \
+  cat-apps
+```
+
+Samakan `/data/cat-apps/storage` dengan `STORAGE_SOURCE_DIR` di `scripts/backup/backup.env`.
+
+## Dev lokal (tanpa Docker)
+
+```bash
+composer install
 npm install
 npm run dev
+php artisan serve
 ```
 
-opsional (lebih lambat, hanya jika perlu): Vite di container
-```
-docker compose -f docker-compose.local.yml --profile docker-vite up -d vite
-```
-
-jalanin apps prod
-- Build aset sekali:
-```
-docker compose -f docker-compose.prod.yml up -d --force-recreate app nginx
-```
-- Jalankan app:
-```
-docker compose --profile prod up -d nginx app
-```
-
-## Backup Rutin (Dockerfile / non-compose)
+---
 
 Project ini menyediakan script backup di `scripts/backup/backup.sh`.
 

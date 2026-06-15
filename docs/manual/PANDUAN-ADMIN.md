@@ -346,6 +346,27 @@ Berkas administrasi disimpan di disk **privat** (`REGISTRATION_FILESYSTEM_DISK=l
    ```
 4. Setelah migrasi, salinan di folder `public/registration/` dihapus — URL `/storage/registration/...` tidak berisi file lagi.
 
+**Docker / Coolify — berkas hilang tiap redeploy:**
+
+Penyebab: `storage/` tidak di-mount → terhapus saat container/image baru.
+
+**Coolify:** tab **Persistent Storage** → Volume → Destination **`/var/www/html/storage`**. Detail: [docs/deploy/COOLIFY.md](../../deploy/COOLIFY.md)
+
+**Docker run manual:**
+
+```bash
+mkdir -p /data/cat-apps/storage
+docker run -d \
+  --name cat-apps \
+  --restart unless-stopped \
+  -p 80:80 \
+  -v /data/cat-apps/storage:/var/www/html/storage \
+  --env-file .env \
+  cat-apps
+```
+
+Setelah mount volume baru, **data lama di container sebelumnya tidak ikut** — restore dari backup jika ada.
+
 **Jika berkas 404:**
 
 1. Pastikan `REGISTRATION_FILESYSTEM_DISK=local` (atau `public` hanya untuk file lama).

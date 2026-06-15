@@ -78,4 +78,12 @@ RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' \
     /etc/apache2/apache2.conf
 
 EXPOSE 80
+
+# Coolify: add Persistent Storage → Destination /var/www/html/storage (see docs/deploy/COOLIFY.md)
+VOLUME ["/var/www/html/storage"]
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["apache2-foreground"]

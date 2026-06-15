@@ -14,6 +14,7 @@ Panduan lengkap penggunaan platform **Pratistha Cendekia Prestasi** (CAT Apps) d
 | **Orang Tua / Wali** | [PANDUAN-ORANG-TUA.md](./PANDUAN-ORANG-TUA.md) | Ayah, ibu, atau wali yang memantau perkembangan ananda |
 | **Mentor / Pengajar** | [PANDUAN-MENTOR.md](./PANDUAN-MENTOR.md) | Pengajar yang mengelola kelas, nilai, dan laporan |
 | **Admin** | [PANDUAN-ADMIN.md](./PANDUAN-ADMIN.md) | Administrator penuh sistem |
+| **Deploy Coolify** | [deploy/COOLIFY.md](./deploy/COOLIFY.md) | Setup Dockerfile + volume storage di Coolify |
 
 ---
 
