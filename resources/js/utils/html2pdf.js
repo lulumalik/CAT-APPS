@@ -51,7 +51,27 @@ function scrubInlineStyles(root) {
   })
 }
 
-function mirrorAllComputedStyles(sourceRoot, cloneRoot) {
+const MIRROR_STYLE_PROPS = [
+  'color',
+  'font-family',
+  'font-size',
+  'font-weight',
+  'font-style',
+  'line-height',
+  'letter-spacing',
+  'text-align',
+  'text-transform',
+  'text-decoration',
+  'fill',
+  'stroke',
+  'stroke-width',
+  'opacity',
+]
+
+const PDF_BORDER = '2px solid #b8c0cc'
+const PDF_BORDER_LIGHT = '1.5px solid #cdd4de'
+
+function mirrorPresentationStyles(sourceRoot, cloneRoot) {
   const sourceNodes = [sourceRoot, ...sourceRoot.querySelectorAll('*')]
   const cloneNodes = [cloneRoot, ...cloneRoot.querySelectorAll('*')]
 
@@ -60,18 +80,100 @@ function mirrorAllComputedStyles(sourceRoot, cloneRoot) {
     if (!target || !source) return
 
     const computed = window.getComputedStyle(source)
-    for (let i = 0; i < computed.length; i++) {
-      const prop = computed[i]
+    MIRROR_STYLE_PROPS.forEach((prop) => {
       const value = computed.getPropertyValue(prop)
-      if (!value) continue
-      if (UNSUPPORTED_COLOR_RE.test(value)) continue
-
+      if (!value || value === 'none' || UNSUPPORTED_COLOR_RE.test(value)) return
       try {
-        target.style.setProperty(prop, value, computed.getPropertyPriority(prop))
+        target.style.setProperty(prop, value)
       } catch {
-        // Some properties cannot be set as inline styles.
+        // ignore
       }
-    }
+    })
+  })
+}
+
+function applyPdfChromeStyles(root) {
+  if (!root) return
+
+  root.style.width = '720px'
+  root.style.maxWidth = '720px'
+  root.style.background = '#ffffff'
+  root.style.color = '#1a1a1a'
+  root.style.fontFamily = 'ui-sans-serif, system-ui, -apple-system, sans-serif'
+
+  root.querySelectorAll('.pdf-header').forEach((el) => {
+    el.style.borderBottom = PDF_BORDER
+    el.style.marginBottom = '20px'
+    el.style.paddingBottom = '14px'
+  })
+
+  root.querySelectorAll('.pdf-section, .pdf-progress-section').forEach((el) => {
+    el.style.display = 'block'
+    el.style.border = PDF_BORDER
+    el.style.borderRadius = '14px'
+    el.style.padding = '18px'
+    el.style.marginBottom = '18px'
+    el.style.background = '#ffffff'
+    el.style.overflow = 'visible'
+    el.style.boxSizing = 'border-box'
+  })
+
+  root.querySelectorAll('.pdf-card').forEach((el) => {
+    el.style.display = 'block'
+    el.style.border = PDF_BORDER_LIGHT
+    el.style.borderRadius = '10px'
+    el.style.padding = '12px'
+    el.style.marginBottom = '10px'
+    el.style.background = '#fafbfc'
+    el.style.boxSizing = 'border-box'
+  })
+
+  root.querySelectorAll('.pdf-weekly-card').forEach((el) => {
+    el.style.display = 'block'
+    el.style.border = '2px solid #9db359'
+    el.style.borderRadius = '10px'
+    el.style.padding = '12px'
+    el.style.marginBottom = '10px'
+    el.style.background = '#f7faf2'
+    el.style.boxSizing = 'border-box'
+  })
+
+  root.querySelectorAll('.pdf-grid-2').forEach((el) => {
+    el.style.display = 'block'
+  })
+
+  root.querySelectorAll('.pdf-grid-2 > .pdf-section').forEach((el) => {
+    el.style.width = '100%'
+    el.style.marginBottom = '18px'
+  })
+
+  root.querySelectorAll('.space-y-6').forEach((el) => {
+    el.style.display = 'block'
+  })
+
+  root.querySelectorAll('.space-y-6 > *').forEach((el, idx) => {
+    el.style.display = 'block'
+    if (idx > 0) el.style.marginTop = '18px'
+  })
+
+  root.querySelectorAll('.space-y-3').forEach((el) => {
+    el.style.display = 'block'
+  })
+
+  root.querySelectorAll('.space-y-3 > *').forEach((el, idx) => {
+    el.style.display = 'block'
+    if (idx > 0) el.style.marginTop = '10px'
+  })
+
+  root.querySelectorAll('.pdf-progress-section .flex-1').forEach((el) => {
+    el.style.minHeight = '180px'
+    el.style.display = 'block'
+  })
+
+  root.querySelectorAll('svg').forEach((el) => {
+    el.style.maxWidth = '100%'
+    el.style.height = 'auto'
+    el.style.display = 'block'
   })
 }
 
@@ -91,32 +193,38 @@ export const PDF_EXPORT_LAYOUT_CSS = `
   box-sizing: border-box !important;
 }
 .dashboard-pdf-export .pdf-grid-2 {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 1.5rem !important;
+  display: block !important;
+}
+.dashboard-pdf-export .pdf-grid-2 > .pdf-section {
+  width: 100% !important;
+  margin-bottom: 18px !important;
 }
 .dashboard-pdf-export .pdf-section {
+  display: block !important;
   background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 1rem !important;
-  padding: 1.25rem !important;
+  border: 2px solid #b8c0cc !important;
+  border-radius: 14px !important;
+  padding: 18px !important;
+  margin-bottom: 18px !important;
   break-inside: avoid !important;
   page-break-inside: avoid !important;
+  overflow: visible !important;
 }
 .dashboard-pdf-export .pdf-card {
-  border: 1px solid #e5e7eb !important;
-  border-radius: 0.75rem !important;
-  padding: 0.75rem !important;
-  margin-bottom: 0.75rem !important;
-  background: #ffffff !important;
+  display: block !important;
+  border: 1.5px solid #cdd4de !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  margin-bottom: 10px !important;
+  background: #fafbfc !important;
 }
 .dashboard-pdf-export .pdf-card:last-child {
   margin-bottom: 0 !important;
 }
 .dashboard-pdf-export .pdf-header {
-  border-bottom: 1px solid #e5e7eb !important;
-  margin-bottom: 1.5rem !important;
-  padding-bottom: 1rem !important;
+  border-bottom: 2px solid #b8c0cc !important;
+  margin-bottom: 20px !important;
+  padding-bottom: 14px !important;
 }
 .dashboard-pdf-export .pdf-section-title {
   font-size: 1.125rem !important;
@@ -139,11 +247,12 @@ export const PDF_EXPORT_LAYOUT_CSS = `
   color: #374151 !important;
 }
 .dashboard-pdf-export .pdf-weekly-card {
-  border: 1px solid rgba(157, 179, 89, 0.3) !important;
-  background: rgba(157, 179, 89, 0.05) !important;
-  border-radius: 0.75rem !important;
-  padding: 1rem !important;
-  margin-bottom: 0.75rem !important;
+  display: block !important;
+  border: 2px solid #9db359 !important;
+  background: #f7faf2 !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  margin-bottom: 10px !important;
 }
 .dashboard-pdf-export .pdf-tag {
   display: inline-block !important;
@@ -155,13 +264,25 @@ export const PDF_EXPORT_LAYOUT_CSS = `
   margin: 0.125rem !important;
 }
 .dashboard-pdf-export .pdf-progress-section {
+  display: block !important;
   background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 1rem !important;
-  padding: 1.25rem !important;
-  margin-bottom: 1.5rem !important;
+  border: 2px solid #b8c0cc !important;
+  border-radius: 14px !important;
+  padding: 18px !important;
+  margin-bottom: 18px !important;
   break-inside: avoid !important;
   page-break-inside: avoid !important;
+  overflow: visible !important;
+}
+.dashboard-pdf-export .pdf-progress-section > .flex-1 {
+  display: block !important;
+  min-height: 180px !important;
+}
+.dashboard-pdf-export .space-y-6 > * + * {
+  margin-top: 18px !important;
+}
+.dashboard-pdf-export .space-y-3 > * + * {
+  margin-top: 10px !important;
 }
 .dashboard-pdf-export .pdf-hide {
   display: none !important;
@@ -169,12 +290,7 @@ export const PDF_EXPORT_LAYOUT_CSS = `
 .dashboard-pdf-export svg {
   max-width: 100% !important;
   height: auto !important;
-}
-.dashboard-pdf-export .space-y-6 > * + * {
-  margin-top: 1.5rem !important;
-}
-.dashboard-pdf-export .space-y-3 > * + * {
-  margin-top: 0.75rem !important;
+  display: block !important;
 }
 .dashboard-pdf-export .flex {
   display: flex !important;
@@ -260,19 +376,21 @@ function createIsolatedPrintRoot(sourceElement) {
   idoc.close()
 
   const clone = sourceElement.cloneNode(true)
-  mirrorAllComputedStyles(sourceElement, clone)
+  mirrorPresentationStyles(sourceElement, clone)
   scrubInlineStyles(clone)
   idoc.body.appendChild(clone)
   injectPdfLayoutStyles(idoc)
+  applyPdfChromeStyles(clone)
 
   return { iframe, iwin, idoc, clone }
 }
 
 export function prepareClonedDocumentForCanvas(doc, sourceRoot, cloneRoot) {
   stripAllStylesheets(doc)
-  mirrorAllComputedStyles(sourceRoot, cloneRoot)
+  mirrorPresentationStyles(sourceRoot, cloneRoot)
   scrubInlineStyles(cloneRoot)
   injectPdfLayoutStyles(doc)
+  applyPdfChromeStyles(cloneRoot)
 }
 
 /**
@@ -311,6 +429,7 @@ export async function downloadElementAsPdf(element, filename, options = {}) {
         onclone: (clonedDoc, clonedElement) => {
           stripAllStylesheets(clonedDoc)
           injectPdfLayoutStyles(clonedDoc)
+          applyPdfChromeStyles(clonedElement)
           userOnClone?.(clonedDoc, clonedElement)
         },
       },
