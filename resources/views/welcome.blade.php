@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ isset($material) ? $material->title . ' - Kursus Platform' : 'Kursus Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}</title>
+        <title>{{ isset($material) ? $material->title : 'Kursus Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}</title>
         <meta name="google-site-verification" content="oHVVXwQv4qB7m3tjr5G0EWAbiVw22JVmC7MLqe0hcFQ" />
         <meta name="description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Kursus Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
         <meta name="keywords" content="CAT, Computer Assisted Test, ujian online, tryout, bank soal, CBT, ranking, assessment, evaluasi{{ isset($material) && $material->category ? ', ' . $material->category : '' }}">

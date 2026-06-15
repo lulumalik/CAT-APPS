@@ -18,4 +18,11 @@ fi
 
 php artisan storage:link --force >/dev/null 2>&1 || true
 
+# Hint in container logs (Coolify / docker logs) if storage is not a separate mount
+if grep -q ' /var/www/html/storage ' /proc/mounts 2>/dev/null; then
+  echo "[entrypoint] storage: persistent mount detected on /var/www/html/storage"
+else
+  echo "[entrypoint] WARNING: no dedicated mount on /var/www/html/storage — uploads will be LOST on redeploy. Set Coolify Persistent Storage."
+fi
+
 exec "$@"

@@ -2,98 +2,133 @@
 
 Project ini pakai **Dockerfile** (bukan docker-compose). Apache listen **port 80** di dalam container.
 
+## Penting: `VOLUME` di Dockerfile ≠ storage Coolify otomatis
+
+Baris ini di Dockerfile:
+
+```dockerfile
+VOLUME ["/var/www/html/storage"]
+```
+
+hanya **memberi tahu Docker** bahwa folder itu tempat data. **Coolify tidak otomatis** membuat Persistent Storage dari baris ini.
+
+Anda **wajib** menambah volume manual di UI Coolify (langkah 2). Tanpa itu, upload ada di **layer container sementara** → API bisa jalan sesaat setelah upload, tapi **hilang saat redeploy**.
+
+File **tidak** muncul di folder git/repo di server host — hanya di dalam container (atau di Docker volume jika sudah dikonfigurasi).
+
+---
+
 ## 1. Buat aplikasi
 
 1. Coolify → **New Resource** → **Application**
-2. Connect repo Git (GitHub / GitLab / dll.)
+2. Connect repo Git
 3. **Build Pack:** `Dockerfile`
-4. **Dockerfile location:** `Dockerfile` (root repo)
-5. **Port:** `80` (di pengaturan aplikasi / domain Coolify)
+4. **Port:** `80`
 
-## 2. Persistent Storage (wajib — upload tidak hilang saat redeploy)
+## 2. Persistent Storage (WAJIB)
 
-Tanpa ini, folder `storage/` ikut hilang setiap rebuild image.
+1. Buka aplikasi → **Persistent Storage** / **Storages**
+2. **Add Volume**
+   - **Destination Path:** `/var/www/html/storage` ← harus persis ini
+   - **Name:** `laravel-storage` (bebas)
+   - Tipe: **Volume** (bukan file)
+3. **Save** lalu **Redeploy**
 
-1. Buka aplikasi → tab **Persistent Storage** (atau **Storages**)
-2. Tambah **Volume** (disarankan, bukan bind mount acak):
-   - **Destination Path (di container):** `/var/www/html/storage`
-   - **Name:** bebas, mis. `laravel-storage`
-3. Deploy / redeploy
+Salah path umum yang bikin volume tidak jalan:
 
-Coolify membuat volume Docker dengan nama unik (biasanya ada UUID resource). Data upload (berkas pendaftaran, materi, dll.) tetap ada meski image diganti.
+| Salah | Benar |
+|-------|--------|
+| `/app/storage` | `/var/www/html/storage` |
+| `/var/www/html/storage/app/private` | `/var/www/html/storage` (mount root storage saja) |
+| Hanya mengandalkan `VOLUME` di Dockerfile | Tetap harus set di Coolify UI |
 
-> **Path container harus** `/var/www/html/storage` — sesuai `WORKDIR` di Dockerfile, **bukan** `/app/storage` (itu untuk template Nixpacks lain).
+### Verifikasi (Coolify → Terminal container)
+
+```bash
+php artisan app:storage-diagnostic --user=13
+```
+
+Interpretasi:
+
+| Output | Artinya |
+|--------|---------|
+| `TIDAK ADA mount khusus` | Volume Coolify **belum** aktif — upload akan hilang redeploy |
+| Ada baris mount + `volume-check SUDAH ADA` | Volume **OK** |
+| `private registration ... files: N` dengan N > 0 | Berkas ada di `storage/app/private/registration/` |
+| `public registration ... files: 0` | Normal untuk disk `local` (bukan error) |
+
+Cek manual:
+
+```bash
+ls -la /var/www/html/storage/app/private/registration/13/
+grep storage /proc/mounts
+docker logs <container> 2>&1 | grep entrypoint
+# Harus: "persistent mount detected" — bukan WARNING
+```
+
+**Jangan** cek `storage/` di folder clone git di VPS — itu bukan tempat runtime container (kecuali pakai bind mount ke path itu).
 
 ## 3. Environment variables
 
-Set di Coolify → **Environment Variables** (runtime):
-
-| Variable | Contoh |
+| Variable | Nilai |
 |----------|--------|
-| `APP_KEY` | `base64:...` |
-| `APP_URL` | `https://pratisthaindonesia.com` (tanpa slash di akhir) |
+| `REGISTRATION_FILESYSTEM_DISK` | `local` |
+| `APP_URL` | `https://pratisthaindonesia.com` (tanpa `/` di akhir) |
 | `APP_ENV` | `production` |
 | `APP_DEBUG` | `false` |
-| `DB_CONNECTION` | `pgsql` / `mysql` |
-| `DB_HOST` | host database Coolify atau eksternal |
-| `DB_DATABASE` | ... |
-| `DB_USERNAME` | ... |
-| `DB_PASSWORD` | ... |
-| `REGISTRATION_FILESYSTEM_DISK` | `local` |
-| `SESSION_DRIVER` | `database` (disarankan) |
+| `DB_*` | dari database Coolify |
 
-Database bisa resource terpisah di Coolify (PostgreSQL/MySQL) — pakai hostname internal yang Coolify berikan.
+Path berkas pendaftaran dengan `local`:
 
-## 4. Perintah setelah deploy (sekali / tiap release)
+```
+/var/www/html/storage/app/private/registration/{user_id}/nama-file.jpg
+```
 
-Di Coolify → **Post-deployment command** (atau jalankan manual lewat **Terminal** container):
+Bukan di `storage/app/public/` (kecuali data legacy sebelum migrasi).
+
+## 4. Post-deployment command
 
 ```bash
 php artisan migrate --force
 php artisan config:cache
 php artisan registration:migrate-public-files
+php artisan app:storage-diagnostic
 ```
 
-`storage:link` dan pembuatan folder storage sudah dijalankan **entrypoint** saat container start.
+## 5. Akses berkas
 
-## 5. Berkas pendaftaran (KTP, KK, …)
+- API (login wajib): `/api/registration-files/{user_id}/{field}`
+- URL `/storage/registration/...` **sengaja diblokir** (privasi)
 
-- Disimpan di volume: `storage/app/private/registration/{user_id}/`
-- **Tidak** bisa dibuka tanpa login lewat URL `/storage/registration/...`
-- Dibuka lewat API (session login): `/api/registration-files/{user_id}/{field}`
-- Hanya **pemilik akun** atau **admin**
+## 6. Redeploy aman
 
-## 6. Backup storage dari Coolify
+Setelah volume benar:
 
-Volume Coolify ada di server host (Docker volume). Untuk backup manual:
+```
+git push → build image baru → container baru → volume /var/www/html/storage TETAP
+```
+
+Upload **setelah** volume dikonfigurasi yang akan persisten. Upload **sebelum** volume dikonfigurasi sudah hilang dan tidak bisa dipulihkan kecuali ada backup.
+
+## 7. Alternatif: S3 / Cloudflare R2
+
+Jika volume Coolify sulit, simpan berkas di object storage:
+
+```env
+REGISTRATION_FILESYSTEM_DISK=s3
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_BUCKET=...
+AWS_ENDPOINT=...   # untuk R2
+AWS_URL=...        # URL publik bucket jika perlu
+```
+
+Berkas tidak bergantung pada redeploy container.
+
+## 8. Backup volume Coolify
 
 ```bash
-# Cari volume (nama mengandung UUID aplikasi)
 docker volume ls | grep -i storage
-
-# Salin isi volume ke folder backup (sesuaikan nama volume)
-docker run --rm \
-  -v NAMA_VOLUME_COOLIFY:/from \
-  -v /opt/backups/cat-apps:/to \
-  alpine sh -c "cd /from && tar czf /to/storage-$(date +%F).tar.gz ."
+docker run --rm -v NAMA_VOLUME:/from -v /opt/backups:/to alpine \
+  sh -c "cd /from && tar czf /to/storage-$(date +%F).tar.gz ."
 ```
-
-Atau set `STORAGE_SOURCE_DIR` di `scripts/backup/backup.env` ke path bind mount jika pakai bind mount di Coolify.
-
-## 7. Troubleshooting
-
-| Masalah | Cek |
-|---------|-----|
-| Upload hilang tiap deploy | Persistent Storage belum di-set ke `/var/www/html/storage` |
-| Berkas 404 | `REGISTRATION_FILESYSTEM_DISK=local`, cek log: `storage/logs/laravel.log` |
-| 502 Bad Gateway | Port aplikasi di Coolify = **80** |
-| File lama di `public` | `php artisan registration:migrate-public-files` |
-
-## 8. Redeploy aman
-
-```
-Git push → Coolify build image baru → container baru
-         → volume /var/www/html/storage TETAP (jika Persistent Storage sudah dikonfigurasi)
-```
-
-Jangan hapus volume di Coolify kecuali sengaja reset data upload.
