@@ -64,41 +64,66 @@ class RegistrationProgressController extends Controller
         return config('registration.filesystem_disk', 'public');
     }
 
-    private function registrationFileUrl(string $path): string
+    private function registrationDiskCandidates(): array
     {
-        $diskName = $this->registrationDisk();
-        $disk = Storage::disk($diskName);
-        $driver = (string) config("filesystems.disks.{$diskName}.driver", 'local');
+        $candidates = [
+            $this->registrationDisk(),
+            'public',
+            (string) config('filesystems.upload_disk', 'public'),
+            's3',
+        ];
 
-        if (config('registration.use_signed_urls', false)) {
-            return $disk->temporaryUrl(
-                $path,
-                now()->addHours(max(1, (int) config('registration.signed_url_ttl_hours', 24)))
-            );
+        return array_values(array_unique(array_filter($candidates)));
+    }
+
+    private function findRegistrationFileDisk(string $path): ?\Illuminate\Contracts\Filesystem\Filesystem
+    {
+        foreach ($this->registrationDiskCandidates() as $diskName) {
+            try {
+                $disk = Storage::disk($diskName);
+                if ($disk->exists($path)) {
+                    return $disk;
+                }
+            } catch (Throwable $e) {
+                Log::debug('Registration file disk probe failed.', [
+                    'disk' => $diskName,
+                    'path' => $path,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
-        if ($driver === 'local') {
-            return '/storage/'.ltrim(str_replace('\\', '/', $path), '/');
+        return null;
+    }
+
+    private function registrationFileResponse(string $path)
+    {
+        $disk = $this->findRegistrationFileDisk($path);
+        if ($disk === null) {
+            Log::warning('Registration file missing on all disks.', [
+                'path' => $path,
+                'tried_disks' => $this->registrationDiskCandidates(),
+            ]);
+            abort(404);
         }
 
-        $url = $disk->url($path);
+        $response = $disk->response($path);
+        $response->headers->set('Cache-Control', 'private, max-age=3600');
 
-        return preg_replace('#(?<!:)/{2,}#', '/', $url) ?: $url;
+        return $response;
     }
 
     /**
      * @return array<string, string>
      */
-    private function buildAdministrationFileUrls(?array $administrationData): array
+    private function buildAdministrationFileUrls(RegistrationProgress $progress): array
     {
-        if ($administrationData === null) {
-            return [];
-        }
-
         $urls = [];
+        $administrationData = $progress->administration_data ?? [];
+
         foreach (self::ADMIN_FILE_FIELDS as $input => $pathKey) {
             if (! empty($administrationData[$pathKey])) {
-                $urls[$pathKey] = $this->registrationFileUrl($administrationData[$pathKey]);
+                $urls[$pathKey] = '/api/registration-files/'.$progress->user_id.'/'.$input;
             }
         }
 
@@ -108,7 +133,7 @@ class RegistrationProgressController extends Controller
     private function serializeRegistrationProgress(RegistrationProgress $progress): array
     {
         $data = $progress->toArray();
-        $data['administration_file_urls'] = $this->buildAdministrationFileUrls($progress->administration_data);
+        $data['administration_file_urls'] = $this->buildAdministrationFileUrls($progress);
 
         return $data;
     }
@@ -151,7 +176,10 @@ class RegistrationProgressController extends Controller
             Validator::make($request->all(), $rules)->validate();
 
             if (! empty($merged[$pathKey])) {
-                Storage::disk($disk)->delete($merged[$pathKey]);
+                $oldDisk = $this->findRegistrationFileDisk($merged[$pathKey]);
+                if ($oldDisk !== null) {
+                    $oldDisk->delete($merged[$pathKey]);
+                }
             }
 
             $merged[$pathKey] = $request->file($input)->store($dir, $disk);
@@ -215,7 +243,10 @@ class RegistrationProgressController extends Controller
         ])->validate();
 
         if (! empty($merged[$pathKey])) {
-            Storage::disk($this->registrationDisk())->delete($merged[$pathKey]);
+            $oldDisk = $this->findRegistrationFileDisk($merged[$pathKey]);
+            if ($oldDisk !== null) {
+                $oldDisk->delete($merged[$pathKey]);
+            }
         }
 
         $dir = 'registration/'.$request->user()->id;
@@ -224,6 +255,60 @@ class RegistrationProgressController extends Controller
         $progress->save();
 
         return response()->json($this->serializeRegistrationProgress($progress->fresh()));
+    }
+
+    public function servePublicFile(string $path)
+    {
+        $normalized = ltrim(str_replace('\\', '/', $path), '/');
+        if ($normalized === '' || str_contains($normalized, '..')) {
+            abort(404);
+        }
+
+        if (str_starts_with($normalized, 'registration/')) {
+            return $this->registrationFileResponse($normalized);
+        }
+
+        $disk = Storage::disk('public');
+        if (! $disk->exists($normalized)) {
+            abort(404);
+        }
+
+        $response = $disk->response($normalized);
+        $response->headers->set('Cache-Control', 'private, max-age=3600');
+
+        return $response;
+    }
+
+    public function streamAdministrationFile(Request $request, User $user, string $field)
+    {
+        if (! array_key_exists($field, self::ADMIN_FILE_FIELDS)) {
+            abort(404);
+        }
+
+        $actor = $request->user();
+        if ($actor === null) {
+            abort(401);
+        }
+        if ($actor->id !== $user->id && $actor->role !== 'admin') {
+            abort(403);
+        }
+
+        if (! Schema::hasTable('registration_progress')) {
+            abort(404);
+        }
+
+        $progress = RegistrationProgress::where('user_id', $user->id)->first();
+        if ($progress === null) {
+            abort(404);
+        }
+
+        $pathKey = self::ADMIN_FILE_FIELDS[$field];
+        $storedPath = $progress->administration_data[$pathKey] ?? null;
+        if (! is_string($storedPath) || $storedPath === '') {
+            abort(404);
+        }
+
+        return $this->registrationFileResponse($storedPath);
     }
 
     public function mine(Request $request)

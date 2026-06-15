@@ -118,6 +118,7 @@ Route::middleware('auth')->group(function () {
     // POST + PUT: multipart/form-data + files are not reliably parsed on PUT in PHP;
     // use POST from clients (Postman, axios FormData) when uploading files.
     Route::post('/my-registration/administration-file', [RegistrationProgressController::class, 'uploadAdministrationFile']);
+    Route::get('/registration-files/{user}/{field}', [RegistrationProgressController::class, 'streamAdministrationFile']);
     Route::match(['post', 'put'], '/my-registration', [RegistrationProgressController::class, 'updateMine']);
 
     Route::get('/announcements', [AnnouncementController::class, 'index']);

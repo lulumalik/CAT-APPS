@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\RegistrationProgressController;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
@@ -79,26 +79,8 @@ Route::get('/blog/{slug}', function ($slug) {
 | otherwise return the Vue shell for URLs like /storage/registration/1/file.jpg.
 | Registration objects live on registration.filesystem_disk; other public files use "public".
 */
-Route::get('/storage/{path}', function (string $path) {
-    $normalized = ltrim(str_replace('\\', '/', $path), '/');
-    if ($normalized === '' || str_contains($normalized, '..')) {
-        abort(404);
-    }
-
-    $diskName = str_starts_with($normalized, 'registration/')
-        ? (string) config('registration.filesystem_disk')
-        : 'public';
-
-    $disk = Storage::disk($diskName);
-    if (! $disk->exists($normalized)) {
-        abort(404);
-    }
-
-    $response = $disk->response($normalized);
-    $response->headers->set('Cache-Control', 'private, max-age=3600');
-
-    return $response;
-})->where('path', '.*');
+Route::get('/storage/{path}', [RegistrationProgressController::class, 'servePublicFile'])
+    ->where('path', '.*');
 
 Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {
     if (! $request->hasValidSignature()) {
