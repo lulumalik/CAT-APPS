@@ -36,6 +36,7 @@ const routes = [
   { path: '/login', name: 'login', component: LoginView },
   { path: '/signup', name: 'signup', component: SignupView },
   { path: '/dashboard', name: 'dashboard', component: DashboardView, meta: { requiresAuth: true } },
+  { path: '/dashboard/student/:id', name: 'student-dashboard', component: DashboardView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/question-bank', name: 'question-bank', component: QuestionBankView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/tests', name: 'tests', component: TestsView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/users', name: 'users', component: UserManagementView, meta: { requiresAuth: true, requiresAdmin: true } },

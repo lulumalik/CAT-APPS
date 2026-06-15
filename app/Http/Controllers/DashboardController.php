@@ -32,6 +32,30 @@ class DashboardController extends Controller
         return response()->json($this->studentOverview($user->id));
     }
 
+    public function studentOverviewForStaff(Request $request, User $student)
+    {
+        if ($request->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        if ($student->role !== 'user') {
+            return response()->json(['message' => 'Akun ini bukan peserta.'], 422);
+        }
+
+        return response()->json(array_merge(
+            $this->studentOverview($student->id),
+            [
+                'student' => [
+                    'id' => $student->id,
+                    'name' => $student->name,
+                    'username' => $student->username,
+                    'email' => $student->email,
+                    'program_category' => $student->program_category,
+                ],
+            ],
+        ));
+    }
+
     private function parentOverview(int $parentId): array
     {
         if (! Schema::hasTable('student_guardians')) {

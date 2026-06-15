@@ -139,6 +139,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('role:admin')->group(function () {
+    Route::get('/dashboard/students/{student}/overview', [DashboardController::class, 'studentOverviewForStaff']);
     Route::post('/users/import', [UserController::class, 'import']);
     Route::apiResource('users', UserController::class);
 

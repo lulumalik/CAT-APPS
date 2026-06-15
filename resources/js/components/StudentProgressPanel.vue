@@ -3,13 +3,13 @@
     <div v-if="loadingProgress" class="py-10 text-center text-gray-500">Memuat perkembangan...</div>
     <template v-else>
       <!-- 1. Laporan Harian -->
-      <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+      <section :class="pdfMode ? 'pdf-progress-section' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm'">
         <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
           <div>
-            <h3 class="font-bold text-base">Laporan Harian</h3>
+            <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base'">Laporan Harian</h3>
             <p class="text-xs text-gray-500 mt-0.5">Diurutkan dari waktu terbaru</p>
           </div>
-          <label class="flex flex-col gap-1 text-xs text-gray-500">
+          <label v-if="!pdfMode" class="flex flex-col gap-1 text-xs text-gray-500">
             <span>Tanggal</span>
             <input
               v-model="dailyDate"
@@ -18,24 +18,25 @@
               @change="onDailyDateChange"
             />
           </label>
+          <p v-else class="pdf-muted">Tanggal: {{ formatDate(dailyDate) }}</p>
         </div>
 
         <div v-if="loadingDaily" class="py-8 text-center text-sm text-gray-400">Memuat laporan harian...</div>
-        <div v-else-if="!dailyReports.length" class="text-sm text-gray-400">
+        <div v-else-if="!dailyReports.length" :class="pdfMode ? 'pdf-muted' : 'text-sm text-gray-400'">
           Belum ada laporan harian untuk {{ formatDate(dailyDate) }}.
         </div>
         <div v-else class="space-y-3">
-          <article v-for="r in dailyReports" :key="r.id" class="rounded-xl border border-gray-100 p-4">
+          <article v-for="r in dailyReports" :key="r.id" :class="pdfMode ? 'pdf-card' : 'rounded-xl border border-gray-100 p-4'">
             <div class="flex items-center justify-between gap-2">
               <div class="font-semibold text-sm">{{ r.title }}</div>
               <span class="text-xs text-gray-400 shrink-0">{{ formatDateTime(r.created_at || r.report_date) }}</span>
             </div>
-            <p v-if="r.summary" class="text-sm text-gray-600 mt-1">{{ r.summary }}</p>
+            <p v-if="r.summary" :class="pdfMode ? 'pdf-text-sm mt-1' : 'text-sm text-gray-600 mt-1'">{{ r.summary }}</p>
             <div v-if="Object.keys(r.categories || {}).length" class="mt-2 flex flex-wrap gap-2">
               <span
                 v-for="(val, key) in r.categories"
                 :key="key"
-                class="text-[11px] rounded-full bg-gray-100 px-2.5 py-1 text-gray-600"
+                :class="pdfMode ? 'pdf-tag' : 'text-[11px] rounded-full bg-gray-100 px-2.5 py-1 text-gray-600'"
               >
                 <span class="font-semibold capitalize">{{ key }}</span>: {{ val }}
               </span>
@@ -47,8 +48,8 @@
         </div>
 
         <div
-          v-if="dailyMeta.total > dailyMeta.per_page"
-          class="pdf-hide mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4"
+          v-if="dailyMeta.total > dailyMeta.per_page && !pdfMode"
+          class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4"
         >
           <p class="text-xs text-gray-500">
             Menampilkan {{ dailyRangeLabel }} dari {{ dailyMeta.total }} laporan
@@ -76,17 +77,17 @@
       </section>
 
       <!-- 2. Ringkasan Mingguan -->
-      <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-        <h3 class="font-bold text-base mb-3">Ringkasan Mingguan</h3>
-        <div v-if="!reports.weekly?.length" class="text-sm text-gray-400">Belum ada ringkasan mingguan.</div>
+      <section :class="pdfMode ? 'pdf-progress-section' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm'">
+        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-3'">Ringkasan Mingguan</h3>
+        <div v-if="!reports.weekly?.length" :class="pdfMode ? 'pdf-muted' : 'text-sm text-gray-400'">Belum ada ringkasan mingguan.</div>
         <div v-else class="space-y-3">
           <article
             v-for="r in reports.weekly"
             :key="r.id"
-            class="rounded-xl border border-[#9DB359]/30 bg-[#9DB359]/5 p-4"
+            :class="pdfMode ? 'pdf-weekly-card' : 'rounded-xl border border-[#9DB359]/30 bg-[#9DB359]/5 p-4'"
           >
             <div class="font-semibold text-sm">{{ r.title }}</div>
-            <p v-if="r.summary" class="text-sm text-gray-700 mt-1">{{ r.summary }}</p>
+            <p v-if="r.summary" :class="pdfMode ? 'pdf-text-sm mt-1' : 'text-sm text-gray-700 mt-1'">{{ r.summary }}</p>
             <div v-if="Object.keys(r.categories || {}).length" class="mt-2 grid sm:grid-cols-2 gap-2">
               <div v-for="(val, key) in r.categories" :key="key" class="text-xs">
                 <span class="font-semibold capitalize text-gray-700">{{ key }}:</span>
@@ -98,16 +99,16 @@
       </section>
 
       <!-- 3. Materi Kelas -->
-      <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-        <h3 class="font-bold text-base mb-1">Materi Kelas</h3>
-        <p class="text-xs text-gray-500 mb-3">Jumlah materi & aktivitas per kelas</p>
-        <div v-if="!(progress.materials || []).length" class="text-sm text-gray-400 py-6 text-center">
+      <section :class="pdfMode ? 'pdf-progress-section' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm'">
+        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Materi Kelas</h3>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Jumlah materi & aktivitas per kelas</p>
+        <div v-if="!(progress.materials || []).length" :class="pdfMode ? 'pdf-muted py-6 text-center' : 'text-sm text-gray-400 py-6 text-center'">
           Belum tergabung di kelas.
         </div>
         <div v-else class="space-y-3">
-          <div v-for="c in progress.materials" :key="c.id" class="rounded-xl border border-gray-100 p-3">
+          <div v-for="c in progress.materials" :key="c.id" :class="pdfMode ? 'pdf-card' : 'rounded-xl border border-gray-100 p-3'">
             <div class="font-semibold text-sm">{{ c.name }}</div>
-            <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 mt-1">
+            <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1" :class="pdfMode ? 'pdf-muted' : 'text-xs text-gray-500'">
               <span>{{ c.materials_count }} materi</span>
               <span>{{ c.sessions_count }} sesi</span>
               <span>{{ c.activities_count }} aktivitas</span>
@@ -117,9 +118,9 @@
       </section>
 
       <!-- 4. Nilai per Mata Pelajaran -->
-      <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]">
-        <h3 class="font-bold text-base mb-1">Nilai per Mata Pelajaran</h3>
-        <p class="text-xs text-gray-500 mb-3">Perkembangan nilai (%) tiap mata pelajaran dari waktu ke waktu</p>
+      <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
+        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai per Mata Pelajaran</h3>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai (%) tiap mata pelajaran dari waktu ke waktu</p>
         <div class="flex-1">
           <ProgressChart
             type="multiline"
@@ -131,9 +132,9 @@
       </section>
 
       <!-- 5. Hasil Jasmani -->
-      <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]">
-        <h3 class="font-bold text-base mb-1">Hasil Jasmani</h3>
-        <p class="text-xs text-gray-500 mb-3">Perkembangan nilai jasmani peserta dari waktu ke waktu</p>
+      <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
+        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Hasil Jasmani</h3>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai jasmani peserta dari waktu ke waktu</p>
         <div class="flex-1">
           <ProgressChart
             type="multiline"
@@ -145,9 +146,9 @@
       </section>
 
       <!-- 6. Nilai Tes -->
-      <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]">
-        <h3 class="font-bold text-base mb-1">Nilai Tes</h3>
-        <p class="text-xs text-gray-500 mb-3">Perkembangan persentase nilai dari waktu ke waktu</p>
+      <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
+        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai Tes</h3>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan persentase nilai dari waktu ke waktu</p>
         <div class="flex-1">
           <ProgressChart
             type="line"
@@ -168,6 +169,7 @@ import ProgressChart from '@/components/ProgressChart.vue'
 
 const props = defineProps({
   studentId: { type: [Number, String], required: true },
+  pdfMode: { type: Boolean, default: false },
 })
 
 const DAILY_PER_PAGE = 10

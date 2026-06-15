@@ -62,6 +62,13 @@
                 </span>
               </td>
               <td class="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
+                <router-link
+                  v-if="user.role === 'user'"
+                  :to="`/dashboard/student/${user.id}`"
+                  class="text-[#1A1A1A] hover:text-[#9DB359] mr-4 transition-colors font-medium"
+                >
+                  Dashboard Siswa
+                </router-link>
                 <button @click="edit(user)" class="text-[#9DB359] hover:text-[#8ca34b] mr-4 transition-colors">{{ t('common.edit') }}</button>
                 <button @click="remove(user)" class="text-red-500 hover:text-red-700 transition-colors">{{ t('common.delete') }}</button>
               </td>
