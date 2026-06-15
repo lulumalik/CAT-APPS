@@ -6,6 +6,7 @@ use App\Models\RegistrationProgress;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Notifications\RegistrationProgressStatusNotification;
+use App\Services\RegistrationFileStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,10 @@ use Throwable;
 
 class RegistrationProgressController extends Controller
 {
+    public function __construct(
+        private readonly RegistrationFileStorage $registrationFiles
+    ) {}
+
     private function sendRegistrationEmailStatus(
         User $user,
         string $event,
@@ -61,48 +66,21 @@ class RegistrationProgressController extends Controller
 
     private function registrationDisk(): string
     {
-        return config('registration.filesystem_disk', 'public');
+        return $this->registrationFiles->registrationDiskName();
     }
 
-    private function registrationDiskCandidates(): array
+    private function canViewRegistrationFile(User $actor, User $owner): bool
     {
-        $candidates = [
-            $this->registrationDisk(),
-            'public',
-            (string) config('filesystems.upload_disk', 'public'),
-            's3',
-        ];
-
-        return array_values(array_unique(array_filter($candidates)));
-    }
-
-    private function findRegistrationFileDisk(string $path): ?\Illuminate\Contracts\Filesystem\Filesystem
-    {
-        foreach ($this->registrationDiskCandidates() as $diskName) {
-            try {
-                $disk = Storage::disk($diskName);
-                if ($disk->exists($path)) {
-                    return $disk;
-                }
-            } catch (Throwable $e) {
-                Log::debug('Registration file disk probe failed.', [
-                    'disk' => $diskName,
-                    'path' => $path,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
-
-        return null;
+        return $actor->id === $owner->id || $actor->role === 'admin';
     }
 
     private function registrationFileResponse(string $path)
     {
-        $disk = $this->findRegistrationFileDisk($path);
+        $disk = $this->registrationFiles->resolveDiskForServing($path);
         if ($disk === null) {
             Log::warning('Registration file missing on all disks.', [
                 'path' => $path,
-                'tried_disks' => $this->registrationDiskCandidates(),
+                'tried_disks' => $this->registrationFiles->diskCandidates(),
             ]);
             abort(404);
         }
@@ -176,7 +154,7 @@ class RegistrationProgressController extends Controller
             Validator::make($request->all(), $rules)->validate();
 
             if (! empty($merged[$pathKey])) {
-                $oldDisk = $this->findRegistrationFileDisk($merged[$pathKey]);
+                $oldDisk = $this->registrationFiles->findDisk($merged[$pathKey]);
                 if ($oldDisk !== null) {
                     $oldDisk->delete($merged[$pathKey]);
                 }
@@ -243,7 +221,7 @@ class RegistrationProgressController extends Controller
         ])->validate();
 
         if (! empty($merged[$pathKey])) {
-            $oldDisk = $this->findRegistrationFileDisk($merged[$pathKey]);
+            $oldDisk = $this->registrationFiles->findDisk($merged[$pathKey]);
             if ($oldDisk !== null) {
                 $oldDisk->delete($merged[$pathKey]);
             }
@@ -264,8 +242,9 @@ class RegistrationProgressController extends Controller
             abort(404);
         }
 
+        // Onboarding documents (KTP, KK, …) must not be served without authentication.
         if (str_starts_with($normalized, 'registration/')) {
-            return $this->registrationFileResponse($normalized);
+            abort(404);
         }
 
         $disk = Storage::disk('public');
@@ -289,7 +268,7 @@ class RegistrationProgressController extends Controller
         if ($actor === null) {
             abort(401);
         }
-        if ($actor->id !== $user->id && $actor->role !== 'admin') {
+        if (! $this->canViewRegistrationFile($actor, $user)) {
             abort(403);
         }
 

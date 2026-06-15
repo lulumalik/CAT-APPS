@@ -6,10 +6,8 @@ const FIELD_BY_PATH_KEY = {
   full_body_photo_path: 'full_body_photo',
 }
 
-/**
- * Public disk path as returned by Laravel `Storage::disk('public')->store(...)`.
- * Served via Laravel route GET /storage/{path} (see routes/web.php).
- */
+const REGISTRATION_STORAGE_PREFIX = 'registration/'
+
 export function normalizeUrlSlashes(url) {
   if (!url || typeof url !== 'string') return ''
   if (url.startsWith('/')) {
@@ -36,8 +34,12 @@ export function isStoragePublicPath(val) {
   return typeof val === 'string' && val.length > 0 && !/^https?:\/\//i.test(val) && val.includes('/')
 }
 
+function isRegistrationStoragePath(path) {
+  return typeof path === 'string' && path.replace(/^\/+/, '').startsWith(REGISTRATION_STORAGE_PREFIX)
+}
+
 /**
- * Prefer authenticated API stream URL; fall back to /storage/ for legacy rows.
+ * Authenticated API URL only for registration documents (owner or admin session).
  * @param {Record<string, unknown>|null|undefined} row Registration progress row from API
  * @param {string} pathKey e.g. id_document_path
  */
@@ -45,7 +47,7 @@ export function registrationFileHref(row, pathKey) {
   if (!row || !pathKey) return ''
 
   const fromApi = row.administration_file_urls?.[pathKey]
-  if (typeof fromApi === 'string' && fromApi.length) {
+  if (typeof fromApi === 'string' && fromApi.startsWith('/api/registration-files/')) {
     return normalizeUrlSlashes(fromApi)
   }
 
@@ -53,10 +55,15 @@ export function registrationFileHref(row, pathKey) {
   if (apiUrl) return apiUrl
 
   const storedPath = row.administration_data?.[pathKey]
-  if (typeof storedPath === 'string' && storedPath.length) {
-    if (/^https?:\/\//i.test(storedPath)) {
-      return normalizeUrlSlashes(storedPath)
-    }
+  if (isRegistrationStoragePath(storedPath)) {
+    return registrationFileApiUrl(row, pathKey)
+  }
+
+  if (typeof storedPath === 'string' && storedPath.length && /^https?:\/\//i.test(storedPath)) {
+    return normalizeUrlSlashes(storedPath)
+  }
+
+  if (typeof storedPath === 'string' && storedPath.length && !isRegistrationStoragePath(storedPath)) {
     return storagePublicUrl(storedPath)
   }
 

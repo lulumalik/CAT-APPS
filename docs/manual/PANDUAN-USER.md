@@ -32,6 +32,8 @@ Siapkan dokumen dan data berikut:
 | Foto full body | Format gambar |
 | Data fisik | Tinggi badan (cm) dan berat badan (kg) |
 
+> **Catatan:** Berkas **tidak wajib** diunggah sekaligus. Anda bisa mengisi bertahap; kelengkapan dokumen akan **ditinjau manual oleh admin** saat review pendaftaran.
+
 ---
 
 ## 3. Langkah 1 — Kenali Website
@@ -78,13 +80,18 @@ Pendaftaran terdiri dari **4 tahap**:
    - **Nomor telepon orang tua** — format sama
    - Alamat KK & alamat domisili
    - Jenis kelamin, tinggi & berat badan
-2. **Unggah berkas:**
+2. **Unggah berkas** (satu per satu — langsung tersimpan saat dipilih):
    - KTP / kartu pelajar
    - Kartu keluarga
    - Rapor terakhir
    - Pas foto 4×6
    - Foto full body
-3. Klik **Kirim administrasi untuk ditinjau**
+   - Format: JPG, PNG, WebP, atau PDF (KTP/KK/rapor); pas foto & full body hanya gambar
+   - Maksimal **12 MB per berkas**
+   - Jika memilih berkas baru di slot yang sama, **file lama otomatis diganti**
+   - Tidak perlu menunggu semua berkas lengkap — unggah yang sudah siap dulu
+   - Setelah tersimpan, klik **Lihat berkas** untuk memeriksa (harus **sudah login** — berkas tidak bisa dibuka orang lain lewat tebakan URL)
+3. Klik **Kirim administrasi untuk ditinjau** (mengirim data teks; berkas yang sudah diunggah ikut tersimpan)
 4. Status berubah menjadi **submitted** — tunggu review admin
 
 ### Tahap 2 — Psikologi (Offline)
@@ -107,7 +114,8 @@ Pendaftaran terdiri dari **4 tahap**:
 
 - Jika admin meminta revisi, status menjadi **revision_requested**
 - Baca **catatan admin** di halaman pendaftaran
-- Perbaiki data/berkas, lalu kirim ulang
+- Perbaiki data/berkas yang diminta, lalu kirim ulang
+- Unggah ulang berkas yang perlu diganti — file baru akan **menimpa** yang lama
 
 ---
 
@@ -192,7 +200,13 @@ A: Pendaftaran belum selesai. Lanjutkan di menu **Alur Pendaftaran** sampai semu
 A: Cek Spam. Hubungi admin via WhatsApp **+628138964488** jika masih bermasalah.
 
 **Q: Berkas upload gagal?**  
-A: Pastikan format JPG/PNG/WebP/PDF dan ukuran maksimal 12 MB per berkas.
+A: Pastikan format JPG/PNG/WebP/PDF dan ukuran maksimal 12 MB per berkas. Setiap berkas diunggah **terpisah** (bukan sekaligus), jadi tunggu hingga status "Berkas tersimpan di server" muncul sebelum melanjutkan.
+
+**Q: Apakah semua berkas wajib diunggah sebelum kirim?**  
+A: Tidak wajib lengkap di form. Unggah yang sudah siap; admin akan meninjau kelengkapan dokumen secara manual saat review.
+
+**Q: "Lihat berkas" tidak bisa dibuka / halaman kosong?**  
+A: Pastikan Anda **masih login**. Link berkas dibuka lewat sistem internal (bukan folder publik langsung). Jika masih gagal, unggah ulang berkas atau hubungi admin.
 
 **Q: Nomor WhatsApp ditolak?**  
 A: Isi di tahap **Administrasi** (`/registration`), bukan saat buat akun. Gunakan format angka Indonesia: awali dengan 8 setelah +62 (contoh: `8138964488`).

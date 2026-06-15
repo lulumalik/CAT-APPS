@@ -75,9 +75,9 @@ Route::get('/blog/{slug}', function ($slug) {
 });
 
 /*
-| Serve files under /storage/* from disk (not the SPA). The catch-all below would
-| otherwise return the Vue shell for URLs like /storage/registration/1/file.jpg.
-| Registration objects live on registration.filesystem_disk; other public files use "public".
+| Public files under /storage/* (materials, question images, etc.).
+| Paths under storage/registration/* are blocked — those files use the private
+| disk and are streamed only via GET /api/registration-files/{user}/{field} (auth).
 */
 Route::get('/storage/{path}', [RegistrationProgressController::class, 'servePublicFile'])
     ->where('path', '.*');

@@ -184,10 +184,14 @@ Menu **Admin pendaftaran** (`/admin/registration`)
 2. Buka detail — lihat data & berkas upload:
    - KTP, KK, rapor, pas foto, full body
    - WhatsApp, telepon ortu, alamat, gender, TB/BB
-3. Putuskan:
-   - **Approved** — lanjut ke tahap berikutnya
-   - **Revision requested** — tulis catatan, minta perbaikan
+3. **Periksa kelengkapan berkas secara manual** — sistem tidak memblokir peserta yang belum mengunggah semua dokumen
+4. Klik tautan berkas untuk melihat (harus login sebagai admin); berkas dilayani lewat API internal
+5. Putuskan:
+   - **Approved** — lanjut ke tahap berikutnya (pastikan dokumen sudah memadai)
+   - **Revision requested** — tulis catatan jelas (berkas/data mana yang kurang), minta perbaikan
    - **Rejected** — jika tidak memenuhi syarat
+
+> **Slot berkas:** `id_document` (KTP), `kk`, `report_card`, `passport_photo`, `full_body_photo`. Peserta dapat mengganti berkas kapan saja sebelum disetujui — unggahan baru menimpa file lama.
 
 ### Tahap Offline (Psikologi, Kesehatan, Fisik)
 
@@ -312,10 +316,53 @@ Akses dari menu **Pengguna** → **Dashboard Siswa**:
 |---------|--------|
 | Dropdown kelas kosong di peringkat | Pastikan migrasi DB latest; cek log Laravel |
 | Email verifikasi tidak terkirim | Cek konfigurasi SMTP di `.env` |
-| Upload berkas gagal | Cek permission folder `storage/`, max upload size |
+| Upload berkas gagal | Cek permission folder `storage/` (`chmod -R ug+rw storage bootstrap/cache`), `upload_max_filesize` & `post_max_size` PHP (min. 12M per berkas), `client_max_body_size` Nginx/Apache |
+| Berkas pendaftaran 404 / tidak tampil | Lihat [Berkas pendaftaran (storage)](#berkas-pendaftaran-storage) di bawah |
 | Peserta dashboard terkunci | Cek `fully_completed` di admin pendaftaran |
 | Download PDF gagal | Pastikan build frontend terbaru; coba refresh halaman lalu unduh lagi |
 | API error 500 | Cek `storage/logs/laravel.log`, jalankan `php artisan migrate` |
+
+### Berkas pendaftaran (storage)
+
+Berkas administrasi disimpan di disk **privat** (`REGISTRATION_FILESYSTEM_DISK=local` → `storage/app/private/registration/`). **Tidak** bisa dibuka lewat URL `/storage/registration/...` tanpa login.
+
+| Item | Nilai / perintah |
+|------|------------------|
+| Disk privat (default) | `REGISTRATION_FILESYSTEM_DISK=local` di `.env` |
+| Akses berkas | `GET /api/registration-files/{user_id}/{field}` — **wajib login** (pemilik atau admin) |
+| Upload | `POST /api/my-registration/administration-file` — wajib login |
+| Blokir URL publik | Apache: `public/.htaccess` · Nginx: `location ^~ /storage/registration/` |
+
+**Yang boleh melihat berkas:** peserta pemilik akun, atau admin (session login aktif). Orang lain yang menebak URL mendapat **403/404**.
+
+**Peserta lama (berkas masih di `storage/app/public/registration/`):**
+
+1. API tetap bisa membuka berkas legacy (dicari di disk `public` lalu `local`).
+2. Saat admin/peserta **klik Lihat berkas**, file otomatis dipindah ke disk privat (jika `REGISTRATION_FILESYSTEM_DISK=local`).
+3. Migrasi massal sekali jalan di server:
+   ```bash
+   php artisan registration:migrate-public-files --dry-run   # cek dulu
+   php artisan registration:migrate-public-files             # pindahkan semua
+   ```
+4. Setelah migrasi, salinan di folder `public/registration/` dihapus — URL `/storage/registration/...` tidak berisi file lagi.
+
+**Jika berkas 404:**
+
+1. Pastikan `REGISTRATION_FILESYSTEM_DISK=local` (atau `public` hanya untuk file lama).
+2. Cek file ada: `ls -la storage/app/private/registration/{id}/` (atau `storage/app/public/...` jika legacy).
+3. Cek log: `grep "Registration file missing" storage/logs/laravel.log`
+4. Jika folder kosong tetapi path ada di database → minta peserta **unggah ulang**.
+5. Backup rutin folder `storage/` — lihat `scripts/backup/` di repo.
+
+**API upload (referensi teknis):**
+
+| Aksi | Method & path |
+|------|----------------|
+| Unggah satu berkas | `POST /api/my-registration/administration-file` |
+| Kirim data administrasi | `POST /api/my-registration` |
+| Buka berkas | `GET /api/registration-files/{user}/{field}` |
+
+Field yang valid: `id_document`, `kk`, `report_card`, `passport_photo`, `full_body_photo`.
 
 ### Perintah Berguna (Server)
 
@@ -323,6 +370,9 @@ Akses dari menu **Pengguna** → **Dashboard Siswa**:
 php artisan migrate --force
 php artisan config:cache
 php artisan storage:link
+php artisan registration:migrate-public-files --dry-run
+php artisan registration:migrate-public-files
+php artisan route:cache   # setelah update route; jalankan route:clear jika route baru belum aktif
 ```
 
 ---
@@ -334,6 +384,7 @@ php artisan storage:link
 - Backup database rutin (lihat `scripts/backup/` di repo)
 - Pembayaran **hanya** ke rekening resmi BRI **1107-01-000931-56-9**
 - Verifikasi identitas peserta sebelum approve pendaftaran
+- Berkas administrasi (KTP, KK, dll.) **tidak publik** — hanya pemilik & admin yang login boleh membuka via API
 
 ---
 

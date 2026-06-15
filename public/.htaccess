@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # Onboarding documents (KTP, KK, …) — private; use authenticated API only.
+    RewriteRule ^storage/registration(/.*)?$ - [F,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

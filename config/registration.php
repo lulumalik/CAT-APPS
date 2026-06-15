@@ -1,8 +1,6 @@
 <?php
 
-$registrationDiskDefault = env('REGISTRATION_FILESYSTEM_DISK')
-    ?: env('UPLOAD_FILESYSTEM_DISK')
-    ?: 'public';
+$registrationDiskDefault = env('REGISTRATION_FILESYSTEM_DISK', 'local');
 
 return [
 
@@ -11,9 +9,11 @@ return [
     | Filesystem disk for onboarding document uploads
     |--------------------------------------------------------------------------
     |
-    | REGISTRATION_FILESYSTEM_DISK overrides everything (e.g. "public" for local only).
-    | Otherwise UPLOAD_FILESYSTEM_DISK is used if set.
-    | Otherwise defaults to "public" (storage:link).
+    | Defaults to "local" (storage/app/private — not web-accessible).
+    | Files are streamed only via GET /api/registration-files/{user}/{field}
+    | (session auth: owner or admin).
+    |
+    | Use "public" only for legacy setups; prefer "local" or private "s3"/R2.
     |
     */
 

@@ -31,6 +31,8 @@ Staff input nilai & laporan → Orang tua pantau perkembangan ananda
 Peserta / admin unduh laporan dashboard sebagai PDF
 ```
 
+Pada tahap **Administrasi**, berkas diunggah **satu per satu** (tersimpan langsung). Kelengkapan dokumen ditinjau **admin secara manual** — lihat [PANDUAN-USER.md](./PANDUAN-USER.md) & [PANDUAN-ADMIN.md](./PANDUAN-ADMIN.md).
+
 ---
 
 ## Peran & Hak Akses
@@ -50,6 +52,9 @@ Peserta / admin unduh laporan dashboard sebagai PDF
 | Undang orang tua | — | — | ✅ | ✅ |
 | Bank soal & manajemen tes | — | — | — | ✅ |
 | Manajemen user & sertifikat | — | — | — | ✅ |
+| Review berkas pendaftaran (manual) | — | — | — | ✅ |
+
+**Berkas pendaftaran:** disimpan privat di `storage/app/private/registration/` (bukan URL publik). Hanya pemilik & admin yang login dapat membuka — lihat [PANDUAN-ADMIN.md §16](./PANDUAN-ADMIN.md#16-troubleshooting-teknis).
 
 \* Setelah pendaftaran selesai disetujui  
 \** Hanya untuk ananda yang sudah terhubung  
