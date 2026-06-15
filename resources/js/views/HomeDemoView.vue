@@ -175,10 +175,6 @@
               purnawirawan polri
             </p>
           </div>
-          <div class="md:h-72 md:w-72 h-32 w-32 bg-white/10 rounded-full absolute -top-24 -right-12 md:-top-44 md:-right-24"></div>
-          <div class="md:h-72 md:w-72 h-32 w-32 bg-white/10 rounded-full absolute -bottom-24 -left-12 md:-bottom-44 md:-left-24"></div>
-          <div class="md:h-44 md:w-44 h-16 w-16 bg-white/10 rounded-full absolute -top-16 -right-4 md:-top-28 md:-right-10"></div>
-          <div class="md:h-44 md:w-44 h-16 w-16 bg-white/10 rounded-full absolute -bottom-16 -left-4 md:-bottom-28 md:-left-10"></div>
         </div>
       </div>
     </div>

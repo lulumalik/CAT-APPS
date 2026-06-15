@@ -25,7 +25,7 @@
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="{{ isset($material) ? $material->title : 'Bimbel Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
         <meta name="twitter:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Bimbel Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
-
+        <meta name="google-site-verification" content="fSlJFrpkUUiF_T03wYZONezqDP06ii5bmVkNgF4z5tc" />
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
