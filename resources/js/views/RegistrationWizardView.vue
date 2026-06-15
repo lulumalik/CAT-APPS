@@ -104,7 +104,7 @@
             <div v-for="slot in fileSlots" :key="slot.input" class="rounded-xl border border-gray-100 bg-gray-50/50 p-4 space-y-2">
               <label class="block text-sm font-medium text-gray-700">{{ t(slot.labelKey) }}</label>
               <p v-if="slot.hintKey" class="text-xs text-gray-500">{{ t(slot.hintKey) }}</p>
-              <p v-if="storedPath(slot.pathKey)" class="text-xs text-emerald-700 flex flex-wrap items-center gap-2">
+              <p v-if="filePresent(slot.pathKey)" class="text-xs text-emerald-700 flex flex-wrap items-center gap-2">
                 {{ t('registration.fileUploaded') }}
                 <a
                   :href="registrationFileHref(progress, slot.pathKey)"
@@ -114,6 +114,9 @@
                 >
                   {{ t('registration.openFile') }}
                 </a>
+              </p>
+              <p v-else-if="storedPath(slot.pathKey)" class="text-xs text-amber-800">
+                {{ t('registration.fileMissingOnDisk') }}
               </p>
               <input
                 :key="`f-${slot.input}-${uploadKey}`"
@@ -302,6 +305,10 @@ const activeStepIndex = computed(() => steps.value.findIndex((s) => s.key === ac
 
 function storedPath(pathKey) {
   return progress.value?.administration_data?.[pathKey] || ''
+}
+
+function filePresent(pathKey) {
+  return Boolean(progress.value?.administration_files_present?.[pathKey])
 }
 
 function onFile(input, e) {

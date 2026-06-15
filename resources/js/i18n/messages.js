@@ -423,6 +423,7 @@ export const messages = {
       phoneFormatHint: 'Gunakan angka saja dan awali dengan 628 (contoh: 6281234567890).',
       phoneExample: '6281234567890',
       fileUploaded: 'Berkas tersimpan di server',
+      fileMissingOnDisk: 'Catatan lama di sistem, berkas fisik hilang — pilih file lagi untuk unggah ulang.',
       openFile: 'Lihat berkas',
       pickFile: 'Pilih / ganti berkas',
       steps: {
@@ -936,6 +937,7 @@ export const messages = {
       phoneFormatHint: 'Use digits only and start with 628 (example: 6281234567890).',
       phoneExample: '6281234567890',
       fileUploaded: 'File saved on server',
+      fileMissingOnDisk: 'Record exists but file is missing — choose the file again to re-upload.',
       openFile: 'Open file',
       pickFile: 'Choose / replace file',
       steps: {

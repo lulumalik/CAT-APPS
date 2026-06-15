@@ -100,18 +100,45 @@ class RegistrationProgressController extends Controller
         $administrationData = $progress->administration_data ?? [];
 
         foreach (self::ADMIN_FILE_FIELDS as $input => $pathKey) {
-            if (! empty($administrationData[$pathKey])) {
-                $urls[$pathKey] = '/api/registration-files/'.$progress->user_id.'/'.$input;
+            $storedPath = $administrationData[$pathKey] ?? null;
+            if (! is_string($storedPath) || $storedPath === '') {
+                continue;
             }
+            if ($this->registrationFiles->findDisk($storedPath) === null) {
+                continue;
+            }
+            $urls[$pathKey] = '/api/registration-files/'.$progress->user_id.'/'.$input;
         }
 
         return $urls;
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    private function buildAdministrationFilePresence(RegistrationProgress $progress): array
+    {
+        $presence = [];
+        $administrationData = $progress->administration_data ?? [];
+
+        foreach (self::ADMIN_FILE_FIELDS as $input => $pathKey) {
+            $storedPath = $administrationData[$pathKey] ?? null;
+            if (! is_string($storedPath) || $storedPath === '') {
+                $presence[$pathKey] = false;
+
+                continue;
+            }
+            $presence[$pathKey] = $this->registrationFiles->findDisk($storedPath) !== null;
+        }
+
+        return $presence;
     }
 
     private function serializeRegistrationProgress(RegistrationProgress $progress): array
     {
         $data = $progress->toArray();
         $data['administration_file_urls'] = $this->buildAdministrationFileUrls($progress);
+        $data['administration_files_present'] = $this->buildAdministrationFilePresence($progress);
 
         return $data;
     }
@@ -550,5 +577,63 @@ class RegistrationProgressController extends Controller
         return response()->json($this->serializeRegistrationProgress(
             $progress->fresh()->load('user:id,name,email,program_category')
         ));
+    }
+
+    public function adminStorageDiagnostic(Request $request, RegistrationFileStorage $files)
+    {
+        $userId = $request->query('user');
+        $writeTest = $files->writeTestFile();
+
+        $payload = [
+            'cwd' => getcwd(),
+            'storage_path' => storage_path(),
+            'registration_disk' => config('registration.filesystem_disk', 'local'),
+            'local_disk_root' => config('filesystems.disks.local.root'),
+            'write_test' => $writeTest,
+            'volume_mounts' => [],
+            'registration_private_files' => $this->countFilesUnder(storage_path('app/private/registration')),
+            'registration_public_files' => $this->countFilesUnder(storage_path('app/public/registration')),
+        ];
+
+        if (is_readable('/proc/mounts')) {
+            $payload['volume_mounts'] = array_values(array_filter(
+                file('/proc/mounts', FILE_IGNORE_NEW_LINES) ?: [],
+                fn (string $line) => str_contains($line, '/var/www/html/storage')
+            ));
+        }
+
+        if ($userId !== null && Schema::hasTable('registration_progress')) {
+            $progress = RegistrationProgress::where('user_id', $userId)->first();
+            if ($progress !== null) {
+                $payload['user'] = [
+                    'user_id' => (int) $userId,
+                    'files' => $this->buildAdministrationFilePresence($progress),
+                    'paths' => array_intersect_key(
+                        $progress->administration_data ?? [],
+                        array_flip(RegistrationFileStorage::ADMINISTRATION_PATH_KEYS)
+                    ),
+                ];
+            }
+        }
+
+        return response()->json($payload);
+    }
+
+    private function countFilesUnder(string $dir): int
+    {
+        if (! is_dir($dir)) {
+            return 0;
+        }
+        $count = 0;
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS)
+        );
+        foreach ($iterator as $file) {
+            if ($file->isFile()) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 }

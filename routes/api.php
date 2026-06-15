@@ -147,6 +147,7 @@ Route::middleware('role:admin')->group(function () {
 
     Route::get('/admin/registration-progress', [RegistrationProgressController::class, 'adminIndex']);
     Route::get('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminShow']);
+    Route::get('/admin/storage-diagnostic', [RegistrationProgressController::class, 'adminStorageDiagnostic']);
     Route::patch('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminUpdate']);
 
     Route::post('/admin/announcements', [AnnouncementController::class, 'store']);

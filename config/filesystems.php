@@ -58,7 +58,7 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/private'),
             'serve' => true,
-            'throw' => false,
+            'throw' => true,
             'report' => false,
         ],
 

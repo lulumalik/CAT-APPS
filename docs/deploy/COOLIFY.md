@@ -138,6 +138,16 @@ php artisan app:storage-diagnostic --user=13
 
 `php artisan` error `Could not open input file` → Anda tidak di `/var/www/html`. Selalu `cd /var/www/html` dulu.
 
+**Tanpa artisan** (login admin di browser):
+
+```
+GET https://pratisthaindonesia.com/api/admin/storage-diagnostic?user=13
+```
+
+Response JSON: `write_test`, `volume_mounts`, `registration_private_files`, dan per-field `files` (true/false).
+
+UI peserta: jika muncul *"Catatan lama di sistem, berkas fisik hilang"* = path masih di DB tapi file tidak ada — **pilih file lagi** untuk unggah ulang.
+
 Path file dengan disk `local`:
 
 ```
