@@ -2,33 +2,49 @@
 
 namespace App\Console\Commands;
 
+use App\Models\RegistrationProgress;
 use App\Services\RegistrationFileStorage;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
-use App\Models\RegistrationProgress;
 use Illuminate\Support\Facades\Schema;
 
 class StorageDiagnostic extends Command
 {
-    protected $signature = 'app:storage-diagnostic {--user= : Cek berkas pendaftaran user ID tertentu}';
+    protected $signature = 'app:storage-diagnostic
+                            {--user= : Cek berkas pendaftaran user ID tertentu}
+                            {--write-test : Uji tulis ke disk registrasi}';
 
     protected $description = 'Cek mount storage, disk registrasi, dan berkas pendaftaran (jalankan di Coolify Terminal)';
 
     public function handle(RegistrationFileStorage $files): int
     {
         $this->info('=== Laravel storage diagnostic ===');
+        $this->line('cwd: '.getcwd());
+        $this->comment('Jalankan dari /var/www/html → cd /var/www/html && php artisan app:storage-diagnostic');
         $this->line('storage_path(): '.storage_path());
         $this->line('REGISTRATION_FILESYSTEM_DISK: '.config('registration.filesystem_disk', 'local'));
         $this->line('local disk root: '.config('filesystems.disks.local.root'));
         $this->line('public disk root: '.config('filesystems.disks.public.root'));
+
+        if ($this->option('write-test')) {
+            $this->newLine();
+            $this->info('Write test:');
+            $test = $files->writeTestFile();
+            $this->line('  disk: '.$test['disk']);
+            $this->line('  absolute: '.$test['absolute']);
+            $this->line('  '.$test['message']);
+
+            if (! $test['ok']) {
+                return self::FAILURE;
+            }
+        }
 
         $marker = storage_path('.volume-check');
         $markerExisted = is_file($marker);
         @file_put_contents($marker, 'ok '.now()->toIso8601String());
         $this->newLine();
         $this->info($markerExisted
-            ? 'Volume check: .volume-check SUDAH ADA sebelumnya (kemungkinan volume persisten aktif).'
-            : 'Volume check: .volume-check BARU dibuat — setelah redeploy, jalankan lagi. Kalau hilang, volume Coolify belum benar.');
+            ? 'Volume check: .volume-check SUDAH ADA sebelumnya (volume persisten aktif).'
+            : 'Volume check: .volume-check BARU dibuat — setelah redeploy tanpa hapus volume, harus SUDAH ADA.');
 
         $regPrivate = storage_path('app/private/registration');
         $regPublic = storage_path('app/public/registration');
@@ -47,15 +63,14 @@ class StorageDiagnostic extends Command
                 file('/proc/mounts', FILE_IGNORE_NEW_LINES) ?: [],
                 fn (string $line) => str_contains($line, '/var/www/html/storage')
             );
-        if ($mounts === []) {
-            $this->warn('  TIDAK ADA mount khusus — storage ikut layer container (HILANG saat redeploy).');
-            $this->warn('  Coolify → Persistent Storage → Destination: /var/www/html/storage');
-        } else {
-            foreach ($mounts as $line) {
-                $this->line('  '.$line);
+            if ($mounts === []) {
+                $this->warn('  TIDAK ADA mount khusus — storage ikut layer container (HILANG saat redeploy).');
+            } else {
+                foreach ($mounts as $line) {
+                    $this->line('  '.$line);
+                }
+                $this->info('  Mount OK — volume persisten aktif.');
             }
-            $this->info('  Mount OK — volume persisten aktif.');
-        }
         }
 
         $userId = $this->option('user');
@@ -77,7 +92,8 @@ class StorageDiagnostic extends Command
                     continue;
                 }
                 $disk = $files->findDisk($path);
-                $this->line('  '.$key.': '.$path.' → '.($disk ? 'ADA di disk' : 'TIDAK ADA di semua disk'));
+                $absolute = $disk ? $disk->path($path) : '(tidak ada)';
+                $this->line('  '.$key.': '.$path.' → '.($disk ? 'ADA di '.$absolute : 'TIDAK ADA di semua disk'));
             }
 
             $orphans = 0;
@@ -89,13 +105,14 @@ class StorageDiagnostic extends Command
             }
             if ($orphans > 0) {
                 $this->newLine();
-                $this->warn("  {$orphans} path di database tanpa file fisik (upload sebelum volume / redeploy lama).");
-                $this->warn('  Minta peserta upload ulang berkas, atau hapus path dari DB.');
+                $this->warn("  {$orphans} path di DB tanpa file fisik.");
+                $this->warn('  Upload ulang berkas. Path di DB dari upload lama yang filenya hilang.');
             }
         }
 
         $this->newLine();
-        $this->comment('Catatan: file TIDAK ada di folder git di host. Cek dari dalam container (Coolify Terminal), bukan di repo clone.');
+        $this->comment('Setelah upload di browser, SEGERA cek (tanpa redeploy):');
+        $this->comment('  ls -la /var/www/html/storage/app/private/registration/13/');
 
         return self::SUCCESS;
     }

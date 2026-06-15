@@ -110,7 +110,43 @@ git push → build image baru → container baru → volume /var/www/html/storag
 
 Upload **setelah** volume dikonfigurasi yang akan persisten. Upload **sebelum** volume dikonfigurasi sudah hilang dan tidak bisa dipulihkan kecuali ada backup.
 
-## 7. Alternatif: S3 / Cloudflare R2
+## 7. Upload "tersimpan" tapi folder kosong
+
+**PostgreSQL** (path di DB) dan **volume file** adalah dua hal terpisah. Path di DB bisa ada walau file hilang.
+
+### Langkah debug (urutan penting)
+
+```bash
+cd /var/www/html
+
+# 1. Bisa tulis ke disk?
+php artisan app:storage-diagnostic --write-test
+
+# 2. Upload 1 berkas di browser (user 13), lalu SEGERA tanpa redeploy:
+ls -la /var/www/html/storage/app/private/registration/13/
+
+# 3. Cek DB vs file
+php artisan app:storage-diagnostic --user=13
+```
+
+| Hasil | Artinya |
+|-------|---------|
+| `--write-test` GAGAL | Permission / disk salah — cek `REGISTRATION_FILESYSTEM_DISK=local`, `config:clear` |
+| write-test OK, `ls` kosong setelah upload | Upload tidak sampai server — cek Network tab browser, `storage/logs/laravel.log` |
+| `ls` ada file, hilang setelah redeploy | Coolify **ganti volume** tiap deploy — jangan hapus volume; pastikan storage tetap ter-link |
+| Path di DB ada, file tidak ada | Orphan DB — upload ulang |
+
+`php artisan` error `Could not open input file` → Anda tidak di `/var/www/html`. Selalu `cd /var/www/html` dulu.
+
+Path file dengan disk `local`:
+
+```
+/var/www/html/storage/app/private/registration/{user_id}/nama-file.jpg
+```
+
+Bukan di `storage/app/public/` (kecuali legacy).
+
+## 8. Alternatif: S3 / Cloudflare R2
 
 Jika volume Coolify sulit, simpan berkas di object storage:
 

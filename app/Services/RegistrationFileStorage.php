@@ -120,6 +120,65 @@ class RegistrationFileStorage
         return $this->findDisk($path);
     }
 
+    public function storeRegistrationFile(\Illuminate\Http\UploadedFile $file, string $directory): string
+    {
+        $diskName = $this->registrationDiskName();
+        $disk = Storage::disk($diskName);
+
+        $storedPath = $file->store($directory, $diskName);
+        if (! is_string($storedPath) || $storedPath === '') {
+            throw new \RuntimeException('Gagal menyimpan berkas ke disk '.$diskName.'.');
+        }
+
+        if (! $disk->exists($storedPath)) {
+            $absolute = $disk->path($storedPath);
+            Log::error('Registration file missing immediately after store.', [
+                'disk' => $diskName,
+                'relative' => $storedPath,
+                'absolute' => $absolute,
+            ]);
+            throw new \RuntimeException('Berkas tidak ditemukan setelah unggah di: '.$absolute);
+        }
+
+        Log::info('Registration file stored.', [
+            'disk' => $diskName,
+            'relative' => $storedPath,
+            'absolute' => $disk->path($storedPath),
+            'bytes' => $disk->size($storedPath),
+        ]);
+
+        return $storedPath;
+    }
+
+    /**
+     * @return array{ok: bool, disk: string, relative: string, absolute: string, message: string}
+     */
+    public function writeTestFile(): array
+    {
+        $diskName = $this->registrationDiskName();
+        $disk = Storage::disk($diskName);
+        $relative = 'registration/_write-test/'.now()->format('YmdHis').'.txt';
+        $payload = 'write-test '.now()->toIso8601String();
+
+        $disk->put($relative, $payload);
+        $absolute = $disk->path($relative);
+        $ok = $disk->exists($relative) && is_file($absolute);
+
+        if ($ok) {
+            $disk->delete($relative);
+        }
+
+        return [
+            'ok' => $ok,
+            'disk' => $diskName,
+            'relative' => $relative,
+            'absolute' => $absolute,
+            'message' => $ok
+                ? 'Tulis & baca disk OK.'
+                : 'GAGAL menulis ke disk — cek permission volume / REGISTRATION_FILESYSTEM_DISK.',
+        ];
+    }
+
     /**
      * @return array{migrated: int, skipped: int, missing: int, errors: int}
      */

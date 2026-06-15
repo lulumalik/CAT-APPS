@@ -160,7 +160,10 @@ class RegistrationProgressController extends Controller
                 }
             }
 
-            $merged[$pathKey] = $request->file($input)->store($dir, $disk);
+            $merged[$pathKey] = $this->registrationFiles->storeRegistrationFile(
+                $request->file($input),
+                $dir
+            );
         }
 
         return $merged;
@@ -228,7 +231,22 @@ class RegistrationProgressController extends Controller
         }
 
         $dir = 'registration/'.$request->user()->id;
-        $merged[$pathKey] = $request->file($field)->store($dir, $this->registrationDisk());
+        try {
+            $merged[$pathKey] = $this->registrationFiles->storeRegistrationFile(
+                $request->file($field),
+                $dir
+            );
+        } catch (\RuntimeException $e) {
+            Log::error('Registration file upload failed.', [
+                'user_id' => $request->user()->id,
+                'field' => $field,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 500);
+        }
         $progress->administration_data = $merged;
         $progress->save();
 
