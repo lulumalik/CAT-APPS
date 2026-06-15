@@ -3,7 +3,7 @@ export const supportedLocales = ['id', 'en'];
 export const messages = {
   id: {
     app: {
-      name: 'Bimbel Platform',
+      name: 'Kursus Platform',
     },
     common: {
       add: 'Tambah',
@@ -505,14 +505,14 @@ export const messages = {
       },
     },
     seo: {
-      title: 'Bimbel Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal',
+      title: 'Kursus Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal',
       description:
-        'Bimbel Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.',
+        'Kursus Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.',
     },
   },
   en: {
     app: {
-      name: 'Bimbel Platform',
+      name: 'Kursus Platform',
     },
     common: {
       add: 'Add',
@@ -565,7 +565,7 @@ export const messages = {
     },
     home: {
       hero: {
-        title: 'Bimbel platform for practice and online exams',
+        title: 'Kursus platform for practice and online exams',
         description:
           'Build question banks, create tests, run timed exams, grade automatically, and track rankings in real time.',
         ctaPrimary: 'Login',
@@ -1014,9 +1014,9 @@ export const messages = {
       },
     },
     seo: {
-      title: 'Bimbel Platform - Computer Assisted Test (CAT) App & Question Bank',
+      title: 'Kursus Platform - Computer Assisted Test (CAT) App & Question Bank',
       description:
-        'Bimbel Platform helps you build question banks, schedule tests, run timed online exams, auto-grade, and publish participant leaderboards.',
+        'Kursus Platform helps you build question banks, schedule tests, run timed online exams, auto-grade, and publish participant leaderboards.',
     },
   },
 };

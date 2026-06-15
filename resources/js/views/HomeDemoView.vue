@@ -128,31 +128,31 @@
           </div>
         </div>
 
-        <div class="relative z-10 mt-14 grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div class="relative z-10 mt-14 grid grid-cols-3 md:grid-cols-2 md:grid-cols-3 gap-3">
           <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
             <div class="flex items-center justify-center gap-2">
-              <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white">
-                <NotebookPen class="h-5 w-5" />
+              <div class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
+                <NotebookPen class="w-3 h-3 md:h-5 md:w-5" />
               </div>
-              <p class="text-3xl font-black text-white">99%</p>
+              <p class="text-xl md:text-3xl font-black text-white">99%</p>
             </div>
             <p class="mt-1 text-xs md:text-sm font-semibold text-blue-100">Materi Prediktif</p>
           </article>
           <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
             <div class="flex items-center justify-center gap-2">
-              <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white">
-                <Crown class="h-5 w-5" />
+              <div class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
+                <Crown class="w-3 h-3 md:h-5 md:w-5" />
               </div>
-              <p class="text-3xl font-black text-white">20+</p>
+              <p class="text-xl md:text-3xl font-black text-white">20+</p>
             </div>
             <p class="mt-1 text-xs md:text-sm font-semibold text-blue-100">Tahun Pengalaman</p>
           </article>
           <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
             <div class="flex items-center justify-center gap-2">
-              <div class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white">
-                <GraduationCap class="h-5 w-5" />
+              <div class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
+                <GraduationCap class="w-3 h-3 md:h-5 md:w-5" />
               </div>
-              <p class="text-3xl font-black text-white">100%</p>
+              <p class="text-xl md:text-3xl font-black text-white">100%</p>
             </div>
             <p class="mt-1 text-xs md:text-sm font-semibold text-blue-100">Pengajar Profesional</p>
           </article>
@@ -168,7 +168,7 @@
             <p class="gold-shimmer-text text-2xl md:text-4xl lg:text-5xl text-center md:text-left font-black uppercase tracking-wide text-[gold]/90 leading-none">
               Dibina dan dimonitor oleh
             </p>
-            <p class="gold-shimmer-text mt-2 text-center text-sm md:text-xl lg:text-5xl font-semibold uppercase tracking-wide text-[gold] leading-tight">
+            <p class="gold-shimmer-text mt-2 text-center text-2xl md:text-4xl lg:text-5xl font-semibold uppercase tracking-wide text-[gold] leading-tight">
               para jenderal
             </p>
             <p class="gold-shimmer-text mt-2 text-2xl md:text-4xl lg:text-5xl text-center md:text-center font-black uppercase tracking-wide text-[gold]/90 leading-none">

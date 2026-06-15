@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ isset($material) ? $material->title . ' - Bimbel Platform' : 'Bimbel Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}</title>
+        <title>{{ isset($material) ? $material->title . ' - Kursus Platform' : 'Kursus Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}</title>
         <meta name="google-site-verification" content="oHVVXwQv4qB7m3tjr5G0EWAbiVw22JVmC7MLqe0hcFQ" />
-        <meta name="description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Bimbel Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
+        <meta name="description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Kursus Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
         <meta name="keywords" content="CAT, Computer Assisted Test, ujian online, tryout, bank soal, CBT, ranking, assessment, evaluasi{{ isset($material) && $material->category ? ', ' . $material->category : '' }}">
         <meta name="robots" content="index,follow">
         <meta name="theme-color" content="#123B8F">
@@ -17,14 +17,14 @@
         <link rel="icon" type="image/png" sizes="16x16" href="{{ Vite::asset('resources/assets/favicon_io/favicon-16x16.png') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ Vite::asset('resources/assets/favicon_io/apple-touch-icon.png') }}">
         <meta property="og:type" content="{{ isset($material) ? 'article' : 'website' }}">
-        <meta property="og:site_name" content="Bimbel Platform">
-        <meta property="og:title" content="{{ isset($material) ? $material->title : 'Bimbel Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
-        <meta property="og:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Bimbel Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
+        <meta property="og:site_name" content="Kursus Platform">
+        <meta property="og:title" content="{{ isset($material) ? $material->title : 'Kursus Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
+        <meta property="og:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Kursus Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image" content="{{ Vite::asset('resources/assets/favicon_io/android-chrome-512x512.png') }}">
         <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="{{ isset($material) ? $material->title : 'Bimbel Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
-        <meta name="twitter:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Bimbel Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
+        <meta name="twitter:title" content="{{ isset($material) ? $material->title : 'Kursus Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
+        <meta name="twitter:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Kursus Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
         <meta name="google-site-verification" content="fSlJFrpkUUiF_T03wYZONezqDP06ii5bmVkNgF4z5tc" />
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,7 +50,7 @@
         <div id="app"></div>
         <noscript>
             <main>
-                <h1>Bimbel Platform</h1>
+                <h1>Kursus Platform</h1>
                 <p>Aplikasi Computer Assisted Test (CAT) untuk latihan dan ujian online berbasis waktu.</p>
                 <ul>
                     <li>Bank soal terpusat dan manajemen pertanyaan</li>
