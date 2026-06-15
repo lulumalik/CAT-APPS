@@ -9,9 +9,26 @@
           <span class="text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span>
         </p>
       </div>
-      <button @click="loadOverview" class="px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm">
-        Refresh
-      </button>
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          v-if="canDownloadPdf"
+          type="button"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#9DB359]/40 bg-[#9DB359]/10 hover:bg-[#9DB359]/20 text-sm font-medium text-[#5a6b2e] disabled:opacity-50"
+          :disabled="loading || exportingPdf || !!errorMessage"
+          @click="downloadPdf"
+        >
+          <Download class="h-4 w-4" />
+          {{ exportingPdf ? 'Menyiapkan PDF...' : 'Download PDF' }}
+        </button>
+        <button
+          type="button"
+          class="pdf-hide px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm"
+          :disabled="exportingPdf"
+          @click="loadOverview"
+        >
+          Refresh
+        </button>
+      </div>
     </div>
 
     <div v-if="loading" class="py-20 text-center text-gray-500">Memuat data dashboard...</div>
@@ -155,7 +172,17 @@
       </template>
 
       <!-- STUDENT/USER -->
-      <template v-else>
+      <div v-else ref="pdfContentRef" :class="{ 'pdf-exporting': exportingPdf }">
+        <div class="mb-6 pb-4 border-b border-gray-100">
+          <h2 class="text-xl font-bold text-[#1A1A1A]">Laporan Dashboard</h2>
+          <p class="text-sm text-gray-600 mt-1">
+            {{ user?.name }}
+            <span class="text-gray-400">·</span>
+            {{ programBadge.label }}
+          </p>
+          <p v-if="exportingPdf" class="text-xs text-gray-400 mt-1">Dicetak: {{ pdfGeneratedAt }}</p>
+        </div>
+
         <div class="grid lg:grid-cols-2 gap-6">
           <section class="bg-white border border-gray-100 rounded-2xl p-5">
             <h2 class="font-bold text-lg mb-4">Kelas Saya</h2>
@@ -187,19 +214,20 @@
 
         <div class="mt-8">
           <h2 class="font-bold text-lg mb-4">Perkembangan Saya</h2>
-          <StudentProgressPanel v-if="user?.id" :student-id="user.id" />
+          <StudentProgressPanel v-if="user?.id" ref="progressPanelRef" :student-id="user.id" />
         </div>
-      </template>
+      </div>
     </template>
   </main>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import { LockKeyhole } from 'lucide-vue-next'
+import { Download, LockKeyhole } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { getProgramBadge, programCategoryLabel, registrationCompleted } from '@/utils/userMeta'
+import { downloadElementAsPdf, sanitizePdfFilename } from '@/utils/html2pdf'
 import StudentProgressPanel from '@/components/StudentProgressPanel.vue'
 
 const store = useAppStore()
@@ -208,11 +236,17 @@ const { user } = storeToRefs(store)
 const loading = ref(false)
 const errorMessage = ref('')
 const overview = ref({})
+const exportingPdf = ref(false)
+const pdfContentRef = ref(null)
+const progressPanelRef = ref(null)
+const pdfGeneratedAt = ref('')
 
 const isAdmin = computed(() => user.value?.role === 'admin')
 const isMentor = computed(() => user.value?.role === 'mentor')
 const isParent = computed(() => user.value?.role === 'parent')
+const isStudent = computed(() => user.value?.role === 'user')
 const isLockedForStudent = computed(() => user.value?.role === 'user' && !registrationCompleted(user.value))
+const canDownloadPdf = computed(() => isStudent.value && !isLockedForStudent.value)
 const programBadge = computed(() => getProgramBadge(user.value))
 const formatProgram = (programType) => programCategoryLabel(programType)
 
@@ -249,5 +283,35 @@ const loadOverview = async () => {
   }
 }
 
+const downloadPdf = async () => {
+  if (!pdfContentRef.value || exportingPdf.value) return
+
+  exportingPdf.value = true
+  pdfGeneratedAt.value = formatDate(new Date())
+
+  try {
+    await progressPanelRef.value?.prepareForPdfExport?.()
+    await nextTick()
+    await new Promise((resolve) => setTimeout(resolve, 400))
+
+    const dateLabel = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date())
+    const filename = `Laporan-Dashboard-${sanitizePdfFilename(user.value?.name)}-${dateLabel}.pdf`
+
+    await downloadElementAsPdf(pdfContentRef.value, filename)
+  } catch (error) {
+    console.error('Gagal membuat PDF:', error)
+    window.alert('Gagal membuat PDF. Silakan coba lagi.')
+  } finally {
+    progressPanelRef.value?.restoreAfterPdfExport?.()
+    exportingPdf.value = false
+  }
+}
+
 onMounted(loadOverview)
 </script>
+
+<style scoped>
+.pdf-exporting :deep(.pdf-hide) {
+  display: none !important;
+}
+</style>

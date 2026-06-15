@@ -48,7 +48,7 @@
 
         <div
           v-if="dailyMeta.total > dailyMeta.per_page"
-          class="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4"
+          class="pdf-hide mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4"
         >
           <p class="text-xs text-gray-500">
             Menampilkan {{ dailyRangeLabel }} dari {{ dailyMeta.total }} laporan
@@ -307,4 +307,51 @@ watch(
   },
   { immediate: true },
 )
+
+let savedExportState = null
+
+async function prepareForPdfExport() {
+  savedExportState = {
+    dailyPage: dailyPage.value,
+    dailyReports: [...dailyReports.value],
+    dailyMeta: { ...dailyMeta.value },
+  }
+
+  const total = dailyMeta.value.total || 0
+  if (total <= dailyReports.value.length) {
+    return
+  }
+
+  loadingDaily.value = true
+  try {
+    const { data } = await axios.get(`/api/students/${props.studentId}/reports`, {
+      params: {
+        date: dailyDate.value,
+        page: 1,
+        per_page: Math.min(50, total),
+      },
+    })
+    dailyReports.value = data.daily?.data || []
+    dailyMeta.value = {
+      current_page: data.daily?.current_page || 1,
+      last_page: data.daily?.last_page || 1,
+      total: data.daily?.total || 0,
+      per_page: data.daily?.per_page || DAILY_PER_PAGE,
+      date: data.daily?.date || dailyDate.value,
+    }
+    dailyPage.value = 1
+  } finally {
+    loadingDaily.value = false
+  }
+}
+
+function restoreAfterPdfExport() {
+  if (!savedExportState) return
+  dailyPage.value = savedExportState.dailyPage
+  dailyReports.value = savedExportState.dailyReports
+  dailyMeta.value = savedExportState.dailyMeta
+  savedExportState = null
+}
+
+defineExpose({ prepareForPdfExport, restoreAfterPdfExport })
 </script>

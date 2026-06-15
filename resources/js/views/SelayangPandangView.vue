@@ -48,7 +48,7 @@
                 @click="goToHomeSection(item.id)">
                 {{ item.label }}
               </button>
-              <router-link to="/signup"
+              <router-link to="/login"
                 class="mt-2 px-4 py-2 rounded-md bg-primary text-white text-center text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors"
                 @click="isMobileMenuOpen = false">
                 Masuk Ke Platform

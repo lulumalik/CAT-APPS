@@ -234,7 +234,19 @@
                 <component :is="contact.icon" class="h-4 w-4" />
                 <p class="text-sm md:text-xl font-bold text-center">{{ contact.label }}</p>
               </div>
-              <p class="mt-2 text-sm font-semibold text-text break-all text-center">{{ contact.value || '-' }}</p>
+              <div class="mt-2 flex flex-col items-center gap-1">
+                <a
+                  v-for="(link, index) in contact.links"
+                  :key="index"
+                  :href="link.href"
+                  :target="link.external ? '_blank' : undefined"
+                  :rel="link.external ? 'noopener noreferrer' : undefined"
+                  class="text-sm font-semibold text-text break-all text-center hover:text-primary hover:underline transition-colors"
+                >
+                  {{ link.text }}
+                </a>
+                <span v-if="!contact.links?.length" class="text-sm font-semibold text-text">-</span>
+              </div>
             </article>
           </div>
         </div>
@@ -669,10 +681,35 @@ const officialBankAccounts = [
 ]
 
 const contactChannels = [
-  { label: 'Website', value: 'pratisthaindonesia.com', icon: Globe },
-  { label: 'Email', value: 'administrator@pratisthaindonesia.com, admin.pratistha@gmail.com', icon: Mail },
-  { label: 'Telepon / WhatsApp', value: '+628138964488', icon: Phone },
-  { label: 'Instagram', value: 'pratistha.cendikia', icon: Instagram },
+  {
+    label: 'Website',
+    icon: Globe,
+    links: [
+      { text: 'pratisthaindonesia.com', href: 'https://pratisthaindonesia.com', external: true },
+    ],
+  },
+  {
+    label: 'Email',
+    icon: Mail,
+    links: [
+      { text: 'administrator@pratisthaindonesia.com', href: 'mailto:administrator@pratisthaindonesia.com' },
+      { text: 'admin.pratistha@gmail.com', href: 'mailto:admin.pratistha@gmail.com' },
+    ],
+  },
+  {
+    label: 'Telepon / WhatsApp',
+    icon: Phone,
+    links: [
+      { text: '+628138964488', href: 'https://wa.me/628138964488', external: true },
+    ],
+  },
+  {
+    label: 'Instagram',
+    icon: Instagram,
+    links: [
+      { text: 'pratistha.cendikia', href: 'https://instagram.com/pratistha.cendikia', external: true },
+    ],
+  },
   // { label: 'TikTok', value: '-', icon: Music2 },
 ]
 

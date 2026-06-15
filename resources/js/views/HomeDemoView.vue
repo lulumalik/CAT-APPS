@@ -53,7 +53,7 @@
                 @click="scrollToSection(item.id)">
                 {{ item.label }}
               </button>
-              <router-link to="/signup"
+              <router-link to="/login"
                 class="mt-2 px-4 py-2 rounded-md bg-primary text-white text-center text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors"
                 @click="isMobileMenuOpen = false">
                 Masuk Ke Platform
@@ -162,10 +162,24 @@
 
     <div class="px-4 md:px-10 pb-6">
       <div
-        class="page-shell rounded-2xl border border-amber-200/50 bg-gradient-to-r from-[#333333] to-[#595959] px-5 py-4 text-center shadow-lg shadow-primary/25">
-        <p class="text-xl md:text-2xl font-black uppercase tracking-wide text-amber-200">
-          Dibina dan dimonitor oleh para jenderal purnawirawan polri
-        </p>
+        class="page-shell rounded-2xl bg-gradient-to-r from-[#1a1a1a] via-[#2d2d2d] to-[#3d3d3d] px-5 md:px-8 py-5 md:py-6 shadow-lg shadow-primary/25 overflow-hidden relative">
+        <div class="relative z-10 flex justify-center">
+          <div class="text-left">
+            <p class="text-2xl md:text-4xl lg:text-5xl text-center md:text-left font-black uppercase tracking-wide text-[gold]/90 leading-none">
+              Dibina dan dimonitor oleh
+            </p>
+            <p class="mt-2 text-center text-sm md:text-xl lg:text-2xl font-semibold uppercase tracking-wide text-[gold] leading-tight">
+              para jenderal
+            </p>
+            <p class="gold-shimmer-text mt-2 text-2xl md:text-4xl lg:text-5xl text-center md:text-center font-black uppercase tracking-wide text-[gold]/90 leading-none">
+              purnawirawan polri
+            </p>
+          </div>
+          <div class="md:h-72 md:w-72 h-32 w-32 bg-white/10 rounded-full absolute -top-24 -right-12 md:-top-44 md:-right-24"></div>
+          <div class="md:h-72 md:w-72 h-32 w-32 bg-white/10 rounded-full absolute -bottom-24 -left-12 md:-bottom-44 md:-left-24"></div>
+          <div class="md:h-44 md:w-44 h-16 w-16 bg-white/10 rounded-full absolute -top-16 -right-4 md:-top-28 md:-right-10"></div>
+          <div class="md:h-44 md:w-44 h-16 w-16 bg-white/10 rounded-full absolute -bottom-16 -left-4 md:-bottom-28 md:-left-10"></div>
+        </div>
       </div>
     </div>
 
@@ -2159,6 +2173,37 @@ onUnmounted(() => {
 
   100% {
     transform: scale(1);
+  }
+}
+
+.gold-shimmer-text {
+  background-image: linear-gradient(
+    105deg,
+    #8b6914 0%,
+    #c9a227 20%,
+    #ffd700 38%,
+    #fff8dc 48%,
+    #ffe566 52%,
+    #ffd700 62%,
+    #c79b0c 80%,
+    #cf980c 100%
+  );
+  background-size: 280% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: goldTextShimmer 2.6s ease-in-out infinite;
+}
+
+@keyframes goldTextShimmer {
+  0%,
+  100% {
+    background-position: 0% center;
+  }
+
+  50% {
+    background-position: 100% center;
   }
 }
 
