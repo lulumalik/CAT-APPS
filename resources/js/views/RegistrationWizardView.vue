@@ -122,8 +122,14 @@
                 class="block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-50"
                 @change="onFile(slot.input, $event)"
               />
-              <p v-if="pendingFiles[slot.input]" class="text-xs text-gray-600">
-                {{ t('registration.pickFile') }}: {{ pendingFiles[slot.input].name }}
+              <p v-if="pendingFiles[slot.input] && !uploadingFiles[slot.input]" class="text-xs text-gray-600">
+                {{ t('registration.filePendingUpload') }}: {{ pendingFiles[slot.input].name }}
+              </p>
+              <p v-if="uploadingFiles[slot.input]" class="text-xs text-amber-700">
+                {{ t('registration.fileUploading') }}
+              </p>
+              <p v-if="uploadErrors[slot.input]" class="text-xs text-red-600">
+                {{ uploadErrors[slot.input] }}
               </p>
             </div>
 
@@ -161,7 +167,7 @@
             class="rounded-full bg-[#9DB359] px-6 py-2.5 text-sm font-semibold text-white shadow-md disabled:opacity-50"
             @click="submitStep"
           >
-            {{ saving ? '…' : t('registration.submitStep') }}
+            {{ saving ? (submitProgress || '…') : t('registration.submitStep') }}
           </button>
         </div>
       </div>
@@ -221,6 +227,7 @@ const fileSlots = [
 
 const loading = ref(true)
 const saving = ref(false)
+const submitProgress = ref('')
 const progress = ref(null)
 const errorMessage = ref('')
 const uploadKey = ref(0)
@@ -246,6 +253,22 @@ const pendingFiles = reactive({
   report_card: null,
   passport_photo: null,
   full_body_photo: null,
+})
+
+const uploadingFiles = reactive({
+  id_document: false,
+  kk: false,
+  report_card: false,
+  passport_photo: false,
+  full_body_photo: false,
+})
+
+const uploadErrors = reactive({
+  id_document: '',
+  kk: '',
+  report_card: '',
+  passport_photo: '',
+  full_body_photo: '',
 })
 
 const steps = computed(() => [
@@ -284,6 +307,35 @@ function storedPath(pathKey) {
 function onFile(input, e) {
   const f = e.target.files?.[0]
   pendingFiles[input] = f || null
+  uploadErrors[input] = ''
+}
+
+async function uploadAdministrationFile(input, file) {
+  uploadingFiles[input] = true
+  uploadErrors[input] = ''
+  try {
+    const fd = new FormData()
+    fd.append('field', input)
+    fd.append(input, file)
+    const { data } = await axios.post('/api/my-registration/administration-file', fd)
+    progress.value = data
+    pendingFiles[input] = null
+    uploadKey.value += 1
+  } catch (error) {
+    const msg = error?.response?.data?.message
+    const errs = error?.response?.data?.errors
+    let message = msg || 'Gagal mengunggah berkas.'
+    if (errs && typeof errs === 'object') {
+      const first = Object.values(errs).flat()[0]
+      message = first || message
+    } else if (error?.response?.status === 413) {
+      message = 'Berkas terlalu besar. Maksimal 12 MB per berkas.'
+    }
+    uploadErrors[input] = message
+    throw new Error(message)
+  } finally {
+    uploadingFiles[input] = false
+  }
 }
 
 function statusLabel(key) {
@@ -369,6 +421,7 @@ function hydrateForm() {
   }
   fileSlots.forEach((s) => {
     pendingFiles[s.input] = null
+    uploadErrors[s.input] = ''
   })
 }
 
@@ -406,8 +459,21 @@ watch(
 function clearPendingFiles() {
   fileSlots.forEach((s) => {
     pendingFiles[s.input] = null
+    uploadErrors[s.input] = ''
   })
   uploadKey.value += 1
+}
+
+function slotHasFile(slot) {
+  return Boolean(storedPath(slot.pathKey)) || Boolean(pendingFiles[slot.input])
+}
+
+function administrationFilesComplete() {
+  return fileSlots.every(slotHasFile)
+}
+
+function pendingUploadSlots() {
+  return fileSlots.filter((s) => pendingFiles[s.input])
 }
 
 async function submitStep() {
@@ -418,8 +484,21 @@ async function submitStep() {
     errorMessage.value = 'Format nomor WhatsApp atau telepon orang tua tidak valid. Gunakan format seperti 812345678.'
     return
   }
+  if (!administrationFilesComplete()) {
+    errorMessage.value = 'Unggah semua berkas wajib (KTP, KK, rapor, pas foto, dan foto badan penuh) sebelum mengirim.'
+    return
+  }
   saving.value = true
+  errorMessage.value = ''
   try {
+    const toUpload = pendingUploadSlots()
+    for (let i = 0; i < toUpload.length; i++) {
+      const slot = toUpload[i]
+      submitProgress.value = t('registration.submitUploading', { current: i + 1, total: toUpload.length })
+      await uploadAdministrationFile(slot.input, pendingFiles[slot.input])
+    }
+
+    submitProgress.value = t('registration.submitSaving')
     const fd = new FormData()
     fd.append('step', 'administration')
     fd.append('full_name', form.administration.full_name)
@@ -430,16 +509,13 @@ async function submitStep() {
     fd.append('gender', form.administration.gender)
     fd.append('height_cm', String(form.administration.height_cm))
     fd.append('weight_kg', String(form.administration.weight_kg))
-    fileSlots.forEach((s) => {
-      if (pendingFiles[s.input]) fd.append(s.input, pendingFiles[s.input])
-    })
     const { data: updated } = await axios.post('/api/my-registration', fd)
     progress.value = updated
     hydrateForm()
     clearPendingFiles()
     errorMessage.value = ''
   } catch (error) {
-    const msg = error?.response?.data?.message
+    const msg = error?.response?.data?.message || error?.message
     const errs = error?.response?.data?.errors
     if (errs && typeof errs === 'object') {
       const first = Object.values(errs).flat()[0]
@@ -449,6 +525,7 @@ async function submitStep() {
     }
   } finally {
     saving.value = false
+    submitProgress.value = ''
   }
 }
 

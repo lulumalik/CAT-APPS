@@ -415,7 +415,11 @@ export const messages = {
       offlineStepBody:
         'Tahap ini dilakukan di lokasi tes. Anda tidak mengisi formulir di sini. Staf akan mengubah status menjadi disetujui setelah hasil tes tercatat. Pantau indikator status di atas.',
       fileUploadHint:
-        'Unggah berkas dari perangkat Anda. JPG, PNG, WebP, atau PDF untuk KTP/KK/rapor; pas foto dan full body hanya gambar. Maksimal 12 MB per berkas.',
+        'Pilih berkas dari perangkat Anda. Saat kirim, setiap berkas diunggah terpisah (maks. 12 MB per berkas). JPG, PNG, WebP, atau PDF untuk KTP/KK/rapor; pas foto dan full body hanya gambar.',
+      fileUploading: 'Mengunggah berkas…',
+      filePendingUpload: 'Berkas siap diunggah saat kirim',
+      submitUploading: 'Mengunggah berkas {current}/{total}…',
+      submitSaving: 'Menyimpan data…',
       phoneFormatHint: 'Gunakan angka saja dan awali dengan 628 (contoh: 6281234567890).',
       phoneExample: '6281234567890',
       fileUploaded: 'Berkas tersimpan di server',
@@ -924,7 +928,11 @@ export const messages = {
       offlineStepBody:
         'This stage is completed at the test venue. You do not fill in a form here. Staff will set the status to approved after your results are recorded. Watch the status badges above.',
       fileUploadHint:
-        'Upload from your device. JPG, PNG, WebP, or PDF for ID/family card/report; passport and full-body slots are images only. Max 12 MB per file.',
+        'Choose files from your device. On submit, each file uploads separately (max 12 MB per file). JPG, PNG, WebP, or PDF for ID/family card/report; passport and full-body photos are images only.',
+      fileUploading: 'Uploading file…',
+      filePendingUpload: 'File ready to upload on submit',
+      submitUploading: 'Uploading file {current}/{total}…',
+      submitSaving: 'Saving data…',
       phoneFormatHint: 'Use digits only and start with 628 (example: 6281234567890).',
       phoneExample: '6281234567890',
       fileUploaded: 'File saved on server',

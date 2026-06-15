@@ -167,6 +167,72 @@ class RegistrationProgressController extends Controller
         }
     }
 
+    private function canEditAdministration(RegistrationProgress $progress): bool
+    {
+        if ($progress->fully_completed) {
+            return false;
+        }
+
+        return $progress->current_step === 'administration'
+            || $progress->administration_status === 'revision_requested';
+    }
+
+    public function uploadAdministrationFile(Request $request)
+    {
+        if (! Schema::hasTable('registration_progress')) {
+            return response()->json([
+                'message' => 'Struktur pendaftaran belum aktif. Jalankan migrasi database terbaru.',
+            ], 503);
+        }
+
+        $data = $request->validate([
+            'field' => 'required|in:'.implode(',', array_keys(self::ADMIN_FILE_FIELDS)),
+        ]);
+
+        $progress = RegistrationProgress::firstOrCreate(
+            ['user_id' => $request->user()->id],
+            [
+                'current_step' => 'administration',
+                'administration_status' => 'not_started',
+                'psychology_status' => 'not_started',
+                'health_status' => 'not_started',
+                'physical_status' => 'not_started',
+                'fully_completed' => false,
+            ]
+        );
+
+        if (! $this->canEditAdministration($progress)) {
+            return response()->json([
+                'message' => 'Tahap administrasi tidak sedang aktif untuk akun Anda.',
+            ], 422);
+        }
+
+        $field = $data['field'];
+        $pathKey = self::ADMIN_FILE_FIELDS[$field];
+        $merged = $this->scrubLegacyAdministrationUrls($progress->administration_data ?? []);
+
+        $isPhoto = in_array($field, ['passport_photo', 'full_body_photo'], true);
+        Validator::make($request->all(), [
+            $field => [
+                'required',
+                'file',
+                'max:12288',
+                $isPhoto ? 'mimes:jpeg,jpg,png,webp' : 'mimes:jpeg,jpg,png,webp,pdf',
+            ],
+        ])->validate();
+
+        if (! empty($merged[$pathKey])) {
+            Storage::disk($this->registrationDisk())->delete($merged[$pathKey]);
+        }
+
+        $dir = 'registration/'.$request->user()->id;
+        $merged[$pathKey] = $request->file($field)->store($dir, $this->registrationDisk());
+        $progress->administration_data = $merged;
+        $progress->save();
+
+        return response()->json($this->serializeRegistrationProgress($progress->fresh()));
+    }
+
     public function mine(Request $request)
     {
         if (! Schema::hasTable('registration_progress')) {
