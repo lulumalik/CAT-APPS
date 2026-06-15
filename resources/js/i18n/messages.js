@@ -415,7 +415,7 @@ export const messages = {
       offlineStepBody:
         'Tahap ini dilakukan di lokasi tes. Anda tidak mengisi formulir di sini. Staf akan mengubah status menjadi disetujui setelah hasil tes tercatat. Pantau indikator status di atas.',
       fileUploadHint:
-        'Pilih berkas dari perangkat Anda. Saat kirim, setiap berkas diunggah terpisah (maks. 12 MB per berkas). JPG, PNG, WebP, atau PDF untuk KTP/KK/rapor; pas foto dan full body hanya gambar.',
+        'Pilih berkas untuk langsung disimpan. Tidak wajib lengkap — admin akan meninjau manual. Maks. 12 MB per berkas.',
       fileUploading: 'Mengunggah berkas…',
       filePendingUpload: 'Berkas siap diunggah saat kirim',
       submitUploading: 'Mengunggah berkas {current}/{total}…',
@@ -928,7 +928,7 @@ export const messages = {
       offlineStepBody:
         'This stage is completed at the test venue. You do not fill in a form here. Staff will set the status to approved after your results are recorded. Watch the status badges above.',
       fileUploadHint:
-        'Choose files from your device. On submit, each file uploads separately (max 12 MB per file). JPG, PNG, WebP, or PDF for ID/family card/report; passport and full-body photos are images only.',
+        'Choose a file to save it immediately. Completing every slot is optional — staff will review manually. Max 12 MB per file.',
       fileUploading: 'Uploading file…',
       filePendingUpload: 'File ready to upload on submit',
       submitUploading: 'Uploading file {current}/{total}…',

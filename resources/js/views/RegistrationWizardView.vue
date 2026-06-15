@@ -123,7 +123,7 @@
                 @change="onFile(slot.input, $event)"
               />
               <p v-if="pendingFiles[slot.input] && !uploadingFiles[slot.input]" class="text-xs text-gray-600">
-                {{ t('registration.filePendingUpload') }}: {{ pendingFiles[slot.input].name }}
+                {{ t('registration.pickFile') }}: {{ pendingFiles[slot.input].name }}
               </p>
               <p v-if="uploadingFiles[slot.input]" class="text-xs text-amber-700">
                 {{ t('registration.fileUploading') }}
@@ -308,6 +308,9 @@ function onFile(input, e) {
   const f = e.target.files?.[0]
   pendingFiles[input] = f || null
   uploadErrors[input] = ''
+  if (f) {
+    uploadAdministrationFile(input, f).catch(() => {})
+  }
 }
 
 async function uploadAdministrationFile(input, file) {
@@ -464,14 +467,6 @@ function clearPendingFiles() {
   uploadKey.value += 1
 }
 
-function slotHasFile(slot) {
-  return Boolean(storedPath(slot.pathKey)) || Boolean(pendingFiles[slot.input])
-}
-
-function administrationFilesComplete() {
-  return fileSlots.every(slotHasFile)
-}
-
 function pendingUploadSlots() {
   return fileSlots.filter((s) => pendingFiles[s.input])
 }
@@ -482,10 +477,6 @@ async function submitStep() {
   if (step !== 'administration') return
   if (!isValidPhoneLocal(form.administration.whatsapp) || !isValidPhoneLocal(form.administration.phone)) {
     errorMessage.value = 'Format nomor WhatsApp atau telepon orang tua tidak valid. Gunakan format seperti 812345678.'
-    return
-  }
-  if (!administrationFilesComplete()) {
-    errorMessage.value = 'Unggah semua berkas wajib (KTP, KK, rapor, pas foto, dan foto badan penuh) sebelum mengirim.'
     return
   }
   saving.value = true

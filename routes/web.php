@@ -94,7 +94,10 @@ Route::get('/storage/{path}', function (string $path) {
         abort(404);
     }
 
-    return $disk->response($normalized);
+    $response = $disk->response($normalized);
+    $response->headers->set('Cache-Control', 'private, max-age=3600');
+
+    return $response;
 })->where('path', '.*');
 
 Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, string $hash) {

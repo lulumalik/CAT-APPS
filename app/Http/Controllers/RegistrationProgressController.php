@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class RegistrationProgressController extends Controller
@@ -69,6 +68,7 @@ class RegistrationProgressController extends Controller
     {
         $diskName = $this->registrationDisk();
         $disk = Storage::disk($diskName);
+        $driver = (string) config("filesystems.disks.{$diskName}.driver", 'local');
 
         if (config('registration.use_signed_urls', false)) {
             return $disk->temporaryUrl(
@@ -77,7 +77,13 @@ class RegistrationProgressController extends Controller
             );
         }
 
-        return $disk->url($path);
+        if ($driver === 'local') {
+            return '/storage/'.ltrim(str_replace('\\', '/', $path), '/');
+        }
+
+        $url = $disk->url($path);
+
+        return preg_replace('#(?<!:)/{2,}#', '/', $url) ?: $url;
     }
 
     /**
@@ -152,19 +158,6 @@ class RegistrationProgressController extends Controller
         }
 
         return $merged;
-    }
-
-    private function assertAdministrationFilesComplete(array $merged): void
-    {
-        $missing = [];
-        foreach (self::ADMIN_FILE_FIELDS as $input => $pathKey) {
-            if (empty($merged[$pathKey])) {
-                $missing[$input] = ['Unggah berkas wajib untuk dokumen ini.'];
-            }
-        }
-        if ($missing !== []) {
-            throw ValidationException::withMessages($missing);
-        }
     }
 
     private function canEditAdministration(RegistrationProgress $progress): bool
@@ -324,7 +317,6 @@ class RegistrationProgressController extends Controller
                 $text
             ));
             $merged = $this->mergeAdministrationFiles($request, $merged);
-            $this->assertAdministrationFilesComplete($merged);
             $progress->administration_data = $merged;
         }
 
