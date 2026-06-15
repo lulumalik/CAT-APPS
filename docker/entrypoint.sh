@@ -5,7 +5,9 @@ cd /var/www/html
 
 mkdir -p \
   storage/app/private \
+  storage/app/private/registration \
   storage/app/public \
+  storage/app/public/registration \
   storage/framework/cache \
   storage/framework/sessions \
   storage/framework/views \

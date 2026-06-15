@@ -47,14 +47,15 @@ class StorageDiagnostic extends Command
                 file('/proc/mounts', FILE_IGNORE_NEW_LINES) ?: [],
                 fn (string $line) => str_contains($line, '/var/www/html/storage')
             );
-            if ($mounts === []) {
-                $this->warn('  TIDAK ADA mount khusus — storage ikut layer container (HILANG saat redeploy).');
-                $this->warn('  Coolify → Persistent Storage → Destination: /var/www/html/storage');
-            } else {
-                foreach ($mounts as $line) {
-                    $this->line('  '.$line);
-                }
+        if ($mounts === []) {
+            $this->warn('  TIDAK ADA mount khusus — storage ikut layer container (HILANG saat redeploy).');
+            $this->warn('  Coolify → Persistent Storage → Destination: /var/www/html/storage');
+        } else {
+            foreach ($mounts as $line) {
+                $this->line('  '.$line);
             }
+            $this->info('  Mount OK — volume persisten aktif.');
+        }
         }
 
         $userId = $this->option('user');
@@ -77,6 +78,19 @@ class StorageDiagnostic extends Command
                 }
                 $disk = $files->findDisk($path);
                 $this->line('  '.$key.': '.$path.' → '.($disk ? 'ADA di disk' : 'TIDAK ADA di semua disk'));
+            }
+
+            $orphans = 0;
+            foreach (RegistrationFileStorage::ADMINISTRATION_PATH_KEYS as $key) {
+                $path = $data[$key] ?? null;
+                if (is_string($path) && $path !== '' && $files->findDisk($path) === null) {
+                    $orphans++;
+                }
+            }
+            if ($orphans > 0) {
+                $this->newLine();
+                $this->warn("  {$orphans} path di database tanpa file fisik (upload sebelum volume / redeploy lama).");
+                $this->warn('  Minta peserta upload ulang berkas, atau hapus path dari DB.');
             }
         }
 
