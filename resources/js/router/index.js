@@ -20,6 +20,7 @@ import BimbleClassesManageView from '@/views/BimbleClassesManageView.vue';
 import BimbleClassRoomView from '@/views/BimbleClassRoomView.vue';
 import MyBimbleClassesView from '@/views/MyBimbleClassesView.vue';
 import ProfileView from '@/views/ProfileView.vue';
+import ActivityHistoryView from '@/views/ActivityHistoryView.vue';
 import EmailVerifiedView from '@/views/EmailVerifiedView.vue';
 import NotificationsView from '@/views/NotificationsView.vue';
 import CertificateManagementView from '@/views/CertificateManagementView.vue';
@@ -52,6 +53,7 @@ const routes = [
   { path: '/quick-test/:id', name: 'quick-test', component: TestRunnerView, meta: { requiresAuth: true } },
   { path: '/registration', name: 'registration', component: RegistrationWizardView, meta: { requiresAuth: true } },
   { path: '/profile', name: 'profile', component: ProfileView, meta: { requiresAuth: true } },
+  { path: '/activity-history', name: 'activity-history', component: ActivityHistoryView, meta: { requiresAuth: true } },
   { path: '/email/verified', name: 'email-verified', component: EmailVerifiedView },
   { path: '/notifications', name: 'notifications', component: NotificationsView, meta: { requiresAuth: true } },
   { path: '/admin/registration', name: 'admin-registration', component: AdminRegistrationView, meta: { requiresAuth: true, requiresAdmin: true } },
@@ -99,25 +101,43 @@ router.beforeEach(async (to, from, next) => {
 
   // Registered students can only access participant flows.
   if (store.role === 'user') {
-    const allowedForStudent = [
+    const expired = store.user?.app_expired === true
+      || (store.user?.app_expires_at && new Date(store.user.app_expires_at) < new Date())
+
+    const allowedForExpiredStudent = [
       'home-demo',
       'home',
       'about-us',
       'selayang-pandang',
       'profile',
+      'activity-history',
       'email-verified',
-      'registration',
-      'dashboard',
-      'my-classes',
-      'bimble-class-room',
-      'quick-test',
       'blog-detail',
-      'free-tryout',
-      'notifications',
-    ];
+    ]
+
+    const allowedForStudent = expired
+      ? allowedForExpiredStudent
+      : [
+        'home-demo',
+        'home',
+        'about-us',
+        'selayang-pandang',
+        'profile',
+        'activity-history',
+        'email-verified',
+        'registration',
+        'dashboard',
+        'my-classes',
+        'bimble-class-room',
+        'quick-test',
+        'blog-detail',
+        'free-tryout',
+        'notifications',
+      ]
+
     if (!allowedForStudent.includes(String(to.name))) {
-      next({ name: 'dashboard' });
-      return;
+      next({ name: expired ? 'profile' : 'dashboard' })
+      return
     }
   }
 

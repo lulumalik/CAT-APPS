@@ -39,6 +39,16 @@
           </select>
         </div>
 
+        <div v-if="form.role === 'user'">
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.user.appExpiresLabel') }}</label>
+          <input
+            v-model="form.app_expires_at"
+            type="datetime-local"
+            class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all"
+          />
+          <p class="text-xs text-gray-500 mt-1">{{ t('modals.user.appExpiresHint') }}</p>
+        </div>
+
         <div v-if="form.role !== 'mentor'">
           <label class="block text-sm font-medium text-gray-700 mb-2">Program Siswa</label>
           <select v-model="form.program_category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
@@ -83,7 +93,16 @@ const form = reactive({
   role: 'user',
   password: '',
   program_category: 'regular',
+  app_expires_at: '',
 })
+
+const toDatetimeLocal = (value) => {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
 
 watch(() => props.initial, (val) => {
   if (val) {
@@ -93,6 +112,7 @@ watch(() => props.initial, (val) => {
     form.role = val.role
     form.password = ''
     form.program_category = normalizeProgramCategory(val.program_category)
+    form.app_expires_at = toDatetimeLocal(val.app_expires_at)
   } else {
     form.name = ''
     form.username = ''
@@ -100,6 +120,7 @@ watch(() => props.initial, (val) => {
     form.role = 'user'
     form.password = ''
     form.program_category = 'regular'
+    form.app_expires_at = ''
   }
 }, { immediate: true })
 
@@ -116,10 +137,15 @@ watch(
     if (role === 'mentor') {
       form.program_category = 'regular'
     }
+    if (role !== 'user') {
+      form.app_expires_at = ''
+    }
   }
 )
 
 const submit = () => {
-  emit('submit', JSON.parse(JSON.stringify(form)))
+  const payload = JSON.parse(JSON.stringify(form))
+  payload.app_expires_at = payload.app_expires_at || null
+  emit('submit', payload)
 }
 </script>

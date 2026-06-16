@@ -109,7 +109,7 @@ import axios from 'axios'
 import { Bell, Lock, Menu, X } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { useI18n } from '@/composables/useI18n'
-import { getProgramBadge, registrationCompleted } from '@/utils/userMeta'
+import { getProgramBadge, registrationCompleted, isAppExpired } from '@/utils/userMeta'
 
 const store = useAppStore()
 const route = useRoute()
@@ -123,6 +123,7 @@ const isAdmin = computed(() => role.value === 'admin')
 const isStudent = computed(() => role.value === 'user')
 const isParent = computed(() => role.value === 'parent')
 const onboardingDone = computed(() => registrationCompleted(user.value))
+const appExpired = computed(() => isAppExpired(user.value))
 const programBadge = computed(() => getProgramBadge(user.value))
 
 const navItems = computed(() => {
@@ -141,10 +142,18 @@ const navItems = computed(() => {
   }
 
   if (isStudent.value) {
+    if (appExpired.value) {
+      return [
+        { to: '/profile', label: 'Profil' },
+        { to: '/activity-history', label: 'Riwayat Aktivitas' },
+      ]
+    }
+
     return [
       { to: '/dashboard', label: t('nav.dashboard'), locked: !onboardingDone.value },
       { to: '/my-classes', label: t('nav.myClasses'), locked: !onboardingDone.value },
       { to: '/profile', label: 'Profil' },
+      { to: '/activity-history', label: 'Riwayat Aktivitas' },
       { to: '/registration', label: t('nav.registrationWizard') },
       { to: '/notifications', label: 'Notifikasi' },
     ]

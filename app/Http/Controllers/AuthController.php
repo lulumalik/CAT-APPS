@@ -13,6 +13,23 @@ use Throwable;
 
 class AuthController extends Controller
 {
+    private function serializeUser(User $user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
+            'email_verified_at' => $user->email_verified_at,
+            'role' => $user->role,
+            'program_category' => $user->program_category,
+            'in_quarantine' => (bool) $user->in_quarantine,
+            'app_expires_at' => $user->app_expires_at?->toIso8601String(),
+            'app_expired' => $user->isAppExpired(),
+            'registration' => Schema::hasTable('registration_progress') ? $user->registrationProgress : null,
+        ];
+    }
+
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -86,17 +103,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
                 'message' => 'Registrasi berhasil. Silakan verifikasi email Anda melalui tautan yang dikirimkan.',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'email' => $user->email,
-                    'email_verified_at' => $user->email_verified_at,
-                    'role' => $user->role,
-                    'program_category' => $user->program_category,
-                    'in_quarantine' => (bool) $user->in_quarantine,
-                    'registration' => Schema::hasTable('registration_progress') ? $user->registrationProgress : null,
-                ],
+                'user' => $this->serializeUser($user),
                 'email_verification_required' => ! $user->hasVerifiedEmail(),
             ], 201);
     }
@@ -119,17 +126,7 @@ class AuthController extends Controller
             }
             return response()->json([
                 'success' => true,
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'email' => $user->email,
-                    'email_verified_at' => $user->email_verified_at,
-                    'role' => $user->role,
-                    'program_category' => $user->program_category,
-                    'in_quarantine' => (bool) $user->in_quarantine,
-                    'registration' => Schema::hasTable('registration_progress') ? $user->registrationProgress : null,
-                ]
+                'user' => $this->serializeUser($user),
             ]);
         }
 
@@ -161,17 +158,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'email' => $user->email,
-                    'email_verified_at' => $user->email_verified_at,
-                    'role' => $user->role,
-                    'program_category' => $user->program_category,
-                    'in_quarantine' => (bool) $user->in_quarantine,
-                    'registration' => Schema::hasTable('registration_progress') ? $user->registrationProgress : null,
-                ]
+                'user' => $this->serializeUser($user),
             ]);
         }
 

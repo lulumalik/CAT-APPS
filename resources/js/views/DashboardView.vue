@@ -54,7 +54,28 @@
 
     <template v-else>
       <section
-        v-if="isLockedForStudent"
+        v-if="isExpiredForStudent"
+        class="rounded-[2rem] border border-red-200 bg-red-50 p-8 text-red-900"
+      >
+        <h2 class="text-xl font-bold flex items-center gap-2">
+          <LockKeyhole class="h-5 w-5" />
+          Masa aktif aplikasi berakhir
+        </h2>
+        <p class="text-sm mt-2">
+          Akses dashboard dan kelas telah ditutup. Anda masih dapat melihat profil dan riwayat aktivitas.
+        </p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <router-link to="/profile" class="inline-flex rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
+            Buka Profil
+          </router-link>
+          <router-link to="/activity-history" class="inline-flex rounded-full border border-red-300 bg-white px-5 py-2.5 text-sm font-semibold text-red-900">
+            Riwayat Aktivitas
+          </router-link>
+        </div>
+      </section>
+
+      <section
+        v-else-if="isLockedForStudent"
         class="rounded-[2rem] border border-amber-200 bg-amber-50 p-8 text-amber-900"
       >
         <h2 class="text-xl font-bold flex items-center gap-2">
@@ -190,9 +211,7 @@
       <!-- STUDENT/USER (or admin viewing student) -->
       <div
         v-else-if="showStudentDashboard"
-        ref="pdfContentRef"
         class="dashboard-pdf-export"
-        :class="{ 'is-exporting': exportingPdf }"
       >
         <div class="pdf-header">
           <h2 class="text-xl font-bold text-[#1A1A1A]">Laporan Dashboard</h2>
@@ -201,7 +220,6 @@
             <span class="text-gray-400">·</span>
             {{ displayProgramBadge.label }}
           </p>
-          <p v-if="exportingPdf" class="text-xs text-gray-400 mt-1">Dicetak: {{ pdfGeneratedAt }}</p>
         </div>
 
         <div class="pdf-grid-2">
@@ -237,9 +255,7 @@
           <h2 class="pdf-section-title">Perkembangan Saya</h2>
           <StudentProgressPanel
             v-if="activeStudentId"
-            ref="progressPanelRef"
             :student-id="activeStudentId"
-            :pdf-mode="exportingPdf"
           />
         </div>
       </div>
@@ -248,13 +264,12 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ArrowLeft, Download, LockKeyhole } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
-import { getProgramBadge, programCategoryLabel, registrationCompleted } from '@/utils/userMeta'
-import { downloadElementAsPdf, sanitizePdfFilename } from '@/utils/html2pdf'
+import { getProgramBadge, programCategoryLabel, registrationCompleted, isAppExpired } from '@/utils/userMeta'
 import StudentProgressPanel from '@/components/StudentProgressPanel.vue'
 
 const store = useAppStore()
@@ -266,9 +281,6 @@ const errorMessage = ref('')
 const overview = ref({})
 const viewedStudent = ref(null)
 const exportingPdf = ref(false)
-const pdfContentRef = ref(null)
-const progressPanelRef = ref(null)
-const pdfGeneratedAt = ref('')
 
 const viewingStudentId = computed(() => {
   if (route.name !== 'student-dashboard') return null
@@ -281,7 +293,8 @@ const isMentor = computed(() => user.value?.role === 'mentor')
 const isParent = computed(() => user.value?.role === 'parent')
 const isStudent = computed(() => user.value?.role === 'user')
 const isAdminViewingStudent = computed(() => isAdmin.value && !!viewingStudentId.value)
-const isLockedForStudent = computed(() => isStudent.value && !isAdminViewingStudent.value && !registrationCompleted(user.value))
+const isExpiredForStudent = computed(() => isStudent.value && !isAdminViewingStudent.value && isAppExpired(user.value))
+const isLockedForStudent = computed(() => isStudent.value && !isAdminViewingStudent.value && !isExpiredForStudent.value && !registrationCompleted(user.value))
 const showStudentDashboard = computed(() => isStudent.value || isAdminViewingStudent.value)
 const activeStudentId = computed(() => viewingStudentId.value || user.value?.id)
 const canDownloadPdf = computed(() => {
@@ -340,38 +353,30 @@ const loadOverview = async () => {
 }
 
 const downloadPdf = async () => {
-  if (!pdfContentRef.value || exportingPdf.value) return
+  if (exportingPdf.value) return
 
   exportingPdf.value = true
-  pdfGeneratedAt.value = formatDate(new Date())
 
   try {
-    await progressPanelRef.value?.prepareForPdfExport?.()
-    await nextTick()
-    await new Promise((resolve) => setTimeout(resolve, 600))
+    const url = viewingStudentId.value
+      ? `/api/dashboard/students/${viewingStudentId.value}/pdf`
+      : '/api/dashboard/pdf'
 
+    const response = await window.axios.get(url, { responseType: 'blob' })
     const dateLabel = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date())
-    const filename = `Laporan-Dashboard-${sanitizePdfFilename(pdfReportName.value)}-${dateLabel}.pdf`
+    const safeName = String(pdfReportName.value || 'peserta').replace(/[^\w\-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'peserta'
+    const filename = `Laporan-Dashboard-${safeName}-${dateLabel}.pdf`
 
-    const el = pdfContentRef.value
-    const prevWidth = el.style.width
-    el.style.width = '720px'
-
-    try {
-      await downloadElementAsPdf(el, filename, {
-        html2canvas: {
-          width: el.scrollWidth,
-          height: el.scrollHeight,
-        },
-      })
-    } finally {
-      el.style.width = prevWidth
-    }
+    const blobUrl = URL.createObjectURL(response.data)
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.download = filename
+    link.click()
+    URL.revokeObjectURL(blobUrl)
   } catch (error) {
     console.error('Gagal membuat PDF:', error)
     window.alert('Gagal membuat PDF. Silakan coba lagi.')
   } finally {
-    progressPanelRef.value?.restoreAfterPdfExport?.()
     exportingPdf.value = false
   }
 }
@@ -383,53 +388,49 @@ watch(viewingStudentId, () => {
 </script>
 
 <style scoped>
-.dashboard-pdf-export.is-exporting :deep(.pdf-hide) {
-  display: none !important;
-}
-
-.dashboard-pdf-export:not(.is-exporting) .pdf-header {
+.dashboard-pdf-export .pdf-header {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #f3f4f6;
 }
 
-.dashboard-pdf-export:not(.is-exporting) .pdf-grid-2 {
+.dashboard-pdf-export .pdf-grid-2 {
   display: grid;
   gap: 1.5rem;
 }
 
 @media (min-width: 1024px) {
-  .dashboard-pdf-export:not(.is-exporting) .pdf-grid-2 {
+  .dashboard-pdf-export .pdf-grid-2 {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-.dashboard-pdf-export:not(.is-exporting) .pdf-section {
+.dashboard-pdf-export .pdf-section {
   background: #ffffff;
   border: 1px solid #f3f4f6;
   border-radius: 1rem;
   padding: 1.25rem;
 }
 
-.dashboard-pdf-export:not(.is-exporting) .pdf-card {
+.dashboard-pdf-export .pdf-card {
   border: 1px solid #f3f4f6;
   border-radius: 0.75rem;
   padding: 0.75rem;
   margin-bottom: 0.75rem;
 }
 
-.dashboard-pdf-export:not(.is-exporting) .pdf-section-title {
+.dashboard-pdf-export .pdf-section-title {
   font-size: 1.125rem;
   font-weight: 700;
   margin-bottom: 1rem;
 }
 
-.dashboard-pdf-export:not(.is-exporting) .pdf-muted {
+.dashboard-pdf-export .pdf-muted {
   color: #6b7280;
   font-size: 0.75rem;
 }
 
-.dashboard-pdf-export:not(.is-exporting) .pdf-text-sm {
+.dashboard-pdf-export .pdf-text-sm {
   font-size: 0.75rem;
   color: #4b5563;
 }

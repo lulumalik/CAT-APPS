@@ -44,7 +44,7 @@
       </header>
 
       <div class="max-w-7xl mx-auto px-4 py-5 md:py-8 space-y-5 md:space-y-6">
-        <section class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <section class="grid grid-cols-3 md:grid-cols-1 gap-3 sm:grid-cols-3">
           <div class="rounded-2xl border border-[#9DB359]/20 bg-white/90 px-5 py-4 shadow-sm">
             <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">{{ t('bimble.menu.sessions') }}</p>
             <p class="mt-1 text-2xl font-bold text-[#1A1A1A]">{{ totalSessions }}</p>

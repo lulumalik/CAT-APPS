@@ -35,6 +35,7 @@
               <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableName') }}</th>
               <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableEmail') }}</th>
               <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableRole') }}</th>
+              <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableExpires') }}</th>
               <th scope="col" class="px-8 py-5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableActions') }}</th>
             </tr>
           </thead>
@@ -60,6 +61,19 @@
                       }">
                   {{ user.role }}
                 </span>
+              </td>
+              <td class="px-8 py-5 whitespace-nowrap">
+                <div v-if="user.role !== 'user'" class="text-sm text-gray-400">—</div>
+                <div v-else-if="!user.app_expires_at" class="text-sm text-gray-500">{{ t('users.expiresNotSet') }}</div>
+                <div v-else class="space-y-1">
+                  <div class="text-sm text-gray-700">{{ formatExpiresAt(user.app_expires_at) }}</div>
+                  <span
+                    class="px-2 py-0.5 inline-flex text-[11px] font-semibold rounded-full"
+                    :class="isUserExpired(user) ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'"
+                  >
+                    {{ isUserExpired(user) ? t('users.expiresExpired') : t('users.expiresActive') }}
+                  </span>
+                </div>
               </td>
               <td class="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
                 <router-link
@@ -94,6 +108,7 @@ import { ref, onMounted } from 'vue'
 import UserModal from '@/components/UserModal.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
+import { formatAppExpiresAt, isAppExpired } from '@/utils/userMeta'
 
 const { confirm } = useModal()
 const toast = useToast()
@@ -111,6 +126,9 @@ const importFile = ref(null)
 
 const searchQuery = ref('')
 let searchTimeout = null
+
+const formatExpiresAt = (value) => formatAppExpiresAt(value) || '—'
+const isUserExpired = (user) => isAppExpired(user)
 
 const handleSearch = () => {
   if (searchTimeout) clearTimeout(searchTimeout)

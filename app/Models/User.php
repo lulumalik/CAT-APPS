@@ -27,6 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
         'program_category',
         'in_quarantine',
+        'app_expires_at',
     ];
 
     protected static function booted(): void
@@ -166,7 +167,13 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'in_quarantine' => 'boolean',
+            'app_expires_at' => 'datetime',
         ];
+    }
+
+    public function isAppExpired(): bool
+    {
+        return $this->app_expires_at !== null && $this->app_expires_at->isPast();
     }
 
     public function registrationProgress()

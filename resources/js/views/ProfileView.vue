@@ -2,6 +2,14 @@
   <main class="max-w-4xl mx-auto px-4 pb-8 space-y-6">
     <h1 class="text-2xl font-bold text-[#1A1A1A]">Profil Pendaftar</h1>
 
+    <div
+      v-if="isAppExpired(user)"
+      class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+    >
+      Masa aktif aplikasi Anda telah berakhir. Anda hanya dapat mengakses profil dan
+      <router-link to="/activity-history" class="font-semibold underline">riwayat aktivitas</router-link>.
+    </div>
+
     <div v-if="loading" class="py-20 text-center text-gray-500">Memuat profil...</div>
     <div v-else-if="errorMessage" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm text-red-700">
       {{ errorMessage }}
@@ -21,6 +29,12 @@
           <div><dt class="text-gray-500">Tier</dt><dd><span class="text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span></dd></div>
           <div><dt class="text-gray-500">Program</dt><dd class="font-medium text-[#1A1A1A]">{{ programLabel }}</dd></div>
           <div><dt class="text-gray-500">Karantina</dt><dd class="font-medium text-[#1A1A1A]">{{ quarantineLabel }}</dd></div>
+          <div v-if="user?.role === 'user'">
+            <dt class="text-gray-500">Masa Aktif Aplikasi</dt>
+            <dd class="font-medium text-[#1A1A1A]">
+              {{ user?.app_expires_at ? formatAppExpiresAt(user.app_expires_at) : 'Tidak dibatasi' }}
+            </dd>
+          </div>
         </dl>
       </section>
 
@@ -74,6 +88,7 @@
         </ol>
 
         <router-link
+          v-if="!isAppExpired(user)"
           to="/registration"
           class="inline-flex mt-5 px-5 py-2.5 rounded-full bg-[#9DB359] text-white text-sm font-semibold"
         >
@@ -90,7 +105,7 @@ import axios from 'axios'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 import { CheckCircle2, AlertTriangle, Send, Loader2 } from 'lucide-vue-next'
-import { getProgramBadge, programCategoryLabel, supportsProgramQuarantine } from '@/utils/userMeta'
+import { getProgramBadge, programCategoryLabel, supportsProgramQuarantine, formatAppExpiresAt, isAppExpired } from '@/utils/userMeta'
 import { registrationFileHref } from '@/utils/storageUrl'
 import { getCookie, setCookie } from '@/utils/cookies'
 import { useToast } from '@/composables/useNotification'

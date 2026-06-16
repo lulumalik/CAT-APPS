@@ -16,6 +16,7 @@ use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\StudentDashboardPdfController;
 use App\Http\Controllers\StudentReportController;
 
 // Public material routes
@@ -107,8 +108,10 @@ Route::get('/guardian-invite/{token}', [GuardianController::class, 'showInvite']
 Route::post('/guardian-invite/{token}/accept', [GuardianController::class, 'accept']);
 
 // Test operations (requires authentication via session)
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'app.not_expired'])->group(function () {
     Route::get('/dashboard/overview', [DashboardController::class, 'overview']);
+    Route::get('/dashboard/pdf', [StudentDashboardPdfController::class, 'downloadMine']);
+    Route::get('/my-activity-history', [DashboardController::class, 'myActivityHistory']);
 
     Route::get('/bimble-classes/mine', [BimbleClassController::class, 'mine']);
     Route::get('/bimble-classes/{bimbleClass}/workspace', [BimbleClassController::class, 'workspace']);
@@ -142,6 +145,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('role:admin')->group(function () {
     Route::get('/dashboard/students/{student}/overview', [DashboardController::class, 'studentOverviewForStaff']);
+    Route::get('/dashboard/students/{student}/pdf', [StudentDashboardPdfController::class, 'downloadForStaff']);
     Route::post('/users/import', [UserController::class, 'import']);
     Route::apiResource('users', UserController::class);
 

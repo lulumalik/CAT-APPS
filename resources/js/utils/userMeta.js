@@ -54,3 +54,25 @@ export const getProgramBadge = (user) => {
 export const registrationCompleted = (user) => {
   return Boolean(user?.registration?.fully_completed)
 }
+
+export const isAppExpired = (user) => {
+  if (user?.app_expired === true) return true
+  if (!user?.app_expires_at) return false
+  return new Date(user.app_expires_at) < new Date()
+}
+
+export const formatAppExpiresAt = (value) => {
+  if (!value) return null
+  try {
+    return new Date(value).toLocaleString('id-ID', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'Asia/Jakarta',
+    })
+  } catch {
+    return value
+  }
+}

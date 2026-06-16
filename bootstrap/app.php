@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'app.not_expired' => \App\Http\Middleware\EnsureAppNotExpired::class,
         ]);
         
         // Enable web middleware for API routes to support sessions

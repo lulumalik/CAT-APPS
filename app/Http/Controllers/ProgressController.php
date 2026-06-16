@@ -57,6 +57,14 @@ class ProgressController extends Controller
         return response()->json($this->buildProgress($student));
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    public function progressDataForStudent(User $student): array
+    {
+        return $this->buildProgress($student);
+    }
+
     public function studentResults(Request $request, User $student)
     {
         $this->authorizeAccess($request, $student);

@@ -56,6 +56,29 @@ class DashboardController extends Controller
         ));
     }
 
+    public function myActivityHistory(Request $request)
+    {
+        $user = $request->user();
+        if ($user->role !== 'user') {
+            abort(403);
+        }
+
+        $overview = $this->studentOverview($user->id);
+
+        return response()->json([
+            'classes' => $overview['classes'] ?? [],
+            'class_activities' => $overview['class_activities'] ?? [],
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function studentOverviewData(int $userId): array
+    {
+        return $this->studentOverview($userId);
+    }
+
     private function parentOverview(int $parentId): array
     {
         if (! Schema::hasTable('student_guardians')) {

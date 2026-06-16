@@ -58,6 +58,7 @@ class UserController extends Controller
             'role' => 'required|in:admin,user,mentor',
             'program_category' => 'nullable|in:'.implode(',', User::programCategories()),
             'in_quarantine' => 'nullable|boolean',
+            'app_expires_at' => 'nullable|date',
         ]);
 
         $user = User::create([
@@ -70,6 +71,7 @@ class UserController extends Controller
             'in_quarantine' => User::supportsQuarantine($validated['program_category'] ?? User::PROGRAM_REGULAR)
                 ? (bool) ($validated['in_quarantine'] ?? false)
                 : false,
+            'app_expires_at' => $validated['app_expires_at'] ?? null,
         ]);
 
         $this->ensureRegistrationProgress($user);
@@ -87,6 +89,7 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8',
             'program_category' => 'nullable|in:'.implode(',', User::programCategories()),
             'in_quarantine' => 'nullable|boolean',
+            'app_expires_at' => 'nullable|date',
         ]);
 
         $user->name = $validated['name'];
@@ -110,6 +113,10 @@ class UserController extends Controller
 
         if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
+        }
+
+        if (array_key_exists('app_expires_at', $validated)) {
+            $user->app_expires_at = $validated['app_expires_at'] ?: null;
         }
 
         $user->save();
@@ -160,6 +167,7 @@ class UserController extends Controller
             $programCategory = User::normalizeProgramCategory(trim((string) ($row['program_category'] ?? User::PROGRAM_REGULAR)));
             $inQuarantine = filter_var($row['in_quarantine'] ?? false, FILTER_VALIDATE_BOOLEAN);
             $passwordRaw = (string) ($row['password'] ?? '');
+            $expiresRaw = trim((string) ($row['app_expires_at'] ?? ''));
 
             if ($name === '' || $email === '' || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $skipped[] = ['row' => $idx + 2, 'reason' => 'name/email tidak valid'];
@@ -178,6 +186,15 @@ class UserController extends Controller
                 'program_category' => $programCategory,
                 'in_quarantine' => User::supportsQuarantine($programCategory) ? $inQuarantine : false,
             ];
+
+            if ($expiresRaw !== '') {
+                try {
+                    $payload['app_expires_at'] = \Illuminate\Support\Carbon::parse($expiresRaw);
+                } catch (\Throwable) {
+                    $skipped[] = ['row' => $idx + 2, 'reason' => 'app_expires_at tidak valid'];
+                    continue;
+                }
+            }
 
             $existing = User::where('email', $email)->first();
             if (! $existing) {
