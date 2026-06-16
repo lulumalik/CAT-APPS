@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StudentGuardian;
 use App\Models\User;
 use App\Services\StudentDashboardReportService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class StudentDashboardPdfController extends Controller
@@ -14,28 +16,40 @@ class StudentDashboardPdfController extends Controller
         private StudentDashboardReportService $reportService,
     ) {}
 
-    public function downloadMine(Request $request)
+    public function downloadForStudent(Request $request, User $student)
     {
-        $user = $request->user();
-
-        if ($user->role !== 'user') {
-            abort(403, 'Hanya peserta yang dapat mengunduh laporan dashboard.');
-        }
-
-        return $this->streamPdf($user, $this->resolveReportDate($request));
-    }
-
-    public function downloadForStaff(Request $request, User $student)
-    {
-        if ($request->user()->role !== 'admin') {
-            abort(403);
-        }
-
         if ($student->role !== 'user') {
             return response()->json(['message' => 'Akun ini bukan peserta.'], 422);
         }
 
+        $this->authorizeParentOrStaff($request, $student);
+
         return $this->streamPdf($student, $this->resolveReportDate($request));
+    }
+
+    private function authorizeParentOrStaff(Request $request, User $student): void
+    {
+        $user = $request->user();
+
+        if ($user->id === $student->id) {
+            abort(403, 'Hanya orang tua yang dapat mengunduh laporan perkembangan.');
+        }
+
+        if (in_array($user->role, ['admin', 'mentor'], true)) {
+            return;
+        }
+
+        if ($user->role === 'parent' && Schema::hasTable('student_guardians')) {
+            $linked = StudentGuardian::where('guardian_user_id', $user->id)
+                ->where('student_user_id', $student->id)
+                ->where('invite_status', StudentGuardian::STATUS_ACCEPTED)
+                ->exists();
+            if ($linked) {
+                return;
+            }
+        }
+
+        abort(403, 'Tidak punya akses ke laporan peserta ini.');
     }
 
     private function resolveReportDate(Request $request): ?string

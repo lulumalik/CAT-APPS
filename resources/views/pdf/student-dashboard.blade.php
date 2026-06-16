@@ -179,6 +179,17 @@
             margin-right: 6px;
             vertical-align: middle;
         }
+        .chart-split-block {
+            margin-bottom: 14px;
+            page-break-inside: avoid;
+        }
+        .chart-split-block:last-child { margin-bottom: 0; }
+        .chart-split-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #374151;
+            margin: 0 0 8px;
+        }
         .chart-empty {
             text-align: center;
             color: #9ca3af;
@@ -292,8 +303,8 @@
 
     <div class="section">
         <h2>Hasil Jasmani</h2>
-            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai jasmani peserta per tanggal</p>
-        {!! PdfChartRenderer::multiLineChart(
+        <p class="muted" style="margin:0 0 8px;">Perkembangan tiap komponen jasmani per tanggal</p>
+        {!! PdfChartRenderer::splitSeriesCharts(
             $progress['physical_timeline'] ?? [],
             'value',
             'Belum ada hasil jasmani.'

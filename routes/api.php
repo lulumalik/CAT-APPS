@@ -110,7 +110,6 @@ Route::post('/guardian-invite/{token}/accept', [GuardianController::class, 'acce
 // Test operations (requires authentication via session)
 Route::middleware(['auth', 'app.not_expired'])->group(function () {
     Route::get('/dashboard/overview', [DashboardController::class, 'overview']);
-    Route::get('/dashboard/pdf', [StudentDashboardPdfController::class, 'downloadMine']);
     Route::get('/my-activity-history', [DashboardController::class, 'myActivityHistory']);
 
     Route::get('/bimble-classes/mine', [BimbleClassController::class, 'mine']);
@@ -141,11 +140,11 @@ Route::middleware(['auth', 'app.not_expired'])->group(function () {
     Route::get('/students/{student}/progress', [ProgressController::class, 'studentProgress']);
     Route::get('/students/{student}/results', [ProgressController::class, 'studentResults']);
     Route::get('/students/{student}/reports', [ProgressController::class, 'studentReports']);
+    Route::get('/students/{student}/pdf', [StudentDashboardPdfController::class, 'downloadForStudent']);
 });
 
 Route::middleware('role:admin')->group(function () {
     Route::get('/dashboard/students/{student}/overview', [DashboardController::class, 'studentOverviewForStaff']);
-    Route::get('/dashboard/students/{student}/pdf', [StudentDashboardPdfController::class, 'downloadForStaff']);
     Route::post('/users/import', [UserController::class, 'import']);
     Route::apiResource('users', UserController::class);
 

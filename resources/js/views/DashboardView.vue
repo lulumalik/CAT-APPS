@@ -25,38 +25,13 @@
           <span class="text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span>
         </p>
       </div>
-      <div class="flex flex-wrap items-end gap-2">
-        <label
-          v-if="canDownloadPdf"
-          class="flex flex-col gap-1 text-xs text-gray-500"
-        >
-          <span>Tanggal laporan</span>
-          <input
-            v-model="reportDate"
-            type="date"
-            class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 focus:border-[#9DB359] focus:ring-[#9DB359]"
-            :disabled="exportingPdf"
-          />
-        </label>
-        <button
-          v-if="canDownloadPdf"
-          type="button"
-          class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#9DB359]/40 bg-[#9DB359]/10 hover:bg-[#9DB359]/20 text-sm font-medium text-[#5a6b2e] disabled:opacity-50"
-          :disabled="loading || exportingPdf || !!errorMessage"
-          @click="downloadPdf"
-        >
-          <Download class="h-4 w-4" />
-          {{ exportingPdf ? 'Menyiapkan PDF...' : 'Download PDF' }}
-        </button>
-        <button
-          type="button"
-          class="pdf-hide px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm"
-          :disabled="exportingPdf"
-          @click="loadOverview"
-        >
-          Refresh
-        </button>
-      </div>
+      <button
+        type="button"
+        class="pdf-hide px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm"
+        @click="loadOverview"
+      >
+        Refresh
+      </button>
     </div>
 
     <div v-if="loading" class="py-20 text-center text-gray-500">Memuat data dashboard...</div>
@@ -267,7 +242,6 @@
           <h2 class="pdf-section-title">Perkembangan Saya</h2>
           <StudentProgressPanel
             v-if="activeStudentId"
-            v-model:report-date="reportDate"
             :student-id="activeStudentId"
           />
         </div>
@@ -280,7 +254,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { ArrowLeft, Download, LockKeyhole } from 'lucide-vue-next'
+import { ArrowLeft, LockKeyhole } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { getProgramBadge, programCategoryLabel, registrationCompleted, isAppExpired } from '@/utils/userMeta'
 import StudentProgressPanel from '@/components/StudentProgressPanel.vue'
@@ -293,17 +267,6 @@ const loading = ref(false)
 const errorMessage = ref('')
 const overview = ref({})
 const viewedStudent = ref(null)
-const exportingPdf = ref(false)
-
-function todayIso() {
-  try {
-    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date())
-  } catch {
-    return new Date().toISOString().slice(0, 10)
-  }
-}
-
-const reportDate = ref(todayIso())
 
 const viewingStudentId = computed(() => {
   if (route.name !== 'student-dashboard') return null
@@ -320,10 +283,6 @@ const isExpiredForStudent = computed(() => isStudent.value && !isAdminViewingStu
 const isLockedForStudent = computed(() => isStudent.value && !isAdminViewingStudent.value && !isExpiredForStudent.value && !registrationCompleted(user.value))
 const showStudentDashboard = computed(() => isStudent.value || isAdminViewingStudent.value)
 const activeStudentId = computed(() => viewingStudentId.value || user.value?.id)
-const canDownloadPdf = computed(() => {
-  if (isAdminViewingStudent.value) return !!activeStudentId.value
-  return isStudent.value && !isLockedForStudent.value
-})
 const programBadge = computed(() => getProgramBadge(user.value))
 const displayProgramBadge = computed(() => {
   if (isAdminViewingStudent.value && viewedStudent.value) {
@@ -375,41 +334,8 @@ const loadOverview = async () => {
   }
 }
 
-const downloadPdf = async () => {
-  if (exportingPdf.value) return
-
-  exportingPdf.value = true
-
-  try {
-    const url = viewingStudentId.value
-      ? `/api/dashboard/students/${viewingStudentId.value}/pdf`
-      : '/api/dashboard/pdf'
-
-    const response = await window.axios.get(url, {
-      responseType: 'blob',
-      params: { date: reportDate.value },
-    })
-    const dateLabel = reportDate.value || todayIso()
-    const safeName = String(pdfReportName.value || 'peserta').replace(/[^\w\-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'peserta'
-    const filename = `Laporan-Perkembangan-${safeName}-${dateLabel}.pdf`
-
-    const blobUrl = URL.createObjectURL(response.data)
-    const link = document.createElement('a')
-    link.href = blobUrl
-    link.download = filename
-    link.click()
-    URL.revokeObjectURL(blobUrl)
-  } catch (error) {
-    console.error('Gagal membuat PDF:', error)
-    window.alert('Gagal membuat PDF. Silakan coba lagi.')
-  } finally {
-    exportingPdf.value = false
-  }
-}
-
 watch(viewingStudentId, () => {
   viewedStudent.value = null
-  reportDate.value = todayIso()
   loadOverview()
 }, { immediate: true })
 </script>

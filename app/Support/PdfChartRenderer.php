@@ -95,6 +95,59 @@ class PdfChartRenderer
     }
 
     /**
+     * One vertical bar chart per series (e.g. each physical component).
+     *
+     * @param  list<array{label?: string, unit?: string|null, points?: list<array{date?: string, percent?: float|int, value?: float|int}>}>  $series
+     */
+    public static function splitSeriesCharts(array $series, string $valueMode = 'value', string $emptyText = 'Belum ada data.'): string
+    {
+        $clean = [];
+        foreach ($series as $idx => $s) {
+            $pts = [];
+            foreach ($s['points'] ?? [] as $p) {
+                $val = $p['percent'] ?? $p['value'] ?? null;
+                $date = (string) ($p['date'] ?? '');
+                if ($date === '' || $val === null || ! is_numeric($val)) {
+                    continue;
+                }
+                $pts[$date] = (float) $val;
+            }
+            if ($pts !== []) {
+                $label = (string) ($s['label'] ?? 'Komponen');
+                $unit = $s['unit'] ?? null;
+                if ($unit && $valueMode !== 'percent') {
+                    $label .= ' ('.$unit.')';
+                }
+                $clean[] = [
+                    'label' => $label,
+                    'color' => self::PALETTE[$idx % count(self::PALETTE)],
+                    'values' => $pts,
+                ];
+            }
+        }
+
+        if ($clean === []) {
+            return self::emptyBox($emptyText);
+        }
+
+        $html = '';
+        foreach ($clean as $s) {
+            $dates = array_keys($s['values']);
+            sort($dates);
+            $max = $valueMode === 'percent'
+                ? 100
+                : max(1, max($s['values']));
+
+            $html .= '<div class="chart-split-block">'
+                .'<h3 class="chart-split-title">'.e($s['label']).'</h3>'
+                .self::htmlChart($dates, [$s], $max, $valueMode)
+                .'</div>';
+        }
+
+        return $html;
+    }
+
+    /**
      * @param  list<string>  $dates
      * @param  list<array{label: string, color: string, values: array<string, float>}>  $series
      */
@@ -132,12 +185,16 @@ class PdfChartRenderer
         }
 
         $legend = '';
-        foreach ($series as $s) {
-            $legend .= '<div class="legend-item"><span class="legend-dot" style="background:'.e($s['color']).';"></span>'.e($s['label']).'</div>';
+        if (count($series) > 1) {
+            foreach ($series as $s) {
+                $legend .= '<div class="legend-item"><span class="legend-dot" style="background:'.e($s['color']).';"></span>'.e($s['label']).'</div>';
+            }
         }
 
         $yMax = $valueMode === 'percent' ? '100%' : (string) round($max);
         $yMid = $valueMode === 'percent' ? '50%' : (string) round($max / 2);
+
+        $legendHtml = $legend !== '' ? '<div class="chart-legend">'.$legend.'</div>' : '';
 
         return <<<HTML
 <div class="chart-panel">
@@ -157,7 +214,7 @@ class PdfChartRenderer
       </td>
     </tr>
   </table>
-  <div class="chart-legend">{$legend}</div>
+  {$legendHtml}
 </div>
 HTML;
     }
