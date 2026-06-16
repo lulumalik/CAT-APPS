@@ -228,7 +228,9 @@ const physicalPalette = ['#2F6BFF', '#9DB359', '#E8833A', '#8B5CF6', '#EC4899', 
 const physicalCharts = computed(() =>
   (progress.value.physical_timeline || [])
     .map((series, idx) => {
-      const points = (series.points || []).filter((p) => p.date && p.value != null)
+      const points = (series.points || [])
+        .filter((p) => p.date && p.value != null)
+        .sort((a, b) => String(a.date).localeCompare(String(b.date)))
       if (!points.length) return null
 
       return {

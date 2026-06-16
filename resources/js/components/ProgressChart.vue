@@ -139,8 +139,9 @@ const singleMax = computed(() => {
 })
 
 const timelineBars = computed(() =>
-  props.data
+  [...props.data]
     .filter((d) => d.percent != null || d.value != null)
+    .sort((a, b) => compareDates(a.date, b.date))
     .map((d) => {
       const raw = d.percent != null ? Number(d.percent) : Number(d.value)
       const pct = Number.isNaN(raw) ? 0 : Math.min(100, Math.round((raw / singleMax.value) * 100))
@@ -177,7 +178,8 @@ const cleanSeries = computed(() =>
     color: s.color || palette[idx % palette.length],
     points: (s.points || [])
       .map((p) => ({ date: p.date || '', value: Number(p.percent != null ? p.percent : p.value) }))
-      .filter((p) => p.date && !Number.isNaN(p.value)),
+      .filter((p) => p.date && !Number.isNaN(p.value))
+      .sort((a, b) => compareDates(a.date, b.date)),
   })),
 )
 
@@ -186,7 +188,7 @@ const activeSeries = computed(() => cleanSeries.value.filter((s) => s.points.len
 const allDates = computed(() => {
   const set = new Set()
   activeSeries.value.forEach((s) => s.points.forEach((p) => set.add(p.date)))
-  return Array.from(set).sort()
+  return Array.from(set).sort(compareDates)
 })
 
 const multiMax = computed(() => {
@@ -222,6 +224,10 @@ function yLabel(frac) {
 function yLabelSingle(frac) {
   const v = Math.round(singleMax.value * frac)
   return props.valueMode === 'percent' ? `${v}%` : `${v}`
+}
+
+function compareDates(a, b) {
+  return String(a || '').localeCompare(String(b || ''))
 }
 
 function fmtDate(d) {

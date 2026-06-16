@@ -29,7 +29,7 @@ class PdfChartRenderer
             return self::emptyBox($emptyText);
         }
 
-        ksort($points);
+        ksort($points, SORT_STRING);
         $dates = array_keys($points);
 
         return self::htmlChart(
@@ -61,6 +61,7 @@ class PdfChartRenderer
                 $pts[$date] = (float) $val;
             }
             if ($pts !== []) {
+                ksort($pts);
                 $label = (string) ($s['label'] ?? 'Seri');
                 $unit = $s['unit'] ?? null;
                 if ($unit && $valueMode !== 'percent') {
@@ -78,14 +79,7 @@ class PdfChartRenderer
             return self::emptyBox($emptyText);
         }
 
-        $dates = [];
-        foreach ($clean as $s) {
-            foreach (array_keys($s['values']) as $date) {
-                $dates[$date] = true;
-            }
-        }
-        $dates = array_keys($dates);
-        sort($dates);
+        $dates = self::sortedDateKeys($clean);
 
         $max = $valueMode === 'percent'
             ? 100
@@ -113,6 +107,7 @@ class PdfChartRenderer
                 $pts[$date] = (float) $val;
             }
             if ($pts !== []) {
+                ksort($pts);
                 $label = (string) ($s['label'] ?? 'Komponen');
                 $unit = $s['unit'] ?? null;
                 if ($unit && $valueMode !== 'percent') {
@@ -132,15 +127,15 @@ class PdfChartRenderer
 
         $html = '';
         foreach ($clean as $s) {
+            ksort($s['values']);
             $dates = array_keys($s['values']);
-            sort($dates);
             $max = $valueMode === 'percent'
                 ? 100
                 : max(1, max($s['values']));
 
             $html .= '<div class="chart-split-block">'
                 .'<h3 class="chart-split-title">'.e($s['label']).'</h3>'
-                .self::htmlChart($dates, [$s], $max, $valueMode)
+                .self::htmlChart($dates, [['label' => $s['label'], 'color' => $s['color'], 'values' => $s['values']]], $max, $valueMode)
                 .'</div>';
         }
 
@@ -231,6 +226,20 @@ HTML;
     private static function emptyBox(string $text): string
     {
         return '<div class="chart-empty">'.e($text).'</div>';
+    }
+
+    private static function sortedDateKeys(array $series): array
+    {
+        $dates = [];
+        foreach ($series as $s) {
+            foreach (array_keys($s['values'] ?? []) as $date) {
+                $dates[$date] = true;
+            }
+        }
+        $list = array_keys($dates);
+        sort($list, SORT_STRING);
+
+        return $list;
     }
 
     private static function fmtDate(string $date): string

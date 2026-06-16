@@ -226,7 +226,7 @@ class ProgressController extends Controller
             $series[] = [
                 'id' => $sub['id'],
                 'label' => $sub['label'],
-                'points' => $points,
+                'points' => $this->sortTimelinePoints($points),
             ];
         }
 
@@ -275,7 +275,7 @@ class ProgressController extends Controller
                 'label' => $sub['label'],
                 'unit' => $sub['unit'] ?? null,
                 'sort' => $sub['sort'] ?? 'desc',
-                'points' => $points,
+                'points' => $this->sortTimelinePoints($points),
             ];
         }
 
@@ -317,7 +317,20 @@ class ProgressController extends Controller
             ];
         }
 
-        return $rows;
+        return $this->sortTimelinePoints($rows);
+    }
+
+    /**
+     * @param  list<array{date?: string|null}>  $points
+     * @return list<array{date?: string|null}>
+     */
+    private function sortTimelinePoints(array $points): array
+    {
+        usort($points, function (array $a, array $b): int {
+            return strcmp((string) ($a['date'] ?? ''), (string) ($b['date'] ?? ''));
+        });
+
+        return $points;
     }
 
     /**
