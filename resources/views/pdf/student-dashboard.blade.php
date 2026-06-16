@@ -96,26 +96,85 @@
         }
         .stat-value { font-size: 16px; font-weight: 700; color: #9db359; }
         .stat-label { font-size: 9px; color: #6b7280; margin-top: 2px; }
-        .chart-wrap { margin: 8px 0 4px; }
-        .chart-image {
-            display: block;
-            width: 100%;
-            max-width: 520px;
-            height: auto;
-            margin: 0 auto;
+        .chart-panel {
+            border: 1px solid #eef0f2;
+            border-radius: 10px;
+            padding: 10px;
+            background: #fafbfc;
         }
-        .chart-fallback { margin: 8px 0; }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
+        .chart-axis-table { width: 100%; border-collapse: collapse; }
+        .chart-axis-labels {
+            width: 34px;
+            vertical-align: middle;
+            font-size: 8px;
+            color: #9ca3af;
+            text-align: right;
+            padding-right: 6px;
+        }
+        .chart-axis-labels div { line-height: 2.4; }
+        .chart-axis-body { vertical-align: top; }
+        .chart-data-table { width: 100%; border-collapse: collapse; }
+        .chart-th {
+            font-size: 9px;
+            color: #9ca3af;
+            font-weight: 600;
+            text-align: center;
+            padding: 0 6px 8px;
+        }
+        .chart-th-left { text-align: left; width: 130px; }
+        .chart-td {
+            text-align: center;
+            vertical-align: bottom;
+            padding: 4px 6px 0;
+            border-top: 1px solid #eef0f2;
+        }
+        .chart-series-label {
+            font-size: 9px;
+            color: #374151;
+            font-weight: 600;
+            padding: 8px 8px 8px 0;
+            width: 130px;
+            vertical-align: middle;
+            border-top: 1px solid #eef0f2;
+        }
+        .chart-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        .chart-value {
             font-size: 10px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
         }
-        .data-table th, .data-table td {
-            border: 1px solid #e5e7eb;
-            padding: 6px 8px;
-            text-align: left;
+        .chart-bar-track {
+            height: 56px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
         }
-        .data-table th { background: #f9fafb; font-weight: 700; }
+        .chart-bar-empty { background: #f9fafb; }
+        .chart-bar-fill {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 100%;
+            border-radius: 6px;
+            min-width: 4px;
+        }
+        .chart-trend {
+            font-size: 8px;
+            margin-top: 3px;
+            line-height: 1;
+        }
+        .chart-trend.up { color: #16a34a; }
+        .chart-trend.down { color: #dc2626; }
+        .chart-trend.flat { color: #9ca3af; }
         .chart-empty {
             text-align: center;
             color: #9ca3af;

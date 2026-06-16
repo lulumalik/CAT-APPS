@@ -49,24 +49,32 @@ class StudentDashboardPdfController extends Controller
 
     private function streamPdf(User $student, ?string $dailyDate = null)
     {
-        $data = $this->reportService->build($student, $dailyDate);
-        $programLabel = $this->programLabel($student->program_category);
+        try {
+            $data = $this->reportService->build($student, $dailyDate);
+            $programLabel = $this->programLabel($student->program_category);
 
-        $pdf = Pdf::loadView('pdf.student-dashboard', [
-            'data' => $data,
-            'programLabel' => $programLabel,
-        ])->setPaper('a4', 'portrait');
+            $pdf = Pdf::loadView('pdf.student-dashboard', [
+                'data' => $data,
+                'programLabel' => $programLabel,
+            ])->setPaper('a4', 'portrait');
 
-        $dateLabel = $data['daily_date'] ?? now('Asia/Jakarta')->format('Y-m-d');
-        $filename = 'Laporan-Perkembangan-'.Str::slug($student->name ?: 'peserta').'-'.$dateLabel.'.pdf';
+            $dateLabel = $data['daily_date'] ?? now('Asia/Jakarta')->format('Y-m-d');
+            $filename = 'Laporan-Perkembangan-'.Str::slug($student->name ?: 'peserta').'-'.$dateLabel.'.pdf';
 
-        return response()->streamDownload(
-            static function () use ($pdf) {
-                echo $pdf->output();
-            },
-            $filename,
-            ['Content-Type' => 'application/pdf']
-        );
+            return response()->streamDownload(
+                static function () use ($pdf) {
+                    echo $pdf->output();
+                },
+                $filename,
+                ['Content-Type' => 'application/pdf']
+            );
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'message' => 'Gagal membuat PDF. Silakan coba lagi.',
+            ], 500);
+        }
     }
 
     private function programLabel(?string $program): string
