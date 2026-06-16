@@ -6,6 +6,8 @@ class PdfChartRenderer
 {
     private const PALETTE = ['#2F6BFF', '#9DB359', '#E8833A', '#8B5CF6', '#EC4899', '#14B8A6', '#F59E0B', '#0EA5E9'];
 
+    private const BAR_AREA_HEIGHT = 110;
+
     /**
      * @param  list<array{percent?: float|int, date?: string}>  $data
      */
@@ -98,49 +100,40 @@ class PdfChartRenderer
      */
     private static function htmlChart(array $dates, array $series, float $max, string $valueMode): string
     {
-        $headerCells = '';
+        $seriesCount = count($series);
+        $dateCells = '';
+
         foreach ($dates as $date) {
-            $headerCells .= '<th class="chart-th">'.e(self::fmtDate($date)).'</th>';
-        }
-
-        $rows = '';
-        foreach ($series as $s) {
-            $cells = '';
-            $prev = null;
-            foreach ($dates as $date) {
+            $bars = '';
+            foreach ($series as $s) {
                 $val = $s['values'][$date] ?? null;
-                $trend = '';
-                if ($val !== null && $prev !== null) {
-                    if ($val > $prev) {
-                        $trend = '<div class="chart-trend up">▲</div>';
-                    } elseif ($val < $prev) {
-                        $trend = '<div class="chart-trend down">▼</div>';
-                    } else {
-                        $trend = '<div class="chart-trend flat">■</div>';
-                    }
-                }
-                if ($val !== null) {
-                    $prev = $val;
+                if ($val === null) {
+                    $bars .= '<td class="chart-bar-slot"><div class="chart-bar-empty-slot"></div></td>';
+                    continue;
                 }
 
-                $display = $val === null
-                    ? '—'
-                    : ($valueMode === 'percent' ? rtrim(rtrim(number_format($val, 1), '0'), '.').'%' : rtrim(rtrim(number_format($val, 1), '0'), '.'));
-                $width = $val === null ? 0 : self::barWidth($val, $max);
+                $height = self::barHeightPx($val, $max);
+                $display = $valueMode === 'percent'
+                    ? rtrim(rtrim(number_format($val, 1), '0'), '.').'%'
+                    : rtrim(rtrim(number_format($val, 1), '0'), '.');
 
-                $cells .= '<td class="chart-td">'
-                    .'<div class="chart-value">'.e($display).'</div>'
-                    .($val !== null
-                        ? '<div class="chart-bar-track"><div class="chart-bar-fill" style="width:'.$width.'%;background:'.e($s['color']).';"></div></div>'
-                        : '<div class="chart-bar-track chart-bar-empty"></div>')
-                    .$trend
+                $bars .= '<td class="chart-bar-slot">'
+                    .'<div class="chart-bar-value">'.e($display).'</div>'
+                    .'<div class="chart-bar-track">'
+                    .'<div class="chart-bar-fill" style="height:'.$height.'px;background:'.e($s['color']).';"></div>'
+                    .'</div>'
                     .'</td>';
             }
 
-            $rows .= '<tr>'
-                .'<td class="chart-series-label"><span class="chart-dot" style="background:'.e($s['color']).';"></span>'.e($s['label']).'</td>'
-                .$cells
-                .'</tr>';
+            $dateCells .= '<td class="chart-date-col" align="center">'
+                .'<table class="chart-bar-group" cellpadding="0" cellspacing="3" align="center"><tr valign="bottom">'.$bars.'</tr></table>'
+                .'<div class="chart-date-label">'.e(self::fmtDate($date)).'</div>'
+                .'</td>';
+        }
+
+        $legend = '';
+        foreach ($series as $s) {
+            $legend .= '<div class="legend-item"><span class="legend-dot" style="background:'.e($s['color']).';"></span>'.e($s['label']).'</div>';
         }
 
         $yMax = $valueMode === 'percent' ? '100%' : (string) round($max);
@@ -156,31 +149,26 @@ class PdfChartRenderer
         <div>0</div>
       </td>
       <td class="chart-axis-body">
-        <table class="chart-data-table" width="100%" cellpadding="0" cellspacing="0">
-          <thead>
-            <tr>
-              <th class="chart-th chart-th-left"></th>
-              {$headerCells}
-            </tr>
-          </thead>
-          <tbody>
-            {$rows}
-          </tbody>
+        <table class="chart-dates-row" width="100%" cellpadding="0" cellspacing="0">
+          <tr valign="bottom">
+            {$dateCells}
+          </tr>
         </table>
       </td>
     </tr>
   </table>
+  <div class="chart-legend">{$legend}</div>
 </div>
 HTML;
     }
 
-    private static function barWidth(float $value, float $max): float
+    private static function barHeightPx(float $value, float $max): int
     {
         if ($max <= 0) {
             return 0;
         }
 
-        return min(100, round(($value / $max) * 100, 1));
+        return max(4, (int) round(($value / $max) * self::BAR_AREA_HEIGHT));
     }
 
     private static function emptyBox(string $text): string

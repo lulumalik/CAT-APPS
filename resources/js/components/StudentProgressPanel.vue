@@ -120,7 +120,7 @@
       <!-- 4. Nilai per Mata Pelajaran -->
       <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
         <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai per Mata Pelajaran</h3>
-        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai (%) tiap mata pelajaran dari waktu ke waktu</p>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai (%) tiap mata pelajaran per tanggal</p>
         <div class="flex-1">
           <ProgressChart
             type="multiline"
@@ -134,7 +134,7 @@
       <!-- 5. Hasil Jasmani -->
       <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
         <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Hasil Jasmani</h3>
-        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai jasmani peserta dari waktu ke waktu</p>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai jasmani peserta per tanggal</p>
         <div class="flex-1">
           <ProgressChart
             type="multiline"
@@ -148,7 +148,7 @@
       <!-- 6. Nilai Tes -->
       <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
         <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai Tes</h3>
-        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan persentase nilai dari waktu ke waktu</p>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan persentase nilai tes per tanggal</p>
         <div class="flex-1">
           <ProgressChart
             type="line"

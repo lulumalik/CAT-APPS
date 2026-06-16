@@ -105,76 +105,80 @@
         .chart-axis-table { width: 100%; border-collapse: collapse; }
         .chart-axis-labels {
             width: 34px;
-            vertical-align: middle;
+            vertical-align: bottom;
             font-size: 8px;
             color: #9ca3af;
             text-align: right;
             padding-right: 6px;
+            padding-bottom: 28px;
         }
-        .chart-axis-labels div { line-height: 2.4; }
-        .chart-axis-body { vertical-align: top; }
-        .chart-data-table { width: 100%; border-collapse: collapse; }
-        .chart-th {
+        .chart-axis-labels div { line-height: 2.8; }
+        .chart-axis-body { vertical-align: bottom; }
+        .chart-dates-row { width: 100%; border-collapse: collapse; }
+        .chart-date-col {
+            vertical-align: bottom;
+            padding: 0 4px;
+            border-bottom: 1px solid #eef0f2;
+        }
+        .chart-date-label {
             font-size: 9px;
             color: #9ca3af;
-            font-weight: 600;
             text-align: center;
-            padding: 0 6px 8px;
+            margin-top: 6px;
+            padding-bottom: 2px;
         }
-        .chart-th-left { text-align: left; width: 130px; }
-        .chart-td {
-            text-align: center;
+        .chart-bar-group { margin: 0 auto; }
+        .chart-bar-slot {
             vertical-align: bottom;
-            padding: 4px 6px 0;
-            border-top: 1px solid #eef0f2;
+            text-align: center;
+            padding: 0 1px;
         }
-        .chart-series-label {
-            font-size: 9px;
-            color: #374151;
-            font-weight: 600;
-            padding: 8px 8px 8px 0;
-            width: 130px;
-            vertical-align: middle;
-            border-top: 1px solid #eef0f2;
-        }
-        .chart-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 2px;
-            margin-right: 5px;
-            vertical-align: middle;
-        }
-        .chart-value {
-            font-size: 10px;
+        .chart-bar-value {
+            font-size: 8px;
             font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
+            line-height: 1.1;
         }
         .chart-bar-track {
-            height: 56px;
+            width: 14px;
+            height: 110px;
             background: #f3f4f6;
-            border-radius: 6px;
+            border-radius: 6px 6px 0 0;
             position: relative;
+            margin: 0 auto;
             overflow: hidden;
         }
-        .chart-bar-empty { background: #f9fafb; }
         .chart-bar-fill {
             position: absolute;
             left: 0;
             bottom: 0;
-            height: 100%;
-            border-radius: 6px;
-            min-width: 4px;
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            min-height: 4px;
         }
-        .chart-trend {
-            font-size: 8px;
-            margin-top: 3px;
-            line-height: 1;
+        .chart-bar-empty-slot {
+            width: 14px;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            margin: 0 auto;
         }
-        .chart-trend.up { color: #16a34a; }
-        .chart-trend.down { color: #dc2626; }
-        .chart-trend.flat { color: #9ca3af; }
+        .chart-legend { margin-top: 10px; }
+        .legend-item {
+            font-size: 9px;
+            color: #4b5563;
+            margin: 0 0 4px;
+            line-height: 1.6;
+        }
+        .legend-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
         .chart-empty {
             text-align: center;
             color: #9ca3af;
@@ -278,7 +282,7 @@
 
     <div class="section">
         <h2>Nilai per Mata Pelajaran</h2>
-        <p class="muted" style="margin:0 0 8px;">Perkembangan nilai (%) tiap mata pelajaran dari waktu ke waktu</p>
+            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai (%) tiap mata pelajaran per tanggal</p>
         {!! PdfChartRenderer::multiLineChart(
             $progress['academic_subject_timeline'] ?? [],
             'percent',
@@ -288,7 +292,7 @@
 
     <div class="section">
         <h2>Hasil Jasmani</h2>
-        <p class="muted" style="margin:0 0 8px;">Perkembangan nilai jasmani peserta dari waktu ke waktu</p>
+            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai jasmani peserta per tanggal</p>
         {!! PdfChartRenderer::multiLineChart(
             $progress['physical_timeline'] ?? [],
             'value',
@@ -298,7 +302,7 @@
 
     <div class="section">
         <h2>Nilai Tes</h2>
-        <p class="muted" style="margin:0 0 8px;">Perkembangan persentase nilai dari waktu ke waktu</p>
+            <p class="muted" style="margin:0 0 8px;">Perkembangan persentase nilai tes per tanggal</p>
         {!! PdfChartRenderer::lineChart(
             $progress['academic_timeline'] ?? [],
             '#2F6BFF',
