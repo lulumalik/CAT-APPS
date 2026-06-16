@@ -97,17 +97,25 @@
         .stat-value { font-size: 16px; font-weight: 700; color: #9db359; }
         .stat-label { font-size: 9px; color: #6b7280; margin-top: 2px; }
         .chart-wrap { margin: 8px 0 4px; }
-        .chart-table { width: 100%; border-collapse: collapse; }
-        .chart-yaxis {
-            width: 32px;
-            vertical-align: middle;
-            font-size: 8px;
-            color: #9ca3af;
-            text-align: right;
-            padding-right: 6px;
+        .chart-image {
+            display: block;
+            width: 100%;
+            max-width: 520px;
+            height: auto;
+            margin: 0 auto;
         }
-        .chart-yaxis div { line-height: 2.2; }
-        .chart-plot { vertical-align: top; }
+        .chart-fallback { margin: 8px 0; }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #e5e7eb;
+            padding: 6px 8px;
+            text-align: left;
+        }
+        .data-table th { background: #f9fafb; font-weight: 700; }
         .chart-empty {
             text-align: center;
             color: #9ca3af;
@@ -116,27 +124,6 @@
             border: 1px dashed #e5e7eb;
             border-radius: 8px;
             background: #fafbfc;
-        }
-        .chart-dates-table {
-            width: 100%;
-            margin-top: 4px;
-            font-size: 9px;
-            color: #9ca3af;
-        }
-        .chart-legend { margin-top: 8px; }
-        .legend-item {
-            font-size: 9px;
-            color: #4b5563;
-            margin: 0 0 4px;
-            line-height: 1.6;
-        }
-        .legend-dot {
-            display: inline-block;
-            width: 10px;
-            height: 4px;
-            border-radius: 2px;
-            margin-right: 6px;
-            vertical-align: middle;
         }
     </style>
 </head>
