@@ -49,7 +49,7 @@ class StudentDashboardPdfController extends Controller
         ])->setPaper('a4', 'portrait');
 
         $dateLabel = now('Asia/Jakarta')->format('Y-m-d');
-        $filename = 'Laporan-Dashboard-'.Str::slug($student->name ?: 'peserta').'-'.$dateLabel.'.pdf';
+        $filename = 'Laporan-Perkembangan-'.Str::slug($student->name ?: 'peserta').'-'.$dateLabel.'.pdf';
 
         return response()->streamDownload(
             static function () use ($pdf) {

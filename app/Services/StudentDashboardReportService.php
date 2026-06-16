@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProgressController;
 use App\Models\StudentReport;
 use App\Models\User;
@@ -16,7 +15,6 @@ class StudentDashboardReportService
      */
     public function build(User $student, ?string $dailyDate = null): array
     {
-        $overview = app(DashboardController::class)->studentOverviewData($student->id);
         $progress = app(ProgressController::class)->progressDataForStudent($student);
         $date = $dailyDate ?: now('Asia/Jakarta')->toDateString();
 
@@ -60,7 +58,6 @@ class StudentDashboardReportService
             ],
             'generated_at' => Carbon::now('Asia/Jakarta')->format('d M Y H:i'),
             'daily_date' => $date,
-            'overview' => $overview,
             'progress' => $progress,
             'daily_reports' => $dailyReports,
             'weekly_reports' => $weeklyReports,

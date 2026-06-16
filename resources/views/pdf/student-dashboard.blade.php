@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Dashboard</title>
+    <title>Laporan Perkembangan</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -12,31 +12,53 @@
             line-height: 1.45;
             margin: 0;
             padding: 24px;
+            background: #ffffff;
         }
-        h1 { font-size: 20px; margin: 0 0 4px; }
-        h2 { font-size: 14px; margin: 0 0 10px; color: #1a1a1a; }
-        h3 { font-size: 12px; margin: 0 0 8px; }
+        h1 { font-size: 20px; margin: 0 0 4px; color: #1a1a1a; }
+        h2 {
+            font-size: 13px;
+            margin: 0 0 10px;
+            color: #1a1a1a;
+            font-weight: 700;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #9db359;
+        }
+        h3 { font-size: 11px; margin: 0 0 8px; font-weight: 700; color: #374151; }
         .muted { color: #6b7280; font-size: 10px; }
         .header {
-            border-bottom: 2px solid #b8c0cc;
-            padding-bottom: 12px;
+            border-bottom: 2px solid #cdd4de;
+            padding-bottom: 14px;
             margin-bottom: 18px;
         }
+        .header-meta { margin-top: 4px; }
+        .badge {
+            display: inline-block;
+            background: #f0f4e8;
+            color: #5a6b2e;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 999px;
+            padding: 3px 10px;
+            margin-left: 6px;
+            border: 1px solid #d4dfb8;
+        }
         .section {
-            border: 1.5px solid #cdd4de;
-            border-radius: 8px;
-            padding: 12px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 14px;
             margin-bottom: 14px;
             page-break-inside: avoid;
+            background: #ffffff;
         }
         .card {
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 8px 10px;
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
+            padding: 10px 12px;
             margin-bottom: 8px;
             background: #fafbfc;
         }
         .card:last-child { margin-bottom: 0; }
+        .card-title { font-weight: 700; font-size: 11px; color: #1a1a1a; }
         .tag {
             display: inline-block;
             background: #f3f4f6;
@@ -46,220 +68,192 @@
             padding: 2px 8px;
             margin: 2px 4px 2px 0;
         }
-        table.data {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 10px;
-        }
-        table.data th, table.data td {
-            border: 1px solid #e5e7eb;
-            padding: 6px 8px;
-            text-align: left;
-        }
-        table.data th { background: #f9fafb; }
         .weekly {
-            border-color: #9db359;
+            border: 1.5px solid #9db359;
             background: #f7faf2;
         }
-        .two-col { width: 100%; }
-        .two-col td { vertical-align: top; width: 50%; padding-right: 8px; }
+        .stat-grid { width: 100%; border-collapse: separate; border-spacing: 8px 0; }
+        .stat-grid td { width: 33.33%; vertical-align: top; }
+        .stat-card {
+            border: 1px solid #eef0f2;
+            border-radius: 8px;
+            padding: 10px;
+            background: #fafbfc;
+            text-align: center;
+        }
+        .stat-value { font-size: 16px; font-weight: 700; color: #9db359; }
+        .stat-label { font-size: 9px; color: #6b7280; margin-top: 2px; }
+        .chart-box { margin: 8px 0 4px; }
+        .chart-svg { width: 100%; height: 150px; display: block; }
+        .chart-empty {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 10px;
+            padding: 28px 12px;
+            border: 1px dashed #e5e7eb;
+            border-radius: 8px;
+            background: #fafbfc;
+        }
+        .chart-dates {
+            display: table;
+            width: 100%;
+            margin-top: 4px;
+            font-size: 9px;
+            color: #9ca3af;
+        }
+        .chart-dates span:first-child { text-align: left; display: table-cell; }
+        .chart-dates span:last-child { text-align: right; display: table-cell; }
+        .chart-row { display: table; width: 100%; }
+        .chart-yaxis {
+            display: table-cell;
+            width: 28px;
+            vertical-align: middle;
+            font-size: 8px;
+            color: #9ca3af;
+            text-align: right;
+            padding-right: 6px;
+        }
+        .chart-yaxis span { display: block; line-height: 1.8; }
+        .chart-main { display: table-cell; vertical-align: top; }
+        .chart-legend { margin-top: 8px; }
+        .legend-item {
+            display: inline-block;
+            font-size: 9px;
+            color: #4b5563;
+            margin: 0 10px 4px 0;
+        }
+        .legend-dot {
+            display: inline-block;
+            width: 10px;
+            height: 4px;
+            border-radius: 999px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        .subsection { margin-bottom: 16px; }
+        .subsection:last-child { margin-bottom: 0; }
     </style>
 </head>
 <body>
     @php
+        use App\Support\PdfChartRenderer;
         $student = $data['student'] ?? [];
-        $overview = $data['overview'] ?? [];
         $progress = $data['progress'] ?? [];
-        $classes = $overview['classes'] ?? [];
-        $activities = $overview['class_activities'] ?? [];
     @endphp
 
     <div class="header">
-        <h1>Laporan Dashboard</h1>
-        <div class="muted">
-            {{ $student['name'] ?? 'Peserta' }} · {{ $programLabel }}
+        <h1>Laporan Perkembangan</h1>
+        <div class="header-meta muted">
+            <strong style="color:#1a1a1a;">{{ $student['name'] ?? 'Peserta' }}</strong>
+            <span class="badge">{{ $programLabel }}</span>
             <br>Dicetak: {{ $data['generated_at'] ?? '-' }}
         </div>
     </div>
 
-    <table class="two-col">
-        <tr>
-            <td>
-                <div class="section">
-                    <h2>Kelas Saya</h2>
-                    @forelse ($classes as $class)
-                        <div class="card">
-                            <strong>{{ $class['name'] ?? '-' }}</strong>
-                            <div class="muted">{{ $class['class_code'] ?? '' }}</div>
-                            <div class="muted">
-                                Aktivitas terakhir:
-                                {{ $class['latest_activity']['title'] ?? 'Belum ada aktivitas' }}
-                            </div>
-                        </div>
-                    @empty
-                        <div class="muted">Belum ada kelas yang ditambahkan.</div>
-                    @endforelse
-                </div>
-            </td>
-            <td>
-                <div class="section">
-                    <h2>Aktivitas Kelas</h2>
-                    @forelse ($activities as $activity)
-                        <div class="card">
-                            <strong>{{ $activity['title'] ?? '-' }}</strong>
-                            <div class="muted">
-                                {{ $activity['bimble_class']['name'] ?? '' }}
-                                @if (!empty($activity['creator']['name']))
-                                    · {{ $activity['creator']['name'] }}
-                                @endif
-                                @if (!empty($activity['happened_at']))
-                                    · {{ \Illuminate\Support\Carbon::parse($activity['happened_at'])->timezone('Asia/Jakarta')->format('d M Y H:i') }}
-                                @endif
-                            </div>
-                            @if (!empty($activity['description']))
-                                <div style="margin-top:4px;">{{ $activity['description'] }}</div>
-                            @endif
-                        </div>
-                    @empty
-                        <div class="muted">Belum ada aktivitas kelas.</div>
-                    @endforelse
-                </div>
-            </td>
-        </tr>
-    </table>
-
     <div class="section">
-        <h2>Perkembangan Saya</h2>
-
-        <h3>Laporan Harian ({{ \Illuminate\Support\Carbon::parse($data['daily_date'])->format('d M Y') }})</h3>
+        <h2>Laporan Harian</h2>
+        <p class="muted" style="margin:0 0 10px;">Tanggal: {{ \Illuminate\Support\Carbon::parse($data['daily_date'])->format('d M Y') }}</p>
         @forelse ($data['daily_reports'] ?? [] as $report)
             <div class="card">
-                <strong>{{ $report['title'] }}</strong>
-                <span class="muted"> · {{ $report['created_at'] ?? '' }}</span>
+                <div class="card-title">{{ $report['title'] }}</div>
+                <div class="muted">{{ $report['created_at'] ?? '' }}</div>
                 @if (!empty($report['summary']))
-                    <div style="margin-top:4px;">{{ $report['summary'] }}</div>
+                    <div style="margin-top:6px; color:#374151;">{{ $report['summary'] }}</div>
                 @endif
                 @foreach ($report['categories'] ?? [] as $key => $val)
                     <span class="tag"><strong>{{ $key }}:</strong> {{ $val }}</span>
                 @endforeach
-                <div class="muted" style="margin-top:4px;">
+                <div class="muted" style="margin-top:6px;">
                     @if (!empty($report['class_name'])){{ $report['class_name'] }} · @endif
                     {{ $report['created_by'] ?? 'Sistem' }}
                 </div>
             </div>
         @empty
-            <div class="muted">Belum ada laporan harian untuk tanggal ini.</div>
+            <div class="chart-empty">Belum ada laporan harian untuk tanggal ini.</div>
         @endforelse
+    </div>
 
-        <h3 style="margin-top:14px;">Ringkasan Mingguan</h3>
+    <div class="section">
+        <h2>Ringkasan Mingguan</h2>
         @forelse ($data['weekly_reports'] ?? [] as $report)
             <div class="card weekly">
-                <strong>{{ $report['title'] }}</strong>
+                <div class="card-title">{{ $report['title'] }}</div>
                 @if (!empty($report['summary']))
-                    <div style="margin-top:4px;">{{ $report['summary'] }}</div>
+                    <div style="margin-top:6px; color:#374151;">{{ $report['summary'] }}</div>
                 @endif
                 @foreach ($report['categories'] ?? [] as $key => $val)
                     <div style="margin-top:4px;"><strong>{{ $key }}:</strong> {{ $val }}</div>
                 @endforeach
             </div>
         @empty
-            <div class="muted">Belum ada ringkasan mingguan.</div>
+            <div class="chart-empty">Belum ada ringkasan mingguan.</div>
         @endforelse
+    </div>
 
-        <h3 style="margin-top:14px;">Materi Kelas</h3>
+    <div class="section">
+        <h2>Materi Kelas</h2>
+        <p class="muted" style="margin:0 0 10px;">Jumlah materi &amp; aktivitas per kelas</p>
         @forelse ($progress['materials'] ?? [] as $class)
             <div class="card">
-                <strong>{{ $class['name'] ?? '-' }}</strong>
-                <div class="muted">
-                    {{ $class['materials_count'] ?? 0 }} materi ·
-                    {{ $class['sessions_count'] ?? 0 }} sesi ·
-                    {{ $class['activities_count'] ?? 0 }} aktivitas
-                </div>
+                <div class="card-title">{{ $class['name'] ?? '-' }}</div>
+                <table class="stat-grid" style="margin-top:8px;">
+                    <tr>
+                        <td>
+                            <div class="stat-card">
+                                <div class="stat-value">{{ $class['materials_count'] ?? 0 }}</div>
+                                <div class="stat-label">Materi</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="stat-card">
+                                <div class="stat-value">{{ $class['sessions_count'] ?? 0 }}</div>
+                                <div class="stat-label">Sesi</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="stat-card">
+                                <div class="stat-value">{{ $class['activities_count'] ?? 0 }}</div>
+                                <div class="stat-label">Aktivitas</div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
         @empty
-            <div class="muted">Belum tergabung di kelas.</div>
+            <div class="chart-empty">Belum tergabung di kelas.</div>
         @endforelse
+    </div>
 
-        <h3 style="margin-top:14px;">Nilai per Mata Pelajaran</h3>
-        @php $subjectSeries = $progress['academic_subject_timeline'] ?? []; @endphp
-        @if (count($subjectSeries))
-            <table class="data">
-                <thead>
-                    <tr>
-                        <th>Mata Pelajaran</th>
-                        <th>Tanggal</th>
-                        <th>Nilai (%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($subjectSeries as $series)
-                        @foreach ($series['points'] ?? [] as $point)
-                            <tr>
-                                <td>{{ $series['label'] ?? '-' }}</td>
-                                <td>{{ $point['date'] ?? '-' }}</td>
-                                <td>{{ $point['percent'] ?? '-' }}</td>
-                            </tr>
-                        @endforeach
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <div class="muted">Belum ada nilai akademik.</div>
-        @endif
+    <div class="section">
+        <div class="subsection">
+            <h2>Nilai per Mata Pelajaran</h2>
+            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai (%) tiap mata pelajaran dari waktu ke waktu</p>
+            {!! PdfChartRenderer::multiLineChart(
+                $progress['academic_subject_timeline'] ?? [],
+                'percent',
+                'Belum ada nilai akademik.'
+            ) !!}
+        </div>
 
-        <h3 style="margin-top:14px;">Hasil Jasmani</h3>
-        @php $physicalSeries = $progress['physical_timeline'] ?? []; @endphp
-        @if (count($physicalSeries))
-            <table class="data">
-                <thead>
-                    <tr>
-                        <th>Komponen</th>
-                        <th>Tanggal</th>
-                        <th>Nilai</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($physicalSeries as $series)
-                        @foreach ($series['points'] ?? [] as $point)
-                            <tr>
-                                <td>{{ $series['label'] ?? '-' }}</td>
-                                <td>{{ $point['date'] ?? '-' }}</td>
-                                <td>{{ $point['value'] ?? '-' }} {{ $series['unit'] ?? '' }}</td>
-                            </tr>
-                        @endforeach
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <div class="muted">Belum ada hasil jasmani.</div>
-        @endif
+        <div class="subsection">
+            <h2>Hasil Jasmani</h2>
+            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai jasmani peserta dari waktu ke waktu</p>
+            {!! PdfChartRenderer::multiLineChart(
+                $progress['physical_timeline'] ?? [],
+                'value',
+                'Belum ada hasil jasmani.'
+            ) !!}
+        </div>
 
-        <h3 style="margin-top:14px;">Nilai Tes</h3>
-        @php $academicTimeline = $progress['academic_timeline'] ?? []; @endphp
-        @if (count($academicTimeline))
-            <table class="data">
-                <thead>
-                    <tr>
-                        <th>Tes</th>
-                        <th>Kategori</th>
-                        <th>Tanggal</th>
-                        <th>Nilai (%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($academicTimeline as $row)
-                        <tr>
-                            <td>{{ $row['label'] ?? '-' }}</td>
-                            <td>{{ $row['category'] ?? '-' }}</td>
-                            <td>{{ $row['date'] ?? '-' }}</td>
-                            <td>{{ $row['percent'] ?? '-' }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @else
-            <div class="muted">Belum ada nilai tes.</div>
-        @endif
+        <div class="subsection">
+            <h2>Nilai Tes</h2>
+            <p class="muted" style="margin:0 0 8px;">Perkembangan persentase nilai dari waktu ke waktu</p>
+            {!! PdfChartRenderer::lineChart(
+                $progress['academic_timeline'] ?? [],
+                '#2F6BFF',
+                'Belum ada nilai tes.'
+            ) !!}
+        </div>
     </div>
 </body>
 </html>

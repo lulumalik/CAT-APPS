@@ -365,7 +365,7 @@ const downloadPdf = async () => {
     const response = await window.axios.get(url, { responseType: 'blob' })
     const dateLabel = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date())
     const safeName = String(pdfReportName.value || 'peserta').replace(/[^\w\-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'peserta'
-    const filename = `Laporan-Dashboard-${safeName}-${dateLabel}.pdf`
+    const filename = `Laporan-Perkembangan-${safeName}-${dateLabel}.pdf`
 
     const blobUrl = URL.createObjectURL(response.data)
     const link = document.createElement('a')

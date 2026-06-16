@@ -57,6 +57,10 @@ class AuthController extends Controller
             unset($payload['username']);
         }
 
+        if (Schema::hasColumn('users', 'app_expires_at')) {
+            $payload['app_expires_at'] = User::defaultAppExpiresAt();
+        }
+
         $user = User::create($payload);
 
         if (Schema::hasTable('registration_progress')) {

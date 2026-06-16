@@ -176,6 +176,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->app_expires_at !== null && $this->app_expires_at->isPast();
     }
 
+    public static function defaultAppExpiresAt(): \Illuminate\Support\Carbon
+    {
+        return now()->addYear();
+    }
+
     public function registrationProgress()
     {
         return $this->hasOne(RegistrationProgress::class);
