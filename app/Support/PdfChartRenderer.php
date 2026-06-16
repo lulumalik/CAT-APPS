@@ -32,32 +32,21 @@ class PdfChartRenderer
             return self::emptyBox($emptyText);
         }
 
-        $n = count($points);
-        $dots = [];
-        foreach ($points as $i => $p) {
-            $dots[] = [
-                'x' => $n === 1 ? self::W / 2 : ($i / ($n - 1)) * self::W,
-                'y' => self::yForPercent($p['percent']),
-            ];
-        }
-
-        $grid = self::percentGridLines();
-        $polyline = implode(' ', array_map(fn ($d) => sprintf('%.2f,%.2f', $d['x'], $d['y']), $dots));
-        $circles = '';
-        foreach ($dots as $d) {
-            $circles .= sprintf('<circle cx="%.2f" cy="%.2f" r="3.5" fill="%s"/>', $d['x'], $d['y'], $color);
-        }
+        $dots = self::buildPercentDots($points);
+        $svg = self::percentGridLines().self::renderLineSegments($dots, $color).self::renderMarkers($dots, $color);
 
         $dateStart = self::fmtDate($points[0]['date']);
-        $dateEnd = self::fmtDate($points[$n - 1]['date']);
+        $dateEnd = self::fmtDate($points[count($points) - 1]['date']);
 
-        return self::wrapChart(<<<SVG
-{$grid}
-<polyline points="{$polyline}" fill="none" stroke="{$color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-{$circles}
-SVG, <<<HTML
-<div class="chart-dates"><span>{$dateStart}</span><span>{$dateEnd}</span></div>
-HTML);
+        return self::chartLayout(
+            $svg,
+            '0%',
+            '50%',
+            '100%',
+            $dateStart,
+            $dateEnd,
+            '',
+        );
     }
 
     /**
@@ -105,8 +94,7 @@ HTML);
             ? 100
             : max(1, ...array_map(fn ($s) => max(array_column($s['points'], 'value')), $clean));
 
-        $grid = self::fractionGridLines();
-        $paths = '';
+        $svg = self::fractionGridLines();
         $legend = '';
 
         foreach ($clean as $s) {
@@ -118,22 +106,12 @@ HTML);
                 ];
             }
 
-            if (count($dots) > 1) {
-                $polyline = implode(' ', array_map(fn ($d) => sprintf('%.2f,%.2f', $d['x'], $d['y']), $dots));
-                $paths .= sprintf(
-                    '<polyline points="%s" fill="none" stroke="%s" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>',
-                    $polyline,
-                    $s['color']
-                );
-            }
-
-            foreach ($dots as $d) {
-                $paths .= sprintf('<circle cx="%.2f" cy="%.2f" r="3" fill="%s"/>', $d['x'], $d['y'], $s['color']);
-            }
+            $svg .= self::renderLineSegments($dots, $s['color']);
+            $svg .= self::renderMarkers($dots, $s['color']);
 
             $unitSuffix = ($s['unit'] && $valueMode !== 'percent') ? ' ('.e($s['unit']).')' : '';
             $legend .= sprintf(
-                '<span class="legend-item"><span class="legend-dot" style="background:%s"></span>%s%s</span>',
+                '<div class="legend-item"><span class="legend-dot" style="background:%s;"></span>%s%s</div>',
                 $s['color'],
                 e($s['label']),
                 $unitSuffix
@@ -144,36 +122,116 @@ HTML);
         $yMid = $valueMode === 'percent' ? '50%' : (string) round($max / 2);
         $yBot = $valueMode === 'percent' ? '0%' : '0';
 
-        $dateStart = self::fmtDate($allDates[0] ?? '');
-        $dateEnd = self::fmtDate($allDates[count($allDates) - 1] ?? '');
-
-        return <<<HTML
-<div class="chart-row">
-  <div class="chart-yaxis">
-    <span>{$yTop}</span>
-    <span>{$yMid}</span>
-    <span>{$yBot}</span>
-  </div>
-  <div class="chart-main">
-    <svg viewBox="0 0 320 160" class="chart-svg" xmlns="http://www.w3.org/2000/svg">
-      {$grid}
-      {$paths}
-    </svg>
-    <div class="chart-dates"><span>{$dateStart}</span><span>{$dateEnd}</span></div>
-  </div>
-</div>
-<div class="chart-legend">{$legend}</div>
-HTML;
+        return self::chartLayout(
+            $svg,
+            $yTop,
+            $yMid,
+            $yBot,
+            self::fmtDate($allDates[0] ?? ''),
+            self::fmtDate($allDates[count($allDates) - 1] ?? ''),
+            $legend,
+        );
     }
 
-    private static function wrapChart(string $svgBody, string $footer = ''): string
+    /**
+     * @param  list<array{percent: float, date: string}>  $points
+     * @return list<array{x: float, y: float}>
+     */
+    private static function buildPercentDots(array $points): array
     {
+        $n = count($points);
+        $dots = [];
+        foreach ($points as $i => $p) {
+            $dots[] = [
+                'x' => $n === 1 ? self::W / 2 : ($i / ($n - 1)) * self::W,
+                'y' => self::yForPercent($p['percent']),
+            ];
+        }
+
+        return $dots;
+    }
+
+    /**
+     * @param  list<array{x: float, y: float}>  $dots
+     */
+    private static function renderLineSegments(array $dots, string $color): string
+    {
+        if (count($dots) < 2) {
+            return '';
+        }
+
+        $lines = '';
+        for ($i = 1; $i < count($dots); $i++) {
+            $a = $dots[$i - 1];
+            $b = $dots[$i];
+            $lines .= sprintf(
+                '<line x1="%.2f" y1="%.2f" x2="%.2f" y2="%.2f" stroke="%s" stroke-width="2.5"/>',
+                $a['x'],
+                $a['y'],
+                $b['x'],
+                $b['y'],
+                $color,
+            );
+        }
+
+        return $lines;
+    }
+
+    /**
+     * DomPDF renders rects more reliably than circles.
+     *
+     * @param  list<array{x: float, y: float}>  $dots
+     */
+    private static function renderMarkers(array $dots, string $color): string
+    {
+        $markers = '';
+        foreach ($dots as $d) {
+            $size = 7;
+            $markers .= sprintf(
+                '<rect x="%.2f" y="%.2f" width="%d" height="%d" fill="%s" stroke="#ffffff" stroke-width="1"/>',
+                $d['x'] - ($size / 2),
+                $d['y'] - ($size / 2),
+                $size,
+                $size,
+                $color,
+            );
+        }
+
+        return $markers;
+    }
+
+    private static function chartLayout(
+        string $svgBody,
+        string $yTop,
+        string $yMid,
+        string $yBot,
+        string $dateStart,
+        string $dateEnd,
+        string $legend,
+    ): string {
         return <<<HTML
-<div class="chart-box">
-  <svg viewBox="0 0 320 160" class="chart-svg" xmlns="http://www.w3.org/2000/svg">
-    {$svgBody}
-  </svg>
-  {$footer}
+<div class="chart-wrap">
+  <table class="chart-table" cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="chart-yaxis">
+        <div>{$yTop}</div>
+        <div>{$yMid}</div>
+        <div>{$yBot}</div>
+      </td>
+      <td class="chart-plot">
+        <svg xmlns="http://www.w3.org/2000/svg" width="320" height="160" viewBox="0 0 320 160">
+          {$svgBody}
+        </svg>
+        <table class="chart-dates-table" width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td align="left">{$dateStart}</td>
+            <td align="right">{$dateEnd}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <div class="chart-legend">{$legend}</div>
 </div>
 HTML;
     }
@@ -188,7 +246,7 @@ HTML;
         $lines = '';
         foreach ([0, 25, 50, 75, 100] as $g) {
             $y = self::yForPercent($g);
-            $lines .= sprintf('<line x1="0" x2="%d" y1="%.2f" y2="%.2f" stroke="#eef0f2" stroke-width="1"/>', self::W, $y, $y);
+            $lines .= sprintf('<line x1="0" y1="%.2f" x2="%d" y2="%.2f" stroke="#dde1e6" stroke-width="1"/>', $y, self::W, $y);
         }
 
         return $lines;
@@ -199,7 +257,7 @@ HTML;
         $lines = '';
         foreach ([0, 0.25, 0.5, 0.75, 1] as $frac) {
             $y = self::yForFrac($frac);
-            $lines .= sprintf('<line x1="0" x2="%d" y1="%.2f" y2="%.2f" stroke="#eef0f2" stroke-width="1"/>', self::W, $y, $y);
+            $lines .= sprintf('<line x1="0" y1="%.2f" x2="%d" y2="%.2f" stroke="#dde1e6" stroke-width="1"/>', $y, self::W, $y);
         }
 
         return $lines;
@@ -231,7 +289,11 @@ HTML;
         if ($n <= 1) {
             return self::W / 2;
         }
+
         $index = array_search($date, $allDates, true);
+        if ($index === false) {
+            return self::W / 2;
+        }
 
         return ($index / ($n - 1)) * self::W;
     }

@@ -96,8 +96,18 @@
         }
         .stat-value { font-size: 16px; font-weight: 700; color: #9db359; }
         .stat-label { font-size: 9px; color: #6b7280; margin-top: 2px; }
-        .chart-box { margin: 8px 0 4px; }
-        .chart-svg { width: 100%; height: 150px; display: block; }
+        .chart-wrap { margin: 8px 0 4px; }
+        .chart-table { width: 100%; border-collapse: collapse; }
+        .chart-yaxis {
+            width: 32px;
+            vertical-align: middle;
+            font-size: 8px;
+            color: #9ca3af;
+            text-align: right;
+            padding-right: 6px;
+        }
+        .chart-yaxis div { line-height: 2.2; }
+        .chart-plot { vertical-align: top; }
         .chart-empty {
             text-align: center;
             color: #9ca3af;
@@ -107,40 +117,25 @@
             border-radius: 8px;
             background: #fafbfc;
         }
-        .chart-dates {
-            display: table;
+        .chart-dates-table {
             width: 100%;
             margin-top: 4px;
             font-size: 9px;
             color: #9ca3af;
         }
-        .chart-dates span:first-child { text-align: left; display: table-cell; }
-        .chart-dates span:last-child { text-align: right; display: table-cell; }
-        .chart-row { display: table; width: 100%; }
-        .chart-yaxis {
-            display: table-cell;
-            width: 28px;
-            vertical-align: middle;
-            font-size: 8px;
-            color: #9ca3af;
-            text-align: right;
-            padding-right: 6px;
-        }
-        .chart-yaxis span { display: block; line-height: 1.8; }
-        .chart-main { display: table-cell; vertical-align: top; }
         .chart-legend { margin-top: 8px; }
         .legend-item {
-            display: inline-block;
             font-size: 9px;
             color: #4b5563;
-            margin: 0 10px 4px 0;
+            margin: 0 0 4px;
+            line-height: 1.6;
         }
         .legend-dot {
             display: inline-block;
             width: 10px;
             height: 4px;
-            border-radius: 999px;
-            margin-right: 4px;
+            border-radius: 2px;
+            margin-right: 6px;
             vertical-align: middle;
         }
     </style>
