@@ -170,7 +170,10 @@ import ProgressChart from '@/components/ProgressChart.vue'
 const props = defineProps({
   studentId: { type: [Number, String], required: true },
   pdfMode: { type: Boolean, default: false },
+  reportDate: { type: String, default: '' },
 })
+
+const emit = defineEmits(['update:reportDate'])
 
 const DAILY_PER_PAGE = 10
 
@@ -186,8 +189,18 @@ const dailyMeta = ref({
   per_page: DAILY_PER_PAGE,
   date: todayIso(),
 })
-const dailyDate = ref(todayIso())
+const dailyDate = ref(props.reportDate || todayIso())
 const dailyPage = ref(1)
+
+watch(
+  () => props.reportDate,
+  (value) => {
+    if (!value || value === dailyDate.value) return
+    dailyDate.value = value
+    dailyPage.value = 1
+    loadDailyReports()
+  },
+)
 
 const dailyRangeLabel = computed(() => {
   if (!dailyMeta.value.total) return '0'
@@ -262,6 +275,7 @@ async function loadAll() {
 
 function onDailyDateChange() {
   dailyPage.value = 1
+  emit('update:reportDate', dailyDate.value)
   loadDailyReports()
 }
 
@@ -303,7 +317,7 @@ function formatDateTime(d) {
 watch(
   () => props.studentId,
   () => {
-    dailyDate.value = todayIso()
+    dailyDate.value = props.reportDate || todayIso()
     dailyPage.value = 1
     loadAll()
   },

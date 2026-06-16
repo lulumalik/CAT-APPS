@@ -25,7 +25,19 @@
           <span class="text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span>
         </p>
       </div>
-      <div class="flex flex-wrap items-center gap-2">
+      <div class="flex flex-wrap items-end gap-2">
+        <label
+          v-if="canDownloadPdf"
+          class="flex flex-col gap-1 text-xs text-gray-500"
+        >
+          <span>Tanggal laporan</span>
+          <input
+            v-model="reportDate"
+            type="date"
+            class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 focus:border-[#9DB359] focus:ring-[#9DB359]"
+            :disabled="exportingPdf"
+          />
+        </label>
         <button
           v-if="canDownloadPdf"
           type="button"
@@ -255,6 +267,7 @@
           <h2 class="pdf-section-title">Perkembangan Saya</h2>
           <StudentProgressPanel
             v-if="activeStudentId"
+            v-model:report-date="reportDate"
             :student-id="activeStudentId"
           />
         </div>
@@ -281,6 +294,16 @@ const errorMessage = ref('')
 const overview = ref({})
 const viewedStudent = ref(null)
 const exportingPdf = ref(false)
+
+function todayIso() {
+  try {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date())
+  } catch {
+    return new Date().toISOString().slice(0, 10)
+  }
+}
+
+const reportDate = ref(todayIso())
 
 const viewingStudentId = computed(() => {
   if (route.name !== 'student-dashboard') return null
@@ -362,8 +385,11 @@ const downloadPdf = async () => {
       ? `/api/dashboard/students/${viewingStudentId.value}/pdf`
       : '/api/dashboard/pdf'
 
-    const response = await window.axios.get(url, { responseType: 'blob' })
-    const dateLabel = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(new Date())
+    const response = await window.axios.get(url, {
+      responseType: 'blob',
+      params: { date: reportDate.value },
+    })
+    const dateLabel = reportDate.value || todayIso()
     const safeName = String(pdfReportName.value || 'peserta').replace(/[^\w\-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'peserta'
     const filename = `Laporan-Perkembangan-${safeName}-${dateLabel}.pdf`
 
@@ -383,6 +409,7 @@ const downloadPdf = async () => {
 
 watch(viewingStudentId, () => {
   viewedStudent.value = null
+  reportDate.value = todayIso()
   loadOverview()
 }, { immediate: true })
 </script>

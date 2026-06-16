@@ -22,7 +22,7 @@ class StudentDashboardPdfController extends Controller
             abort(403, 'Hanya peserta yang dapat mengunduh laporan dashboard.');
         }
 
-        return $this->streamPdf($user, $request->input('date'));
+        return $this->streamPdf($user, $this->resolveReportDate($request));
     }
 
     public function downloadForStaff(Request $request, User $student)
@@ -35,7 +35,16 @@ class StudentDashboardPdfController extends Controller
             return response()->json(['message' => 'Akun ini bukan peserta.'], 422);
         }
 
-        return $this->streamPdf($student, $request->input('date'));
+        return $this->streamPdf($student, $this->resolveReportDate($request));
+    }
+
+    private function resolveReportDate(Request $request): ?string
+    {
+        $validated = $request->validate([
+            'date' => 'nullable|date_format:Y-m-d',
+        ]);
+
+        return $validated['date'] ?? null;
     }
 
     private function streamPdf(User $student, ?string $dailyDate = null)
@@ -48,7 +57,7 @@ class StudentDashboardPdfController extends Controller
             'programLabel' => $programLabel,
         ])->setPaper('a4', 'portrait');
 
-        $dateLabel = now('Asia/Jakarta')->format('Y-m-d');
+        $dateLabel = $data['daily_date'] ?? now('Asia/Jakarta')->format('Y-m-d');
         $filename = 'Laporan-Perkembangan-'.Str::slug($student->name ?: 'peserta').'-'.$dateLabel.'.pdf';
 
         return response()->streamDownload(
