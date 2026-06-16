@@ -30,17 +30,30 @@
             padding-bottom: 14px;
             margin-bottom: 18px;
         }
-        .header-meta { margin-top: 4px; }
+        .header-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 10px 0 8px;
+            line-height: 1.4;
+        }
+        .header-badge-row {
+            margin-bottom: 8px;
+        }
+        .header-printed {
+            font-size: 10px;
+            line-height: 1.4;
+        }
         .badge {
             display: inline-block;
             background: #f0f4e8;
             color: #5a6b2e;
             font-size: 9px;
             font-weight: 700;
-            border-radius: 999px;
-            padding: 3px 10px;
-            margin-left: 6px;
-            border: 1px solid #d4dfb8;
+            border-radius: 10px;
+            padding: 4px 12px;
+            border: 1px solid #c5d4a0;
+            line-height: 1.2;
         }
         .section {
             border: 1.5px solid #e5e7eb;
@@ -130,8 +143,6 @@
             margin-right: 4px;
             vertical-align: middle;
         }
-        .subsection { margin-bottom: 16px; }
-        .subsection:last-child { margin-bottom: 0; }
     </style>
 </head>
 <body>
@@ -143,11 +154,11 @@
 
     <div class="header">
         <h1>Laporan Perkembangan</h1>
-        <div class="header-meta muted">
-            <strong style="color:#1a1a1a;">{{ $student['name'] ?? 'Peserta' }}</strong>
+        <div class="header-name">{{ $student['name'] ?? 'Peserta' }}</div>
+        <div class="header-badge-row">
             <span class="badge">{{ $programLabel }}</span>
-            <br>Dicetak: {{ $data['generated_at'] ?? '-' }}
         </div>
+        <div class="header-printed muted">Dicetak: {{ $data['generated_at'] ?? '-' }}</div>
     </div>
 
     <div class="section">
@@ -225,35 +236,33 @@
     </div>
 
     <div class="section">
-        <div class="subsection">
-            <h2>Nilai per Mata Pelajaran</h2>
-            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai (%) tiap mata pelajaran dari waktu ke waktu</p>
-            {!! PdfChartRenderer::multiLineChart(
-                $progress['academic_subject_timeline'] ?? [],
-                'percent',
-                'Belum ada nilai akademik.'
-            ) !!}
-        </div>
+        <h2>Nilai per Mata Pelajaran</h2>
+        <p class="muted" style="margin:0 0 8px;">Perkembangan nilai (%) tiap mata pelajaran dari waktu ke waktu</p>
+        {!! PdfChartRenderer::multiLineChart(
+            $progress['academic_subject_timeline'] ?? [],
+            'percent',
+            'Belum ada nilai akademik.'
+        ) !!}
+    </div>
 
-        <div class="subsection">
-            <h2>Hasil Jasmani</h2>
-            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai jasmani peserta dari waktu ke waktu</p>
-            {!! PdfChartRenderer::multiLineChart(
-                $progress['physical_timeline'] ?? [],
-                'value',
-                'Belum ada hasil jasmani.'
-            ) !!}
-        </div>
+    <div class="section">
+        <h2>Hasil Jasmani</h2>
+        <p class="muted" style="margin:0 0 8px;">Perkembangan nilai jasmani peserta dari waktu ke waktu</p>
+        {!! PdfChartRenderer::multiLineChart(
+            $progress['physical_timeline'] ?? [],
+            'value',
+            'Belum ada hasil jasmani.'
+        ) !!}
+    </div>
 
-        <div class="subsection">
-            <h2>Nilai Tes</h2>
-            <p class="muted" style="margin:0 0 8px;">Perkembangan persentase nilai dari waktu ke waktu</p>
-            {!! PdfChartRenderer::lineChart(
-                $progress['academic_timeline'] ?? [],
-                '#2F6BFF',
-                'Belum ada nilai tes.'
-            ) !!}
-        </div>
+    <div class="section">
+        <h2>Nilai Tes</h2>
+        <p class="muted" style="margin:0 0 8px;">Perkembangan persentase nilai dari waktu ke waktu</p>
+        {!! PdfChartRenderer::lineChart(
+            $progress['academic_timeline'] ?? [],
+            '#2F6BFF',
+            'Belum ada nilai tes.'
+        ) !!}
     </div>
 </body>
 </html>
