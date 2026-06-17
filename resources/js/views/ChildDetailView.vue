@@ -11,9 +11,18 @@
       </div>
       <div class="flex flex-wrap items-end gap-2">
         <label class="flex flex-col gap-1 text-xs text-gray-500">
-          <span>Tanggal laporan</span>
+          <span>From</span>
           <input
-            v-model="reportDate"
+            v-model="reportDateFrom"
+            type="date"
+            class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 focus:border-[#9DB359] focus:ring-[#9DB359]"
+            :disabled="exportingPdf"
+          />
+        </label>
+        <label class="flex flex-col gap-1 text-xs text-gray-500">
+          <span>To</span>
+          <input
+            v-model="reportDateTo"
             type="date"
             class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 focus:border-[#9DB359] focus:ring-[#9DB359]"
             :disabled="exportingPdf"
@@ -30,9 +39,10 @@
         </button>
       </div>
     </div>
+    <p class="mb-6 text-xs text-gray-500">Rentang tanggal maksimal 14 hari. Untuk 1 hari, samakan tanggal From dan To.</p>
 
     <StudentProgressPanel
-      v-model:report-date="reportDate"
+      v-model:report-date="reportDateFrom"
       :student-id="studentId"
     />
   </main>
@@ -58,7 +68,8 @@ function todayIso() {
   }
 }
 
-const reportDate = ref(todayIso())
+const reportDateFrom = ref(todayIso())
+const reportDateTo = ref(todayIso())
 
 onMounted(async () => {
   try {
@@ -73,14 +84,46 @@ onMounted(async () => {
 const downloadPdf = async () => {
   if (exportingPdf.value) return
 
+  if (!reportDateFrom.value || !reportDateTo.value) {
+    window.alert('Tanggal From dan To wajib diisi.')
+    return
+  }
+
+  const from = new Date(`${reportDateFrom.value}T00:00:00`)
+  const to = new Date(`${reportDateTo.value}T00:00:00`)
+  const diffMs = to.getTime() - from.getTime()
+
+  if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) {
+    window.alert('Format tanggal tidak valid.')
+    return
+  }
+
+  if (diffMs < 0) {
+    window.alert('Tanggal To tidak boleh lebih kecil dari From.')
+    return
+  }
+
+  const diffDaysInclusive = Math.floor(diffMs / (24 * 60 * 60 * 1000)) + 1
+  if (diffDaysInclusive > 14) {
+    window.alert('Rentang tanggal maksimal 14 hari.')
+    return
+  }
+
   exportingPdf.value = true
 
   try {
     const response = await window.axios.get(`/api/students/${studentId.value}/pdf`, {
       responseType: 'blob',
-      params: { date: reportDate.value },
+      params: {
+        from_date: reportDateFrom.value,
+        to_date: reportDateTo.value,
+      },
     })
-    const dateLabel = reportDate.value || todayIso()
+    const fromDateLabel = reportDateFrom.value || todayIso()
+    const toDateLabel = reportDateTo.value || fromDateLabel
+    const dateLabel = fromDateLabel === toDateLabel
+      ? fromDateLabel
+      : `${fromDateLabel}_to_${toDateLabel}`
     const safeName = String(childName.value || 'peserta').replace(/[^\w\-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'peserta'
     const filename = `Laporan-Perkembangan-${safeName}-${dateLabel}.pdf`
 

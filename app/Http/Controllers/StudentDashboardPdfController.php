@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\StudentDashboardReportService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -24,7 +25,7 @@ class StudentDashboardPdfController extends Controller
 
         $this->authorizeParentOrStaff($request, $student);
 
-        return $this->streamPdf($student, $this->resolveReportDate($request));
+        return $this->streamPdf($student, $this->resolveReportDateRange($request));
     }
 
     private function authorizeParentOrStaff(Request $request, User $student): void
@@ -52,19 +53,48 @@ class StudentDashboardPdfController extends Controller
         abort(403, 'Tidak punya akses ke laporan peserta ini.');
     }
 
-    private function resolveReportDate(Request $request): ?string
+    /**
+     * @return array{from_date:string,to_date:string}
+     */
+    private function resolveReportDateRange(Request $request): array
     {
         $validated = $request->validate([
+            'from_date' => 'nullable|date_format:Y-m-d',
+            'to_date' => 'nullable|date_format:Y-m-d',
             'date' => 'nullable|date_format:Y-m-d',
         ]);
 
-        return $validated['date'] ?? null;
+        $fromDate = $validated['from_date'] ?? $validated['date'] ?? null;
+        $toDate = $validated['to_date'] ?? $validated['date'] ?? null;
+
+        $today = now('Asia/Jakarta')->toDateString();
+        $fromDate = $fromDate ?: $today;
+        $toDate = $toDate ?: $fromDate;
+
+        $from = Carbon::createFromFormat('Y-m-d', $fromDate, 'Asia/Jakarta')->startOfDay();
+        $to = Carbon::createFromFormat('Y-m-d', $toDate, 'Asia/Jakarta')->startOfDay();
+
+        if ($to->lt($from)) {
+            abort(422, 'Tanggal To tidak boleh lebih kecil dari From.');
+        }
+
+        if ($from->diffInDays($to) > 13) {
+            abort(422, 'Rentang tanggal maksimal 14 hari.');
+        }
+
+        return [
+            'from_date' => $from->toDateString(),
+            'to_date' => $to->toDateString(),
+        ];
     }
 
-    private function streamPdf(User $student, ?string $dailyDate = null)
+    /**
+     * @param  array{from_date:string,to_date:string}  $dateRange
+     */
+    private function streamPdf(User $student, array $dateRange)
     {
         try {
-            $data = $this->reportService->build($student, $dailyDate);
+            $data = $this->reportService->build($student, $dateRange['from_date'], $dateRange['to_date']);
             $programLabel = $this->programLabel($student->program_category);
 
             $pdf = Pdf::loadView('pdf.student-dashboard', [
@@ -72,7 +102,9 @@ class StudentDashboardPdfController extends Controller
                 'programLabel' => $programLabel,
             ])->setPaper('a4', 'portrait');
 
-            $dateLabel = $data['daily_date'] ?? now('Asia/Jakarta')->format('Y-m-d');
+            $fromDate = $data['daily_range_start'] ?? now('Asia/Jakarta')->format('Y-m-d');
+            $toDate = $data['daily_range_end'] ?? $fromDate;
+            $dateLabel = $fromDate === $toDate ? $fromDate : $fromDate.'-to-'.$toDate;
             $filename = 'Laporan-Perkembangan-'.Str::slug($student->name ?: 'peserta').'-'.$dateLabel.'.pdf';
 
             return response()->streamDownload(

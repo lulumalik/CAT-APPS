@@ -206,6 +206,15 @@
         use App\Support\PdfChartRenderer;
         $student = $data['student'] ?? [];
         $progress = $data['progress'] ?? [];
+        $rangeStart = $data['daily_range_start'] ?? null;
+        $rangeEnd = $data['daily_range_end'] ?? $rangeStart;
+        $dailyRangeLabel = '-';
+        if ($rangeStart && $rangeEnd) {
+            $dailyRangeLabel = \Illuminate\Support\Carbon::parse($rangeStart)->format('d M Y');
+            if ($rangeStart !== $rangeEnd) {
+                $dailyRangeLabel .= ' s/d '.\Illuminate\Support\Carbon::parse($rangeEnd)->format('d M Y');
+            }
+        }
     @endphp
 
     <div class="header">
@@ -219,7 +228,7 @@
 
     <div class="section">
         <h2>Laporan Harian</h2>
-        <p class="muted" style="margin:0 0 10px;">Tanggal: {{ \Illuminate\Support\Carbon::parse($data['daily_date'])->format('d M Y') }}</p>
+        <p class="muted" style="margin:0 0 10px;">Rentang tanggal: {{ $dailyRangeLabel }}</p>
         @forelse ($data['daily_reports'] ?? [] as $report)
             <div class="card">
                 <div class="card-title">{{ $report['title'] }}</div>
@@ -236,7 +245,7 @@
                 </div>
             </div>
         @empty
-            <div class="chart-empty">Belum ada laporan harian untuk tanggal ini.</div>
+            <div class="chart-empty">Belum ada laporan harian pada rentang tanggal ini.</div>
         @endforelse
     </div>
 
