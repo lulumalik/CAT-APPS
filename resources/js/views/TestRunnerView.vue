@@ -1,253 +1,40 @@
 <template>
-  <main class="min-h-screen bg-[#F9F9F7] py-8 font-sans text-[#1A1A1A] anti-cheat-mode">
-    <div class="mx-auto max-w-7xl px-4 md:px-12">
-      <div
-        v-if="antiCheatMessage"
-        class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
-      >
-        {{ antiCheatMessage }} ({{ violations }}/{{ maxViolations }})
-      </div>
-
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-8">
-        <div>
-          <h1 class="text-2xl font-bold text-[#1A1A1A]">{{ testData?.name || t('testRunner.defaultTitle') }}</h1>
-          <p class="text-gray-500 mt-1 flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#9DB359]"></span>
-            {{ testData?.description || testData?.category || t('testRunner.defaultSubtitle') }}
-          </p>
-        </div>
-        <div class="flex items-center gap-4">
-          <div class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800">
-            Anti-cheat: {{ violations }}/{{ maxViolations }}
-          </div>
-          <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
-            <div class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </div>
-            <span class="font-bold text-xl text-[#1A1A1A] font-mono">{{ mm }}:{{ ss }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <!-- Main Question Area - Wider -->
-        <div class="lg:col-span-3 space-y-6">
-          <!-- Progress Bar -->
-          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('testRunner.progress') }}</span>
-              <span class="text-sm font-bold text-[#1A1A1A]">{{ answeredCount }} <span class="text-gray-400 font-normal">/</span> {{ questions.length }} <span class="text-gray-400 font-normal">{{ t('testRunner.answered') }}</span></span>
-            </div>
-            <div class="h-3 rounded-full bg-gray-100 overflow-hidden">
-              <div class="h-full rounded-full bg-[#9DB359] transition-all duration-500 ease-out" :style="{ width: progressPct + '%' }"></div>
-            </div>
-          </div>
-
-          <!-- Question Card -->
-          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-8">
-            <div class="flex items-center justify-between mb-8">
-              <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200 uppercase tracking-wide">
-                {{ current.category }}
-              </span>
-              <button 
-                @click="toggleFlag(index)" 
-                class="px-4 py-1.5 rounded-full border transition-all cursor-pointer flex items-center gap-2 text-sm font-medium"
-                :class="flags[index] ? 'border-yellow-200 bg-yellow-50 text-yellow-700' : 'border-gray-200 text-gray-500 hover:border-yellow-300 hover:text-yellow-600'"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="flags[index] ? 'currentColor' : 'none'"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
-                {{ flags[index] ? t('testRunner.flagged') : t('testRunner.flag') }}
-              </button>
-            </div>
-
-            <div class="mb-8">
-              <h2 class="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">{{ t('testRunner.question', { n: index + 1 }) }}</h2>
-              <div v-if="current.image" class="mb-6">
-                  <img :src="current.image" class="max-h-80 object-contain rounded-2xl border border-gray-200 shadow-sm" />
-              </div>
-              <p class="text-2xl font-medium leading-relaxed text-[#1A1A1A]">{{ current.question }}</p>
-            </div>
-
-            <!-- Options -->
-            <div v-if="current.type === 'multiple_choice' || !current.type" class="space-y-4">
-              <div 
-                v-for="opt in current.options" 
-                :key="opt.key" 
-                @click="canSubmit && selectOption(opt.key)" 
-                class="group rounded-xl border-2 px-6 py-5 flex items-center gap-5 transition-all relative overflow-hidden"
-                :class="[
-                  selected(index) === opt.key 
-                    ? 'border-[#9DB359] bg-[#9DB359]/5' 
-                    : 'border-gray-100 bg-white hover:border-[#9DB359]/50 hover:bg-gray-50',
-                  canSubmit ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
-                ]"
-              >
-                <div 
-                  class="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm flex-shrink-0 transition-colors"
-                  :class="selected(index) === opt.key 
-                    ? 'border-[#9DB359] bg-[#9DB359] text-white' 
-                    : 'border-gray-200 text-gray-400 group-hover:border-[#9DB359]/50 group-hover:text-gray-600'"
-                >
-                  {{ opt.key }}
-                </div>
-                <span class="text-lg text-[#1A1A1A]" :class="{'font-medium': selected(index) === opt.key}">{{ opt.label }}</span>
-                
-                <!-- Checkmark for selected -->
-                <div v-if="selected(index) === opt.key" class="absolute right-6 top-1/2 -translate-y-1/2 text-[#9DB359]">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-              </div>
-            </div>
-
-            <!-- Essay Input -->
-            <div v-else-if="current.type === 'essay'" class="space-y-3">
-                <textarea 
-                    v-model="answers[current.id]" 
-                    rows="8" 
-                    :placeholder="t('testRunner.answerPlaceholder')"
-                    class="w-full rounded-xl border border-gray-200 p-5 focus:border-[#9DB359] focus:ring-1 focus:ring-[#9DB359] outline-none text-lg resize-none shadow-sm transition-colors"
-                    :disabled="!canSubmit"
-                ></textarea>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="mt-10 flex items-center justify-between pt-8 border-t border-gray-50">
-              <button 
-                class="px-8 py-3 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors font-medium text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2" 
-                @click="prev" 
-                :disabled="index === 0"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                {{ t('testRunner.previous') }}
-              </button>
-              
-              <button 
-                v-if="index < questions.length - 1" 
-                class="px-8 py-3 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors font-medium cursor-pointer shadow-lg shadow-black/10 flex items-center gap-2" 
-                @click="next"
-              >
-                {{ t('testRunner.next') }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-              </button>
-              
-              <button 
-                v-else 
-                class="px-8 py-3 rounded-full bg-[#9DB359] text-white hover:bg-[#8ca34b] transition-colors font-bold cursor-pointer shadow-lg shadow-[#9DB359]/20 flex items-center gap-2" 
-                @click="finishTest"
-                :disabled="!canSubmit"
-              >
-                {{ t('testRunner.submit') }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sidebar - Question Navigator -->
-        <aside class="lg:col-span-1">
-          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 sticky top-24">
-            <h3 class="font-bold text-[#1A1A1A] mb-4 flex items-center gap-2">
-              <span class="w-1.5 h-6 rounded-full bg-[#9DB359]"></span>
-              {{ t('testRunner.questionNavigator') }}
-            </h3>
-            
-            <div class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-4 gap-3">
-              <button 
-                v-for="(q, i) in questions" 
-                :key="i"
-                @click="jumpTo(i)"
-                class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all border-2 cursor-pointer relative"
-                :class="[
-                  index === i 
-                    ? 'border-[#1A1A1A] bg-[#1A1A1A] text-white scale-110 shadow-lg' 
-                    : answers[q.id] 
-                      ? 'border-[#9DB359] bg-[#9DB359]/10 text-[#9DB359]' 
-                      : 'border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-300'
-                ]"
-              >
-                {{ i + 1 }}
-                <span v-if="flags[i]" class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white"></span>
-              </button>
-            </div>
-
-            <div class="mt-8 pt-6 border-t border-gray-50 space-y-3">
-              <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
-                <span class="w-3 h-3 rounded-full bg-[#1A1A1A]"></span>
-                {{ t('testRunner.legendCurrent') }}
-              </div>
-              <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
-                <span class="w-3 h-3 rounded-full bg-[#9DB359]/10 border border-[#9DB359]"></span>
-                {{ t('testRunner.legendAnswered') }}
-              </div>
-              <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
-                <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
-                {{ t('testRunner.legendFlagged') }}
-              </div>
-              <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
-                <span class="w-3 h-3 rounded-full bg-gray-50 border border-gray-200"></span>
-                {{ t('testRunner.legendUnanswered') }}
-              </div>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </main>
+  <TestRunnerPanel
+    v-if="testData && questions.length"
+    :test-data="testData"
+    :questions="questions"
+    :submitting="isSubmitting"
+    @submit="handleSubmit"
+  />
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useToast, useModal } from '@/composables/useNotification'
-import { useAppStore } from '@/stores/app'
+import { useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
+import TestRunnerPanel from '@/components/TestRunnerPanel.vue'
 
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
-const { confirm } = useModal()
-const store = useAppStore()
 const { t } = useI18n()
 
 const testId = route.params.id
 const questions = ref([])
 const testData = ref(null)
-const index = ref(0)
-const answers = ref({})
-const flags = ref({})
-const timeLeft = ref(0)
-const timer = ref(null)
-const canSubmit = ref(true)
 const isSubmitting = ref(false)
-const violations = ref(0)
-const antiCheatMessage = ref('')
-const maxViolations = 3
-
-const current = computed(() => questions.value[index.value] || {})
-const selected = (idx) => {
-  const qId = questions.value[idx]?.id
-  return qId ? answers.value[qId] : null
-}
-
-const answeredCount = computed(() => Object.keys(answers.value).length)
-const progressPct = computed(() => {
-  if (questions.value.length === 0) return 0
-  return Math.round((answeredCount.value / questions.value.length) * 100)
-})
-
-const mm = computed(() => String(Math.floor(timeLeft.value / 60)).padStart(2, '0'))
-const ss = computed(() => String(timeLeft.value % 60).padStart(2, '0'))
 
 const fetchTest = async () => {
   try {
     const { data } = await window.axios.get(`/api/tests/${testId}`)
-    
+
     if (data.has_submitted) {
       toast.error('Error', 'You have already submitted this test')
       router.push('/dashboard')
       return
     }
-    
+
     if (!data.can_submit) {
       const message = data?.status === 'upcoming'
         ? 'Test belum dimulai sesuai jadwal'
@@ -259,17 +46,6 @@ const fetchTest = async () => {
 
     testData.value = data
     questions.value = data.questions || []
-    
-    const now = new Date()
-    const endTime = new Date(data.end_time)
-    let remainingSeconds = Math.floor((endTime - now) / 1000)
-    if (remainingSeconds < 0) remainingSeconds = 0
-    
-    const durationSeconds = (data.duration || 60) * 60
-    
-    timeLeft.value = Math.min(remainingSeconds, durationSeconds)
-    
-    startTimer()
   } catch (error) {
     const message = error?.response?.data?.message || 'Failed to start test or test not found'
     toast.error('Error', message)
@@ -277,179 +53,19 @@ const fetchTest = async () => {
   }
 }
 
-const startTimer = () => {
-  timer.value = setInterval(() => {
-    if (timeLeft.value > 0) {
-      timeLeft.value--
-    } else {
-      finishTest(true)
-    }
-  }, 1000)
-}
-
-const selectOption = (key) => {
-  const qId = questions.value[index.value]?.id
-  if (qId) answers.value[qId] = key
-}
-
-const next = () => {
-  if (index.value < questions.value.length - 1) index.value++
-}
-
-const prev = () => {
-  if (index.value > 0) index.value--
-}
-
-const jumpTo = (i) => {
-  index.value = i
-}
-
-const toggleFlag = (i) => {
-  flags.value[i] = !flags.value[i]
-}
-
-const finishTest = async (force = false) => {
+const handleSubmit = async ({ answers }) => {
   if (isSubmitting.value) return
-  if (!force) {
-    const confirmed = await confirm({
-      title: t('testRunner.confirmSubmitTitle'),
-      message: `${t('testRunner.confirmSubmitMessage')} (${answeredCount.value}/${questions.value.length})`,
-      confirmText: t('testRunner.confirmSubmitConfirm'),
-      cancelText: t('testRunner.review')
-    })
-    if (!confirmed) return
-  }
-
-  clearInterval(timer.value)
-  canSubmit.value = false
   isSubmitting.value = true
 
   try {
-    await window.axios.post(`/api/tests/${testId}/submit`, {
-      answers: answers.value
-    })
+    await window.axios.post(`/api/tests/${testId}/submit`, { answers })
     toast.success(t('testRunner.toastSubmittedTitle'), t('testRunner.toastSubmittedMessage'))
     router.push('/dashboard')
-  } catch (error) {
+  } catch {
     toast.error('Error', 'Failed to submit test')
-    canSubmit.value = true // Allow retry
     isSubmitting.value = false
   }
 }
 
-const registerViolation = async (reason) => {
-  if (!canSubmit.value || isSubmitting.value) return
-  violations.value += 1
-  antiCheatMessage.value = reason
-  toast.error('Anti-cheat warning', reason)
-
-  if (violations.value >= maxViolations) {
-    await finishTest(true)
-  }
-}
-
-const preventClipboardAction = (event) => {
-  event.preventDefault()
-  registerViolation('Copy/paste/cut tidak diizinkan selama ujian.')
-}
-
-const preventContextMenu = (event) => {
-  event.preventDefault()
-  registerViolation('Klik kanan dinonaktifkan selama ujian.')
-}
-
-const handleKeydown = (event) => {
-  const key = String(event.key || '').toLowerCase()
-  const ctrlOrMeta = event.ctrlKey || event.metaKey
-  const blockedCtrlKeys = ['c', 'x', 'v', 'a', 'u', 'p', 's']
-  const isDevToolsShortcut =
-    key === 'f12' ||
-    (ctrlOrMeta && event.shiftKey && ['i', 'j', 'c'].includes(key)) ||
-    (ctrlOrMeta && blockedCtrlKeys.includes(key))
-
-  if (isDevToolsShortcut) {
-    event.preventDefault()
-    registerViolation('Shortcut ini diblokir selama ujian.')
-  }
-}
-
-const handleVisibilityChange = () => {
-  if (document.hidden) {
-    registerViolation('Anda berpindah tab/jendela. Tetap di halaman ujian.')
-  }
-}
-
-const handleWindowBlur = () => {
-  registerViolation('Fokus jendela terlepas dari halaman ujian.')
-}
-
-const requestFullscreen = async () => {
-  const root = document.documentElement
-  if (!document.fullscreenElement && root?.requestFullscreen) {
-    try {
-      await root.requestFullscreen()
-    } catch (error) {
-      // Browser may require user gesture; keep test running.
-    }
-  }
-}
-
-const handleFullscreenChange = () => {
-  if (!document.fullscreenElement) {
-    registerViolation('Mode fullscreen ditutup selama ujian.')
-    requestFullscreen()
-  }
-}
-
-const attachAntiCheat = () => {
-  document.addEventListener('copy', preventClipboardAction)
-  document.addEventListener('cut', preventClipboardAction)
-  document.addEventListener('paste', preventClipboardAction)
-  document.addEventListener('contextmenu', preventContextMenu)
-  document.addEventListener('keydown', handleKeydown)
-  document.addEventListener('visibilitychange', handleVisibilityChange)
-  window.addEventListener('blur', handleWindowBlur)
-  document.addEventListener('fullscreenchange', handleFullscreenChange)
-}
-
-const detachAntiCheat = () => {
-  document.removeEventListener('copy', preventClipboardAction)
-  document.removeEventListener('cut', preventClipboardAction)
-  document.removeEventListener('paste', preventClipboardAction)
-  document.removeEventListener('contextmenu', preventContextMenu)
-  document.removeEventListener('keydown', handleKeydown)
-  document.removeEventListener('visibilitychange', handleVisibilityChange)
-  window.removeEventListener('blur', handleWindowBlur)
-  document.removeEventListener('fullscreenchange', handleFullscreenChange)
-}
-
-onMounted(() => {
-  fetchTest()
-  attachAntiCheat()
-  requestFullscreen()
-})
-
-onUnmounted(() => {
-  if (timer.value) clearInterval(timer.value)
-  window.onbeforeunload = null
-  detachAntiCheat()
-})
-
-// Prevent accidental navigation
-window.onbeforeunload = () => {
-  if (canSubmit.value) return t('testRunner.leavePrompt')
-}
+onMounted(fetchTest)
 </script>
-
-<style scoped>
-.anti-cheat-mode {
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.anti-cheat-mode input,
-.anti-cheat-mode textarea {
-  user-select: text;
-  -webkit-user-select: text;
-}
-</style>

@@ -130,6 +130,16 @@
         </section>
       </div>
 
+      <div v-else-if="step === 'test'" key="test">
+        <TestRunnerPanel
+          v-if="selectedTest && questions.length"
+          :test-data="selectedTest"
+          :questions="questions"
+          :submitting="submitting"
+          @submit="handleTryoutSubmit"
+        />
+      </div>
+
       <div v-else key="session" class="relative min-h-screen overflow-hidden bg-background">
         <img
           :src="bookUrl"
@@ -212,60 +222,6 @@
               </form>
             </section>
 
-            <section v-else-if="step === 'test'" key="test" class="rounded-3xl bg-white border border-border bg-white p-6 shadow-sm">
-              <div class="flex items-center justify-between gap-3 mb-6">
-                <h2 class="text-xl font-bold text-text">{{ selectedTest?.name }}</h2>
-                <div class="text-sm text-muted">Soal {{ currentIndex + 1 }} / {{ questions.length }}</div>
-              </div>
-
-              <article v-if="currentQuestion" class="rounded-2xl border border-border bg-background p-5">
-                <p class="text-sm text-muted mb-2">Kategori: {{ currentQuestion.category }}</p>
-                <h3 class="text-lg font-semibold text-text leading-relaxed">{{ currentQuestion.question }}</h3>
-
-                <div v-if="(currentQuestion.type || 'multiple_choice') === 'multiple_choice'" class="mt-4 space-y-2">
-                  <button
-                    v-for="opt in (currentQuestion.options || [])"
-                    :key="opt.key"
-                    type="button"
-                    class="w-full text-left rounded-lg border px-3 py-2 transition-colors"
-                    :class="answers[currentQuestion.id] === opt.key ? 'border-secondary bg-sky' : 'border-border bg-white hover:border-secondary'"
-                    @click="answers[currentQuestion.id] = opt.key"
-                  >
-                    <span class="font-semibold mr-2">{{ opt.key }}.</span>{{ opt.label }}
-                  </button>
-                </div>
-                <textarea
-                  v-else
-                  v-model="answers[currentQuestion.id]"
-                  rows="5"
-                  class="mt-4 w-full rounded-lg border border-border px-3 py-2 bg-white"
-                  placeholder="Tulis jawaban..."
-                />
-              </article>
-
-              <div class="mt-6 flex items-center justify-between">
-                <button type="button" class="px-4 py-2 rounded-full border border-border" :disabled="currentIndex === 0" @click="currentIndex -= 1">
-                  Sebelumnya
-                </button>
-                <button
-                  v-if="currentIndex < questions.length - 1"
-                  type="button"
-                  class="px-4 py-2 rounded-full bg-secondary text-white hover:bg-primary transition-colors"
-                  @click="currentIndex += 1"
-                >
-                  Berikutnya
-                </button>
-                <button
-                  v-else
-                  type="button"
-                  class="px-4 py-2 rounded-full bg-primary text-white hover:bg-secondary transition-colors"
-                  @click="openSubmitConfirm"
-                >
-                  Selesai &amp; kirim
-                </button>
-              </div>
-            </section>
-
             <section v-else-if="step === 'result'" key="result" class="flex min-h-[50vh] items-center justify-center px-2">
               <div
                 ref="scorePanelRef"
@@ -298,57 +254,19 @@
         </main>
       </div>
     </Transition>
-
-    <Teleport to="body">
-      <Transition name="ft-fade">
-        <div
-          v-if="showSubmitConfirm"
-          class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-[2px]"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="submit-confirm-title"
-          @click.self="showSubmitConfirm = false"
-        >
-          <div class="max-w-md w-full rounded-3xl border border-border bg-white p-6 shadow-2xl">
-            <h3 id="submit-confirm-title" class="text-lg font-bold text-text">Kirim jawaban?</h3>
-            <p class="mt-2 text-sm text-muted leading-relaxed">
-              Pastikan Anda sudah memeriksa kembali jawaban di setiap soal. Setelah dikirim, jawaban tidak bisa diubah.
-            </p>
-            <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                class="w-full sm:w-auto rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-text hover:bg-background transition-colors"
-                @click="showSubmitConfirm = false"
-              >
-                Periksa lagi
-              </button>
-              <button
-                type="button"
-                class="w-full sm:w-auto rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-secondary transition-colors disabled:opacity-50"
-                :disabled="submitting"
-                @click="confirmSubmitTryout"
-              >
-                {{ submitting ? 'Mengirim...' : 'Ya, kirim sekarang' }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { Calendar, ChevronDown, Clock, FileText } from 'lucide-vue-next'
+import { nextTick, onMounted, ref, watch } from 'vue'
+import { Calendar, Clock, FileText } from 'lucide-vue-next'
 import { confetti, sparkles, variation } from 'party-js'
 import { useToast } from '@/composables/useNotification'
-import { useI18n } from '@/composables/useI18n'
+import TestRunnerPanel from '@/components/TestRunnerPanel.vue'
 
 const bookUrl = new URL('../../assets/book.jpg', import.meta.url).href
 
 const toast = useToast()
-const { t } = useI18n()
 
 const tests = ref([])
 const selectedTest = ref(null)
@@ -356,11 +274,8 @@ const questions = ref([])
 const step = ref('choose')
 const loading = ref(false)
 const submitting = ref(false)
-const currentIndex = ref(0)
-const answers = ref({})
 const result = ref({ score: 0, total: 0 })
 
-const showSubmitConfirm = ref(false)
 const scoreSparkleTargetRef = ref(null)
 const scorePanelRef = ref(null)
 
@@ -372,8 +287,6 @@ const form = ref({
   phone: '',
   email: '',
 })
-
-const currentQuestion = computed(() => questions.value[currentIndex.value] || null)
 
 function normalizePhoneLocal(rawPhone) {
   const digitsOnly = String(rawPhone || '').replace(/\D/g, '')
@@ -495,19 +408,13 @@ const startTryout = async () => {
       return
     }
     questions.value = data.questions || []
-    answers.value = {}
-    currentIndex.value = 0
     step.value = 'test'
   } catch (error) {
     toast.error('Error', error?.response?.data?.message || 'Gagal memulai tryout')
   }
 }
 
-function openSubmitConfirm() {
-  showSubmitConfirm.value = true
-}
-
-async function confirmSubmitTryout() {
+async function handleTryoutSubmit({ answers }) {
   if (!selectedTest.value || submitting.value) return
   if (!isValidPhoneLocal(form.value.phone)) {
     toast.error('Info', 'Nomor telepon tidak valid. Gunakan format seperti 812345678.')
@@ -516,16 +423,18 @@ async function confirmSubmitTryout() {
   submitting.value = true
   try {
     const payload = {
-      ...form.value,
+      full_name: form.value.full_name,
+      gender: form.value.gender,
+      city: form.value.address,
+      birth_date: form.value.birth_date,
       phone: formatPhoneForBackend(form.value.phone),
-      answers: answers.value,
+      answers,
     }
     const { data } = await window.axios.post(`/api/free-tryout/tests/${selectedTest.value.id}/submit`, payload)
     result.value = {
       score: Number(data?.score || 0),
       total: Number(data?.total || questions.value.length),
     }
-    showSubmitConfirm.value = false
     step.value = 'result'
   } catch (error) {
     toast.error('Error', error?.response?.data?.message || 'Gagal mengirim tryout')
@@ -538,9 +447,6 @@ const resetFlow = () => {
   step.value = 'choose'
   selectedTest.value = null
   questions.value = []
-  answers.value = {}
-  currentIndex.value = 0
-  showSubmitConfirm.value = false
 }
 
 onMounted(loadTests)
