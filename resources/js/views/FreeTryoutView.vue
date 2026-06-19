@@ -130,7 +130,7 @@
         </section>
       </div>
 
-      <div v-else-if="step === 'test'" key="test">
+      <div v-else-if="step === 'test'" key="test" class="relative z-10">
         <TestRunnerPanel
           v-if="selectedTest && questions.length"
           :test-data="selectedTest"
