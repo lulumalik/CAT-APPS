@@ -60,7 +60,6 @@
             border-radius: 12px;
             padding: 14px;
             margin-bottom: 14px;
-            page-break-inside: avoid;
             background: #ffffff;
         }
         .card {
@@ -69,6 +68,7 @@
             padding: 10px 12px;
             margin-bottom: 8px;
             background: #fafbfc;
+            page-break-inside: avoid;
         }
         .card:last-child { margin-bottom: 0; }
         .card-title { font-weight: 700; font-size: 11px; color: #1a1a1a; }
