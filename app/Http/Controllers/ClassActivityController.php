@@ -56,10 +56,12 @@ class ClassActivityController extends Controller
     {
         $user = $request->user();
         $isAdmin = $user->role === 'admin';
-        $isOwnerMentor = $user->role === 'mentor' && (int) $bimbleClass->created_by === (int) $user->id;
+        $isMentor = $user->role === 'mentor'
+            && ((int) $bimbleClass->created_by === (int) $user->id
+                || (int) $bimbleClass->instructor_id === (int) $user->id);
         $isStudent = $bimbleClass->students()->where('users.id', $user->id)->exists();
 
-        if (! ($isAdmin || $isOwnerMentor || $isStudent)) {
+        if (! ($isAdmin || $isMentor || $isStudent)) {
             abort(403, 'Unauthorized');
         }
     }
@@ -71,7 +73,9 @@ class ClassActivityController extends Controller
             return;
         }
 
-        if ($user->role === 'mentor' && (int) $bimbleClass->created_by === (int) $user->id) {
+        if ($user->role === 'mentor'
+            && ((int) $bimbleClass->created_by === (int) $user->id
+                || (int) $bimbleClass->instructor_id === (int) $user->id)) {
             return;
         }
 

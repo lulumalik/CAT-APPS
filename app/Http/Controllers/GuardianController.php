@@ -212,6 +212,12 @@ class GuardianController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
+        if ($link->email && strcasecmp($link->email, $data['email']) !== 0) {
+            return response()->json([
+                'message' => 'Email harus sama dengan yang terdaftar pada undangan.',
+            ], 422);
+        }
+
         $existing = User::where('email', $data['email'])->first();
 
         if ($existing) {

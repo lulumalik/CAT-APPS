@@ -257,7 +257,6 @@ class UserController extends Controller
                 'skipped' => count($skipped),
             ],
             'skipped_rows' => $skipped,
-            'default_password' => $defaultPassword,
         ]);
     }
 

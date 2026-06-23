@@ -581,6 +581,10 @@ class RegistrationProgressController extends Controller
 
     public function adminStorageDiagnostic(Request $request, RegistrationFileStorage $files)
     {
+        if (! config('app.debug')) {
+            abort(404);
+        }
+
         $userId = $request->query('user');
         $writeTest = $files->writeTestFile();
 

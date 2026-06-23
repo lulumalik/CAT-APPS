@@ -21,9 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // Enable web middleware for API routes to support sessions
         $middleware->api(prepend: [
-            \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Cookie\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -23,56 +23,10 @@ use App\Http\Controllers\StudentReportController;
 Route::get('/materials/public', [MaterialController::class, 'publicIndex']);
 Route::get('/materials/public/{slug}', [MaterialController::class, 'publicShow']);
 
-// Auth routes
-Route::get('/force-setup', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
-        
-        // Pastikan admin ada
-        \App\Models\User::updateOrCreate(
-            ['email' => 'admin@example.com'],
-            [
-                'name' => 'Admin',
-                'password' => \Illuminate\Support\Facades\Hash::make('password'),
-                'role' => 'admin',
-            ]
-        );
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Database migrated, seeded, and admin user created successfully.',
-            'admin_check' => \App\Models\User::where('email', 'admin@example.com')->exists()
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
-    }
-});
-
-Route::get('/debug-auth', function () {
-    try {
-        $dbStatus = \Illuminate\Support\Facades\DB::connection()->getPdo() ? 'Connected' : 'Failed';
-        $user = \App\Models\User::where('email', 'admin@example.com')->first();
-        if (!$user) {
-            return response()->json(['error' => 'User admin@example.com not found. DB Status: ' . $dbStatus]);
-        }
-        $hashMatch = \Illuminate\Support\Facades\Hash::check('password', $user->password);
-        return response()->json([
-            'db_status' => $dbStatus,
-            'user_found' => true,
-            'password_hash' => $user->password,
-            'hash_match' => $hashMatch,
-            'session_driver' => config('session.driver'),
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
-    }
-});
-
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
-Route::get('/user', [AuthController::class, 'user']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::get('/user', [AuthController::class, 'user'])->middleware('auth');
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
 Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
     if ($request->user() === null) {
         return response()->json([
@@ -96,19 +50,21 @@ Route::post('/email/verification-notification', function (\Illuminate\Http\Reque
     ]);
 })->middleware(['auth', 'throttle:6,1']);
 
-// Public test routes (accessible to authenticated users)
-Route::get('/incoming-tests', [TestDefinitionController::class, 'incoming']);
-Route::get('/available-tests', [TestDefinitionController::class, 'available']);
 Route::get('/free-tryout/tests', [TestDefinitionController::class, 'freeTryoutList']);
 Route::get('/free-tryout/tests/{test}', [TestDefinitionController::class, 'freeTryoutShow']);
-Route::post('/free-tryout/tests/{test}/submit', [TestDefinitionController::class, 'freeTryoutSubmit']);
+Route::post('/free-tryout/tests/{test}/submit', [TestDefinitionController::class, 'freeTryoutSubmit'])
+    ->middleware('throttle:10,1');
 
 // Public guardian invitation (accept link sent by the team via WhatsApp)
 Route::get('/guardian-invite/{token}', [GuardianController::class, 'showInvite']);
-Route::post('/guardian-invite/{token}/accept', [GuardianController::class, 'accept']);
+Route::post('/guardian-invite/{token}/accept', [GuardianController::class, 'accept'])
+    ->middleware('throttle:10,1');
 
 // Test operations (requires authentication via session)
 Route::middleware(['auth', 'app.not_expired'])->group(function () {
+    Route::get('/incoming-tests', [TestDefinitionController::class, 'incoming']);
+    Route::get('/available-tests', [TestDefinitionController::class, 'available']);
+
     Route::get('/dashboard/overview', [DashboardController::class, 'overview']);
     Route::get('/my-activity-history', [DashboardController::class, 'myActivityHistory']);
 
@@ -143,7 +99,7 @@ Route::middleware(['auth', 'app.not_expired'])->group(function () {
     Route::get('/students/{student}/pdf', [StudentDashboardPdfController::class, 'downloadForStudent']);
 });
 
-Route::middleware('role:admin')->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard/students/{student}/overview', [DashboardController::class, 'studentOverviewForStaff']);
     Route::post('/users/import', [UserController::class, 'import']);
     Route::apiResource('users', UserController::class);
@@ -161,6 +117,13 @@ Route::middleware('role:admin')->group(function () {
     Route::put('/admin/certificate-templates/{program}', [CertificateController::class, 'updateTemplate']);
     Route::post('/admin/certificates/issue', [CertificateController::class, 'issue']);
     Route::get('/admin/certificates/issues', [CertificateController::class, 'listIssues']);
+
+    // Guardian (parent) invitations — admin only
+    Route::get('/guardians/eligible-students', [GuardianController::class, 'eligibleStudents']);
+    Route::get('/guardians', [GuardianController::class, 'index']);
+    Route::post('/guardians', [GuardianController::class, 'store']);
+    Route::patch('/guardians/{guardian}/sent', [GuardianController::class, 'markSent']);
+    Route::delete('/guardians/{guardian}', [GuardianController::class, 'destroy']);
 });
 
 Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
@@ -172,13 +135,6 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::post('/rankings/manual', [RankingController::class, 'manualStore']);
     Route::put('/rankings/manual/{entry}', [RankingController::class, 'manualUpdate']);
     Route::delete('/rankings/manual/{entry}', [RankingController::class, 'manualDestroy']);
-
-    // Guardian (parent) invitations
-    Route::get('/guardians/eligible-students', [GuardianController::class, 'eligibleStudents']);
-    Route::get('/guardians', [GuardianController::class, 'index']);
-    Route::post('/guardians', [GuardianController::class, 'store']);
-    Route::patch('/guardians/{guardian}/sent', [GuardianController::class, 'markSent']);
-    Route::delete('/guardians/{guardian}', [GuardianController::class, 'destroy']);
 
     // Student reports (daily + weekly summary)
     Route::get('/student-reports', [StudentReportController::class, 'index']);

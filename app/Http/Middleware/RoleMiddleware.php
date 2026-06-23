@@ -17,8 +17,8 @@ class RoleMiddleware
             $roles = explode(',', $roles[0]);
         }
 
-        if (!$user || !in_array($user->role, $roles)) {
-            abort(403);
+        if (! $user || ! in_array($user->role, $roles, true)) {
+            abort($user ? 403 : 401);
         }
         return $next($request);
     }

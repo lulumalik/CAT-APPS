@@ -176,7 +176,7 @@ class TestDefinitionController extends Controller
             ->orderBy('start_time')
             ->first();
 
-        return response()->json($item ? [$item] : []);
+        return response()->json($item ? [$item->serializeForPublicList()] : []);
     }
 
     public function freeTryoutShow(TestDefinition $test)
@@ -185,7 +185,7 @@ class TestDefinitionController extends Controller
             return response()->json(['message' => 'Tryout gratis tidak tersedia.'], 404);
         }
 
-        return response()->json($test);
+        return response()->json($test->serializeForExam());
     }
 
     public function freeTryoutSubmit(Request $request, TestDefinition $test)
@@ -258,7 +258,7 @@ class TestDefinitionController extends Controller
 
         $test->has_submitted = $hasSubmitted;
 
-        return response()->json($test);
+        return response()->json($test->serializeForExam(['has_submitted' => $hasSubmitted]));
     }
 
     /**

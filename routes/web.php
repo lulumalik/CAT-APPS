@@ -60,7 +60,7 @@ Route::get('/sitemap.xml', function () {
     return response($xml, 200)->header('Content-Type', 'application/xml; charset=UTF-8');
 });
 
-Route::middleware('role:admin')->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/question-banks', function () {
         return response()->json(['ok' => true]);
     });

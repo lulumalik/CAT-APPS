@@ -166,11 +166,11 @@ const navItems = computed(() => {
     { to: '/tests', label: t('nav.tests') },
     { to: '/question-bank', label: t('nav.questionBank') },
     { to: '/rankings', label: t('nav.rankings') },
-    { to: '/admin/guardians', label: 'Undang Orang Tua' },
     { to: '/admin/student-reports', label: 'Laporan Peserta' },
   ]
 
   if (isAdmin.value) {
+    items.push({ to: '/admin/guardians', label: 'Undang Orang Tua' })
     items.push({ to: '/users', label: t('nav.users') })
     items.push({ to: '/admin/certificates', label: 'Sertifikat' })
     items.push({ to: '/admin/registration', label: t('nav.adminRegistration') })

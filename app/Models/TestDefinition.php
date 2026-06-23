@@ -25,7 +25,7 @@ class TestDefinition extends Model
         'is_free_tryout' => 'boolean',
     ];
 
-    protected $appends = ['status', 'time_until_start', 'is_locked', 'can_submit', 'questions'];
+    protected $appends = ['status', 'time_until_start', 'is_locked', 'can_submit'];
 
     /**
      * Get the status of the test (upcoming, ongoing, ended)
@@ -133,6 +133,42 @@ class TestDefinition extends Model
     public function getQuestionsAttribute()
     {
         return Question::whereIn('id', $this->question_ids ?? [])->get();
+    }
+
+    /**
+     * Serialize test for exam takers without leaking answer keys.
+     */
+    public function serializeForExam(array $extra = []): array
+    {
+        $data = $this->toArray();
+        unset($data['question_ids']);
+
+        $data['questions'] = Question::whereIn('id', $this->question_ids ?? [])
+            ->get()
+            ->map(fn (Question $question) => $question->makeHidden(['correct'])->toArray())
+            ->values()
+            ->all();
+
+        return array_merge($data, $extra);
+    }
+
+    /**
+     * Minimal public metadata for free tryout listing.
+     */
+    public function serializeForPublicList(): array
+    {
+        return $this->only([
+            'id',
+            'name',
+            'description',
+            'category',
+            'duration',
+            'schedule_at',
+            'start_time',
+            'end_time',
+            'is_active',
+            'is_free_tryout',
+        ]);
     }
 
     /**

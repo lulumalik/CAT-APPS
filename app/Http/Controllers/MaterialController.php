@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Material;
+use App\Support\HtmlSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -32,7 +33,7 @@ class MaterialController extends Controller
         $data['visibility'] = 'class_only';
 
         // Extract base64 images, save to disk, and replace with URL
-        $data['content'] = $this->processContentImages($data['content']);
+        $data['content'] = HtmlSanitizer::clean($this->processContentImages($data['content']));
 
         $data['created_by'] = $request->user()->id;
         $data['slug'] = Str::slug($data['title']) . '-' . uniqid();
@@ -67,7 +68,7 @@ class MaterialController extends Controller
         $data['visibility'] = 'class_only';
 
         // Extract base64 images, save to disk, and replace with URL
-        $data['content'] = $this->processContentImages($data['content']);
+        $data['content'] = HtmlSanitizer::clean($this->processContentImages($data['content']));
 
         // Optional: Update slug if title changes
         if ($material->title !== $data['title']) {

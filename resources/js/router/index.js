@@ -48,7 +48,7 @@ const routes = [
   { path: '/rankings', name: 'rankings', component: RankingsView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/parent/join/:token', name: 'parent-join', component: ParentJoinView },
   { path: '/child/:id', name: 'child-detail', component: ChildDetailView, meta: { requiresAuth: true } },
-  { path: '/admin/guardians', name: 'admin-guardians', component: GuardianManageView, meta: { requiresAuth: true, requiresStaff: true } },
+  { path: '/admin/guardians', name: 'admin-guardians', component: GuardianManageView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/student-reports', name: 'admin-student-reports', component: StudentReportsManageView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/quick-test/:id', name: 'quick-test', component: TestRunnerView, meta: { requiresAuth: true } },
   { path: '/registration', name: 'registration', component: RegistrationWizardView, meta: { requiresAuth: true } },
