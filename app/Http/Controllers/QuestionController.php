@@ -10,20 +10,36 @@ class QuestionController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
         $q = Question::query();
+
+        if ($user && $user->role === 'mentor') {
+            $q->where('created_by', $user->id);
+        }
+
         if ($search = $request->string('search')->toString()) {
             $q->where('question', 'like', "%$search%");
         }
-        if ($cat = $request->string('category')->toString()) { $q->where('category', $cat); }
-        if ($dif = $request->string('difficulty')->toString()) { $q->where('difficulty', $dif); }
+        if ($cat = $request->string('category')->toString()) {
+            $q->where('category', $cat);
+        }
+        if ($dif = $request->string('difficulty')->toString()) {
+            $q->where('difficulty', $dif);
+        }
+
+        $statsQuery = Question::query();
+        if ($user && $user->role === 'mentor') {
+            $statsQuery->where('created_by', $user->id);
+        }
+
         return response()->json([
             'items' => $q->orderByDesc('id')->get(),
             'stats' => [
-                'total' => Question::count(),
-                'easy' => Question::where('difficulty','Easy')->count(),
-                'medium' => Question::where('difficulty','Medium')->count(),
-                'hard' => Question::where('difficulty','Hard')->count(),
-            ]
+                'total' => (clone $statsQuery)->count(),
+                'easy' => (clone $statsQuery)->where('difficulty', 'Easy')->count(),
+                'medium' => (clone $statsQuery)->where('difficulty', 'Medium')->count(),
+                'hard' => (clone $statsQuery)->where('difficulty', 'Hard')->count(),
+            ],
         ]);
     }
 
@@ -59,11 +75,14 @@ class QuestionController extends Controller
 
         $data['created_by'] = optional($request->user())->id;
         $item = Question::create($data);
+
         return response()->json($item, 201);
     }
 
     public function update(Request $request, Question $question)
     {
+        $this->authorizeOwnedByMentor($request, $question);
+
         $rules = [
             'question' => 'required|string',
             'category' => 'required|string',
@@ -93,12 +112,23 @@ class QuestionController extends Controller
         }
 
         $question->update($data);
+
         return response()->json($question);
     }
 
-    public function destroy(Question $question)
+    public function destroy(Request $request, Question $question)
     {
+        $this->authorizeOwnedByMentor($request, $question);
         $question->delete();
+
         return response()->noContent();
+    }
+
+    private function authorizeOwnedByMentor(Request $request, Question $question): void
+    {
+        $user = $request->user();
+        if ($user && $user->role === 'mentor' && (int) $question->created_by !== (int) $user->id) {
+            abort(403, 'Unauthorized');
+        }
     }
 }

@@ -251,6 +251,12 @@ class BimbleClassController extends Controller
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
+        $material = Material::findOrFail($data['material_id']);
+        $user = $request->user();
+        if ($user->role === 'mentor' && (int) $material->created_by !== (int) $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $bimbleClass->materials()->syncWithoutDetaching([
             $data['material_id'] => [
                 'session_number' => $data['session_number'] ?? 1,
@@ -280,6 +286,12 @@ class BimbleClassController extends Controller
             'kind' => 'required|in:cbt,quiz',
             'sort_order' => 'nullable|integer|min:0',
         ]);
+
+        $test = \App\Models\TestDefinition::findOrFail($data['test_definition_id']);
+        $user = $request->user();
+        if ($user->role === 'mentor' && (int) $test->created_by !== (int) $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
         $bimbleClass->testDefinitions()->syncWithoutDetaching([
             $data['test_definition_id'] => [

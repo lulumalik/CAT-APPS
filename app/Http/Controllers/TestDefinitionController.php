@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TestDefinition;
+use App\Models\Question;
 use App\Models\FreeTryoutSubmission;
 use App\Models\TestSubmission;
 use App\Services\AutoStudentReportService;
@@ -10,7 +11,7 @@ use Illuminate\Http\Request;
 
 class TestDefinitionController extends Controller
 {
-    private function enforceSingleFreeTryout(array $data, ?int $exceptTestId = null): void
+    private function enforceSingleFreeTryout(array $data, ?int $exceptTestId = null, ?\App\Models\User $actor = null): void
     {
         if (! ($data['is_free_tryout'] ?? false)) {
             return;
@@ -19,6 +20,9 @@ class TestDefinitionController extends Controller
         $query = TestDefinition::query()->where('is_free_tryout', true);
         if ($exceptTestId) {
             $query->where('id', '!=', $exceptTestId);
+        }
+        if ($actor && $actor->role === 'mentor') {
+            $query->where('created_by', $actor->id);
         }
 
         $query->update(['is_free_tryout' => false]);
@@ -79,7 +83,8 @@ class TestDefinitionController extends Controller
 
         $data['created_by'] = optional($request->user())->id;
         $this->enforceQuestionDefaults($data);
-        $this->enforceSingleFreeTryout($data);
+        $this->assertMentorOwnsQuestions($request, $data['question_ids'] ?? []);
+        $this->enforceSingleFreeTryout($data, null, $request->user());
         $item = TestDefinition::create($data);
         return response()->json($item, 201);
     }
@@ -122,7 +127,10 @@ class TestDefinitionController extends Controller
         }
 
         $this->enforceQuestionDefaults($data);
-        $this->enforceSingleFreeTryout($data, $test->id);
+        if (array_key_exists('question_ids', $data)) {
+            $this->assertMentorOwnsQuestions($request, $data['question_ids'] ?? []);
+        }
+        $this->enforceSingleFreeTryout($data, $test->id, $request->user());
         $test->update($data);
         return response()->json($test);
     }
@@ -400,5 +408,25 @@ class TestDefinitionController extends Controller
             ->get();
 
         return response()->json($items);
+    }
+
+    private function assertMentorOwnsQuestions(Request $request, array $questionIds): void
+    {
+        $user = $request->user();
+        if (! $user || $user->role !== 'mentor' || $questionIds === []) {
+            return;
+        }
+
+        $hasForeign = Question::query()
+            ->whereIn('id', $questionIds)
+            ->where(function ($query) use ($user) {
+                $query->whereNull('created_by')
+                    ->orWhere('created_by', '!=', $user->id);
+            })
+            ->exists();
+
+        if ($hasForeign) {
+            abort(403, 'Unauthorized');
+        }
     }
 }

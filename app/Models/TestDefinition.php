@@ -166,6 +166,16 @@ class TestDefinition extends Model
 
     public function canBeAccessedBy(?\App\Models\User $user): bool
     {
+        if ($user) {
+            if ($user->role === 'admin') {
+                return true;
+            }
+
+            if ($user->role === 'mentor' && (int) $this->created_by === (int) $user->id) {
+                return true;
+            }
+        }
+
         if (! Schema::hasTable('bimble_classes') || ! Schema::hasTable('bimble_class_test') || ! Schema::hasTable('bimble_class_user')) {
             return (bool) $user;
         }
