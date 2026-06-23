@@ -1110,7 +1110,6 @@ const teachers = [
       'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015',
     ],
   },
-  /*
   {
     id: 'teacher-4',
     name: 'YUNUS SUFIAN, S.H',
@@ -1132,7 +1131,6 @@ const teachers = [
       'Pelatih BINJAS PADJAJARANBDG 2024 - sekarang',
     ],
   },
-  */
 ]
 
 const services = [

@@ -57,6 +57,7 @@
                       :class="{
                         'bg-purple-50 text-purple-700 border border-purple-100': user.role === 'admin',
                         'bg-blue-50 text-blue-700 border border-blue-100': user.role === 'mentor',
+                        'bg-amber-50 text-amber-700 border border-amber-100': user.role === 'parent',
                         'bg-green-50 text-green-700 border border-green-100': user.role === 'user'
                       }">
                   {{ user.role }}
@@ -216,6 +217,16 @@ const onFilePicked = async (event) => {
   }
 }
 
+const formatApiError = (error) => {
+  const data = error?.response?.data
+  if (!data) return t('users.toastSaveFailed')
+  if (typeof data.message === 'string' && data.message) return data.message
+  if (data.errors && typeof data.errors === 'object') {
+    return Object.values(data.errors).flat().join(' ')
+  }
+  return t('users.toastSaveFailed')
+}
+
 const saveUser = async (formData) => {
   try {
     if (editingUser.value) {
@@ -231,7 +242,7 @@ const saveUser = async (formData) => {
     }
     closeModal()
   } catch (e) {
-    toast.error('Error', t('users.toastSaveFailed'))
+    toast.error('Error', formatApiError(e))
   }
 }
 

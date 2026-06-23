@@ -36,6 +36,7 @@
             <option value="user">{{ t('modals.user.roleUser') }}</option>
             <option value="mentor">{{ t('modals.user.roleMentor') }}</option>
             <option value="admin">{{ t('modals.user.roleAdmin') }}</option>
+            <option value="parent">Orang Tua</option>
           </select>
         </div>
 
@@ -49,7 +50,7 @@
           <p class="text-xs text-gray-500 mt-1">{{ t('modals.user.appExpiresHint') }}</p>
         </div>
 
-        <div v-if="form.role !== 'mentor'">
+        <div v-if="form.role !== 'mentor' && form.role !== 'parent'">
           <label class="block text-sm font-medium text-gray-700 mb-2">Program Siswa</label>
           <select v-model="form.program_category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
             <option v-for="p in ONLINE_PROGRAMS" :key="p.value" :value="p.value">
@@ -107,7 +108,7 @@ const toDatetimeLocal = (value) => {
 watch(() => props.initial, (val) => {
   if (val) {
     form.name = val.name
-    form.username = val.username || ''
+    form.username = val.username || (val.email ? String(val.email).split('@')[0] : '')
     form.email = val.email
     form.role = val.role
     form.password = ''
@@ -134,7 +135,7 @@ watch(
 watch(
   () => form.role,
   (role) => {
-    if (role === 'mentor') {
+    if (role === 'mentor' || role === 'parent') {
       form.program_category = 'regular'
     }
     if (role !== 'user') {
@@ -146,6 +147,9 @@ watch(
 const submit = () => {
   const payload = JSON.parse(JSON.stringify(form))
   payload.app_expires_at = payload.app_expires_at || null
+  if (!payload.password) {
+    delete payload.password
+  }
   emit('submit', payload)
 }
 </script>

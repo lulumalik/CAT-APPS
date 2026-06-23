@@ -50,20 +50,30 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $hasUsername = Schema::hasColumn('users', 'username');
+        $hasAppExpires = Schema::hasColumn('users', 'app_expires_at');
+
+        $rules = [
             'name' => 'required|string|max:255',
-            'username' => 'required|string|min:3|max:32|regex:/^[a-zA-Z0-9_]+$/|unique:users,username',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,user,mentor',
+            'role' => 'required|in:admin,user,mentor,parent',
             'program_category' => 'nullable|in:'.implode(',', User::programCategories()),
             'in_quarantine' => 'nullable|boolean',
-            'app_expires_at' => 'nullable|date',
-        ]);
+        ];
 
-        $user = User::create([
+        if ($hasUsername) {
+            $rules['username'] = 'required|string|min:3|max:32|regex:/^[a-zA-Z0-9_]+$/|unique:users,username';
+        }
+
+        if ($hasAppExpires) {
+            $rules['app_expires_at'] = 'nullable|date';
+        }
+
+        $validated = $request->validate($rules);
+
+        $payload = [
             'name' => $validated['name'],
-            'username' => User::normalizeUsername($validated['username']),
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
@@ -71,8 +81,17 @@ class UserController extends Controller
             'in_quarantine' => User::supportsQuarantine($validated['program_category'] ?? User::PROGRAM_REGULAR)
                 ? (bool) ($validated['in_quarantine'] ?? false)
                 : false,
-            'app_expires_at' => $validated['app_expires_at'] ?? null,
-        ]);
+        ];
+
+        if ($hasUsername) {
+            $payload['username'] = User::normalizeUsername($validated['username']);
+        }
+
+        if ($hasAppExpires) {
+            $payload['app_expires_at'] = $validated['app_expires_at'] ?? null;
+        }
+
+        $user = User::create($payload);
 
         $this->ensureRegistrationProgress($user);
 
@@ -81,21 +100,38 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        $validated = $request->validate([
+        $hasUsername = Schema::hasColumn('users', 'username');
+        $hasAppExpires = Schema::hasColumn('users', 'app_expires_at');
+
+        $rules = [
             'name' => 'required|string|max:255',
-            'username' => ['required', 'string', 'min:3', 'max:32', 'regex:/^[a-zA-Z0-9_]+$/', Rule::unique('users', 'username')->ignore($user->id)],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'role' => 'required|in:admin,user,mentor',
+            'role' => 'required|in:admin,user,mentor,parent',
             'password' => 'nullable|string|min:8',
             'program_category' => 'nullable|in:'.implode(',', User::programCategories()),
             'in_quarantine' => 'nullable|boolean',
-            'app_expires_at' => 'nullable|date',
-        ]);
+        ];
+
+        if ($hasUsername) {
+            $rules['username'] = ['nullable', 'string', 'min:3', 'max:32', 'regex:/^[a-zA-Z0-9_]+$/', Rule::unique('users', 'username')->ignore($user->id)];
+        }
+
+        if ($hasAppExpires) {
+            $rules['app_expires_at'] = 'nullable|date';
+        }
+
+        $validated = $request->validate($rules);
 
         $user->name = $validated['name'];
-        $user->username = User::normalizeUsername($validated['username']);
         $user->email = $validated['email'];
         $user->role = $validated['role'];
+
+        if ($hasUsername) {
+            $username = trim((string) ($validated['username'] ?? ''));
+            $user->username = $username !== ''
+                ? User::normalizeUsername($username)
+                : ($user->username ?: User::generateUniqueUsername($user->email, $user->name));
+        }
 
         if (array_key_exists('program_category', $validated) && $validated['program_category'] !== null) {
             $user->program_category = User::normalizeProgramCategory($validated['program_category']);
@@ -115,7 +151,7 @@ class UserController extends Controller
             $user->password = Hash::make($validated['password']);
         }
 
-        if (array_key_exists('app_expires_at', $validated)) {
+        if (array_key_exists('app_expires_at', $validated) && $hasAppExpires) {
             $user->app_expires_at = $validated['app_expires_at'] ?: null;
         }
 
