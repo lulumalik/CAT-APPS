@@ -45,6 +45,7 @@ import StickyHeader from '@/components/StickyHeader.vue'
 import Modal from '@/components/Modal.vue'
 import Toast from '@/components/Toast.vue'
 import { useAppStore } from '@/stores/app'
+import { refreshCsrfToken } from '@/bootstrap'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 
@@ -72,9 +73,9 @@ const showSidebarNav = computed(
     !isFreeTryoutPage.value,
 )
 
-onMounted(() => {
-  // Try to fetch user on app load
-  store.fetchUser()
+onMounted(async () => {
+  await store.fetchUser()
+  await refreshCsrfToken().catch(() => {})
 })
 
 const updateDocumentMeta = () => {

@@ -28,6 +28,7 @@ export const useAppStore = defineStore('app', {
         const response = await axios.get('/api/user');
         if (response.data.success) {
           this.setUser(response.data.user);
+          await refreshCsrfToken();
           return true;
         }
         this.setUser(null);

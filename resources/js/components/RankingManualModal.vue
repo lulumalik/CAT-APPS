@@ -38,28 +38,15 @@
           <p class="text-sm font-medium text-[#1A1A1A]">{{ initial?.user?.name || '—' }}</p>
         </div>
 
-        <div class="grid grid-cols-[1fr_auto] gap-3">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('common.score') }}</label>
-            <input
-              v-model.number="form.score"
-              type="number"
-              step="any"
-              required
-              class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
-            />
-          </div>
-          <div class="w-28">
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.manualUnit') }}</label>
-            <input
-              v-if="!isEdit"
-              v-model="form.unit"
-              type="text"
-              class="w-full rounded-xl border-gray-100 bg-gray-50 px-3 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
-              :placeholder="unitPlaceholder"
-            />
-            <span v-else class="flex items-center h-[46px] px-1 text-sm text-gray-500">{{ form.unit || unitPlaceholder || '—' }}</span>
-          </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('common.score') }}</label>
+          <input
+            v-model.number="form.score"
+            type="number"
+            step="any"
+            required
+            class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
+          />
         </div>
 
         <div v-if="isJasmani">
@@ -104,7 +91,7 @@
 
 <script setup>
 import { ref, reactive, computed, watch } from 'vue'
-import axios from 'axios'
+import { refreshCsrfToken } from '@/bootstrap'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
@@ -176,7 +163,7 @@ function searchStudents() {
   }
   searchTimer = setTimeout(async () => {
     try {
-      const { data } = await axios.get('/api/students/search', { params: { search: q } })
+      const { data } = await window.axios.get('/api/students/search', { params: { search: q } })
       studentResults.value = data || []
     } catch {
       studentResults.value = []
@@ -184,18 +171,23 @@ function searchStudents() {
   }, 300)
 }
 
+function resolveUnit() {
+  return form.unit || props.unitPlaceholder || undefined
+}
+
 async function submit() {
   saving.value = true
   errorMessage.value = ''
   try {
+    await refreshCsrfToken()
     if (isEdit.value) {
       const payload = {
         score: form.score,
-        unit: form.unit || undefined,
+        unit: resolveUnit(),
         notes: form.notes || null,
       }
       if (isJasmani.value) payload.score_date = form.score_date
-      await axios.put(`/api/rankings/manual/${props.initial.id}`, payload)
+      await window.axios.put(`/api/rankings/manual/${props.initial.id}`, payload)
     } else {
       const payload = {
         scope: props.context.scope,
@@ -203,13 +195,13 @@ async function submit() {
         subcategory_id: props.context.subcategory_id,
         user_id: form.user_id,
         score: form.score,
-        unit: form.unit || undefined,
+        unit: resolveUnit(),
         notes: form.notes || null,
       }
       if (props.context.scope === 'class') payload.class_id = props.context.class_id
       if (props.context.scope === 'cohort') payload.cohort = props.context.cohort
       if (isJasmani.value) payload.score_date = form.score_date
-      await axios.post('/api/rankings/manual', payload)
+      await window.axios.post('/api/rankings/manual', payload)
     }
     emit('saved', {
       score_date: isJasmani.value ? form.score_date : null,
