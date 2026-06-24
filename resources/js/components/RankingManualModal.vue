@@ -38,24 +38,27 @@
           <p class="text-sm font-medium text-[#1A1A1A]">{{ initial?.user?.name || '—' }}</p>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('common.score') }}</label>
-          <div class="flex gap-2">
+        <div class="grid grid-cols-[1fr_auto] gap-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('common.score') }}</label>
             <input
               v-model.number="form.score"
               type="number"
               step="any"
               required
-              class="flex-1 rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
+              class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
             />
+          </div>
+          <div class="w-28">
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.manualUnit') }}</label>
             <input
               v-if="!isEdit"
               v-model="form.unit"
               type="text"
-              class="w-28 rounded-xl border-gray-100 bg-gray-50 px-3 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
+              class="w-full rounded-xl border-gray-100 bg-gray-50 px-3 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
               :placeholder="unitPlaceholder"
             />
-            <span v-else class="flex items-center px-3 text-sm text-gray-500">{{ form.unit || unitPlaceholder || '—' }}</span>
+            <span v-else class="flex items-center h-[46px] px-1 text-sm text-gray-500">{{ form.unit || unitPlaceholder || '—' }}</span>
           </div>
         </div>
 

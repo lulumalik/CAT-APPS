@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { refreshCsrfToken } from '../bootstrap';
 
 export const useAppStore = defineStore('app', {
   state: () => ({
@@ -44,6 +45,7 @@ export const useAppStore = defineStore('app', {
         if (response.data.success) {
           this.setUser(response.data.user);
           this.isAuthChecked = true;
+          await refreshCsrfToken();
           return { success: true };
         }
         return { success: false, message: response.data.message };
@@ -57,6 +59,7 @@ export const useAppStore = defineStore('app', {
     async logout() {
       try {
         await axios.post('/api/logout');
+        await refreshCsrfToken();
         this.setUser(null);
         this.isAuthChecked = true;
         return true;
@@ -79,6 +82,7 @@ export const useAppStore = defineStore('app', {
         const response = await axios.post('/api/register', payload)
         if (response.data.success) {
           this.setUser(response.data.user)
+          await refreshCsrfToken()
           return { success: true, message: response.data.message }
         }
         return { success: false, message: response.data.message }

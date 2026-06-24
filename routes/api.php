@@ -19,6 +19,8 @@ use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\StudentDashboardPdfController;
 use App\Http\Controllers\StudentReportController;
 
+Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()]));
+
 // Public material routes
 Route::get('/materials/public', [MaterialController::class, 'publicIndex']);
 Route::get('/materials/public/{slug}', [MaterialController::class, 'publicShow']);
