@@ -49,7 +49,7 @@
           />
         </div>
 
-        <div v-if="isJasmani">
+        <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.manualDate') }}</label>
           <input
             v-model="form.score_date"
@@ -105,7 +105,6 @@ const emit = defineEmits(['close', 'saved'])
 const { t } = useI18n()
 
 const isEdit = computed(() => !!props.initial?.id)
-const isJasmani = computed(() => props.context?.group_id === 'jasmani')
 const today = () => new Date().toISOString().slice(0, 10)
 const saving = ref(false)
 const errorMessage = ref('')
@@ -186,7 +185,7 @@ async function submit() {
         unit: resolveUnit(),
         notes: form.notes || null,
       }
-      if (isJasmani.value) payload.score_date = form.score_date
+      payload.score_date = form.score_date
       await window.axios.put(`/api/rankings/manual/${props.initial.id}`, payload)
     } else {
       const payload = {
@@ -200,11 +199,11 @@ async function submit() {
       }
       if (props.context.scope === 'class') payload.class_id = props.context.class_id
       if (props.context.scope === 'cohort') payload.cohort = props.context.cohort
-      if (isJasmani.value) payload.score_date = form.score_date
+      payload.score_date = form.score_date
       await window.axios.post('/api/rankings/manual', payload)
     }
     emit('saved', {
-      score_date: isJasmani.value ? form.score_date : null,
+      score_date: form.score_date,
     })
     emit('close')
   } catch (e) {

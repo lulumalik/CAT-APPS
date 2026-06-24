@@ -438,7 +438,7 @@ function openManualAddForUser(row) {
     user: { id: row.user_id, name: row.name },
     score: '',
     unit: row.unit || activeSub.value?.unit || '',
-    score_date: isJasmaniGroup.value ? todayIso() : undefined,
+    score_date: todayIso(),
   }
   showManualModal.value = true
 }

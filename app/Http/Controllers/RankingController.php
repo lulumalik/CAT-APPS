@@ -183,7 +183,7 @@ class RankingController extends Controller
             'score' => 'required|numeric',
             'unit' => 'nullable|string|max:32',
             'notes' => 'nullable|string|max:2000',
-            'score_date' => 'nullable|date',
+            'score_date' => 'required|date',
         ]);
 
         $sub = $this->resolveSubcategory($entry->group_id, $entry->subcategory_id);
@@ -195,9 +195,7 @@ class RankingController extends Controller
             'notes' => $validated['notes'] ?? null,
         ];
 
-        if ($entry->group_id === 'jasmani' && array_key_exists('score_date', $validated)) {
-            $attrs['score_date'] = $validated['score_date'] ?? $entry->score_date?->toDateString() ?? now()->toDateString();
-        }
+        $attrs['score_date'] = $validated['score_date'];
 
         $contextKey = ManualRankingEntry::buildContextKey([
             'scope' => $entry->scope,
@@ -211,9 +209,7 @@ class RankingController extends Controller
 
         if (ManualRankingEntry::where('context_key', $contextKey)->where('id', '!=', $entry->id)->exists()) {
             throw ValidationException::withMessages([
-                'score_date' => [$entry->group_id === 'jasmani'
-                    ? 'Nilai jasmani peserta ini pada tanggal tersebut sudah ada. Pilih tanggal lain.'
-                    : 'Peringkat manual untuk peserta ini sudah ada.'],
+                'score_date' => ['Nilai manual peserta ini pada tanggal tersebut sudah ada. Pilih tanggal lain.'],
             ]);
         }
 
@@ -275,14 +271,10 @@ class RankingController extends Controller
             'score' => 'required|numeric',
             'unit' => 'nullable|string|max:32',
             'notes' => 'nullable|string|max:2000',
-            'score_date' => 'nullable|date',
+            'score_date' => 'required|date',
         ]));
 
-        // Jasmani disimpan per tanggal sehingga riwayat (timeline) bisa dibentuk.
-        // Akademik tetap satu entri per peserta (score_date null).
-        $validated['score_date'] = $validated['group_id'] === 'jasmani'
-            ? ($validated['score_date'] ?? now()->toDateString())
-            : null;
+        $validated['score_date'] = $validated['score_date'] ?? now()->toDateString();
 
         $key = ManualRankingEntry::buildContextKey([
             'scope' => $validated['scope'],
@@ -296,9 +288,7 @@ class RankingController extends Controller
 
         if (ManualRankingEntry::where('context_key', $key)->exists()) {
             throw ValidationException::withMessages([
-                'user_id' => [$validated['group_id'] === 'jasmani'
-                    ? 'Nilai jasmani peserta ini pada tanggal tersebut sudah ada. Gunakan ubah atau pilih tanggal lain.'
-                    : 'Peringkat manual untuk peserta ini sudah ada. Gunakan ubah.'],
+                'user_id' => ['Nilai manual peserta ini pada tanggal tersebut sudah ada. Gunakan ubah atau pilih tanggal lain.'],
             ]);
         }
 
