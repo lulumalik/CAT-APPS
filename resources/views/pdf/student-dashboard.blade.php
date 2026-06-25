@@ -164,12 +164,16 @@
             border-radius: 2px;
             margin: 0 auto;
         }
-        .chart-legend { margin-top: 10px; }
-        .legend-item {
+        .chart-legend { margin-top: 10px; width: 100%; }
+        .legend-cell {
+            padding: 0 12px 4px 0;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .legend-label {
             font-size: 9px;
             color: #4b5563;
-            margin: 0 0 4px;
-            line-height: 1.6;
+            vertical-align: middle;
         }
         .legend-dot {
             display: inline-block;

@@ -85,7 +85,7 @@ class PdfChartRenderer
             ? 100
             : max(1, ...array_map(fn ($s) => max($s['values']), $clean));
 
-        return self::htmlChart($dates, $clean, $max, $valueMode);
+        return self::htmlChart($dates, $clean, $max, $valueMode, true);
     }
 
     /**
@@ -146,9 +146,8 @@ class PdfChartRenderer
      * @param  list<string>  $dates
      * @param  list<array{label: string, color: string, values: array<string, float>}>  $series
      */
-    private static function htmlChart(array $dates, array $series, float $max, string $valueMode): string
+    private static function htmlChart(array $dates, array $series, float $max, string $valueMode, bool $showLegend = false): string
     {
-        $seriesCount = count($series);
         $dateCells = '';
 
         foreach ($dates as $date) {
@@ -180,16 +179,21 @@ class PdfChartRenderer
         }
 
         $legend = '';
-        if (count($series) > 1) {
+        if ($showLegend) {
             foreach ($series as $s) {
-                $legend .= '<div class="legend-item"><span class="legend-dot" style="background:'.e($s['color']).';"></span>'.e($s['label']).'</div>';
+                $legend .= '<td class="legend-cell">'
+                    .'<span class="legend-dot" style="background:'.e($s['color']).';"></span>'
+                    .'<span class="legend-label">'.e($s['label']).'</span>'
+                    .'</td>';
             }
         }
 
         $yMax = $valueMode === 'percent' ? '100%' : (string) round($max);
         $yMid = $valueMode === 'percent' ? '50%' : (string) round($max / 2);
 
-        $legendHtml = $legend !== '' ? '<div class="chart-legend">'.$legend.'</div>' : '';
+        $legendHtml = $legend !== ''
+            ? '<table class="chart-legend" cellpadding="0" cellspacing="0"><tr>'.$legend.'</tr></table>'
+            : '';
 
         return <<<HTML
 <div class="chart-panel">
