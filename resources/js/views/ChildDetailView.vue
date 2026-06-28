@@ -39,11 +39,13 @@
         </button>
       </div>
     </div>
-    <p class="mb-6 text-xs text-gray-500">Rentang tanggal maksimal 14 hari. Untuk 1 hari, samakan tanggal From dan To.</p>
+    <p class="mb-6 text-xs text-gray-500">Untuk 1 hari, samakan tanggal From dan To. Klik ringkasan mingguan di bawah untuk mengisi rentang otomatis.</p>
 
     <StudentProgressPanel
       v-model:report-date="reportDateFrom"
+      :report-date-to="reportDateTo"
       :student-id="studentId"
+      @select-report-range="onSelectReportRange"
     />
   </main>
 </template>
@@ -81,6 +83,11 @@ onMounted(async () => {
   }
 })
 
+function onSelectReportRange({ from, to }) {
+  reportDateFrom.value = from
+  reportDateTo.value = to || from
+}
+
 const downloadPdf = async () => {
   if (exportingPdf.value) return
 
@@ -100,12 +107,6 @@ const downloadPdf = async () => {
 
   if (diffMs < 0) {
     window.alert('Tanggal To tidak boleh lebih kecil dari From.')
-    return
-  }
-
-  const diffDaysInclusive = Math.floor(diffMs / (24 * 60 * 60 * 1000)) + 1
-  if (diffDaysInclusive > 14) {
-    window.alert('Rentang tanggal maksimal 14 hari.')
     return
   }
 

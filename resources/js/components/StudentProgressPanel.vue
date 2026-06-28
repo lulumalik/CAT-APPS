@@ -78,15 +78,23 @@
 
       <!-- 2. Ringkasan Mingguan -->
       <section :class="pdfMode ? 'pdf-progress-section' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm'">
-        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-3'">Ringkasan Mingguan</h3>
+        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Ringkasan Mingguan</h3>
+        <p v-if="!pdfMode" class="text-xs text-gray-500 mb-3">Klik ringkasan untuk memilih rentang tanggal laporan</p>
         <div v-if="!reports.weekly?.length" :class="pdfMode ? 'pdf-muted' : 'text-sm text-gray-400'">Belum ada ringkasan mingguan.</div>
         <div v-else class="space-y-3">
           <article
             v-for="r in reports.weekly"
             :key="r.id"
-            :class="pdfMode ? 'pdf-weekly-card' : 'rounded-xl border border-[#9DB359]/30 bg-[#9DB359]/5 p-4'"
+            :class="weeklyCardClass(r)"
+            :role="pdfMode ? undefined : 'button'"
+            :tabindex="pdfMode ? undefined : 0"
+            @click="selectWeekly(r)"
+            @keydown.enter.prevent="selectWeekly(r)"
           >
             <div class="font-semibold text-sm">{{ r.title }}</div>
+            <p v-if="weeklyPeriodLabel(r)" :class="pdfMode ? 'pdf-muted mt-0.5' : 'text-xs text-gray-500 mt-0.5'">
+              {{ weeklyPeriodLabel(r) }}
+            </p>
             <p v-if="r.summary" :class="pdfMode ? 'pdf-text-sm mt-1' : 'text-sm text-gray-700 mt-1'">{{ r.summary }}</p>
             <div v-if="Object.keys(r.categories || {}).length" class="mt-2 grid sm:grid-cols-2 gap-2">
               <div v-for="(val, key) in r.categories" :key="key" class="text-xs">
@@ -185,9 +193,10 @@ const props = defineProps({
   studentId: { type: [Number, String], required: true },
   pdfMode: { type: Boolean, default: false },
   reportDate: { type: String, default: '' },
+  reportDateTo: { type: String, default: '' },
 })
 
-const emit = defineEmits(['update:reportDate'])
+const emit = defineEmits(['update:reportDate', 'selectReportRange'])
 
 const DAILY_PER_PAGE = 10
 
@@ -315,6 +324,45 @@ async function loadAll() {
 function onDailyDateChange() {
   dailyPage.value = 1
   emit('update:reportDate', dailyDate.value)
+  loadDailyReports()
+}
+
+function weeklyPeriodLabel(r) {
+  const from = r.period_start || r.report_date
+  const to = r.period_end || r.report_date
+  if (!from || !to) return ''
+  if (from === to) return formatDate(from)
+  return `${formatDate(from)} – ${formatDate(to)}`
+}
+
+function isWeeklySelected(r) {
+  const from = r.period_start || r.report_date
+  const to = r.period_end || r.report_date
+  const activeTo = props.reportDateTo || props.reportDate
+  return !!from && props.reportDate === from && activeTo === to
+}
+
+function weeklyCardClass(r) {
+  if (props.pdfMode) return 'pdf-weekly-card'
+  return [
+    'rounded-xl border p-4 transition-all',
+    isWeeklySelected(r)
+      ? 'border-[#9DB359] bg-[#9DB359]/15 ring-1 ring-[#9DB359]/40 cursor-pointer'
+      : 'border-[#9DB359]/30 bg-[#9DB359]/5 cursor-pointer hover:border-[#9DB359]/50 hover:bg-[#9DB359]/10',
+  ]
+}
+
+function selectWeekly(r) {
+  if (props.pdfMode) return
+
+  const from = r.period_start || r.report_date
+  const to = r.period_end || r.report_date
+  if (!from) return
+
+  emit('selectReportRange', { from, to: to || from })
+  dailyDate.value = from
+  dailyPage.value = 1
+  emit('update:reportDate', from)
   loadDailyReports()
 }
 

@@ -31,7 +31,6 @@ class StudentDashboardReportService
                 ->orderByDesc('report_date')
                 ->orderByDesc('created_at')
                 ->orderByDesc('id')
-                ->limit(50)
                 ->get()
                 ->map(fn (StudentReport $r) => $this->serializeReport($r))
                 ->all();

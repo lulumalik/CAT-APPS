@@ -78,10 +78,6 @@ class StudentDashboardPdfController extends Controller
             abort(422, 'Tanggal To tidak boleh lebih kecil dari From.');
         }
 
-        if ($from->diffInDays($to) > 13) {
-            abort(422, 'Rentang tanggal maksimal 14 hari.');
-        }
-
         return [
             'from_date' => $from->toDateString(),
             'to_date' => $to->toDateString(),

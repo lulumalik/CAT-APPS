@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-[#F7FAF4] via-[#F4F6F3] to-[#EEF3E8] font-sans text-[#1A1A1A]">
+  <div class="min-h-screen bg-gradient-to-b from-[#333] via-[#333] to-[#333] font-sans text-[#1A1A1A]">
     <div v-if="loading" class="py-24 text-center text-gray-500">{{ t('common.refresh') }}…</div>
     <div
       v-else-if="errorMessage"
@@ -16,7 +16,7 @@
         <div class="relative max-w-7xl mx-auto flex flex-col gap-5 md:gap-8 lg:flex-row lg:items-end">
           <div class="flex gap-3 md:gap-5 items-start">
             <div class="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-white/20 flex items-center justify-center text-[10px] md:text-xs font-bold text-center leading-tight shrink-0 border border-white/30 shadow-lg shadow-black/10">
-              KURSUS
+              <img src="../../assets/logo.png" alt="CAT Apps" class="w-10 h-10 object-contain" />
             </div>
             <div>
               <p class="inline-flex rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide text-white/90">
