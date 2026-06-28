@@ -96,10 +96,10 @@
               {{ weeklyPeriodLabel(r) }}
             </p>
             <p v-if="r.summary" :class="pdfMode ? 'pdf-text-sm mt-1' : 'text-sm text-gray-700 mt-1'">{{ r.summary }}</p>
-            <div v-if="Object.keys(r.categories || {}).length" class="mt-2 grid sm:grid-cols-2 gap-2">
-              <div v-for="(val, key) in r.categories" :key="key" class="text-xs">
-                <span class="font-semibold capitalize text-gray-700">{{ key }}:</span>
-                <span class="whitespace-pre-line text-gray-600"> {{ val }}</span>
+            <div v-if="Object.keys(r.categories || {}).length" class="mt-3 space-y-3">
+              <div v-for="(val, key) in r.categories" :key="key">
+                <div :class="pdfMode ? 'font-semibold capitalize text-sm mb-1' : 'font-semibold capitalize text-xs text-gray-700 mb-1'">{{ key }}</div>
+                <p :class="pdfMode ? 'pdf-text-sm leading-relaxed whitespace-pre-line' : 'text-sm text-gray-600 leading-relaxed whitespace-pre-line'">{{ val }}</p>
               </div>
             </div>
           </article>

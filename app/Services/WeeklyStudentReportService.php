@@ -37,7 +37,7 @@ class WeeklyStudentReportService
             return null;
         }
 
-        $categories = $this->mergeCategories($dailies);
+        $categories = $this->buildCategoryNarratives($dailies);
         $metrics = $this->weeklyMetrics($student, $start, $end, $dailies->count());
 
         $weekly = StudentReport::query()
@@ -124,21 +124,411 @@ class WeeklyStudentReportService
      * @param  Collection<int, StudentReport>  $dailies
      * @return array<string, string>
      */
-    private function mergeCategories(Collection $dailies): array
+    private function buildCategoryNarratives(Collection $dailies): array
     {
-        $merged = [];
-        foreach ($dailies as $daily) {
-            foreach (($daily->categories ?? []) as $key => $note) {
-                if (! $note) {
-                    continue;
-                }
-                $merged[$key] = isset($merged[$key])
-                    ? $merged[$key]."\n• ".$note
-                    : '• '.$note;
+        $narratives = [];
+
+        $jasmani = $this->buildJasmaniNarrative($dailies);
+        if ($jasmani !== '') {
+            $narratives['jasmani'] = $jasmani;
+        }
+
+        $akademik = $this->buildAkademikNarrative($dailies);
+        if ($akademik !== '') {
+            $narratives['akademik'] = $akademik;
+        }
+
+        foreach ($this->otherCategoryNotes($dailies) as $key => $text) {
+            if (! isset($narratives[$key])) {
+                $narratives[$key] = $text;
             }
         }
 
-        return $merged;
+        return $narratives;
+    }
+
+    /**
+     * @param  Collection<int, StudentReport>  $dailies
+     */
+    private function buildJasmaniNarrative(Collection $dailies): string
+    {
+        $pointsBySub = $this->collectJasmaniPoints($dailies);
+        if ($pointsBySub === []) {
+            return '';
+        }
+
+        $paragraphs = [];
+        foreach ($this->jasmaniSubcategories() as $sub) {
+            $subId = (string) ($sub['id'] ?? '');
+            if ($subId === '' || ! isset($pointsBySub[$subId])) {
+                continue;
+            }
+
+            $paragraph = $this->buildMeasurementNarrative(
+                (string) ($sub['label'] ?? $subId),
+                $pointsBySub[$subId],
+                (string) ($sub['unit'] ?? ''),
+                (string) ($sub['sort'] ?? 'desc'),
+            );
+
+            if ($paragraph !== '') {
+                $paragraphs[] = $paragraph;
+            }
+        }
+
+        foreach ($pointsBySub as $subId => $entries) {
+            if (collect($this->jasmaniSubcategories())->contains(fn ($sub) => ($sub['id'] ?? '') === $subId)) {
+                continue;
+            }
+
+            $label = $entries[0]['label'] ?? $subId;
+            $unit = $entries[0]['unit'] ?? '';
+            $paragraph = $this->buildMeasurementNarrative($label, $entries, $unit, 'desc');
+            if ($paragraph !== '') {
+                $paragraphs[] = $paragraph;
+            }
+        }
+
+        return implode("\n\n", $paragraphs);
+    }
+
+    /**
+     * @param  Collection<int, StudentReport>  $dailies
+     */
+    private function buildAkademikNarrative(Collection $dailies): string
+    {
+        $pointsBySubject = $this->collectAkademikPoints($dailies);
+        if ($pointsBySubject === []) {
+            return '';
+        }
+
+        $paragraphs = [];
+        foreach ($pointsBySubject as $subject => $entries) {
+            $paragraph = $this->buildMeasurementNarrative(
+                $subject,
+                $entries,
+                '%',
+                'desc',
+                true,
+            );
+            if ($paragraph !== '') {
+                $paragraphs[] = $paragraph;
+            }
+        }
+
+        return implode("\n\n", $paragraphs);
+    }
+
+    /**
+     * @param  Collection<int, StudentReport>  $dailies
+     * @return array<string, list<array{date:string,value:float,label?:string,unit?:string|null}>>
+     */
+    private function collectJasmaniPoints(Collection $dailies): array
+    {
+        $bySub = [];
+
+        foreach ($dailies->sortBy(fn (StudentReport $daily) => [$daily->report_date?->toDateString(), $daily->id]) as $daily) {
+            $metrics = $daily->metrics ?? [];
+            $date = Carbon::parse($daily->report_date)->timezone($this->timezone())->toDateString();
+
+            if (($metrics['auto_source'] ?? '') === 'jasmani_manual') {
+                $subId = (string) ($metrics['subcategory_id'] ?? '');
+                $score = $metrics['score'] ?? null;
+                if ($subId === '' || ! is_numeric($score)) {
+                    continue;
+                }
+
+                $dedupeKey = (string) ($metrics['manual_entry_id'] ?? "{$date}:{$score}");
+                $bySub[$subId]['entries'][$dedupeKey] = [
+                    'date' => $date,
+                    'value' => (float) $score,
+                    'label' => (string) ($metrics['subcategory_label'] ?? $subId),
+                    'unit' => $metrics['unit'] ?? null,
+                ];
+
+                continue;
+            }
+
+            $note = trim((string) (($daily->categories ?? [])['jasmani'] ?? ''));
+            if ($note === '') {
+                continue;
+            }
+
+            $parsed = $this->parseCategoryMeasurement($note);
+            if (! $parsed) {
+                continue;
+            }
+
+            $subId = $this->resolveJasmaniSubId($parsed['label']) ?? strtolower(str_replace(' ', '_', $parsed['label']));
+            $dedupeKey = "{$date}:{$parsed['value']}";
+            $bySub[$subId]['entries'][$dedupeKey] = [
+                'date' => $date,
+                'value' => $parsed['value'],
+                'label' => $parsed['label'],
+                'unit' => $parsed['unit'],
+            ];
+        }
+
+        $normalized = [];
+        foreach ($bySub as $subId => $group) {
+            $entries = array_values($group['entries'] ?? []);
+            if ($entries === []) {
+                continue;
+            }
+            $normalized[$subId] = $entries;
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @param  Collection<int, StudentReport>  $dailies
+     * @return array<string, list<array{date:string,value:float}>>
+     */
+    private function collectAkademikPoints(Collection $dailies): array
+    {
+        $bySubject = [];
+
+        foreach ($dailies->sortBy(fn (StudentReport $daily) => [$daily->report_date?->toDateString(), $daily->id]) as $daily) {
+            $metrics = $daily->metrics ?? [];
+            $date = Carbon::parse($daily->report_date)->timezone($this->timezone())->toDateString();
+
+            if (($metrics['auto_source'] ?? '') === 'test_submission') {
+                $percent = $metrics['percent'] ?? null;
+                if (! is_numeric($percent)) {
+                    continue;
+                }
+
+                $subject = (string) ($metrics['subject_label'] ?? $metrics['test_name'] ?? 'Akademik');
+                $dedupeKey = (string) ($metrics['submission_id'] ?? "{$date}:{$percent}");
+                $bySubject[$subject]['entries'][$dedupeKey] = [
+                    'date' => $date,
+                    'value' => (float) $percent,
+                ];
+
+                continue;
+            }
+
+            $note = trim((string) (($daily->categories ?? [])['akademik'] ?? ''));
+            if ($note === '') {
+                continue;
+            }
+
+            $parsed = $this->parseAkademikCategory($note);
+            if (! $parsed) {
+                continue;
+            }
+
+            $dedupeKey = "{$date}:{$parsed['value']}";
+            $bySubject[$parsed['label']]['entries'][$dedupeKey] = [
+                'date' => $date,
+                'value' => $parsed['value'],
+            ];
+        }
+
+        $normalized = [];
+        foreach ($bySubject as $subject => $group) {
+            $entries = array_values($group['entries'] ?? []);
+            if ($entries !== []) {
+                $normalized[$subject] = $entries;
+            }
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @param  list<array{date:string,value:float,label?:string,unit?:string|null}>  $entries
+     */
+    private function buildMeasurementNarrative(
+        string $label,
+        array $entries,
+        string $unit,
+        string $sort,
+        bool $isPercent = false,
+    ): string {
+        if ($entries === []) {
+            return '';
+        }
+
+        usort($entries, fn (array $a, array $b) => strcmp($a['date'], $b['date']));
+
+        $values = array_column($entries, 'value');
+        $min = min($values);
+        $max = max($values);
+        $first = $entries[0]['value'];
+        $last = $entries[array_key_last($entries)]['value'];
+        $lowerIsBetter = $sort === 'asc';
+
+        $best = $lowerIsBetter ? $min : $max;
+        $worst = $lowerIsBetter ? $max : $min;
+        $unitSuffix = $this->formatUnitSuffix($unit, $isPercent);
+
+        if ($lowerIsBetter) {
+            $rangeSentence = sprintf(
+                '%s: waktu terbaik %s%s dan waktu terlama %s%s selama pekan ini.',
+                $label,
+                $this->formatScore($best),
+                $unitSuffix,
+                $this->formatScore($worst),
+                $unitSuffix,
+            );
+        } else {
+            $rangeSentence = sprintf(
+                '%s: nilai terendah %s%s dan terbaik %s%s selama pekan ini.',
+                $label,
+                $this->formatScore($worst),
+                $unitSuffix,
+                $this->formatScore($best),
+                $unitSuffix,
+            );
+        }
+
+        if (count($entries) === 1) {
+            return $rangeSentence.' Hanya ada satu pencatatan pekan ini, sehingga tren kenaikan/penurunan belum bisa dinilai.';
+        }
+
+        return $rangeSentence.' '.$this->assessTrend($first, $last, $lowerIsBetter, $unit, $isPercent);
+    }
+
+    private function assessTrend(
+        float $first,
+        float $last,
+        bool $lowerIsBetter,
+        string $unit,
+        bool $isPercent = false,
+    ): string {
+        $unitSuffix = $this->formatUnitSuffix($unit, $isPercent);
+        $firstText = $this->formatScore($first).$unitSuffix;
+        $lastText = $this->formatScore($last).$unitSuffix;
+
+        if (abs($first - $last) < 0.001) {
+            return sprintf(
+                'Dibanding awal pekan (%s) hingga akhir pekan (%s), capaian stagnan — belum terlihat progress signifikan.',
+                $firstText,
+                $lastText,
+            );
+        }
+
+        $improved = $lowerIsBetter ? ($last < $first) : ($last > $first);
+
+        if ($improved) {
+            return sprintf(
+                'Dibanding awal pekan (%s) ke akhir pekan (%s), capaian menunjukkan peningkatan — ini termasuk progress positif.',
+                $firstText,
+                $lastText,
+            );
+        }
+
+        return sprintf(
+            'Dibanding awal pekan (%s) ke akhir pekan (%s), capaian menurun — perlu perhatian dan latihan lebih lanjut.',
+            $firstText,
+            $lastText,
+        );
+    }
+
+    /**
+     * @param  Collection<int, StudentReport>  $dailies
+     * @return array<string, string>
+     */
+    private function otherCategoryNotes(Collection $dailies): array
+    {
+        $notes = [];
+
+        foreach ($dailies as $daily) {
+            foreach (($daily->categories ?? []) as $key => $note) {
+                if (in_array($key, ['jasmani', 'akademik'], true)) {
+                    continue;
+                }
+
+                $text = trim((string) $note);
+                if ($text === '') {
+                    continue;
+                }
+
+                $notes[$key] = isset($notes[$key])
+                    ? $notes[$key].' '.$text
+                    : $text;
+            }
+        }
+
+        return $notes;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function jasmaniSubcategories(): array
+    {
+        $jasmani = collect(config('rankings.groups', []))->firstWhere('id', 'jasmani');
+
+        return $jasmani['subcategories'] ?? [];
+    }
+
+    private function resolveJasmaniSubId(string $label): ?string
+    {
+        foreach ($this->jasmaniSubcategories() as $sub) {
+            if (strcasecmp((string) ($sub['label'] ?? ''), $label) === 0) {
+                return (string) ($sub['id'] ?? null);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array{label:string,value:float,unit:?string}|null
+     */
+    private function parseCategoryMeasurement(string $note): ?array
+    {
+        if (! preg_match('/^(.+?)\s*[—–-]\s*([\d.,]+)\s*(.*)$/u', trim($note), $matches)) {
+            return null;
+        }
+
+        $value = (float) str_replace(',', '.', $matches[2]);
+        $unit = trim($matches[3]) ?: null;
+
+        return [
+            'label' => trim($matches[1]),
+            'value' => $value,
+            'unit' => $unit,
+        ];
+    }
+
+    /**
+     * @return array{label:string,value:float}|null
+     */
+    private function parseAkademikCategory(string $note): ?array
+    {
+        if (preg_match('/^(.+?)\s*[—–-]\s*([\d.,]+)\s*%/u', trim($note), $matches)) {
+            return [
+                'label' => trim($matches[1]),
+                'value' => (float) str_replace(',', '.', $matches[2]),
+            ];
+        }
+
+        if (preg_match('/([\d.,]+)\s*%/u', $note, $matches)) {
+            return [
+                'label' => 'Akademik',
+                'value' => (float) str_replace(',', '.', $matches[1]),
+            ];
+        }
+
+        return null;
+    }
+
+    private function formatScore(float $value): string
+    {
+        return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.');
+    }
+
+    private function formatUnitSuffix(string $unit, bool $isPercent = false): string
+    {
+        if ($isPercent || $unit === '%') {
+            return '%';
+        }
+
+        return $unit !== '' ? " {$unit}" : '';
     }
 
     /**
@@ -189,10 +579,7 @@ class WeeklyStudentReportService
     {
         $parts = [sprintf('%d laporan harian tercatat pekan ini.', $dailyCount)];
         if ($metrics['tes_rata'] !== null) {
-            $parts[] = sprintf('Rata-rata nilai tes pekan ini %s%%.', $metrics['tes_rata']);
-        }
-        if (($metrics['jasmani_terisi'] ?? 0) > 0) {
-            $parts[] = sprintf('%d komponen jasmani sudah terisi.', $metrics['jasmani_terisi']);
+            $parts[] = sprintf('Rata-rata nilai tes pekan ini %s%%.', $this->formatScore((float) $metrics['tes_rata']));
         }
 
         return implode(' ', $parts);

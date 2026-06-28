@@ -262,7 +262,10 @@
                     <div style="margin-top:6px; color:#374151;">{{ $report['summary'] }}</div>
                 @endif
                 @foreach ($report['categories'] ?? [] as $key => $val)
-                    <div style="margin-top:4px;"><strong>{{ $key }}:</strong> {{ $val }}</div>
+                    <div style="margin-top:8px;">
+                        <strong>{{ $key }}</strong>
+                        <div style="margin-top:4px; color:#374151; white-space:pre-line; line-height:1.5;">{{ $val }}</div>
+                    </div>
                 @endforeach
             </div>
         @empty
