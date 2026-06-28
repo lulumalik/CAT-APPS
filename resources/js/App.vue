@@ -59,13 +59,14 @@ const { t, locale } = useI18n()
 const isTestRunnerPage = computed(() => route.name === 'quick-test')
 const isLoginPage = computed(() => route.name === 'login')
 const isSignupPage = computed(() => route.name === 'signup')
-const isHomePage = computed(() => route.name === 'home')
+const isHomePage = computed(() => route.name === 'home-demo')
 const isFreeTryoutPage = computed(() => route.name === 'free-tryout')
 const isClassRoomPage = computed(() => route.name === 'bimble-class-room')
 const isRankingPage = computed(() => route.name === 'rankings')
 const showSidebarNav = computed(
   () =>
     isAuthenticated.value &&
+    !isHomePage.value &&
     !isTestRunnerPage.value &&
     !isLoginPage.value &&
     !isSignupPage.value &&
@@ -82,7 +83,7 @@ const updateDocumentMeta = () => {
   if (typeof document === 'undefined') return
 
   const routeTitleKeyByName = {
-    home: 'seo.title',
+    'home-demo': 'seo.title',
     rankings: 'nav.rankings',
     login: 'nav.login',
     signup: 'auth.signup.title',

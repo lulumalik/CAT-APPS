@@ -79,7 +79,28 @@
       <!-- 2. Ringkasan Mingguan -->
       <section :class="pdfMode ? 'pdf-progress-section' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm'">
         <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Ringkasan Mingguan</h3>
-        <p v-if="!pdfMode" class="text-xs text-gray-500 mb-3">Klik ringkasan untuk memilih rentang tanggal laporan</p>
+        <p v-if="!pdfMode && !canRegenerateWeekly" class="text-xs text-gray-500 mb-3">Klik ringkasan untuk memilih rentang tanggal laporan</p>
+        <div
+          v-if="canRegenerateWeekly && !pdfMode"
+          class="mb-4 flex flex-wrap items-end gap-2 rounded-xl border border-dashed border-[#9DB359]/30 bg-[#9DB359]/5 p-3"
+        >
+          <label class="flex flex-col gap-1 text-xs text-gray-500">
+            <span>Generate minggu (pilih tanggal dalam minggu)</span>
+            <input
+              v-model="manualWeekStart"
+              type="date"
+              class="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:border-[#9DB359] focus:ring-[#9DB359]"
+            />
+          </label>
+          <button
+            type="button"
+            class="rounded-full bg-[#9DB359] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            :disabled="!manualWeekStart || generatingManualWeek"
+            @click="generateWeeklyForWeek"
+          >
+            {{ generatingManualWeek ? 'Memproses...' : 'Generate minggu' }}
+          </button>
+        </div>
         <div v-if="!reports.weekly?.length" :class="pdfMode ? 'pdf-muted' : 'text-sm text-gray-400'">Belum ada ringkasan mingguan.</div>
         <div v-else class="space-y-3">
           <article
@@ -91,7 +112,18 @@
             @click="selectWeekly(r)"
             @keydown.enter.prevent="selectWeekly(r)"
           >
-            <div class="font-semibold text-sm">{{ r.title }}</div>
+            <div class="flex items-start justify-between gap-2">
+              <div class="font-semibold text-sm">{{ r.title }}</div>
+              <button
+                v-if="canRegenerateWeekly && !pdfMode"
+                type="button"
+                class="shrink-0 rounded-full border border-[#9DB359]/40 bg-white px-3 py-1 text-[11px] font-semibold text-[#5a6b2e] hover:bg-[#9DB359]/10 disabled:opacity-50"
+                :disabled="regeneratingWeeklyId === r.id"
+                @click.stop="regenerateWeekly(r)"
+              >
+                {{ regeneratingWeeklyId === r.id ? '...' : 'Generate ulang' }}
+              </button>
+            </div>
             <p v-if="weeklyPeriodLabel(r)" :class="pdfMode ? 'pdf-muted mt-0.5' : 'text-xs text-gray-500 mt-0.5'">
               {{ weeklyPeriodLabel(r) }}
             </p>
@@ -186,8 +218,11 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import axios from 'axios'
 import ProgressChart from '@/components/ProgressChart.vue'
+import { useAppStore } from '@/stores/app'
+import { useToast } from '@/composables/useNotification'
 
 const props = defineProps({
   studentId: { type: [Number, String], required: true },
@@ -198,7 +233,15 @@ const props = defineProps({
 
 const emit = defineEmits(['update:reportDate', 'selectReportRange'])
 
+const store = useAppStore()
+const { role } = storeToRefs(store)
+const toast = useToast()
+
 const DAILY_PER_PAGE = 10
+const canRegenerateWeekly = computed(() => ['admin', 'mentor'].includes(role.value))
+const regeneratingWeeklyId = ref(null)
+const generatingManualWeek = ref(false)
+const manualWeekStart = ref('')
 
 const loadingProgress = ref(true)
 const loadingDaily = ref(false)
@@ -364,6 +407,46 @@ function selectWeekly(r) {
   dailyPage.value = 1
   emit('update:reportDate', from)
   loadDailyReports()
+}
+
+async function regenerateWeekly(r) {
+  if (!canRegenerateWeekly.value || props.pdfMode) return
+
+  const periodStart = r.period_start || r.report_date
+  if (!periodStart) return
+
+  regeneratingWeeklyId.value = r.id
+  try {
+    await axios.post('/api/student-reports/weekly', {
+      student_user_id: props.studentId,
+      period_start: periodStart,
+    })
+    toast.success('OK', 'Ringkasan mingguan di-generate ulang.')
+    await loadDailyReports()
+  } catch (error) {
+    toast.error('Gagal', error?.response?.data?.message || 'Tidak bisa generate ulang ringkasan mingguan.')
+  } finally {
+    regeneratingWeeklyId.value = null
+  }
+}
+
+async function generateWeeklyForWeek() {
+  if (!canRegenerateWeekly.value || !manualWeekStart.value) return
+
+  generatingManualWeek.value = true
+  try {
+    await axios.post('/api/student-reports/weekly', {
+      student_user_id: props.studentId,
+      period_start: manualWeekStart.value,
+    })
+    toast.success('OK', 'Ringkasan mingguan berhasil dibuat.')
+    manualWeekStart.value = ''
+    await loadDailyReports()
+  } catch (error) {
+    toast.error('Gagal', error?.response?.data?.message || 'Tidak bisa generate ringkasan mingguan.')
+  } finally {
+    generatingManualWeek.value = false
+  }
 }
 
 function goDailyPage(page) {

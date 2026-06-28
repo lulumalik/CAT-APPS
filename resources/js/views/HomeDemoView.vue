@@ -1,29 +1,29 @@
 <template>
   <main class="auth-right-pane min-h-screen text-text rounded-3xl">
     <span class="auth-visual-stripe fixed top-0 left-0 w-full h-full" style="z-index: -10;" />
-    <div v-if="!isAuthenticated" class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
+    <div class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
       <div
-        class="page-shell rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-6 py-2 md:py-0">
-        <div class="hidden md:flex h-16 items-center justify-center gap-1 lg:gap-2 flex-wrap">
-          <div class="flex items-center gap-1">
+        class="home-top-nav page-shell rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-5 lg:px-6 py-2 md:py-0">
+        <div class="hidden md:flex h-16 min-h-16 items-center justify-between gap-3 lg:gap-4">
+          <div class="flex min-w-0 flex-1 items-center gap-0.5 lg:gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <button v-for="item in quickNavItems" :key="item.id" type="button"
-              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap"
+              class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase tracking-wide px-2 lg:px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap"
               @click="scrollToSection(item.id)">
               {{ item.label }}
             </button>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex shrink-0 items-center gap-1.5 lg:gap-2">
             <router-link to="/selayang-pandang"
-              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
+              class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase tracking-wide px-2 lg:px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
               Selayang Pandang
             </router-link>
             <router-link to="/about-us"
-              class="text-[11px] lg:text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
+              class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase tracking-wide px-2 lg:px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
               Tentang Kami
             </router-link>
-            <router-link to="/login"
-              class="text-[11px] lg:text-xs bg-primary text-white font-bold uppercase tracking-wide px-4 py-2 rounded-md cursor-pointer hover:bg-primary/80 hover:text-white transition-colors whitespace-nowrap">
-              Login
+            <router-link :to="authNavLink.to"
+              class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs bg-primary text-white font-bold uppercase tracking-wide px-3 lg:px-4 py-2 rounded-md cursor-pointer hover:bg-primary/80 hover:text-white transition-colors whitespace-nowrap">
+              {{ authNavLink.label }}
             </router-link>
           </div>
         </div>
@@ -53,10 +53,10 @@
                 @click="scrollToSection(item.id)">
                 {{ item.label }}
               </button>
-              <router-link to="/login"
+              <router-link :to="authNavLink.to"
                 class="mt-2 px-4 py-2 rounded-md bg-primary text-white text-center text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors"
                 @click="isMobileMenuOpen = false">
-                Masuk Ke Platform
+                {{ isAuthenticated ? 'Masuk' : 'Masuk Ke Platform' }}
               </router-link>
             </div>
           </div>
@@ -706,6 +706,12 @@ const route = useRoute()
 const router = useRouter()
 const store = useAppStore()
 const { isAuthenticated } = storeToRefs(store)
+
+const authNavLink = computed(() => (
+  isAuthenticated.value
+    ? { to: '/dashboard', label: 'Masuk' }
+    : { to: '/login', label: 'Login' }
+))
 const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
 const tubagusUrl = new URL('../../assets/bpk_tubagus.jpg', import.meta.url).href
 const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
@@ -1468,8 +1474,12 @@ onUnmounted(() => {
 }
 
 .page-shell {
-  width: min(100%, 80rem);
+  width: min(100%, 78.75rem);
   margin-inline: auto;
+}
+
+.home-top-nav {
+  max-width: 78.75rem;
 }
 
 .gallery-mosaic {

@@ -166,7 +166,6 @@ const navItems = computed(() => {
     { to: '/tests', label: t('nav.tests') },
     { to: '/question-bank', label: t('nav.questionBank') },
     { to: '/rankings', label: t('nav.rankings') },
-    { to: '/admin/student-reports', label: 'Laporan Peserta' },
   ]
 
   if (isAdmin.value) {
