@@ -10,6 +10,7 @@ use App\Models\StudentReport;
 use App\Models\TestDefinition;
 use App\Models\TestSubmission;
 use App\Models\User;
+use App\Services\WeeklyStudentReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -99,6 +100,10 @@ class ProgressController extends Controller
 
         $date = $request->input('date', now()->toDateString());
         $perPage = min(50, max(5, (int) $request->input('per_page', 10)));
+
+        $weeklyService = app(WeeklyStudentReportService::class);
+        $weeklyService->syncMissingWeeks($student);
+        $weeklyService->syncForDate($student, $date, null, false);
 
         $daily = StudentReport::query()
             ->where('student_user_id', $student->id)

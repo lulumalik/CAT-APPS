@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-[#333] via-[#333] to-[#333] font-sans text-[#1A1A1A]">
+  <div class="min-h-screen bg-gradient-to-b from-[#F7FAF4] via-[#F4F6F3] to-[#EEF3E8] font-sans text-[#1A1A1A]">
     <div v-if="loading" class="py-24 text-center text-gray-500">{{ t('common.refresh') }}…</div>
     <div
       v-else-if="errorMessage"
@@ -10,14 +10,12 @@
 
     <template v-else-if="workspace">
       <!-- Header -->
-      <header class="bg-gradient-to-r from-primary via-[#2F6BFF] to-primary text-white px-4 md:px-10 py-6 md:py-10 rounded-b-[1.5rem] md:rounded-b-[2rem] shadow-xl shadow-[#7CB342]/20 relative overflow-hidden">
+      <header class="bg-gradient-to-r from-[#333333] via-[#636363] to-[#595959] text-white px-4 md:px-10 py-6 md:py-10 rounded-b-[1.5rem] md:rounded-b-[2rem] shadow-xl shadow-[#7CB342]/20 relative overflow-hidden">
         <div class="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,white,transparent_45%)]" />
         <div class="absolute -right-16 -top-20 h-56 w-56 rounded-full bg-white/10 blur-3xl pointer-events-none" />
         <div class="relative max-w-7xl mx-auto flex flex-col gap-5 md:gap-8 lg:flex-row lg:items-end">
           <div class="flex gap-3 md:gap-5 items-start">
-            <div class="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-white/20 flex items-center justify-center text-[10px] md:text-xs font-bold text-center leading-tight shrink-0 border border-white/30 shadow-lg shadow-black/10">
-              <img src="../../assets/logo.png" alt="CAT Apps" class="w-10 h-10 object-contain" />
-            </div>
+            <img src="../../assets/logo.png" alt="CAT Apps" class="w-20 h-20 object-contain" />
             <div>
               <p class="inline-flex rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide text-white/90">
                 {{ t('bimble.classLabel') }}

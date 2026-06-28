@@ -15,6 +15,27 @@ class AutoStudentReportTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_weekly_summary_is_created_when_daily_report_exists(): void
+    {
+        $student = User::factory()->create(['role' => 'user']);
+
+        StudentReport::create([
+            'student_user_id' => $student->id,
+            'type' => StudentReport::TYPE_DAILY,
+            'report_date' => now()->toDateString(),
+            'title' => 'Laporan harian uji',
+            'summary' => 'Contoh',
+        ]);
+
+        $weekly = app(\App\Services\WeeklyStudentReportService::class)->syncForDate($student, now());
+
+        $this->assertNotNull($weekly);
+        $this->assertDatabaseHas('student_reports', [
+            'student_user_id' => $student->id,
+            'type' => StudentReport::TYPE_WEEKLY,
+        ]);
+    }
+
     public function test_test_submission_creates_auto_daily_report_and_notifies_parent(): void
     {
         $student = User::factory()->create(['role' => 'user']);
@@ -71,6 +92,11 @@ class AutoStudentReportTest extends TestCase
             'user_id' => $parent->id,
             'type' => 'student_report',
             'title' => 'Update nilai tes',
+        ]);
+
+        $this->assertDatabaseHas('student_reports', [
+            'student_user_id' => $student->id,
+            'type' => StudentReport::TYPE_WEEKLY,
         ]);
     }
 }

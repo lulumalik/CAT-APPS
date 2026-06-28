@@ -54,22 +54,6 @@
             {{ saving ? 'Menyimpan...' : 'Simpan Laporan Harian' }}
           </button>
         </form>
-
-        <div class="mt-5 pt-5 border-t border-gray-100">
-          <h3 class="font-semibold text-sm mb-2">Ringkasan Mingguan</h3>
-          <div class="flex items-end gap-2">
-            <div class="flex-1">
-              <label class="block text-xs text-gray-500 mb-1">Mulai minggu (opsional)</label>
-              <input v-model="weeklyStart" type="date"
-                class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#9DB359]" />
-            </div>
-            <button type="button" :disabled="!form.student_user_id || generating"
-              class="rounded-full bg-[#9DB359] text-white px-4 py-2 text-sm font-semibold disabled:opacity-50"
-              @click="generateWeekly">
-              {{ generating ? '...' : 'Buat Ringkasan' }}
-            </button>
-          </div>
-        </div>
       </section>
 
       <section class="lg:col-span-7 bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
@@ -118,8 +102,6 @@ const studentSearch = ref('')
 const students = ref([])
 const reports = ref([])
 const saving = ref(false)
-const generating = ref(false)
-const weeklyStart = ref('')
 let searchTimer = null
 
 const form = reactive({
@@ -176,22 +158,6 @@ async function createReport() {
     toast.error('Gagal', e?.response?.data?.message || 'Tidak bisa menyimpan laporan.')
   } finally {
     saving.value = false
-  }
-}
-
-async function generateWeekly() {
-  generating.value = true
-  try {
-    await axios.post('/api/student-reports/weekly', {
-      student_user_id: form.student_user_id,
-      period_start: weeklyStart.value || undefined,
-    })
-    toast.success('OK', 'Ringkasan mingguan dibuat.')
-    await loadReports()
-  } catch (e) {
-    toast.error('Gagal', e?.response?.data?.message || 'Tidak bisa membuat ringkasan.')
-  } finally {
-    generating.value = false
   }
 }
 

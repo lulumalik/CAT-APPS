@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RegistrationProgress;
 use App\Models\StudentReport;
-use App\Models\TestSubmission;
 use App\Models\User;
 use App\Services\AutoStudentReportService;
+use App\Services\WeeklyStudentReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Schema;
 
 class StudentReportController extends Controller
 {
@@ -20,6 +18,10 @@ class StudentReportController extends Controller
 
         if ($studentId = $request->input('student_id')) {
             $query->where('student_user_id', $studentId);
+            $student = User::find($studentId);
+            if ($student) {
+                app(WeeklyStudentReportService::class)->syncMissingWeeks($student);
+            }
         }
         if ($type = $request->input('type')) {
             $query->where('type', $type);
@@ -61,6 +63,13 @@ class StudentReportController extends Controller
 
         app(AutoStudentReportService::class)->notify($report, 'Laporan harian baru');
 
+        app(WeeklyStudentReportService::class)->syncForDate(
+            User::findOrFail($data['student_user_id']),
+            $report->report_date,
+            $request->user()->id,
+            true,
+        );
+
         $report->load(['student:id,name', 'creator:id,name', 'bimbleClass:id,name']);
 
         return response()->json($this->serialize($report), 201);
@@ -81,32 +90,19 @@ class StudentReportController extends Controller
         $start = isset($data['period_start'])
             ? Carbon::parse($data['period_start'])->startOfWeek()
             : now()->startOfWeek();
-        $end = (clone $start)->endOfWeek();
 
-        $dailies = StudentReport::query()
-            ->where('student_user_id', $student->id)
-            ->where('type', StudentReport::TYPE_DAILY)
-            ->whereBetween('report_date', [$start->toDateString(), $end->toDateString()])
-            ->orderBy('report_date')
-            ->get();
+        $report = app(WeeklyStudentReportService::class)->syncForWeek(
+            $student,
+            $start,
+            $request->user()->id,
+            true,
+        );
 
-        $categories = $this->mergeCategories($dailies);
-        $metrics = $this->weeklyMetrics($student, $start, $end, $dailies->count());
-
-        $report = StudentReport::create([
-            'student_user_id' => $student->id,
-            'created_by' => $request->user()->id,
-            'type' => StudentReport::TYPE_WEEKLY,
-            'report_date' => $end->toDateString(),
-            'period_start' => $start->toDateString(),
-            'period_end' => $end->toDateString(),
-            'title' => sprintf('Ringkasan Mingguan %s – %s', $start->translatedFormat('d M'), $end->translatedFormat('d M Y')),
-            'summary' => $this->weeklySummaryText($dailies->count(), $metrics),
-            'categories' => $categories,
-            'metrics' => $metrics,
-        ]);
-
-        app(AutoStudentReportService::class)->notify($report, 'Ringkasan mingguan tersedia');
+        if (! $report) {
+            return response()->json([
+                'message' => 'Belum ada laporan harian pada minggu ini.',
+            ], 422);
+        }
 
         $report->load(['student:id,name', 'creator:id,name']);
 
@@ -118,81 +114,6 @@ class StudentReportController extends Controller
         $report->delete();
 
         return response()->json(['success' => true]);
-    }
-
-    /**
-     * @param  \Illuminate\Support\Collection<int, StudentReport>  $dailies
-     * @return array<string, string>
-     */
-    private function mergeCategories($dailies): array
-    {
-        $merged = [];
-        foreach ($dailies as $daily) {
-            foreach (($daily->categories ?? []) as $key => $note) {
-                if (! $note) {
-                    continue;
-                }
-                $merged[$key] = isset($merged[$key])
-                    ? $merged[$key]."\n• ".$note
-                    : '• '.$note;
-            }
-        }
-
-        return $merged;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function weeklyMetrics(User $student, Carbon $start, Carbon $end, int $dailyCount): array
-    {
-        $tesAvg = null;
-        if (Schema::hasTable('test_submissions')) {
-            $subs = TestSubmission::query()
-                ->where('user_id', $student->id)
-                ->whereNotNull('score')
-                ->whereBetween('submitted_at', [$start, $end])
-                ->with('testDefinition:id,question_ids')
-                ->get();
-
-            $percents = [];
-            foreach ($subs as $sub) {
-                $total = count($sub->testDefinition?->question_ids ?? []);
-                if ($total > 0) {
-                    $percents[] = round(((float) $sub->score / $total) * 100, 1);
-                }
-            }
-            if ($percents !== []) {
-                $tesAvg = round(array_sum($percents) / count($percents), 1);
-            }
-        }
-
-        $jasmaniFilled = 0;
-        if (Schema::hasTable('registration_progress')) {
-            $progress = RegistrationProgress::where('user_id', $student->id)->first();
-            $jasmaniFilled = collect($progress?->physical_data ?? [])
-                ->filter(fn ($v) => is_numeric($v) || (is_array($v) && isset($v['value'])))
-                ->count();
-        }
-
-        return [
-            'daily_count' => $dailyCount,
-            'tes_rata' => $tesAvg,
-            'jasmani_terisi' => $jasmaniFilled,
-        ];
-    }
-
-    private function weeklySummaryText(int $dailyCount, array $metrics): string
-    {
-        $parts = [sprintf('%d laporan harian tercatat pekan ini.', $dailyCount)];
-        if ($metrics['tes_rata'] !== null) {
-            $parts[] = sprintf('Rata-rata nilai tes pekan ini %s%%.', $metrics['tes_rata']);
-        }
-        if (($metrics['jasmani_terisi'] ?? 0) > 0) {
-            $parts[] = sprintf('%d komponen jasmani sudah terisi.', $metrics['jasmani_terisi']);
-        }
-
-        return implode(' ', $parts);
     }
 
     private function serialize(StudentReport $report): array

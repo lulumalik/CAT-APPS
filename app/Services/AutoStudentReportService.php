@@ -66,6 +66,13 @@ class AutoStudentReportService
 
         $this->notify($report, 'Update nilai tes');
 
+        app(WeeklyStudentReportService::class)->syncForDate(
+            $student,
+            $report->report_date,
+            $createdBy,
+            true,
+        );
+
         return $report;
     }
 
@@ -125,6 +132,13 @@ class AutoStudentReportService
         ]);
 
         $this->notify($report, 'Update nilai jasmani');
+
+        app(WeeklyStudentReportService::class)->syncForDate(
+            $student,
+            $report->report_date,
+            $createdBy,
+            true,
+        );
 
         return $report;
     }
