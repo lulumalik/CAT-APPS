@@ -81,7 +81,7 @@
         <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Ringkasan Mingguan</h3>
         <p v-if="!pdfMode && !canRegenerateWeekly" class="text-xs text-gray-500 mb-3">Klik ringkasan untuk memilih rentang tanggal laporan</p>
         <div
-          v-if="canRegenerateWeekly && !pdfMode"
+          v-if="isAdmin && !pdfMode"
           class="mb-4 flex flex-wrap items-end gap-2 rounded-xl border border-dashed border-[#9DB359]/30 bg-[#9DB359]/5 p-3"
         >
           <label class="flex flex-col gap-1 text-xs text-gray-500">
@@ -238,6 +238,7 @@ const { role } = storeToRefs(store)
 const toast = useToast()
 
 const DAILY_PER_PAGE = 10
+const isAdmin = computed(() => role.value === 'admin')
 const canRegenerateWeekly = computed(() => ['admin', 'mentor'].includes(role.value))
 const regeneratingWeeklyId = ref(null)
 const generatingManualWeek = ref(false)
@@ -431,7 +432,7 @@ async function regenerateWeekly(r) {
 }
 
 async function generateWeeklyForWeek() {
-  if (!canRegenerateWeekly.value || !manualWeekStart.value) return
+  if (!isAdmin.value || !manualWeekStart.value) return
 
   generatingManualWeek.value = true
   try {
