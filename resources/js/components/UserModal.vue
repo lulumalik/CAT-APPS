@@ -44,7 +44,7 @@
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.user.appExpiresLabel') }}</label>
           <input
             v-model="form.app_expires_at"
-            type="datetime-local"
+            type="date"
             class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all"
           />
           <p class="text-xs text-gray-500 mt-1">{{ t('modals.user.appExpiresHint') }}</p>
@@ -77,7 +77,7 @@
 import { reactive, watch, computed } from 'vue'
 import { useI18n } from '@/composables/useI18n'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
-import { normalizeProgramCategory } from '@/utils/userMeta'
+import { normalizeProgramCategory, toDateInputValue, dateInputToExpiresAt } from '@/utils/userMeta'
 
 const props = defineProps({
   initial: { type: Object, default: null }
@@ -97,14 +97,6 @@ const form = reactive({
   app_expires_at: '',
 })
 
-const toDatetimeLocal = (value) => {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ''
-  const pad = (n) => String(n).padStart(2, '0')
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
-}
-
 watch(() => props.initial, (val) => {
   if (val) {
     form.name = val.name
@@ -113,7 +105,7 @@ watch(() => props.initial, (val) => {
     form.role = val.role
     form.password = ''
     form.program_category = normalizeProgramCategory(val.program_category)
-    form.app_expires_at = toDatetimeLocal(val.app_expires_at)
+    form.app_expires_at = toDateInputValue(val.app_expires_at)
   } else {
     form.name = ''
     form.username = ''
@@ -146,7 +138,7 @@ watch(
 
 const submit = () => {
   const payload = JSON.parse(JSON.stringify(form))
-  payload.app_expires_at = payload.app_expires_at || null
+  payload.app_expires_at = dateInputToExpiresAt(payload.app_expires_at)
   if (!payload.password) {
     delete payload.password
   }

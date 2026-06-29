@@ -13,14 +13,14 @@
             </button>
           </div>
           <div class="flex shrink-0 items-center gap-1.5 lg:gap-2">
-            <router-link to="/selayang-pandang"
+            <!-- <router-link to="/selayang-pandang"
               class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase tracking-wide px-2 lg:px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
               Selayang Pandang
             </router-link>
             <router-link to="/about-us"
               class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase tracking-wide px-2 lg:px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
               Tentang Kami
-            </router-link>
+            </router-link> -->
             <router-link :to="authNavLink.to"
               class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs bg-primary text-white font-bold uppercase tracking-wide px-3 lg:px-4 py-2 rounded-md cursor-pointer hover:bg-primary/80 hover:text-white transition-colors whitespace-nowrap">
               {{ authNavLink.label }}
@@ -709,7 +709,7 @@ const { isAuthenticated } = storeToRefs(store)
 
 const authNavLink = computed(() => (
   isAuthenticated.value
-    ? { to: '/dashboard', label: 'Masuk' }
+    ? { to: '/dashboard', label: 'Dashboard' }
     : { to: '/login', label: 'Login' }
 ))
 const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
@@ -789,6 +789,8 @@ const quickNavItems = [
   { id: 'choices', label: 'Pilihan Kursus' },
   { id: 'comparison', label: 'Perbandingan Kelas' },
   { id: 'gallery', label: 'Galeri Kegiatan' },
+  { id: 'selayang-pandang', label: 'Selayang Pandang' },
+  { id: 'about-us', label: 'Tentang Kami' },
 ]
 
 const leaders = [

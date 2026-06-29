@@ -76,3 +76,18 @@ export const formatAppExpiresAt = (value) => {
     return value
   }
 }
+
+export const toDateInputValue = (value) => {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+
+export const dateInputToExpiresAt = (value) => {
+  const trimmed = String(value || '').trim()
+  if (!trimmed) return null
+  if (trimmed.includes('T')) return trimmed
+  return `${trimmed}T23:59:59`
+}

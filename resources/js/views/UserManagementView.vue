@@ -65,7 +65,24 @@
               </td>
               <td class="px-8 py-5 whitespace-nowrap">
                 <div v-if="user.role !== 'user'" class="text-sm text-gray-400">—</div>
-                <div v-else-if="!user.app_expires_at" class="text-sm text-gray-500">{{ t('users.expiresNotSet') }}</div>
+                <div v-else-if="!user.app_expires_at" class="space-y-1.5">
+                  <p class="text-xs text-gray-500">{{ t('users.expiresNotSet') }}</p>
+                  <div class="flex items-center gap-2">
+                    <input
+                      v-model="expiresDraft[user.id]"
+                      type="date"
+                      class="rounded-lg border border-gray-200 bg-gray-50 px-2 py-1.5 text-sm focus:bg-white focus:border-[#9DB359] focus:ring-0 transition-colors"
+                    />
+                    <button
+                      type="button"
+                      :disabled="!expiresDraft[user.id] || savingExpiresId === user.id"
+                      class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-[#9DB359] hover:bg-[#8ca34b]"
+                      @click="saveExpires(user)"
+                    >
+                      {{ savingExpiresId === user.id ? '...' : t('users.expiresSave') }}
+                    </button>
+                  </div>
+                </div>
                 <div v-else class="space-y-1">
                   <div class="text-sm text-gray-700">{{ formatExpiresAt(user.app_expires_at) }}</div>
                   <span
@@ -109,7 +126,7 @@ import { ref, onMounted } from 'vue'
 import UserModal from '@/components/UserModal.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
-import { formatAppExpiresAt, isAppExpired } from '@/utils/userMeta'
+import { formatAppExpiresAt, isAppExpired, dateInputToExpiresAt } from '@/utils/userMeta'
 
 const { confirm } = useModal()
 const toast = useToast()
@@ -126,6 +143,8 @@ const editingUser = ref(null)
 const importFile = ref(null)
 
 const searchQuery = ref('')
+const expiresDraft = ref({})
+const savingExpiresId = ref(null)
 let searchTimeout = null
 
 const formatExpiresAt = (value) => formatAppExpiresAt(value) || '—'
@@ -225,6 +244,31 @@ const formatApiError = (error) => {
     return Object.values(data.errors).flat().join(' ')
   }
   return t('users.toastSaveFailed')
+}
+
+const saveExpires = async (user) => {
+  const date = expiresDraft.value[user.id]
+  if (!date) return
+
+  savingExpiresId.value = user.id
+  try {
+    const { data } = await window.axios.put(`/api/users/${user.id}`, {
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      username: user.username,
+      program_category: user.program_category,
+      app_expires_at: dateInputToExpiresAt(date),
+    })
+    const idx = users.value.findIndex((u) => u.id === user.id)
+    if (idx !== -1) users.value[idx] = data
+    delete expiresDraft.value[user.id]
+    toast.success('Success', t('users.toastUpdated'))
+  } catch (e) {
+    toast.error('Error', formatApiError(e))
+  } finally {
+    savingExpiresId.value = null
+  }
 }
 
 const saveUser = async (formData) => {
