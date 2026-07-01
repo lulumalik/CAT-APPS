@@ -1405,6 +1405,10 @@ const scrollToSection = (id) => {
   if (target) {
     target.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  if (id == 'selayang-pandang' || id == 'about-us') {
+    router.push(`/${id}`)
+  }
 }
 
 const setupScrollFadeAnimations = async () => {
