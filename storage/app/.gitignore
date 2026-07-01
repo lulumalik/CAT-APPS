@@ -1,4 +1,6 @@
 *
 !private/
 !public/
+!registration-templates/
+!registration-templates/**
 !.gitignore
