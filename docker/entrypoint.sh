@@ -8,6 +8,7 @@ mkdir -p \
   storage/app/private/registration \
   storage/app/public \
   storage/app/public/registration \
+  storage/app/registration-templates \
   storage/framework/cache \
   storage/framework/sessions \
   storage/framework/views \
@@ -20,7 +21,13 @@ fi
 
 php artisan storage:link --force >/dev/null 2>&1 || true
 
-# Hint in container logs (Coolify / docker logs) if storage is not a separate mount
+# Seed berkas template into mounted storage (optional fallback for legacy path)
+if [ -f resources/registration-templates/berkas-pendaftaran-akpol-2026.pdf ]; then
+  cp -n resources/registration-templates/berkas-pendaftaran-akpol-2026.pdf \
+    storage/app/registration-templates/berkas-pendaftaran-akpol-2026.pdf 2>/dev/null || true
+fi
+
+# Hint in container logs
 if grep -q ' /var/www/html/storage ' /proc/mounts 2>/dev/null; then
   echo "[entrypoint] storage: persistent mount detected on /var/www/html/storage"
 else

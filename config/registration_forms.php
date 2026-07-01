@@ -20,7 +20,7 @@ return [
     | PDF template asli (17 halaman) — diunduh peserta
     |--------------------------------------------------------------------------
     */
-    'template_pdf_path' => storage_path('app/registration-templates/berkas-pendaftaran-akpol-2026.pdf'),
+    'template_pdf_path' => resource_path('registration-templates/berkas-pendaftaran-akpol-2026.pdf'),
     'template_pdf_download_name' => 'berkas-pendaftaran-seleksi-akpol-2026.pdf',
 
     /*

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RegistrationProgress;
 use App\Services\RegistrationFormPdfService;
+use App\Support\RegistrationTemplatePath;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -103,8 +104,8 @@ class RegistrationFormPdfController extends Controller
 
     private function streamTemplatePdf()
     {
-        $path = (string) config('registration_forms.template_pdf_path');
-        if ($path === '' || ! is_readable($path)) {
+        $path = RegistrationTemplatePath::resolve();
+        if ($path === null) {
             return response()->json([
                 'message' => 'File berkas pendaftaran belum tersedia di server.',
             ], 404);
