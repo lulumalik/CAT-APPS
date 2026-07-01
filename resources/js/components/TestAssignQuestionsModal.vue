@@ -102,7 +102,7 @@ const emit = defineEmits(['close', 'submit', 'refresh'])
 const { t } = useI18n()
 
 const selected = ref([])
-const active = ref(false)
+const active = ref(true)
 const category = ref('')
 const difficulty = ref('')
 const categoryOptions = computed(() => {
@@ -144,7 +144,7 @@ function mapCategories(cat) {
 watch(() => props.test, (t) => {
   const ids = Array.isArray(t?.questionIds) ? t.questionIds : (Array.isArray(t?.question_ids) ? t.question_ids : [])
   selected.value = Array.from(new Set(ids))
-  active.value = !!(t?.isActive ?? t?.is_active)
+  active.value = ids.length === 0 ? true : !!(t?.isActive ?? t?.is_active ?? true)
   category.value = t?.category || ''
   difficulty.value = ''
 }, { immediate: true })

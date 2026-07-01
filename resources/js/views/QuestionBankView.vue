@@ -222,20 +222,43 @@ const closeModal = () => {
   editingItem.value = null
 }
 
-const onSubmit = async (formData) => {
-  try {
-    if (editingItem.value) {
-      const { data } = await window.axios.post(`/api/questions/${editingItem.value.id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+const normalizeQuestion = (item) => ({
+  ...item,
+  image_url: item?.image_url || item?.image || null,
+})
+
+const toQuestionFormData = (payload) => {
+  if (!(payload.image instanceof File)) return payload
+
+  const fd = new FormData()
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value == null || value === '') return
+    if (key === 'options') {
+      value.forEach((opt, idx) => {
+        fd.append(`options[${idx}][key]`, opt.key)
+        fd.append(`options[${idx}][label]`, opt.label)
       })
+      return
+    }
+    fd.append(key, value)
+  })
+  return fd
+}
+
+const onSubmit = async (payload) => {
+  try {
+    const body = toQuestionFormData(payload)
+    const multipart = body instanceof FormData
+    const config = multipart ? { headers: { 'Content-Type': 'multipart/form-data' } } : undefined
+
+    if (editingItem.value) {
+      const { data } = await window.axios.put(`/api/questions/${editingItem.value.id}`, body, config)
       const idx = questions.value.findIndex(q => q.id === editingItem.value.id)
-      if (idx !== -1) questions.value[idx] = data.data
+      if (idx !== -1) questions.value[idx] = normalizeQuestion(data)
       toast.success('Success', t('questionBank.toastUpdated'))
     } else {
-      const { data } = await window.axios.post('/api/questions', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      questions.value.unshift(data.data)
+      const { data } = await window.axios.post('/api/questions', body, config)
+      questions.value.unshift(normalizeQuestion(data))
       toast.success('Success', t('questionBank.toastCreated'))
     }
     closeModal()

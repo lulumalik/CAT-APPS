@@ -361,7 +361,7 @@ const openAssign = (test) => {
   selectedTest.value = {
     ...test,
     questionIds: Array.isArray(test?.questionIds) ? test.questionIds : (Array.isArray(test?.question_ids) ? test.question_ids : []),
-    isActive: test?.isActive ?? test?.is_active ?? false,
+    isActive: test?.isActive ?? test?.is_active ?? true,
   }
   showAssignModal.value = true
 }
@@ -490,7 +490,7 @@ const refreshAssignData = async () => {
       ...selectedTest.value,
       ...fresh,
       questionIds: Array.isArray(fresh?.question_ids) ? fresh.question_ids : (fresh?.questionIds || []),
-      isActive: fresh?.is_active ?? fresh?.isActive ?? false,
+      isActive: fresh?.is_active ?? fresh?.isActive ?? true,
     }
     toast.success('Success', t('modals.testAssign.refreshDone'))
   } catch (e) {
