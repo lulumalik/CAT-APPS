@@ -1,5 +1,5 @@
 <template>
-  <main class="max-w-4xl mx-auto px-4 pb-8 space-y-6">
+  <main class="max-w-4xl mx-auto px-4 py-8 space-y-6">
     <h1 class="text-2xl font-bold text-[#1A1A1A]">Profil Pendaftar</h1>
 
     <div

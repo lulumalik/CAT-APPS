@@ -344,7 +344,6 @@
               :program="program"
             />
           </div>
-          <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-28 bottom-0 right-0" />
         </div>
       </div>
     </section>
@@ -398,7 +397,6 @@
           <p class="text-xs text-gray-500 mt-3">
             Catatan: rincian fasilitas dapat menyesuaikan kebijakan program dan periode pembinaan.
           </p>
-          <img :src="patternUrl" alt="Pattern" class="absolute z-10 w-28 bottom-0 right-0" />
         </div>
       </div>
     </section>
@@ -698,7 +696,6 @@ import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 import { BookOpenText, Brain, Check, ChevronLeft, ChevronRight, Crown, Dumbbell, Images, LineChart, Maximize2, MessageCircle, NotebookPen, Pause, Play, Quote, ShieldCheck, UserCheck, Warehouse, GraduationCap, X as XIcon } from 'lucide-vue-next'
 import { ONLINE_PROGRAMS } from '@/constants/onlinePrograms'
-import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
 import TeacherModal from '@/components/TeacherModal.vue'
 import CourseCreditCard from '@/components/CourseCreditCard.vue'
 
@@ -735,7 +732,6 @@ const taruna2 = new URL('../../assets/anggota/taruna2.png', import.meta.url).hre
 const taruni = new URL('../../assets/anggota/taruni.png', import.meta.url).href
 const HERO_VIDEO_ID = 't2k3uwS2zyA'
 const heroVideoEmbedUrl = `https://www.youtube.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&controls=0&loop=1&playlist=${HERO_VIDEO_ID}&modestbranding=1&rel=0&playsinline=1`
-const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const wallpaperModules = import.meta.glob('../../assets/wallpaper/*.{jpg,jpeg,png,webp}', {
   eager: true,
   import: 'default',

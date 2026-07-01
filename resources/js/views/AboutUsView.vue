@@ -416,11 +416,9 @@
 </template>
 
 <script setup>
-import SectionWaveDivider from '@/components/SectionWaveDivider.vue'
 import { ArrowLeft, Crown, FileBadge, Globe, Image, Instagram, Landmark, Mail, Phone, Users, X as XIcon } from 'lucide-vue-next'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 const accesoriseUrl = new URL('../../assets/accessorise.png', import.meta.url).href
 const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
 const backgroundAboutUrl = new URL('../../assets/about.png', import.meta.url).href

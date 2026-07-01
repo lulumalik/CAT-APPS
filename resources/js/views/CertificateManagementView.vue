@@ -71,9 +71,9 @@
                 <div class="mt-3 ml-12 h-6 w-40 rounded-full bg-gradient-to-r from-[#44b9ff] to-[#1e86f7]"></div>
               </div>
               <div class="relative z-10 bg-gradient-to-r from-[#1339a6] to-[#0e2f88] text-white text-center px-4 py-4">
-                <div class="font-serif text-xl font-bold">NAMA LEMBAGA PENYELENGGARA KEGIATAN</div>
-                <div class="text-xs mt-1">Alamat 123 Anywhere St., Any City, ST 12345</div>
-                <div class="text-[11px] opacity-90">E-mail hello@reallygreatsite.com | Telepon +123-456-7890</div>
+                <div class="font-serif text-xl font-bold">PRATISTHA CENDIKIA PRESTASI</div>
+                <div class="text-xs mt-1">Jl. Sukamaju no. 142, Cipadung Kulon, Panyileukan, Bandung 40614</div>
+                <div class="text-[11px] opacity-90">E-mail administrator@pratisthaindonesia.com | Telepon +628138964488</div>
               </div>
 
               <div class="relative z-10 px-5 py-5 text-[#403735]">

@@ -80,10 +80,10 @@
       <!-- ADMIN -->
       <template v-else-if="isAdmin && !isAdminViewingStudent">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5 relative"><div class="text-xs text-gray-500">Total Soal</div><div class="text-3xl font-bold">{{ overview.stats?.questions ?? 0 }}</div> <img :src="patternUrl" alt="Pattern" class="absolute w-12 bottom-0 right-0" /></div>
-          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5 relative"><div class="text-xs text-gray-500">Peserta Terdaftar</div><div class="text-3xl font-bold">{{ overview.stats?.registered_users ?? 0 }}</div> <img :src="patternUrl" alt="Pattern" class="absolute w-12 bottom-0 right-0" /></div>
-          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5 relative"><div class="text-xs text-gray-500">Peserta Diterima</div><div class="text-3xl font-bold">{{ overview.stats?.accepted_users ?? 0 }}</div> <img :src="patternUrl" alt="Pattern" class="absolute w-12 bottom-0 right-0" /></div>
-          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5 relative"><div class="text-xs text-gray-500">Kelas Dibuat</div><div class="text-3xl font-bold">{{ overview.stats?.classes_count ?? 0 }}</div> <img :src="patternUrl" alt="Pattern" class="absolute w-12 bottom-0 right-0" /></div>
+          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5"><div class="text-xs text-gray-500">Total Soal</div><div class="text-3xl font-bold">{{ overview.stats?.questions ?? 0 }}</div></div>
+          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5"><div class="text-xs text-gray-500">Peserta Terdaftar</div><div class="text-3xl font-bold">{{ overview.stats?.registered_users ?? 0 }}</div></div>
+          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5"><div class="text-xs text-gray-500">Peserta Diterima</div><div class="text-3xl font-bold">{{ overview.stats?.accepted_users ?? 0 }}</div></div>
+          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5"><div class="text-xs text-gray-500">Kelas Dibuat</div><div class="text-3xl font-bold">{{ overview.stats?.classes_count ?? 0 }}</div></div>
         </div>
 
         <div class="mt-8 grid lg:grid-cols-2 gap-6">
@@ -295,8 +295,6 @@ const pdfReportName = computed(() => {
   return user.value?.name || 'Peserta'
 })
 const formatProgram = (programType) => programCategoryLabel(programType)
-
-const patternUrl = new URL('../../assets/Pattern.svg', import.meta.url).href
 
 const formatDate = (d) => {
   if (!d) return '-'

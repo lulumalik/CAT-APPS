@@ -151,9 +151,9 @@ class CertificateController extends Controller
         $signName = e((string) ($tpl['sign_name'] ?? 'Admin Program'));
         $signPosition = e((string) ($tpl['sign_position'] ?? 'Penyelenggara'));
         $theme = e((string) ($tpl['theme_color'] ?? '#1A1A1A'));
-        $orgName = 'NAMA LEMBAGA PENYELENGGARA KEGIATAN';
-        $orgAddress = 'Alamat 123 Anywhere St., Any City, ST 12345';
-        $orgContact = 'E-mail hello@reallygreatsite.com | Telepon +123-456-7890';
+        $orgName = 'PRATISTHA CENDIKIA PRESTASI';
+        $orgAddress = 'Jl. Sukamaju no. 142, Cipadung Kulon, Panyileukan, Bandung 40614';
+        $orgContact = 'E-mail administrator@pratisthaindonesia.com | Telepon +628138964488';
 
         $html = <<<HTML
 <!doctype html>

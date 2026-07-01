@@ -1,6 +1,6 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold text-[#1A1A1A] mb-6">{{ t('adminRegistration.title') }}</h1>
+    <h1 class="text-2xl font-bold text-[#1A1A1A] mb-6 mt-8">{{ t('adminRegistration.title') }}</h1>
 
     <div class="mb-4 flex flex-wrap gap-3 items-center">
       <input

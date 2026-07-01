@@ -137,7 +137,7 @@ const navItems = computed(() => {
   if (isParent.value) {
     return [
       { to: '/dashboard', label: 'Dashboard' },
-      { to: '/notifications', label: 'Notifikasi' },
+      { to: '/notifications', label: t('nav.notifications') },
     ]
   }
 
@@ -155,7 +155,7 @@ const navItems = computed(() => {
       { to: '/profile', label: 'Profil' },
       { to: '/activity-history', label: 'Riwayat Aktivitas' },
       { to: '/registration', label: t('nav.registrationWizard') },
-      { to: '/notifications', label: 'Notifikasi' },
+      { to: '/notifications', label: t('nav.notifications') },
     ]
   }
 
@@ -169,9 +169,9 @@ const navItems = computed(() => {
   ]
 
   if (isAdmin.value) {
-    items.push({ to: '/admin/guardians', label: 'Undang Orang Tua' })
+    items.push({ to: '/admin/guardians', label: t('nav.inviteGuardians') })
     items.push({ to: '/users', label: t('nav.users') })
-    items.push({ to: '/admin/certificates', label: 'Sertifikat' })
+    items.push({ to: '/admin/certificates', label: t('nav.certificates') })
     items.push({ to: '/admin/registration', label: t('nav.adminRegistration') })
   }
 

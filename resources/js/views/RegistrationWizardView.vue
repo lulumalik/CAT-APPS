@@ -93,7 +93,6 @@
                 </p>
               </div>
             </div>
-            <p class="text-xs text-gray-500 -mt-2">{{ t('registration.phoneFormatHint') }}</p>
 
             <label class="block text-sm font-medium text-gray-700">{{ t('registration.fields.addressKk') }}</label>
             <textarea v-model="form.administration.address_kk" rows="3" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />

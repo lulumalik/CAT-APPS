@@ -53,6 +53,8 @@ export const messages = {
       myClasses: 'Kelas saya',
       announcements: 'Announcement',
       notifications: 'Notifikasi',
+      inviteGuardians: 'Undang Orang Tua',
+      certificates: 'Sertifikat',
     },
     home: {
       hero: {
@@ -428,7 +430,7 @@ export const messages = {
       filePendingUpload: 'Berkas siap diunggah saat kirim',
       submitUploading: 'Mengunggah berkas {current}/{total}…',
       submitSaving: 'Menyimpan data…',
-      phoneFormatHint: 'Gunakan angka saja dan awali dengan 628 (contoh: 6281234567890).',
+      phoneFormatHint: 'Gunakan angka saja.',
       phoneExample: '6281234567890',
       fileUploaded: 'Berkas tersimpan di server',
       fileMissingOnDisk: 'Catatan lama di sistem, berkas fisik hilang — pilih file lagi untuk unggah ulang.',
@@ -575,6 +577,8 @@ export const messages = {
       myClasses: 'My classes',
       announcements: 'Announcements',
       notifications: 'Notifications',
+      inviteGuardians: 'Invite Guardians',
+      certificates: 'Certificates',
     },
     home: {
       hero: {
