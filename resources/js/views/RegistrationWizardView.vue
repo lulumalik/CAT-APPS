@@ -1,5 +1,5 @@
 <template>
-  <main class="max-w-5xl mx-auto px-4 pb-10">
+  <main class="max-w-5xl mx-auto px-4 py-10">
     <h1 class="text-2xl font-bold text-[#1A1A1A] mb-2">{{ t('registration.title') }}</h1>
     <p class="text-gray-500 text-sm mb-8">{{ t('registration.subtitle') }}</p>
 
