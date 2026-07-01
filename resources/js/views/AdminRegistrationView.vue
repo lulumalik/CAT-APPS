@@ -68,6 +68,16 @@
             {{ t('adminRegistration.offlineStaffHint') }}
           </p>
 
+          <a
+            v-if="modal.row?.user_id"
+            :href="`/api/admin/registration-progress/${modal.row.user_id}/forms/pdf`"
+            class="inline-flex rounded-full bg-[#1A1A1A] px-4 py-2 text-xs font-semibold text-white"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ t('registration.forms.downloadAll') }}
+          </a>
+
           <div>
             <div class="font-semibold text-gray-800 mb-2">{{ t('registration.steps.admin') }}</div>
             <dl class="grid gap-3 sm:grid-cols-2">
@@ -176,6 +186,13 @@ const administrationFieldOrder = [
   { key: 'gender', labelKey: 'registration.fields.gender', short: true },
   { key: 'height_cm', labelKey: 'registration.fields.heightCm', short: true },
   { key: 'weight_kg', labelKey: 'registration.fields.weightKg', short: true },
+  { key: 'birth_place', labelKey: 'registration.forms.birthPlace', short: true },
+  { key: 'birth_date', labelKey: 'registration.forms.birthDate', short: true },
+  { key: 'religion', labelKey: 'registration.forms.religion', short: true },
+  { key: 'ethnicity', labelKey: 'registration.forms.ethnicity', short: true },
+  { key: 'education', labelKey: 'registration.forms.education', short: false },
+  { key: 'nik', labelKey: 'registration.forms.nik', short: true },
+  { key: 'parent_name', labelKey: 'registration.forms.parentName', short: false },
   { key: 'passport_photo_path', labelKey: 'registration.fields.passportPhotoFile', short: false, isFile: true },
   { key: 'full_body_photo_path', labelKey: 'registration.fields.fullBodyPhotoFile', short: false, isFile: true },
 ]

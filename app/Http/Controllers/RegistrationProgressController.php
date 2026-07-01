@@ -206,6 +206,54 @@ class RegistrationProgressController extends Controller
             || $progress->administration_status === 'revision_requested';
     }
 
+    /**
+     * @return array<string, string>
+     */
+    private function administrationFormProfileRules(): array
+    {
+        $optional = 'nullable|string|max:255';
+        $optionalLong = 'nullable|string|max:4000';
+
+        return [
+            'birth_place' => $optional,
+            'birth_date' => 'nullable|date_format:Y-m-d',
+            'religion' => $optional,
+            'ethnicity' => $optional,
+            'education' => $optional,
+            'occupation' => $optional,
+            'nik' => 'nullable|string|max:32',
+            'postal_code' => 'nullable|string|max:16',
+            'city' => $optional,
+            'marital_status' => $optional,
+            'participant_number' => $optional,
+            'parent_name' => $optional,
+            'parent_birth_place' => $optional,
+            'parent_birth_date' => 'nullable|date_format:Y-m-d',
+            'parent_occupation' => $optional,
+            'parent_address' => $optionalLong,
+            'parent_relationship' => $optional,
+            'father_name' => $optional,
+            'father_birth' => $optional,
+            'father_occupation' => $optional,
+            'father_address' => $optionalLong,
+            'mother_name' => $optional,
+            'mother_birth' => $optional,
+            'mother_occupation' => $optional,
+            'mother_address' => $optionalLong,
+            'education_sd' => $optional,
+            'education_smp' => $optional,
+            'education_sma' => $optional,
+            'education_pt' => $optional,
+            'hair' => $optional,
+            'eyes' => $optional,
+            'other_traits' => $optional,
+            'blood_type' => $optional,
+            'document_date_city' => $optional,
+            'document_date_day' => 'nullable|string|max:4',
+            'document_date_month' => $optional,
+        ];
+    }
+
     public function uploadAdministrationFile(Request $request)
     {
         if (! Schema::hasTable('registration_progress')) {
@@ -407,7 +455,7 @@ class RegistrationProgressController extends Controller
 
         if ($step === 'administration') {
             $phoneRules = ['required', 'string', 'max:64', 'regex:/^628[0-9]{7,12}$/'];
-            $text = $request->validate([
+            $text = $request->validate(array_merge([
                 'full_name' => 'required|string|max:255',
                 'whatsapp' => $phoneRules,
                 'phone' => $phoneRules,
@@ -416,7 +464,7 @@ class RegistrationProgressController extends Controller
                 'gender' => 'required|in:L,P',
                 'height_cm' => 'required|numeric|min:50|max:280',
                 'weight_kg' => 'required|numeric|min:15|max:250',
-            ], [
+            ], $this->administrationFormProfileRules()), [
                 'whatsapp.regex' => 'Format nomor WhatsApp harus diawali 628 dan hanya angka (contoh: 6281234567890).',
                 'phone.regex' => 'Format nomor telepon orang tua harus diawali 628 dan hanya angka (contoh: 6281234567890).',
             ]);

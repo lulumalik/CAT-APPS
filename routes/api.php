@@ -16,6 +16,7 @@ use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\RegistrationFormPdfController;
 use App\Http\Controllers\StudentDashboardPdfController;
 use App\Http\Controllers\StudentReportController;
 
@@ -80,6 +81,9 @@ Route::middleware(['auth', 'app.not_expired'])->group(function () {
     Route::post('/my-registration/administration-file', [RegistrationProgressController::class, 'uploadAdministrationFile']);
     Route::get('/registration-files/{user}/{field}', [RegistrationProgressController::class, 'streamAdministrationFile']);
     Route::match(['post', 'put'], '/my-registration', [RegistrationProgressController::class, 'updateMine']);
+    Route::get('/my-registration/forms', [RegistrationFormPdfController::class, 'catalog']);
+    Route::get('/my-registration/forms/pdf', [RegistrationFormPdfController::class, 'downloadAll']);
+    Route::get('/my-registration/forms/{slug}/pdf', [RegistrationFormPdfController::class, 'downloadPage']);
 
     Route::get('/announcements', [AnnouncementController::class, 'index']);
 
@@ -110,6 +114,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminShow']);
     Route::get('/admin/storage-diagnostic', [RegistrationProgressController::class, 'adminStorageDiagnostic']);
     Route::patch('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminUpdate']);
+    Route::get('/admin/registration-progress/{user}/forms/pdf', [RegistrationFormPdfController::class, 'adminDownloadAll']);
+    Route::get('/admin/registration-progress/{user}/forms/{slug}/pdf', [RegistrationFormPdfController::class, 'adminDownloadPage']);
 
     Route::post('/admin/announcements', [AnnouncementController::class, 'store']);
     Route::put('/admin/announcements/{announcement}', [AnnouncementController::class, 'update']);

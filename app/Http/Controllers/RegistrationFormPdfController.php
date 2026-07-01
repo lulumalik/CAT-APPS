@@ -1,0 +1,93 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\RegistrationProgress;
+use App\Services\RegistrationFormPdfService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+
+class RegistrationFormPdfController extends Controller
+{
+    public function __construct(
+        private readonly RegistrationFormPdfService $forms
+    ) {}
+
+    public function catalog(Request $request)
+    {
+        return response()->json([
+            'pages' => $this->forms->pageCatalog(),
+        ]);
+    }
+
+    public function downloadAll(Request $request)
+    {
+        $user = $request->user();
+        $progress = $this->resolveProgress($user->id);
+
+        return $this->streamPdf($user, $progress, null);
+    }
+
+    public function downloadPage(Request $request, string $slug)
+    {
+        if ($this->forms->findPageBySlug($slug) === null) {
+            abort(404);
+        }
+
+        $user = $request->user();
+        $progress = $this->resolveProgress($user->id);
+
+        return $this->streamPdf($user, $progress, $slug);
+    }
+
+    public function adminDownloadAll(Request $request, int $userId)
+    {
+        $user = \App\Models\User::findOrFail($userId);
+        $progress = $this->resolveProgress($user->id);
+
+        return $this->streamPdf($user, $progress, null);
+    }
+
+    public function adminDownloadPage(Request $request, int $userId, string $slug)
+    {
+        if ($this->forms->findPageBySlug($slug) === null) {
+            abort(404);
+        }
+
+        $user = \App\Models\User::findOrFail($userId);
+        $progress = $this->resolveProgress($user->id);
+
+        return $this->streamPdf($user, $progress, $slug);
+    }
+
+    private function resolveProgress(int $userId): ?RegistrationProgress
+    {
+        if (! Schema::hasTable('registration_progress')) {
+            return null;
+        }
+
+        return RegistrationProgress::where('user_id', $userId)->first();
+    }
+
+    private function streamPdf(\App\Models\User $user, ?RegistrationProgress $progress, ?string $slug)
+    {
+        try {
+            $pdf = $this->forms->makePdf($user, $progress, $slug);
+            $filename = $this->forms->downloadFilename($user, $slug);
+
+            return response()->streamDownload(
+                static function () use ($pdf) {
+                    echo $pdf->output();
+                },
+                $filename,
+                ['Content-Type' => 'application/pdf']
+            );
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'message' => 'Gagal membuat PDF berkas pendaftaran. Silakan coba lagi.',
+            ], 500);
+        }
+    }
+}

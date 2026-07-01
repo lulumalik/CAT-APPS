@@ -152,6 +152,113 @@
                 <input v-model="form.administration.weight_kg" type="number" min="15" max="250" step="0.1" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
               </div>
             </div>
+
+            <div class="rounded-xl border border-[#e8edd8] bg-[#f8faf3] p-5 space-y-4">
+              <div>
+                <p class="font-medium text-gray-800">{{ t('registration.forms.formDataTitle') }}</p>
+                <p class="text-xs text-gray-500 mt-1">{{ t('registration.forms.formDataHint') }}</p>
+              </div>
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.birthPlace') }}</label>
+                  <input v-model="form.administration.birth_place" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.birthDate') }}</label>
+                  <input v-model="form.administration.birth_date" type="date" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.religion') }}</label>
+                  <input v-model="form.administration.religion" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.ethnicity') }}</label>
+                  <input v-model="form.administration.ethnicity" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.education') }}</label>
+                  <input v-model="form.administration.education" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.occupation') }}</label>
+                  <input v-model="form.administration.occupation" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.nik') }}</label>
+                  <input v-model="form.administration.nik" type="text" inputmode="numeric" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.city') }}</label>
+                  <input v-model="form.administration.city" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+              </div>
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.parentName') }}</label>
+                  <input v-model="form.administration.parent_name" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.parentRelationship') }}</label>
+                  <input v-model="form.administration.parent_relationship" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.parentBirthPlace') }}</label>
+                  <input v-model="form.administration.parent_birth_place" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.parentBirthDate') }}</label>
+                  <input v-model="form.administration.parent_birth_date" type="date" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.parentOccupation') }}</label>
+                  <input v-model="form.administration.parent_occupation" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+              </div>
+              <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.parentAddress') }}</label>
+              <textarea v-model="form.administration.parent_address" rows="2" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.fatherName') }}</label>
+                  <input v-model="form.administration.father_name" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">{{ t('registration.forms.motherName') }}</label>
+                  <input v-model="form.administration.mother_name" type="text" class="mt-1 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm" />
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-gray-200 bg-white p-5 space-y-4">
+              <div>
+                <p class="font-medium text-gray-800">{{ t('registration.forms.sectionTitle') }}</p>
+                <p class="text-xs text-gray-500 mt-1">{{ t('registration.forms.sectionHint') }}</p>
+              </div>
+              <a
+                href="/api/my-registration/forms/pdf"
+                class="inline-flex items-center justify-center rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white hover:bg-black"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ t('registration.forms.downloadAll') }}
+              </a>
+              <ul v-if="formPages.length" class="space-y-2 text-sm">
+                <li
+                  v-for="page in formPages"
+                  :key="page.slug"
+                  class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-100 px-3 py-2"
+                >
+                  <span class="text-gray-700">{{ page.number }}. {{ page.title }}</span>
+                  <a
+                    :href="`/api/my-registration/forms/${page.slug}/pdf`"
+                    class="text-[#9DB359] font-medium underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {{ t('registration.forms.downloadPage') }}
+                  </a>
+                </li>
+              </ul>
+            </div>
           </template>
 
           <template v-else>
@@ -233,6 +340,7 @@ const submitProgress = ref('')
 const progress = ref(null)
 const errorMessage = ref('')
 const uploadKey = ref(0)
+const formPages = ref([])
 
 const administrationDefaults = () => ({
   full_name: '',
@@ -243,6 +351,28 @@ const administrationDefaults = () => ({
   gender: '',
   height_cm: '',
   weight_kg: '',
+  birth_place: '',
+  birth_date: '',
+  religion: '',
+  ethnicity: '',
+  education: '',
+  occupation: '',
+  nik: '',
+  city: '',
+  parent_name: '',
+  parent_birth_place: '',
+  parent_birth_date: '',
+  parent_occupation: '',
+  parent_address: '',
+  parent_relationship: '',
+  father_name: '',
+  father_birth: '',
+  father_occupation: '',
+  father_address: '',
+  mother_name: '',
+  mother_birth: '',
+  mother_occupation: '',
+  mother_address: '',
 })
 
 const form = reactive({
@@ -408,6 +538,28 @@ function migrateLegacyAdministration(raw) {
     gender: raw.gender ?? '',
     height_cm: raw.height_cm != null ? String(raw.height_cm) : '',
     weight_kg: raw.weight_kg != null ? String(raw.weight_kg) : '',
+    birth_place: raw.birth_place ?? '',
+    birth_date: raw.birth_date ?? '',
+    religion: raw.religion ?? '',
+    ethnicity: raw.ethnicity ?? '',
+    education: raw.education ?? '',
+    occupation: raw.occupation ?? '',
+    nik: raw.nik ?? '',
+    city: raw.city ?? '',
+    parent_name: raw.parent_name ?? '',
+    parent_birth_place: raw.parent_birth_place ?? '',
+    parent_birth_date: raw.parent_birth_date ?? '',
+    parent_occupation: raw.parent_occupation ?? '',
+    parent_address: raw.parent_address ?? '',
+    parent_relationship: raw.parent_relationship ?? '',
+    father_name: raw.father_name ?? '',
+    father_birth: raw.father_birth ?? '',
+    father_occupation: raw.father_occupation ?? '',
+    father_address: raw.father_address ?? '',
+    mother_name: raw.mother_name ?? '',
+    mother_birth: raw.mother_birth ?? '',
+    mother_occupation: raw.mother_occupation ?? '',
+    mother_address: raw.mother_address ?? '',
   })
   if (!text.whatsapp && text.phone) text.whatsapp = text.phone
   return text
@@ -446,6 +598,15 @@ async function fetchProgress() {
     errorMessage.value = error?.response?.data?.message || 'Gagal memuat progress pendaftaran.'
   } finally {
     loading.value = false
+  }
+}
+
+async function fetchFormPages() {
+  try {
+    const { data } = await axios.get('/api/my-registration/forms')
+    formPages.value = Array.isArray(data?.pages) ? data.pages : []
+  } catch {
+    formPages.value = []
   }
 }
 
@@ -506,6 +667,16 @@ async function submitStep() {
     fd.append('gender', form.administration.gender)
     fd.append('height_cm', String(form.administration.height_cm))
     fd.append('weight_kg', String(form.administration.weight_kg))
+    const profileKeys = [
+      'birth_place', 'birth_date', 'religion', 'ethnicity', 'education', 'occupation', 'nik', 'city',
+      'parent_name', 'parent_birth_place', 'parent_birth_date', 'parent_occupation', 'parent_address',
+      'parent_relationship', 'father_name', 'father_birth', 'father_occupation', 'father_address',
+      'mother_name', 'mother_birth', 'mother_occupation', 'mother_address',
+    ]
+    profileKeys.forEach((key) => {
+      const val = form.administration[key]
+      if (val !== '' && val != null) fd.append(key, String(val))
+    })
     const { data: updated } = await axios.post('/api/my-registration', fd)
     progress.value = updated
     hydrateForm()
@@ -526,5 +697,8 @@ async function submitStep() {
   }
 }
 
-onMounted(fetchProgress)
+onMounted(() => {
+  fetchProgress()
+  fetchFormPages()
+})
 </script>
