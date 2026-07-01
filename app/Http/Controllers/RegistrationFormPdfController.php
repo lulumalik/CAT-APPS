@@ -20,6 +20,16 @@ class RegistrationFormPdfController extends Controller
         ]);
     }
 
+    public function downloadTemplate(Request $request)
+    {
+        return $this->streamTemplatePdf();
+    }
+
+    public function adminDownloadTemplate(Request $request, int $userId)
+    {
+        return $this->streamTemplatePdf();
+    }
+
     public function downloadAll(Request $request)
     {
         $user = $request->user();
@@ -89,5 +99,21 @@ class RegistrationFormPdfController extends Controller
                 'message' => 'Gagal membuat PDF berkas pendaftaran. Silakan coba lagi.',
             ], 500);
         }
+    }
+
+    private function streamTemplatePdf()
+    {
+        $path = (string) config('registration_forms.template_pdf_path');
+        if ($path === '' || ! is_readable($path)) {
+            return response()->json([
+                'message' => 'File berkas pendaftaran belum tersedia di server.',
+            ], 404);
+        }
+
+        $filename = (string) config('registration_forms.template_pdf_download_name', 'berkas-pendaftaran.pdf');
+
+        return response()->download($path, $filename, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 }

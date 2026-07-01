@@ -473,9 +473,11 @@ export const messages = {
       },
       forms: {
         sectionTitle: 'Unduh berkas surat pendaftaran',
+        templateHint: 'Unduh template berkas pendaftaran (17 halaman). Isi manual, cetak, materaikan, dan tanda tangani sesuai petunjuk.',
+        downloadPdf: 'Unduh PDF',
         sectionHint:
           'Isi data di bawah lalu simpan administrasi. Nama, alamat, dan data lain akan terisi otomatis di PDF (17 halaman). Cetak, materaikan, dan tanda tangani sesuai petunjuk.',
-        downloadAll: 'Unduh semua (17 halaman)',
+        downloadAll: 'Unduh Berkas Pendaftaran (17 halaman)',
         downloadPage: 'Unduh',
         formDataTitle: 'Data tambahan untuk berkas surat',
         formDataHint: 'Lengkapi agar surat pernyataan terisi otomatis saat diunduh.',
@@ -1028,9 +1030,11 @@ export const messages = {
       },
       forms: {
         sectionTitle: 'Download registration letter pack',
+        templateHint: 'Download the registration pack template (17 pages). Fill in manually, print, stamp, and sign as instructed.',
+        downloadPdf: 'Download PDF',
         sectionHint:
           'Fill in the fields below and save administration. Name, address, and other data will be auto-filled in the PDF (17 pages). Print, stamp, and sign as instructed.',
-        downloadAll: 'Download all (17 pages)',
+        downloadAll: 'Download Registration Pack (17 pages)',
         downloadPage: 'Download',
         formDataTitle: 'Extra data for letter forms',
         formDataHint: 'Complete these so statement letters auto-fill when downloaded.',

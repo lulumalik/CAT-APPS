@@ -82,6 +82,7 @@ Route::middleware(['auth', 'app.not_expired'])->group(function () {
     Route::get('/registration-files/{user}/{field}', [RegistrationProgressController::class, 'streamAdministrationFile']);
     Route::match(['post', 'put'], '/my-registration', [RegistrationProgressController::class, 'updateMine']);
     Route::get('/my-registration/forms', [RegistrationFormPdfController::class, 'catalog']);
+    Route::get('/my-registration/berkas-pdf', [RegistrationFormPdfController::class, 'downloadTemplate']);
     Route::get('/my-registration/forms/pdf', [RegistrationFormPdfController::class, 'downloadAll']);
     Route::get('/my-registration/forms/{slug}/pdf', [RegistrationFormPdfController::class, 'downloadPage']);
 
@@ -114,6 +115,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminShow']);
     Route::get('/admin/storage-diagnostic', [RegistrationProgressController::class, 'adminStorageDiagnostic']);
     Route::patch('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminUpdate']);
+    Route::get('/admin/registration-progress/{user}/berkas-pdf', [RegistrationFormPdfController::class, 'adminDownloadTemplate']);
     Route::get('/admin/registration-progress/{user}/forms/pdf', [RegistrationFormPdfController::class, 'adminDownloadAll']);
     Route::get('/admin/registration-progress/{user}/forms/{slug}/pdf', [RegistrationFormPdfController::class, 'adminDownloadPage']);
 
