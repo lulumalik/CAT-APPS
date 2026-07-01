@@ -10,10 +10,10 @@
           <input v-model="searchQuery" @input="handleSearch" type="text" :placeholder="t('users.searchPlaceholder')" class="rounded-full border border-gray-200 bg-white px-4 py-2 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </div>
-        <label class="px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer text-sm font-medium">
+        <!-- <label class="px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer text-sm font-medium">
           Import Excel/CSV
           <input type="file" accept=".xlsx,.csv,.txt" class="hidden" @change="onFilePicked" />
-        </label>
+        </label> -->
         <button class="px-6 py-2 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openAdd">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           {{ t('users.addUser') }}
