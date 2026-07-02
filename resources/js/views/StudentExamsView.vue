@@ -1,8 +1,26 @@
 <template>
-  <main class="max-w-6xl mx-auto px-4 md:px-12 py-8">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-[#1A1A1A]">Ujian</h1>
-      <p class="text-gray-500 mt-1">Daftar ujian yang bisa dikerjakan (gabungan lintas mata pelajaran).</p>
+  <main class="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-10">
+    <!-- Hero header -->
+    <div class="flex flex-wrap items-start justify-between gap-6 mb-10">
+      <div class="min-w-0 flex-1">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#1E3A8A] tracking-tight">Ujian</h1>
+        <p class="text-gray-500 mt-2 text-sm md:text-base max-w-xl leading-relaxed">
+          Daftar ujian yang bisa dikerjakan (gabungan lintas mata pelajaran).
+        </p>
+      </div>
+      <div class="hidden sm:flex shrink-0 items-center justify-center w-36 h-36 md:w-44 md:h-44 rounded-[2rem] bg-gradient-to-br from-blue-50 to-blue-100/80 relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-blue-200/30"></div>
+        <div class="relative flex flex-col items-center">
+          <ClipboardList class="h-14 w-14 text-blue-500 drop-shadow-sm" stroke-width="1.5" />
+          <Pencil class="h-7 w-7 text-amber-400 absolute -bottom-1 -right-3 rotate-[-24deg]" stroke-width="2" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Section title -->
+    <div class="flex items-center gap-2.5 mb-5">
+      <ClipboardList class="h-5 w-5 text-blue-500" stroke-width="2" />
+      <h2 class="text-lg font-bold text-[#1E3A8A]">Daftar Ujian</h2>
     </div>
 
     <div v-if="loading" class="py-16 text-center text-gray-500">Memuat ujian...</div>
@@ -10,38 +28,149 @@
       {{ errorMessage }}
     </div>
 
-    <div v-else-if="!items.length" class="rounded-[2rem] border border-gray-100 bg-white p-10 text-center text-gray-500">
+    <div v-else-if="!items.length" class="rounded-2xl border border-blue-100 bg-white p-10 text-center text-gray-500 shadow-sm">
       Belum ada ujian yang tersedia.
     </div>
 
-    <div v-else class="grid gap-4">
+    <div v-else class="space-y-4">
       <article
         v-for="test in items"
         :key="test.id"
-        class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm flex flex-wrap items-center justify-between gap-4"
+        class="rounded-2xl border border-gray-100 bg-white p-5 md:p-6 shadow-md shadow-blue-900/5 flex flex-wrap items-center gap-4 md:gap-5"
       >
-        <div>
-          <h2 class="text-lg font-semibold text-[#1A1A1A]">{{ test.name }}</h2>
-          <p class="text-sm text-gray-500">{{ test.category }} · {{ test.duration }} menit</p>
+        <!-- Icon -->
+        <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0">
+          <FileText class="h-7 w-7 text-blue-500" stroke-width="1.75" />
         </div>
-        <router-link
-          :to="{ name: 'quick-exam', params: { id: test.id } }"
-          class="inline-flex rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white hover:bg-black"
-        >
-          Mulai Ujian
-        </router-link>
+
+        <!-- Info -->
+        <div class="min-w-0 flex-1">
+          <h3 class="text-lg md:text-xl font-bold text-[#1E3A8A] leading-snug">{{ test.name }}</h3>
+          <div class="flex flex-wrap items-center gap-2 mt-2.5">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+              <Users class="h-3.5 w-3.5" />
+              {{ test.category || 'Gabungan' }}
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+              <Clock class="h-3.5 w-3.5" />
+              {{ test.duration }} menit
+            </span>
+          </div>
+          <p v-if="scheduleLabel(test)" class="text-xs text-gray-400 mt-2">{{ scheduleLabel(test) }}</p>
+        </div>
+
+        <!-- Action -->
+        <div class="w-full sm:w-auto shrink-0 flex justify-end sm:justify-center">
+          <div
+            v-if="examState(test) === 'upcoming'"
+            class="rounded-xl border border-blue-100 bg-blue-50 px-5 py-3 text-center min-w-[200px]"
+          >
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-blue-700">Ujian dimulai dalam</p>
+            <p class="text-xl font-bold font-mono text-[#1E3A8A] mt-1">{{ countdownFor(test) }}</p>
+          </div>
+
+          <span
+            v-else-if="examState(test) === 'submitted'"
+            class="inline-flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-100 px-5 py-3 text-sm font-semibold text-emerald-700"
+          >
+            <CheckCircle2 class="h-4 w-4" />
+            Sudah dikerjakan
+          </span>
+
+          <span
+            v-else-if="examState(test) === 'ended'"
+            class="inline-flex items-center rounded-xl bg-gray-50 border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-500"
+          >
+            Ujian berakhir
+          </span>
+
+          <router-link
+            v-else-if="examState(test) === 'ongoing'"
+            :to="{ name: 'quick-exam', params: { id: test.id } }"
+            class="inline-flex items-center gap-2 rounded-xl bg-blue-500 hover:bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition-colors"
+          >
+            Mulai Ujian
+            <ArrowRight class="h-4 w-4" />
+          </router-link>
+
+          <span
+            v-else
+            class="inline-flex items-center rounded-xl bg-gray-50 border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-500"
+          >
+            Belum tersedia
+          </span>
+        </div>
       </article>
     </div>
   </main>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import axios from 'axios'
+import { ArrowRight, CheckCircle2, ClipboardList, Clock, FileText, Pencil, Users } from 'lucide-vue-next'
 
 const loading = ref(true)
 const errorMessage = ref('')
 const items = ref([])
+const now = ref(Date.now())
+let tickTimer = null
+
+function examState(test) {
+  if (test?.has_submitted) return 'submitted'
+
+  const start = test?.start_time ? new Date(test.start_time).getTime() : null
+  const end = test?.end_time ? new Date(test.end_time).getTime() : null
+  const current = now.value
+
+  if (start && current < start) return 'upcoming'
+  if (end && current > end) return 'ended'
+  if (test?.can_submit || test?.status === 'ongoing') return 'ongoing'
+  if (start && end && current >= start && current <= end) return 'ongoing'
+
+  return 'unavailable'
+}
+
+function msUntilStart(test) {
+  const start = test?.start_time ? new Date(test.start_time).getTime() : null
+  if (!start) return 0
+  return Math.max(0, start - now.value)
+}
+
+function countdownFor(test) {
+  const ms = msUntilStart(test)
+  const totalSec = Math.floor(ms / 1000)
+  const days = Math.floor(totalSec / 86400)
+  const hours = Math.floor((totalSec % 86400) / 3600)
+  const minutes = Math.floor((totalSec % 3600) / 60)
+  const seconds = totalSec % 60
+  const pad = (n) => String(n).padStart(2, '0')
+
+  if (days > 0) {
+    return `${days}h ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+  }
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+}
+
+function scheduleLabel(test) {
+  const start = test?.start_time ? new Date(test.start_time) : null
+  const end = test?.end_time ? new Date(test.end_time) : null
+  if (!start) return ''
+
+  const fmt = (d) => d.toLocaleString('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Asia/Jakarta',
+  })
+
+  if (end) {
+    return `Jadwal: ${fmt(start)} – ${fmt(end)}`
+  }
+  return `Mulai: ${fmt(start)}`
+}
 
 async function load() {
   loading.value = true
@@ -57,5 +186,14 @@ async function load() {
   }
 }
 
-onMounted(load)
+onMounted(() => {
+  load()
+  tickTimer = setInterval(() => {
+    now.value = Date.now()
+  }, 1000)
+})
+
+onUnmounted(() => {
+  if (tickTimer) clearInterval(tickTimer)
+})
 </script>

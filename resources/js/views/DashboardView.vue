@@ -226,12 +226,26 @@
           </section>
 
           <section class="pdf-section">
-            <h2 class="pdf-section-title">Aktivitas Kelas</h2>
-            <div v-if="!overview.class_activities?.length" class="pdf-muted">Belum ada aktivitas kelas.</div>
+            <h2 class="pdf-section-title">Riwayat Aktivitas</h2>
+            <div v-if="!overview.class_activities?.length" class="pdf-muted">Belum ada aktivitas.</div>
             <div v-else>
               <div v-for="a in overview.class_activities" :key="a.id" class="pdf-card">
-                <div class="font-semibold text-sm">{{ a.title }}</div>
-                <div class="pdf-muted">{{ a.bimble_class?.name }} · {{ a.creator?.name }} · {{ formatDate(a.happened_at || a.created_at) }}</div>
+                <div class="flex items-start justify-between gap-2">
+                  <div class="font-semibold text-sm">{{ a.title }}</div>
+                  <span
+                    v-if="activityTypeLabel(a.activity_type)"
+                    class="shrink-0 text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full"
+                    :class="activityTypeClass(a.activity_type)"
+                  >
+                    {{ activityTypeLabel(a.activity_type) }}
+                  </span>
+                </div>
+                <div class="pdf-muted">
+                  <template v-if="a.activity_type === 'class'">
+                    {{ a.bimble_class?.name }} · {{ a.creator?.name }} ·
+                  </template>
+                  {{ formatDate(a.happened_at || a.created_at) }}
+                </div>
                 <div v-if="a.description" class="pdf-text-sm mt-1">{{ a.description }}</div>
               </div>
             </div>
@@ -311,6 +325,20 @@ const formatDate = (d) => {
   } catch (e) {
     return dt.toLocaleString('id-ID', opts)
   }
+}
+
+const activityTypeLabel = (type) => {
+  if (type === 'exam') return 'Ujian'
+  if (type === 'quiz') return 'Quiz'
+  if (type === 'class') return 'Kelas'
+  return ''
+}
+
+const activityTypeClass = (type) => {
+  if (type === 'exam') return 'bg-blue-100 text-blue-800'
+  if (type === 'quiz') return 'bg-emerald-100 text-emerald-800'
+  if (type === 'class') return 'bg-gray-100 text-gray-600'
+  return 'bg-gray-100 text-gray-600'
 }
 
 const loadOverview = async () => {

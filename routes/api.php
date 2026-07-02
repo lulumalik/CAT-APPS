@@ -175,6 +175,7 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::post('/exams/{exam}/duplicate', [ExamDefinitionController::class, 'duplicate']);
 
     Route::get('/tests/{test}/submissions', [TestDefinitionController::class, 'testSubmissions']);
+    Route::get('/exams/{exam}/submissions', [ExamDefinitionController::class, 'examSubmissions']);
     Route::get('/tests/{test}/free-tryout-submissions', [TestDefinitionController::class, 'freeTryoutSubmissions']);
     Route::put('/submissions/{submission}', [TestDefinitionController::class, 'updateSubmission']);
 

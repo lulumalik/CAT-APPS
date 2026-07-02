@@ -396,8 +396,27 @@ class TestDefinitionController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $submissions = $test->submissions()->with('user')->orderByDesc('submitted_at')->get();
-        return response()->json($submissions);
+        $submissions = $test->submissions()->with('user:id,name,email,username')->orderByDesc('submitted_at')->get();
+
+        return response()->json([
+            'assessment' => $this->serializeAssessment($test, 'test'),
+            'submissions' => $submissions,
+        ]);
+    }
+
+    private function serializeAssessment(TestDefinition $test, string $type): array
+    {
+        $totalQuestions = count($test->question_ids ?? []);
+
+        return [
+            'id' => $test->id,
+            'name' => $test->name,
+            'category' => $test->category,
+            'duration' => $test->duration,
+            'question_ids' => $test->question_ids ?? [],
+            'total_questions' => $totalQuestions,
+            'type' => $type,
+        ];
     }
 
     public function updateSubmission(Request $request, $id)

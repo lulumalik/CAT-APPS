@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ExamDefinition;
 use App\Models\ExamSubmission;
+use App\Services\AutoStudentReportService;
 use Illuminate\Http\Request;
 
 class ExamDefinitionController extends Controller
@@ -149,14 +150,28 @@ class ExamDefinitionController extends Controller
         return response()->json($copy, 201);
     }
 
-    public function available()
+    public function available(Request $request)
     {
-        return response()->json(
-            ExamDefinition::query()
-                ->where('is_active', true)
-                ->orderBy('start_time')
-                ->get()
-        );
+        $user = $request->user();
+
+        $exams = ExamDefinition::query()
+            ->where('is_active', true)
+            ->orderBy('start_time')
+            ->get();
+
+        return response()->json($exams->map(function (ExamDefinition $exam) use ($user) {
+            $data = $exam->toArray();
+            $hasSubmitted = $user
+                ? ExamSubmission::where('user_id', $user->id)
+                    ->where('exam_definition_id', $exam->id)
+                    ->exists()
+                : false;
+
+            $data['has_submitted'] = $hasSubmitted;
+            $data['can_submit'] = ! $hasSubmitted && $exam->canSubmit();
+
+            return $data;
+        })->values());
     }
 
     public function show(Request $request, ExamDefinition $exam)
@@ -208,11 +223,41 @@ class ExamDefinitionController extends Controller
             'submitted_at' => now(),
         ]);
 
+        app(AutoStudentReportService::class)->fromExamSubmission(
+            $user,
+            $exam,
+            $submission,
+            $user->id,
+        );
+
         return response()->json([
             'message' => 'Ujian berhasil disubmit',
             'score' => $score,
             'total' => $questions->count(),
             'submission' => $submission,
+        ]);
+    }
+
+    public function examSubmissions(Request $request, ExamDefinition $exam)
+    {
+        $user = $request->user();
+        if ($user && $user->role === 'mentor' && $exam->created_by !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $submissions = $exam->submissions()->with('user:id,name,email,username')->orderByDesc('submitted_at')->get();
+
+        return response()->json([
+            'assessment' => [
+                'id' => $exam->id,
+                'name' => $exam->name,
+                'category' => $exam->category,
+                'duration' => $exam->duration,
+                'question_ids' => $exam->question_ids ?? [],
+                'total_questions' => count($exam->question_ids ?? []),
+                'type' => 'exam',
+            ],
+            'submissions' => $submissions,
         ]);
     }
 }

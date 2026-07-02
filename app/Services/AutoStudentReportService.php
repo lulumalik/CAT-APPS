@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\ExamDefinition;
+use App\Models\ExamSubmission;
 use App\Models\RegistrationProgress;
 use App\Models\StudentGuardian;
 use App\Models\StudentReport;
@@ -65,6 +67,69 @@ class AutoStudentReportService
         ]);
 
         $this->notify($report, 'Update nilai tes');
+
+        app(WeeklyStudentReportService::class)->syncForDate(
+            $student,
+            $report->report_date,
+            $createdBy,
+            true,
+        );
+
+        return $report;
+    }
+
+    public function fromExamSubmission(
+        User $student,
+        ExamDefinition $exam,
+        ExamSubmission $submission,
+        ?int $createdBy = null,
+    ): ?StudentReport {
+        if (! Schema::hasTable('student_reports') || $this->reportExistsForExamSubmission($student->id, $submission->id)) {
+            return null;
+        }
+
+        $questionIds = $exam->question_ids ?? [];
+        $total = is_array($questionIds) ? count($questionIds) : 0;
+        if ($total < 1) {
+            return null;
+        }
+
+        $percent = round(((float) $submission->score / $total) * 100, 1);
+        $subjectLabel = $this->resolveSubjectLabel($exam->category);
+        $submittedAt = $submission->submitted_at ?? $submission->created_at ?? now();
+
+        $report = StudentReport::create([
+            'student_user_id' => $student->id,
+            'bimble_class_id' => null,
+            'created_by' => $createdBy,
+            'type' => StudentReport::TYPE_DAILY,
+            'report_date' => $submittedAt->toDateString(),
+            'title' => sprintf('Hasil ujian: %s', $exam->name),
+            'summary' => sprintf(
+                'Ananda menyelesaikan ujian %s (%s) dengan nilai %s%% (%d/%d benar).',
+                $exam->name,
+                $subjectLabel,
+                $percent,
+                (int) $submission->score,
+                $total
+            ),
+            'categories' => [
+                'akademik' => sprintf('%s — %s%% (%d/%d benar)', $subjectLabel, $percent, (int) $submission->score, $total),
+            ],
+            'metrics' => [
+                'auto_source' => 'exam_submission',
+                'submission_id' => $submission->id,
+                'exam_id' => $exam->id,
+                'exam_name' => $exam->name,
+                'category' => $exam->category,
+                'subject_label' => $subjectLabel,
+                'percent' => $percent,
+                'score' => (int) $submission->score,
+                'total' => $total,
+            ],
+        ]);
+
+        $this->notify($report, 'Update nilai ujian');
 
         app(WeeklyStudentReportService::class)->syncForDate(
             $student,
@@ -245,5 +310,20 @@ class AutoStudentReportService
             ->where('type', StudentReport::TYPE_DAILY)
             ->get()
             ->contains(fn (StudentReport $report) => (int) ($report->metrics['manual_entry_id'] ?? 0) === $manualEntryId);
+    }
+
+    private function reportExistsForExamSubmission(int $studentId, int $submissionId): bool
+    {
+        return StudentReport::query()
+            ->where('student_user_id', $studentId)
+            ->where('type', StudentReport::TYPE_DAILY)
+            ->get()
+            ->contains(function (StudentReport $report) use ($submissionId) {
+                if (($report->metrics['auto_source'] ?? '') !== 'exam_submission') {
+                    return false;
+                }
+
+                return (int) ($report->metrics['submission_id'] ?? 0) === $submissionId;
+            });
     }
 }

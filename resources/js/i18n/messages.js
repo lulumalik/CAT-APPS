@@ -175,6 +175,9 @@ export const messages = {
       manualDeleted: 'Peringkat manual dihapus',
       manualDeleteFailed: 'Gagal menghapus',
     },
+    submissionsPage: {
+      title: 'Submisi Peserta',
+    },
     tests: {
       title: 'Manajemen Tes',
       subtitle: 'Buat dan kelola tes Anda',
@@ -601,6 +604,9 @@ export const messages = {
       myClassesTitle: 'Kelas saya',
       myClassesEmpty: 'Belum ada kelas yang ditambahkan oleh admin. Hubungi admin setelah pendaftaran.',
       manageTitle: 'Kelas kursus',
+      classListTitle: 'Daftar Kelas',
+      classListSubtitle: 'Kelola kelas yang Anda ampu dengan mudah',
+      myClassesSubtitle: 'Kelas kursus yang Anda ikuti',
       createClass: 'Buat kelas',
       openRoom: 'Buka ruang kelas',
       className: 'Nama kelas',
@@ -813,6 +819,9 @@ export const messages = {
       manualDeleteMessage: 'Delete manual ranking for {name}?',
       manualDeleted: 'Manual ranking deleted',
       manualDeleteFailed: 'Failed to delete',
+    },
+    submissionsPage: {
+      title: 'Participant Submissions',
     },
     tests: {
       title: 'Test Management',
@@ -1240,6 +1249,9 @@ export const messages = {
       myClassesTitle: 'My classes',
       myClassesEmpty: 'No class enrollment yet. Ask staff after registration.',
       manageTitle: 'Tutoring classes',
+      classListTitle: 'Class List',
+      classListSubtitle: 'Manage the classes you teach with ease',
+      myClassesSubtitle: 'Course classes you are enrolled in',
       createClass: 'Create class',
       openRoom: 'Open class room',
       className: 'Class name',

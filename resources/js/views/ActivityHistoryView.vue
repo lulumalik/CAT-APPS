@@ -24,13 +24,25 @@
       </section>
 
       <section class="mt-6 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-        <h2 class="font-bold text-lg mb-4">Aktivitas Kelas</h2>
-        <div v-if="!activities.length" class="text-sm text-gray-500">Belum ada aktivitas kelas.</div>
+        <h2 class="font-bold text-lg mb-4">Riwayat Aktivitas</h2>
+        <div v-if="!activities.length" class="text-sm text-gray-500">Belum ada aktivitas.</div>
         <div v-else class="space-y-3">
           <div v-for="a in activities" :key="a.id" class="rounded-xl border border-gray-100 p-3">
-            <div class="font-semibold">{{ a.title }}</div>
+            <div class="flex items-start justify-between gap-3">
+              <div class="font-semibold">{{ a.title }}</div>
+              <span
+                v-if="activityTypeLabel(a.activity_type)"
+                class="shrink-0 text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full"
+                :class="activityTypeClass(a.activity_type)"
+              >
+                {{ activityTypeLabel(a.activity_type) }}
+              </span>
+            </div>
             <div class="text-xs text-gray-500">
-              {{ a.bimble_class?.name }} · {{ a.creator?.name }} · {{ formatDate(a.happened_at || a.created_at) }}
+              <template v-if="a.activity_type === 'class'">
+                {{ a.bimble_class?.name }} · {{ a.creator?.name }} ·
+              </template>
+              {{ formatDate(a.happened_at || a.created_at) }}
             </div>
             <p v-if="a.description" class="text-sm text-gray-600 mt-2">{{ a.description }}</p>
           </div>
@@ -63,6 +75,20 @@ const formatDate = (d) => {
   } catch {
     return d
   }
+}
+
+const activityTypeLabel = (type) => {
+  if (type === 'exam') return 'Ujian'
+  if (type === 'quiz') return 'Quiz'
+  if (type === 'class') return 'Kelas'
+  return ''
+}
+
+const activityTypeClass = (type) => {
+  if (type === 'exam') return 'bg-blue-100 text-blue-800'
+  if (type === 'quiz') return 'bg-emerald-100 text-emerald-800'
+  if (type === 'class') return 'bg-gray-100 text-gray-600'
+  return 'bg-gray-100 text-gray-600'
 }
 
 onMounted(async () => {

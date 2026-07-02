@@ -1,10 +1,19 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 py-8">
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
-      <h1 class="text-2xl font-bold text-[#1A1A1A]">{{ t('bimble.manageTitle') }}</h1>
-      <button type="button" class="rounded-full bg-[#9DB359] text-white px-5 py-2.5 text-sm font-semibold shadow-md" @click="showCreate = true">
-        {{ t('bimble.createClass') }}
-      </button>
+    <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('bimble.classListTitle') }}</h1>
+        <p class="text-gray-500 mt-1">{{ t('bimble.classListSubtitle') }}</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" class="inline-flex items-center gap-2 rounded-full border border-[#9DB359]/40 bg-[#9DB359]/10 px-5 py-2.5 text-sm font-semibold text-[#5a6b2e] hover:bg-[#9DB359]/20" @click="openFirstRoom" :disabled="!classes.length">
+          <BookOpen class="h-4 w-4" />
+          {{ t('bimble.openRoom') }}
+        </button>
+        <button type="button" class="rounded-full bg-[#9DB359] text-white px-5 py-2.5 text-sm font-semibold shadow-md" @click="showCreate = true">
+          {{ t('bimble.createClass') }}
+        </button>
+      </div>
     </div>
 
     <div v-if="loading" class="py-16 text-center text-gray-500">{{ t('common.refresh') }}…</div>
@@ -15,37 +24,65 @@
       {{ errorMessage }}
     </div>
 
-    <div v-else class="grid gap-4 md:grid-cols-2">
-      <div
-        v-for="c in classes"
+    <div v-else class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <article
+        v-for="(c, idx) in classes"
         :key="c.id"
-        class="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-lg shadow-black/5 flex flex-col gap-3"
+        class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden flex flex-col"
+        :class="cardTheme(idx).topBorder"
       >
-        <div class="flex justify-between items-start gap-2">
-          <div>
-            <h2 class="text-lg font-bold text-[#1A1A1A]">{{ c.name }}</h2>
-            <p class="text-sm text-gray-500">{{ t('bimble.code') }}: {{ c.class_code }} · {{ formatProgram(c.program_type) }}</p>
+        <div class="p-6 flex-1 flex flex-col gap-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 min-w-0">
+              <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
+                <component :is="cardTheme(idx).icon" class="h-6 w-6" :class="cardTheme(idx).iconColor" />
+              </div>
+              <div class="min-w-0">
+                <h2 class="text-xl font-bold text-[#1A1A1A] leading-tight">{{ c.name }}</h2>
+                <span class="inline-block mt-2 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1 text-[11px] font-semibold text-gray-600">
+                  {{ t('bimble.code') }}: {{ c.class_code }}
+                </span>
+              </div>
+            </div>
+            <router-link
+              v-if="c?.id"
+              :to="{ name: 'bimble-class-room', params: { id: c.id } }"
+              class="inline-flex items-center gap-1.5 shrink-0 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+            >
+              <ExternalLink class="h-3.5 w-3.5" />
+              {{ t('bimble.openRoom') }}
+            </router-link>
           </div>
-          <router-link
-            v-if="c?.id"
-            :to="{ name: 'bimble-class-room', params: { id: c.id } }"
-            class="text-sm font-semibold text-[#9DB359] hover:underline shrink-0"
-          >
-            {{ t('bimble.openRoom') }}
-          </router-link>
-          <span v-else class="text-xs text-gray-400">class id missing</span>
+
+          <p class="text-sm font-medium text-gray-700">{{ formatProgram(c.program_type) }}</p>
+
+          <ul class="space-y-2.5 text-sm text-gray-600">
+            <li class="flex items-center gap-2.5">
+              <UserRound class="h-4 w-4 text-gray-400 shrink-0" />
+              <span><span class="text-gray-400">Pengajar:</span> {{ c.instructor?.name || c.instructor_name || 'Belum dipilih' }}</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <CalendarRange class="h-4 w-4 text-gray-400 shrink-0" />
+              <span><span class="text-gray-400">Periode:</span> {{ formatPeriod(c) }}</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <Users class="h-4 w-4 text-gray-400 shrink-0" />
+              <span><span class="text-gray-400">Jumlah peserta:</span> {{ c.students_count ?? 0 }}</span>
+            </li>
+          </ul>
         </div>
-        <p class="text-sm text-gray-600">Pengajar: {{ c.instructor?.name || c.instructor_name || 'Belum dipilih' }}</p>
-        <p class="text-xs text-gray-500">Periode: {{ formatPeriod(c) }}</p>
-        <p class="text-xs text-gray-400">{{ t('bimble.students') }}: {{ c.students_count ?? 0 }}</p>
-        <button
-          type="button"
-          class="self-start mt-1 text-xs px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50"
-          @click="openManage(c)"
-        >
-          Kelola kelas
-        </button>
-      </div>
+
+        <div class="px-6 pb-6">
+          <button
+            type="button"
+            class="w-full rounded-full border-2 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-gray-50"
+            :class="cardTheme(idx).manageBtn"
+            @click="openManage(c)"
+          >
+            Kelola kelas &gt;
+          </button>
+        </div>
+      </article>
     </div>
 
     <div v-if="showCreate" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @click.self="showCreate = false">
@@ -162,12 +199,50 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
+import { BookOpen, Calculator, CalendarRange, ExternalLink, Globe, GraduationCap, UserRound, Users } from 'lucide-vue-next'
 import { useI18n } from '@/composables/useI18n'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
 import { programCategoryLabel } from '@/utils/userMeta'
 
 const { t } = useI18n()
+const router = useRouter()
+
+const cardThemes = [
+  {
+    topBorder: 'border-t-4 border-t-[#9DB359]',
+    iconWrap: 'bg-[#9DB359]/15',
+    iconColor: 'text-[#5a6b2e]',
+    manageBtn: 'border-[#9DB359] text-[#5a6b2e]',
+    icon: GraduationCap,
+  },
+  {
+    topBorder: 'border-t-4 border-t-blue-500',
+    iconWrap: 'bg-blue-50',
+    iconColor: 'text-blue-600',
+    manageBtn: 'border-blue-500 text-blue-600',
+    icon: Calculator,
+  },
+  {
+    topBorder: 'border-t-4 border-t-purple-500',
+    iconWrap: 'bg-purple-50',
+    iconColor: 'text-purple-600',
+    manageBtn: 'border-purple-500 text-purple-600',
+    icon: Globe,
+  },
+]
+
+function cardTheme(index) {
+  return cardThemes[index % cardThemes.length]
+}
+
+function openFirstRoom() {
+  const first = classes.value[0]
+  if (first?.id) {
+    router.push({ name: 'bimble-class-room', params: { id: first.id } })
+  }
+}
 
 const loading = ref(true)
 const creating = ref(false)

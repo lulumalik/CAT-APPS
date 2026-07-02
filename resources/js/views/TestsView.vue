@@ -127,6 +127,13 @@
               >
                 {{ t(`${i18nPrefix}.duplicate`) }}
               </button>
+              <button
+                class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600"
+                @click="goSubmissions(test.id)"
+                :disabled="deletingId === test.id"
+              >
+                {{ t(`${i18nPrefix}.submissions`) }}
+              </button>
               <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" @click="removeById(test.id)">
                 {{ t('common.delete') }}
               </button>
@@ -207,7 +214,13 @@
             >
               {{ t(`${i18nPrefix}.assignQuestions`) }}
             </button>
-            <button v-if="!isExamPage" class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewSubmissions(test)" :disabled="deletingId === test.id">{{ t('tests.submissions') }}</button>
+            <button
+              class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600"
+              @click="goSubmissions(test.id)"
+              :disabled="deletingId === test.id"
+            >
+              {{ t(`${i18nPrefix}.submissions`) }}
+            </button>
             <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)" :disabled="deletingId === test.id">{{ t('common.edit') }}</button>
             <button
               v-if="isExamPage"
@@ -283,18 +296,16 @@
       @submit="assignQuestions"
       @refresh="refreshAssignData"
     />
-    <SubmissionsModal v-if="showSubmissionsModal" :test="selectedTest" @close="closeSubmissions" />
     <FreeTryoutResultsModal v-if="showFreeTryoutResultsModal" :test="selectedTest" @close="closeTryoutResults" />
   </main>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Check, FileText, Lock, Plus, Search } from 'lucide-vue-next'
 import TestCreateModal from '@/components/TestCreateModal.vue'
 import TestAssignQuestionsModal from '@/components/TestAssignQuestionsModal.vue'
-import SubmissionsModal from '@/components/SubmissionsModal.vue'
 import FreeTryoutResultsModal from '@/components/FreeTryoutResultsModal.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
@@ -303,6 +314,7 @@ const { confirm } = useModal()
 const toast = useToast()
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const tests = ref([])
 const questions = ref([]) // For stats
@@ -313,7 +325,6 @@ const search = ref('')
 const showCreateModal = ref(false)
 const showAssignModal = ref(false)
 const assignRefreshing = ref(false)
-const showSubmissionsModal = ref(false)
 const showFreeTryoutResultsModal = ref(false)
 const selectedTest = ref(null)
 const editingIndex = ref(-1)
@@ -561,14 +572,11 @@ const closeCreate = () => {
   selectedTest.value = null
 }
 
-const viewSubmissions = (test) => {
-  selectedTest.value = test
-  showSubmissionsModal.value = true
-}
-
-const closeSubmissions = () => {
-  showSubmissionsModal.value = false
-  selectedTest.value = null
+const goSubmissions = (id) => {
+  router.push({
+    name: isExamPage.value ? 'exam-submissions' : 'test-submissions',
+    params: { id },
+  })
 }
 
 const viewTryoutResults = (test) => {
@@ -639,7 +647,6 @@ const resetPageState = () => {
   regularPage.value = 1
   showCreateModal.value = false
   showAssignModal.value = false
-  showSubmissionsModal.value = false
   showFreeTryoutResultsModal.value = false
   selectedTest.value = null
   editingIndex.value = -1

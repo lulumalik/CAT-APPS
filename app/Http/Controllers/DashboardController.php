@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\BimbleClass;
 use App\Models\ClassActivity;
+use App\Models\ExamSubmission;
 use App\Models\Question;
 use App\Models\RegistrationProgress;
 use App\Models\TestDefinition;
+use App\Models\TestSubmission;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
@@ -316,8 +320,141 @@ class DashboardController extends Controller
             'role' => 'user',
             'registration' => $this->studentRegistrationStatus($userId),
             'classes' => $classItems,
-            'class_activities' => $activities,
+            'class_activities' => $this->mergeStudentActivities($userId, $activities),
         ];
+    }
+
+    /**
+     * @return Collection<int, array<string, mixed>>
+     */
+    private function studentAssessmentActivities(int $userId): Collection
+    {
+        $items = collect();
+
+        if (Schema::hasTable('exam_submissions')) {
+            ExamSubmission::query()
+                ->where('user_id', $userId)
+                ->with('examDefinition:id,name,category,question_ids')
+                ->orderByDesc('submitted_at')
+                ->orderByDesc('id')
+                ->limit(40)
+                ->get()
+                ->each(function (ExamSubmission $submission) use ($items) {
+                    $exam = $submission->examDefinition;
+                    if (! $exam) {
+                        return;
+                    }
+
+                    $total = is_array($exam->question_ids) ? count($exam->question_ids) : 0;
+                    $percent = $total > 0 ? round(((float) $submission->score / $total) * 100, 1) : 0;
+
+                    $items->push([
+                        'id' => 'exam-submission-'.$submission->id,
+                        'activity_type' => 'exam',
+                        'title' => 'Menyelesaikan ujian: '.$exam->name,
+                        'description' => sprintf('Nilai %d/%d (%s%%)', (int) $submission->score, $total, $percent),
+                        'happened_at' => $submission->submitted_at ?? $submission->created_at,
+                        'created_at' => $submission->created_at,
+                        'bimble_class' => null,
+                        'creator' => null,
+                    ]);
+                });
+        }
+
+        if (Schema::hasTable('test_submissions')) {
+            TestSubmission::query()
+                ->where('user_id', $userId)
+                ->with('testDefinition:id,name,category,question_ids')
+                ->orderByDesc('submitted_at')
+                ->orderByDesc('id')
+                ->limit(40)
+                ->get()
+                ->each(function (TestSubmission $submission) use ($items) {
+                    $test = $submission->testDefinition;
+                    if (! $test) {
+                        return;
+                    }
+
+                    $total = is_array($test->question_ids) ? count($test->question_ids) : 0;
+                    $percent = $total > 0 ? round(((float) $submission->score / $total) * 100, 1) : 0;
+
+                    $items->push([
+                        'id' => 'test-submission-'.$submission->id,
+                        'activity_type' => 'quiz',
+                        'title' => 'Menyelesaikan quiz: '.$test->name,
+                        'description' => sprintf('Nilai %d/%d (%s%%)', (int) $submission->score, $total, $percent),
+                        'happened_at' => $submission->submitted_at ?? $submission->created_at,
+                        'created_at' => $submission->created_at,
+                        'bimble_class' => null,
+                        'creator' => null,
+                    ]);
+                });
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param  Collection<int, ClassActivity>  $classActivities
+     * @return array<int, array<string, mixed>>
+     */
+    private function mergeStudentActivities(int $userId, Collection $classActivities): array
+    {
+        $serialized = $classActivities->map(function (ClassActivity $activity) {
+            return [
+                'id' => 'class-activity-'.$activity->id,
+                'activity_type' => 'class',
+                'title' => $activity->title,
+                'description' => $activity->description,
+                'happened_at' => $activity->happened_at ?? $activity->created_at,
+                'created_at' => $activity->created_at,
+                'bimble_class' => $activity->bimbleClass ? [
+                    'id' => $activity->bimbleClass->id,
+                    'name' => $activity->bimbleClass->name,
+                    'class_code' => $activity->bimbleClass->class_code,
+                ] : null,
+                'creator' => $activity->creator ? [
+                    'id' => $activity->creator->id,
+                    'name' => $activity->creator->name,
+                ] : null,
+            ];
+        });
+
+        return $serialized
+            ->concat($this->studentAssessmentActivities($userId))
+            ->sortByDesc(fn (array $item) => $this->activityTimestamp($item))
+            ->take(25)
+            ->values()
+            ->map(fn (array $item) => $this->normalizeActivityTimestamps($item))
+            ->all();
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function activityTimestamp(array $item): int
+    {
+        $value = $item['happened_at'] ?? $item['created_at'] ?? null;
+        if ($value instanceof Carbon) {
+            return $value->timestamp;
+        }
+
+        return $value ? (int) strtotime((string) $value) : 0;
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     * @return array<string, mixed>
+     */
+    private function normalizeActivityTimestamps(array $item): array
+    {
+        foreach (['happened_at', 'created_at'] as $field) {
+            if (($item[$field] ?? null) instanceof Carbon) {
+                $item[$field] = $item[$field]->toIso8601String();
+            }
+        }
+
+        return $item;
     }
 
     private function studentRegistrationStatus(int $userId): array
