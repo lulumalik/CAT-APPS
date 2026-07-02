@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\BimbleClass;
 use App\Models\Material;
+use App\Models\RegistrationProgress;
 use App\Models\UserNotification;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -215,6 +217,13 @@ class BimbleClassController extends Controller
             'user_id' => 'required|exists:users,id',
         ]);
 
+        $targetUser = User::query()->findOrFail($data['user_id']);
+        if (! $this->canBeInvitedToClass($targetUser)) {
+            return response()->json([
+                'message' => 'Peserta tidak bisa diundang ke kelas: masa aktif aplikasi sudah berakhir dan pendaftaran belum selesai.',
+            ], 422);
+        }
+
         $bimbleClass->students()->syncWithoutDetaching([
             $data['user_id'] => ['role' => 'student'],
         ]);
@@ -344,5 +353,42 @@ class BimbleClassController extends Controller
         }
 
         return sprintf('%s - %s', $start, $end);
+    }
+
+    private function canBeInvitedToClass(User $user): bool
+    {
+        if ($user->role !== 'user') {
+            return true;
+        }
+
+        if (! $this->isAppExpired($user)) {
+            return true;
+        }
+
+        return $this->isRegistrationCompleted($user);
+    }
+
+    private function isAppExpired(User $user): bool
+    {
+        if (empty($user->app_expires_at)) {
+            return false;
+        }
+
+        $expiry = Carbon::parse($user->app_expires_at);
+
+        return $expiry->isPast();
+    }
+
+    private function isRegistrationCompleted(User $user): bool
+    {
+        if (! Schema::hasTable('registration_progress')) {
+            return false;
+        }
+
+        $progress = RegistrationProgress::query()
+            ->where('user_id', $user->id)
+            ->first();
+
+        return (bool) ($progress?->fully_completed);
     }
 }

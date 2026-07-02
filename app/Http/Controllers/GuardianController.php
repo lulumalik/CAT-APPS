@@ -84,7 +84,6 @@ class GuardianController extends Controller
             'guardian_name' => 'required|string|max:120',
             'relationship' => ['required', Rule::in(['ayah', 'ibu', 'wali'])],
             'phone' => 'nullable|string|max:32',
-            'email' => 'nullable|email|max:120',
         ]);
 
         $student = User::findOrFail($data['student_user_id']);
@@ -111,7 +110,7 @@ class GuardianController extends Controller
             'guardian_name' => $data['guardian_name'],
             'relationship' => $data['relationship'],
             'phone' => $data['phone'] ?? null,
-            'email' => $data['email'] ?? null,
+            'email' => null,
             'invite_token' => StudentGuardian::generateToken(),
             'invite_status' => StudentGuardian::STATUS_PENDING,
             'invited_by' => $request->user()->id,
@@ -179,7 +178,6 @@ class GuardianController extends Controller
         return response()->json([
             'guardian_name' => $link->guardian_name,
             'relationship' => $link->relationshipLabel(),
-            'email' => $link->email,
             'student_name' => $link->student?->name,
             'expires_at' => $link->expires_at?->toIso8601String(),
         ]);
@@ -208,34 +206,31 @@ class GuardianController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:120',
-            'email' => 'required|email|max:120',
+            'username' => 'required|string|min:3|max:32|regex:/^[a-zA-Z0-9_]+$/',
             'password' => 'required|string|min:6',
         ]);
 
-        if ($link->email && strcasecmp($link->email, $data['email']) !== 0) {
-            return response()->json([
-                'message' => 'Email harus sama dengan yang terdaftar pada undangan.',
-            ], 422);
-        }
+        $normalizedUsername = User::normalizeUsername($data['username']);
 
-        $existing = User::where('email', $data['email'])->first();
+        $existing = User::where('username', $normalizedUsername)->first();
 
         if ($existing) {
             if ($existing->role !== 'parent') {
                 return response()->json([
-                    'message' => 'Email sudah dipakai akun lain. Gunakan email berbeda.',
+                    'message' => 'Username sudah dipakai akun lain. Gunakan username berbeda.',
                 ], 422);
             }
             if (! Hash::check($data['password'], $existing->password)) {
                 return response()->json([
-                    'message' => 'Email sudah terdaftar sebagai orang tua, tetapi kata sandi salah.',
+                    'message' => 'Username sudah terdaftar sebagai orang tua, tetapi kata sandi salah.',
                 ], 422);
             }
             $guardian = $existing;
         } else {
             $guardian = User::create([
                 'name' => $data['name'],
-                'email' => $data['email'],
+                'username' => $normalizedUsername,
+                'email' => $this->generateUniqueParentEmail($normalizedUsername),
                 'password' => Hash::make($data['password']),
                 'role' => 'parent',
                 'in_quarantine' => false,
@@ -268,6 +263,7 @@ class GuardianController extends Controller
             'user' => [
                 'id' => $guardian->id,
                 'name' => $guardian->name,
+                'username' => $guardian->username,
                 'email' => $guardian->email,
                 'role' => $guardian->role,
             ],
@@ -321,5 +317,18 @@ class GuardianController extends Controller
             ."dashboard orang tua sudah tersedia.\n\n"
             ."Silakan buka tautan berikut untuk membuat akun & memantau perkembangan ananda:\n{$url}\n\n"
             ."Tautan berlaku terbatas. Jika ada kendala, balas pesan ini.\n\nTerima kasih.";
+    }
+
+    private function generateUniqueParentEmail(string $username): string
+    {
+        $candidate = "{$username}@parent.local";
+        $index = 1;
+
+        while (User::where('email', $candidate)->exists()) {
+            $index++;
+            $candidate = "{$username}_{$index}@parent.local";
+        }
+
+        return $candidate;
     }
 }

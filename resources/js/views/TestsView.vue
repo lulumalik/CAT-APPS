@@ -127,7 +127,7 @@
           </div>
         </section>
 
-        <div v-for="test in filteredRegular" :key="`regular-${test.id}`" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group">
+        <div v-for="test in pagedRegularTests" :key="`regular-${test.id}`" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group">
           <div class="flex items-start justify-between mb-4">
             <div>
               <span
@@ -214,6 +214,28 @@
             </button>
           </div>
         </div>
+
+        <div v-if="totalRegularPages > 1" class="flex items-center justify-center gap-2">
+          <button
+            type="button"
+            class="px-3 py-1.5 rounded-full border border-gray-200 text-sm text-gray-600 disabled:opacity-50"
+            :disabled="regularPage === 1"
+            @click="regularPage -= 1"
+          >
+            Sebelumnya
+          </button>
+          <span class="text-xs text-gray-500 px-2">
+            Halaman {{ regularPage }} / {{ totalRegularPages }}
+          </span>
+          <button
+            type="button"
+            class="px-3 py-1.5 rounded-full border border-gray-200 text-sm text-gray-600 disabled:opacity-50"
+            :disabled="regularPage === totalRegularPages"
+            @click="regularPage += 1"
+          >
+            Berikutnya
+          </button>
+        </div>
       </div>
 
       <aside>
@@ -252,7 +274,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { Check, FileText, Lock, Plus, Search } from 'lucide-vue-next'
 import TestCreateModal from '@/components/TestCreateModal.vue'
 import TestAssignQuestionsModal from '@/components/TestAssignQuestionsModal.vue'
@@ -279,6 +301,8 @@ const showFreeTryoutResultsModal = ref(false)
 const selectedTest = ref(null)
 const editingIndex = ref(-1)
 const deletingId = ref(null)
+const regularPage = ref(1)
+const regularPageSize = 5
 
 const categories = [
   'Kewarganegaraan',
@@ -301,6 +325,15 @@ const filtered = computed(() => {
 const activeCount = computed(() => tests.value.filter(t => isActive(t)).length)
 const filteredTryout = computed(() => filtered.value.filter(t => t.is_free_tryout || t.isFreeTryout))
 const filteredRegular = computed(() => filtered.value.filter(t => !(t.is_free_tryout || t.isFreeTryout)))
+const sortedRegular = computed(() => {
+  const items = [...filteredRegular.value]
+  return items.sort((a, b) => Number(isExpired(a)) - Number(isExpired(b)))
+})
+const totalRegularPages = computed(() => Math.max(1, Math.ceil(sortedRegular.value.length / regularPageSize)))
+const pagedRegularTests = computed(() => {
+  const start = (regularPage.value - 1) * regularPageSize
+  return sortedRegular.value.slice(start, start + regularPageSize)
+})
 const upcoming = computed(() => {
   return tests.value
     .filter(t => new Date(t.schedule_at || t.start_time) > new Date())
@@ -321,6 +354,16 @@ const isExpired = (t) => {
   if (Number.isNaN(end.getTime())) return false
   return end < new Date()
 }
+
+watch(filteredRegular, () => {
+  regularPage.value = 1
+})
+
+watch(totalRegularPages, (total) => {
+  if (regularPage.value > total) {
+    regularPage.value = total
+  }
+})
 
 const formatDate = (d) => {
   if (!d) return '-'

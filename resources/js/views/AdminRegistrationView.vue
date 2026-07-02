@@ -68,16 +68,6 @@
             {{ t('adminRegistration.offlineStaffHint') }}
           </p>
 
-          <a
-            v-if="modal.row?.user_id"
-            :href="`/api/admin/registration-progress/${modal.row.user_id}/berkas-pdf`"
-            class="inline-flex rounded-full bg-[#1A1A1A] px-4 py-2 text-xs font-semibold text-white"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {{ t('registration.forms.downloadPdf') }}
-          </a>
-
           <div>
             <div class="font-semibold text-gray-800 mb-2">{{ t('registration.steps.admin') }}</div>
             <dl class="grid gap-3 sm:grid-cols-2">

@@ -171,7 +171,7 @@ const navItems = computed(() => {
   if (isAdmin.value) {
     items.push({ to: '/admin/guardians', label: t('nav.inviteGuardians') })
     items.push({ to: '/users', label: t('nav.users') })
-    items.push({ to: '/admin/certificates', label: t('nav.certificates') })
+    // items.push({ to: '/admin/certificates', label: t('nav.certificates') })
     items.push({ to: '/admin/registration', label: t('nav.adminRegistration') })
   }
 

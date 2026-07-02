@@ -33,15 +33,15 @@
                 class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#9DB359]/40 focus:border-[#9DB359] outline-none" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input v-model="form.email" type="email" required
+              <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+              <input v-model="form.username" type="text" required
                 class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#9DB359]/40 focus:border-[#9DB359] outline-none" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Kata Sandi</label>
               <input v-model="form.password" type="password" required minlength="6"
                 class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#9DB359]/40 focus:border-[#9DB359] outline-none" />
-              <p class="text-xs text-gray-400 mt-1">Minimal 6 karakter. Pakai email & sandi yang sama jika Anda sudah punya akun orang tua.</p>
+              <p class="text-xs text-gray-400 mt-1">Minimal 6 karakter. Jika sudah punya akun orang tua, gunakan username & kata sandi yang sama.</p>
             </div>
 
             <p v-if="errorMessage" class="text-sm text-red-600">{{ errorMessage }}</p>
@@ -73,14 +73,13 @@ const saving = ref(false)
 const invalid = ref('')
 const errorMessage = ref('')
 const invite = ref({})
-const form = reactive({ name: '', email: '', password: '' })
+const form = reactive({ name: '', username: '', password: '' })
 
 onMounted(async () => {
   try {
     const { data } = await axios.get(`/api/guardian-invite/${route.params.token}`)
     invite.value = data
     form.name = data.guardian_name || ''
-    form.email = data.email || ''
   } catch (e) {
     invalid.value = e?.response?.data?.message || 'Undangan tidak valid atau sudah kedaluwarsa.'
   } finally {

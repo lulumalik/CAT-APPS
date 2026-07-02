@@ -85,7 +85,7 @@ class TestDefinitionController extends Controller
         ]);
 
         $data['created_by'] = optional($request->user())->id;
-        $this->enforceQuestionDefaults($data, true);
+        $this->enforceQuestionDefaults($data);
         $this->enforceSingleFreeTryout($data, null, $request->user());
         $item = TestDefinition::create($data);
         return response()->json($item, 201);
@@ -128,7 +128,7 @@ class TestDefinitionController extends Controller
             }
         }
 
-        $this->enforceQuestionDefaults($data);
+        $this->enforceQuestionDefaults($data, true);
         $this->enforceSingleFreeTryout($data, $test->id, $request->user());
         $test->update($data);
         return response()->json($test);

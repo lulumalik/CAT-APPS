@@ -64,12 +64,6 @@
                 class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#9DB359]" />
             </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email (opsional)</label>
-            <input v-model="form.email" type="email"
-              class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#9DB359]" />
-          </div>
-
           <p v-if="selectedStudentName" class="text-xs text-gray-500">
             Untuk peserta: <span class="font-semibold">{{ selectedStudentName }}</span>
           </p>
@@ -147,7 +141,6 @@ const form = reactive({
   guardian_name: '',
   relationship: 'ayah',
   phone: '',
-  email: '',
 })
 
 const selectedStudentName = computed(() => selectedStudent.value?.name || '')
@@ -217,7 +210,6 @@ async function createInvite() {
     toast.success('OK', 'Undangan dibuat. Salin link / pesan WA untuk dikirim.')
     form.guardian_name = ''
     form.phone = ''
-    form.email = ''
     await loadInvites()
   } catch (e) {
     toast.error('Gagal', e?.response?.data?.message || 'Tidak bisa membuat undangan.')
