@@ -200,6 +200,7 @@ export const messages = {
       ongoing: 'Berlangsung',
       delete: 'Hapus',
       deleting: 'Menghapus...',
+      expiredLabel: 'Tes kedaluwarsa',
     },
     modals: {
       testCreate: {
@@ -546,6 +547,7 @@ export const messages = {
       session: 'Sesi',
       openMaterial: 'Buka materi',
       startTest: 'Mulai tes',
+      testExpiredLabel: 'Tes kedaluwarsa',
       noMaterials: 'Belum ada materi pada kelas ini.',
       noTests: 'Belum ada tes yang ditautkan.',
       discussionPlaceholder: 'Forum diskusi dapat dihubungkan ke fitur komentar berikutnya.',
@@ -762,6 +764,7 @@ export const messages = {
       ongoing: 'Ongoing',
       delete: 'Delete',
       deleting: 'Deleting...',
+      expiredLabel: 'Test expired',
     },
     modals: {
       testCreate: {
@@ -1108,6 +1111,7 @@ export const messages = {
       session: 'Session',
       openMaterial: 'Open material',
       startTest: 'Start test',
+      testExpiredLabel: 'Test expired',
       noMaterials: 'No materials linked yet.',
       noTests: 'No tests linked yet.',
       discussionPlaceholder: 'Discussion can be wired to comments in a later iteration.',

@@ -89,7 +89,7 @@
     </div>
 
     <div v-if="showManage && managedClass" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @click.self="closeManage">
-      <div class="bg-white rounded-2xl w-full max-w-5xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <div class="bg-white rounded-3xl w-full max-w-6xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-5">
           <div>
             <h3 class="font-bold text-xl text-[#1A1A1A]">Kelola {{ managedClass.name }}</h3>
@@ -98,55 +98,60 @@
           <button type="button" class="px-3 py-1.5 rounded-full border border-gray-200 text-sm" @click="closeManage">Tutup</button>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-6">
-          <section class="rounded-xl border border-gray-100 p-4">
-            <h4 class="font-semibold mb-3">Tambah Peserta</h4>
-            <input v-model="studentSearch" @input="searchStudents" placeholder="Cari nama/email" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm mb-2" />
-            <select v-model="forms.student_id" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm mb-2">
+        <div class="grid gap-4 lg:grid-cols-3">
+          <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
+            <h4 class="font-semibold text-[#1A1A1A]">1) Tambah Peserta</h4>
+            <p class="mt-1 mb-3 text-xs text-gray-500">Cari siswa lalu tambahkan ke kelas.</p>
+            <input v-model="studentSearch" @input="searchStudents" placeholder="Cari nama/email" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2" />
+            <select v-model="forms.student_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
               <option :value="null">Pilih siswa</option>
               <option v-for="s in studentOptions" :key="s.id" :value="s.id">{{ s.name }} ({{ s.email }})</option>
             </select>
-            <button type="button" class="w-full rounded-lg bg-[#1A1A1A] text-white py-2 text-sm" @click="attachStudent">Tambahkan</button>
-            <ul class="mt-3 space-y-2">
-              <li v-for="s in managedClass.students || []" :key="s.id" class="text-xs flex justify-between gap-2">
+            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachStudent">Tambahkan Peserta</button>
+            <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
+              <li v-for="s in managedClass.students || []" :key="s.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
                 <span class="truncate">{{ s.name }}</span>
                 <button type="button" class="text-red-500" @click="detachStudent(s.id)">hapus</button>
               </li>
+              <li v-if="!(managedClass.students || []).length" class="text-xs text-gray-400">Belum ada peserta.</li>
             </ul>
           </section>
 
-          <section class="rounded-xl border border-gray-100 p-4">
-            <h4 class="font-semibold mb-3">Assign Materi</h4>
-            <select v-model="forms.material_id" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm mb-2">
+          <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
+            <h4 class="font-semibold text-[#1A1A1A]">2) Assign Materi</h4>
+            <p class="mt-1 mb-3 text-xs text-gray-500">Pilih materi lalu tentukan sesi pembelajaran.</p>
+            <select v-model="forms.material_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
               <option :value="null">Pilih materi</option>
               <option v-for="m in materialOptions" :key="m.id" :value="m.id">{{ m.title }}</option>
             </select>
-            <input v-model.number="forms.session_number" type="number" min="1" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm mb-2" placeholder="Sesi" />
-            <button type="button" class="w-full rounded-lg bg-[#1A1A1A] text-white py-2 text-sm" @click="attachMaterial">Assign materi</button>
-            <ul class="mt-3 space-y-2">
-              <li v-for="m in managedClass.materials || []" :key="m.id" class="text-xs flex justify-between gap-2">
+            <input v-model.number="forms.session_number" type="number" min="1" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2" placeholder="Sesi" />
+            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachMaterial">Assign Materi</button>
+            <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
+              <li v-for="m in managedClass.materials || []" :key="m.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
                 <span class="truncate">{{ m.title }}</span>
                 <button type="button" class="text-red-500" @click="detachMaterial(m.id)">hapus</button>
               </li>
+              <li v-if="!(managedClass.materials || []).length" class="text-xs text-gray-400">Belum ada materi.</li>
             </ul>
           </section>
 
-          <section class="rounded-xl border border-gray-100 p-4">
-            <h4 class="font-semibold mb-3">Assign Tes / Kuis</h4>
-            <select v-model="forms.test_definition_id" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm mb-2">
+          <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
+            <h4 class="font-semibold text-[#1A1A1A]">3) Assign Tes / Kuis</h4>
+            <p class="mt-1 mb-3 text-xs text-gray-500">Pilih tes yang akan ditautkan ke kelas.</p>
+            <select v-model="forms.test_definition_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
               <option :value="null">Pilih tes</option>
               <option v-for="x in testOptions" :key="x.id" :value="x.id">{{ x.name }}</option>
             </select>
-            <select v-model="forms.kind" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm mb-2">
-              <option value="cbt">CBT</option>
-              <option value="quiz">Quiz</option>
-            </select>
-            <button type="button" class="w-full rounded-lg bg-[#1A1A1A] text-white py-2 text-sm" @click="attachTest">Assign test</button>
-            <ul class="mt-3 space-y-2">
-              <li v-for="x in managedClass.test_definitions || []" :key="x.id" class="text-xs flex justify-between gap-2">
+            <div class="mb-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
+              Jenis: <span class="font-semibold">Quiz</span>
+            </div>
+            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachTest">Assign Tes</button>
+            <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
+              <li v-for="x in managedClass.test_definitions || []" :key="x.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
                 <span class="truncate">{{ x.name }}</span>
                 <button type="button" class="text-red-500" @click="detachTest(x.id)">hapus</button>
               </li>
+              <li v-if="!(managedClass.test_definitions || []).length" class="text-xs text-gray-400">Belum ada tes/kuis.</li>
             </ul>
           </section>
         </div>
@@ -189,7 +194,7 @@ const forms = reactive({
   student_id: null,
   material_id: null,
   test_definition_id: null,
-  kind: 'cbt',
+  kind: 'quiz',
   session_number: 1,
 })
 
@@ -338,7 +343,7 @@ async function attachTest() {
   try {
     await axios.post(`/api/bimble-classes/${managedClass.value.id}/tests`, {
       test_definition_id: forms.test_definition_id,
-      kind: forms.kind,
+      kind: 'quiz',
     })
     forms.test_definition_id = null
     await reloadManagedClass()

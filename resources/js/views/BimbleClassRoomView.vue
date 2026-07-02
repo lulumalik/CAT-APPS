@@ -115,14 +115,23 @@
               <div>
                 <div class="font-semibold text-[#1A1A1A]">{{ test.name }}</div>
                 <div class="text-xs text-gray-500 mt-1 capitalize">{{ test.kind }} · {{ test.category }}</div>
+                <p v-if="isExpired(test)" class="mt-1 text-xs font-semibold text-red-700">
+                  {{ t('bimble.testExpiredLabel') }}
+                </p>
               </div>
               <router-link
-                v-if="test?.id"
+                v-if="test?.id && !isExpired(test)"
                 :to="{ name: 'quick-test', params: { id: test.id } }"
                 class="w-full sm:w-auto text-center rounded-full bg-gradient-to-r from-[#9DB359] to-[#7CB342] text-white px-5 py-2 text-sm font-semibold shadow-sm hover:opacity-95"
               >
                 {{ t('bimble.startTest') }}
               </router-link>
+              <span
+                v-else-if="test?.id && isExpired(test)"
+                class="w-full sm:w-auto text-center rounded-full bg-red-100 text-red-700 px-5 py-2 text-sm font-semibold cursor-not-allowed"
+              >
+                {{ t('bimble.testExpiredLabel') }}
+              </span>
               <span v-else class="text-xs text-gray-400">test id missing</span>
             </div>
             <p v-if="!workspace.tests?.length" class="text-gray-500 text-sm">{{ t('bimble.noTests') }}</p>
@@ -226,6 +235,13 @@ async function load() {
   } finally {
     loading.value = false
   }
+}
+
+function isExpired(test) {
+  if (!test?.end_time) return false
+  const end = new Date(test.end_time)
+  if (Number.isNaN(end.getTime())) return false
+  return end < new Date()
 }
 
 onMounted(load)

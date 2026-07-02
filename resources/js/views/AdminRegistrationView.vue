@@ -111,21 +111,10 @@
             </dl>
           </div>
 
-          <div class="grid gap-4 sm:grid-cols-3">
-            <div>
+          <div class="space-y-4">
+            <div class="rounded-xl border border-gray-100 bg-white p-4">
               <div class="font-semibold text-gray-700">{{ t('registration.steps.psychology') }}</div>
               <p class="mt-1 text-xs text-gray-500 capitalize">{{ modal.row.psychology_status }}</p>
-              <dl v-if="hasJsonData(modal.row.psychology_data)" class="mt-2 space-y-1 rounded-xl bg-gray-50 p-3 text-xs">
-                <div
-                  v-for="item in toDisplayEntries(modal.row.psychology_data)"
-                  :key="`psychology-${item.key}`"
-                  class="flex items-start justify-between gap-2"
-                >
-                  <dt class="font-medium text-gray-600">{{ item.label }}</dt>
-                  <dd class="text-right text-gray-900">{{ item.value }}</dd>
-                </div>
-              </dl>
-              <p v-else class="mt-2 text-xs text-gray-400">{{ t('adminRegistration.noJson') }}</p>
               <div class="mt-3 space-y-2">
                 <div class="flex items-center gap-2">
                   <button
@@ -162,20 +151,9 @@
                 </button>
               </div>
             </div>
-            <div>
+            <div class="rounded-xl border border-gray-100 bg-white p-4">
               <div class="font-semibold text-gray-700">{{ t('registration.steps.health') }}</div>
               <p class="mt-1 text-xs text-gray-500 capitalize">{{ modal.row.health_status }}</p>
-              <dl v-if="hasJsonData(modal.row.health_data)" class="mt-2 space-y-1 rounded-xl bg-gray-50 p-3 text-xs">
-                <div
-                  v-for="item in toDisplayEntries(modal.row.health_data)"
-                  :key="`health-${item.key}`"
-                  class="flex items-start justify-between gap-2"
-                >
-                  <dt class="font-medium text-gray-600">{{ item.label }}</dt>
-                  <dd class="text-right text-gray-900">{{ item.value }}</dd>
-                </div>
-              </dl>
-              <p v-else class="mt-2 text-xs text-gray-400">{{ t('adminRegistration.noJson') }}</p>
               <div class="mt-3 space-y-2">
                 <div class="flex items-center gap-2">
                   <button
@@ -212,20 +190,9 @@
                 </button>
               </div>
             </div>
-            <div>
+            <div class="rounded-xl border border-gray-100 bg-white p-4">
               <div class="font-semibold text-gray-700">{{ t('registration.steps.physical') }}</div>
               <p class="mt-1 text-xs text-gray-500 capitalize">{{ modal.row.physical_status }}</p>
-              <dl v-if="hasJsonData(modal.row.physical_data)" class="mt-2 space-y-1 rounded-xl bg-gray-50 p-3 text-xs">
-                <div
-                  v-for="item in toDisplayEntries(modal.row.physical_data)"
-                  :key="`physical-${item.key}`"
-                  class="flex items-start justify-between gap-2"
-                >
-                  <dt class="font-medium text-gray-600">{{ item.label }}</dt>
-                  <dd class="text-right text-gray-900">{{ item.value }}</dd>
-                </div>
-              </dl>
-              <p v-else class="mt-2 text-xs text-gray-400">{{ t('adminRegistration.noJson') }}</p>
               <div class="mt-3 space-y-2">
                 <div class="flex items-center gap-2">
                   <button
@@ -265,7 +232,7 @@
           </div>
 
           <div class="flex justify-end gap-2 pt-2">
-            <button type="button" class="px-4 py-2 rounded-full border border-gray-200 text-sm" @click="modal.open = false">{{ t('common.cancel') }}</button>
+            <button type="button" class="px-4 py-2 rounded-full border border-gray-200 text-sm" @click="modal.open = false">{{ t('common.close') }}</button>
           </div>
         </div>
       </div>
@@ -335,29 +302,6 @@ function formatAdminScalar(key, val) {
 
 function hasJsonData(data) {
   return data != null && typeof data === 'object' && Object.keys(data).length > 0
-}
-
-function formatDataLabel(key) {
-  return String(key || '')
-    .replaceAll('_', ' ')
-    .replace(/\b\w/g, (char) => char.toUpperCase())
-}
-
-function formatDataValue(value) {
-  if (value === null || value === undefined || value === '') return '—'
-  if (typeof value === 'boolean') return value ? 'Ya' : 'Tidak'
-  if (Array.isArray(value)) return value.join(', ')
-  if (typeof value === 'object') return JSON.stringify(value)
-  return String(value)
-}
-
-function toDisplayEntries(data) {
-  if (!hasJsonData(data)) return []
-  return Object.entries(data).map(([key, value]) => ({
-    key,
-    label: formatDataLabel(key),
-    value: formatDataValue(value),
-  }))
 }
 
 function isUploadedFile(row, pathKey) {

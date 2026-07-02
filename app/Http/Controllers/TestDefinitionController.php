@@ -42,8 +42,12 @@ class TestDefinitionController extends Controller
             }
         }
     }
-    private function enforceQuestionDefaults(array &$data): void
+    private function enforceQuestionDefaults(array &$data, bool $onlyWhenProvided = false): void
     {
+        if ($onlyWhenProvided && ! array_key_exists('question_ids', $data)) {
+            return;
+        }
+
         if (empty($data['question_ids'])) {
             $data['question_ids'] = [];
             $data['is_active'] = false;
@@ -81,7 +85,7 @@ class TestDefinitionController extends Controller
         ]);
 
         $data['created_by'] = optional($request->user())->id;
-        $this->enforceQuestionDefaults($data);
+        $this->enforceQuestionDefaults($data, true);
         $this->enforceSingleFreeTryout($data, null, $request->user());
         $item = TestDefinition::create($data);
         return response()->json($item, 201);

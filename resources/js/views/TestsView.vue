@@ -78,7 +78,14 @@
           <div v-for="(test, i) in filteredTryout" :key="`tryout-${test.id}`" class="bg-white rounded-[2rem] shadow-sm border border-border p-8 hover:shadow-md transition-shadow group">
             <div class="flex items-start justify-between mb-4">
               <div>
+                <span
+                  v-if="isExpired(test)"
+                  class="text-xl font-bold text-gray-400 cursor-not-allowed"
+                >
+                  {{ test.name }}
+                </span>
                 <router-link
+                  v-else
                   :to="{ name: 'quick-test', params: { id: test.id } }"
                   class="text-xl font-bold text-text group-hover:text-primary transition-colors hover:underline"
                 >
@@ -86,7 +93,12 @@
                 </router-link>
                 <p class="text-sm text-gray-500 mt-1 leading-relaxed">{{ test.description }}</p>
               </div>
-              <span class="text-xs font-semibold text-primary bg-sky px-3 py-1 rounded-full">Tryout Gratis</span>
+              <div class="flex flex-wrap items-center gap-2 justify-end">
+                <span class="text-xs font-semibold text-primary bg-sky px-3 py-1 rounded-full">Tryout Gratis</span>
+                <span v-if="isExpired(test)" class="text-xs font-semibold text-red-700 bg-red-100 px-3 py-1 rounded-full">
+                  {{ t('tests.expiredLabel') }}
+                </span>
+              </div>
             </div>
             <div class="mt-6 flex flex-wrap gap-3">
               <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
@@ -118,7 +130,14 @@
         <div v-for="test in filteredRegular" :key="`regular-${test.id}`" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group">
           <div class="flex items-start justify-between mb-4">
             <div>
+              <span
+                v-if="isExpired(test)"
+                class="text-xl font-bold text-gray-400 cursor-not-allowed"
+              >
+                {{ test.name }}
+              </span>
               <router-link
+                v-else
                 :to="{ name: 'quick-test', params: { id: test.id } }"
                 class="text-xl font-bold text-[#1A1A1A] group-hover:text-[#9DB359] transition-colors hover:underline"
               >
@@ -165,7 +184,10 @@
                 <Check class="h-4 w-4" />
                 {{ t('tests.ongoing') }}
               </span>
-              <span v-else-if="test.status === 'ended'" class="text-sm font-medium text-gray-600">{{ t('common.ended') }}</span>
+              <span v-else-if="isExpired(test) || test.status === 'ended'" class="text-sm font-medium text-red-700 flex items-center gap-1">
+                <Lock class="h-4 w-4" />
+                {{ t('tests.expiredLabel') }}
+              </span>
               <span v-else class="text-sm font-medium text-gray-700">{{ isActive(test) ? t('common.active') : t('common.scheduled') }}</span>
             </div>
           </div>
@@ -291,6 +313,13 @@ const isActive = (t) => {
   const start = new Date(t.start_time || t.schedule_at)
   const end = new Date(t.end_time)
   return now >= start && now <= end
+}
+
+const isExpired = (t) => {
+  if (!t?.end_time) return false
+  const end = new Date(t.end_time)
+  if (Number.isNaN(end.getTime())) return false
+  return end < new Date()
 }
 
 const formatDate = (d) => {
