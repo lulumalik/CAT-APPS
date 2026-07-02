@@ -180,7 +180,7 @@ class RankingController extends Controller
     public function manualUpdate(Request $request, ManualRankingEntry $entry)
     {
         $validated = $request->validate([
-            'score' => 'required|numeric',
+            'score' => 'required|numeric|min:1|max:100',
             'unit' => 'nullable|string|max:32',
             'notes' => 'nullable|string|max:2000',
             'score_date' => 'required|date',
@@ -268,7 +268,7 @@ class RankingController extends Controller
         $validated = $this->validateRankingContext($request);
         $validated = array_merge($validated, $request->validate([
             'user_id' => 'required|integer|exists:users,id',
-            'score' => 'required|numeric',
+            'score' => 'required|numeric|min:1|max:100',
             'unit' => 'nullable|string|max:32',
             'notes' => 'nullable|string|max:2000',
             'score_date' => 'required|date',

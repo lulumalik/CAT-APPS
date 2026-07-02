@@ -35,17 +35,26 @@
                 :placeholder="t('auth.login.usernameLabel')"
               />
             </div>
-            <div>
+            <div class="relative">
               <input
                 id="password"
                 v-model="password"
                 name="password"
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 autocomplete="current-password"
                 required
-                class="auth-input"
+                class="auth-input pr-11"
                 :placeholder="t('auth.login.passwordLabel')"
               />
+              <button
+                type="button"
+                class="absolute inset-y-0 right-3 inline-flex items-center text-gray-500 hover:text-gray-700"
+                :aria-label="showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'"
+                @click="showPassword = !showPassword"
+              >
+                <EyeOff v-if="showPassword" class="h-4 w-4" />
+                <Eye v-else class="h-4 w-4" />
+              </button>
             </div>
 
             <div class="flex items-center justify-between pt-1 text-[0.78rem] text-[#686074]">
@@ -84,13 +93,14 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { CircleAlert } from 'lucide-vue-next'
+import { CircleAlert, Eye, EyeOff } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 
 const username = ref('')
 const password = ref('')
+const showPassword = ref(false)
 const remember = ref(false)
 const loading = ref(false)
 const error = ref('')

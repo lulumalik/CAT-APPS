@@ -67,27 +67,49 @@
               :placeholder="t('auth.signup.emailLabel')"
             />
 
-            <input
-              id="password"
-              v-model="password"
-              name="password"
-              type="password"
-              autocomplete="new-password"
-              required
-              class="auth-input"
-              :placeholder="t('auth.signup.passwordLabel')"
-            />
+            <div class="relative">
+              <input
+                id="password"
+                v-model="password"
+                name="password"
+                :type="showPassword ? 'text' : 'password'"
+                autocomplete="new-password"
+                required
+                class="auth-input pr-11"
+                :placeholder="t('auth.signup.passwordLabel')"
+              />
+              <button
+                type="button"
+                class="absolute inset-y-0 right-3 inline-flex items-center text-gray-500 hover:text-gray-700"
+                :aria-label="showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'"
+                @click="showPassword = !showPassword"
+              >
+                <EyeOff v-if="showPassword" class="h-4 w-4" />
+                <Eye v-else class="h-4 w-4" />
+              </button>
+            </div>
 
-            <input
-              id="password_confirmation"
-              v-model="passwordConfirmation"
-              name="password_confirmation"
-              type="password"
-              autocomplete="new-password"
-              required
-              class="auth-input"
-              :placeholder="t('auth.signup.confirmPasswordLabel')"
-            />
+            <div class="relative">
+              <input
+                id="password_confirmation"
+                v-model="passwordConfirmation"
+                name="password_confirmation"
+                :type="showPasswordConfirmation ? 'text' : 'password'"
+                autocomplete="new-password"
+                required
+                class="auth-input pr-11"
+                :placeholder="t('auth.signup.confirmPasswordLabel')"
+              />
+              <button
+                type="button"
+                class="absolute inset-y-0 right-3 inline-flex items-center text-gray-500 hover:text-gray-700"
+                :aria-label="showPasswordConfirmation ? 'Sembunyikan konfirmasi kata sandi' : 'Tampilkan konfirmasi kata sandi'"
+                @click="showPasswordConfirmation = !showPasswordConfirmation"
+              >
+                <EyeOff v-if="showPasswordConfirmation" class="h-4 w-4" />
+                <Eye v-else class="h-4 w-4" />
+              </button>
+            </div>
             <p
               v-if="passwordConfirmation && password !== passwordConfirmation"
               class="w-full text-left text-xs text-red-500 -mt-1"
@@ -117,7 +139,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { CircleAlert } from 'lucide-vue-next'
+import { CircleAlert, Eye, EyeOff } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
@@ -129,6 +151,8 @@ const username = ref('')
 const email = ref('')
 const password = ref('')
 const passwordConfirmation = ref('')
+const showPassword = ref(false)
+const showPasswordConfirmation = ref(false)
 const loading = ref(false)
 const error = ref('')
 const router = useRouter()

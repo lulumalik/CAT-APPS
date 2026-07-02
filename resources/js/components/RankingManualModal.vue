@@ -43,10 +43,13 @@
           <input
             v-model.number="form.score"
             type="number"
-            step="any"
+            min="1"
+            max="100"
+            step="1"
             required
             class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
           />
+          <p class="text-xs text-gray-400 mt-1">{{ t('rankings.manualScoreHint') }}</p>
         </div>
 
         <div>

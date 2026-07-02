@@ -114,9 +114,6 @@
                   {{ t('registration.openFile') }}
                 </a>
               </p>
-              <p v-else-if="storedPath(slot.pathKey)" class="text-xs text-amber-800">
-                {{ t('registration.fileMissingOnDisk') }}
-              </p>
               <input
                 :key="`f-${slot.input}-${uploadKey}`"
                 type="file"

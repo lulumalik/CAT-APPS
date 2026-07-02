@@ -186,7 +186,8 @@ const approvedPhotoUrl = computed(() => {
   if (progress.value?.administration_status !== 'approved') return ''
   const d = progress.value?.administration_data
   if (!d) return ''
-  if (d.passport_photo_path) {
+  const isPassportUploaded = Boolean(progress.value?.administration_files_present?.passport_photo_path)
+  if (isPassportUploaded && d.passport_photo_path) {
     return registrationFileHref(progress.value, 'passport_photo_path') || ''
   }
   if (typeof d.passport_photo_url === 'string' && /^https?:\/\//i.test(d.passport_photo_url)) return d.passport_photo_url
