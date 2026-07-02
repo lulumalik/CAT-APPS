@@ -309,11 +309,12 @@
 
     <div class="section">
         <h2>Nilai per Mata Pelajaran</h2>
-            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai (%) tiap mata pelajaran per tanggal</p>
+            <p class="muted" style="margin:0 0 8px;">Hasil aktivitas quiz per mata pelajaran (skala 0–100 dari total soal)</p>
         {!! PdfChartRenderer::multiLineChart(
             $progress['academic_subject_timeline'] ?? [],
-            'percent',
-            'Belum ada nilai akademik.'
+            'value',
+            'Belum ada nilai quiz.',
+            100
         ) !!}
     </div>
 
@@ -328,12 +329,15 @@
     </div>
 
     <div class="section">
-        <h2>Nilai Tes</h2>
-            <p class="muted" style="margin:0 0 8px;">Perkembangan persentase nilai tes per tanggal</p>
+        <h2>Nilai Ujian</h2>
+            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai ujian yang sudah dikerjakan peserta (skala 0–100 dari total soal)</p>
         {!! PdfChartRenderer::lineChart(
-            $progress['academic_timeline'] ?? [],
+            $progress['exam_timeline'] ?? [],
             '#2F6BFF',
-            'Belum ada nilai tes.'
+            'Belum ada nilai ujian.',
+            'value',
+            100,
+            'Nilai Ujian'
         ) !!}
     </div>
 </body>

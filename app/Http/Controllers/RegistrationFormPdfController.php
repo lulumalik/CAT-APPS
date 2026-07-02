@@ -107,11 +107,11 @@ class RegistrationFormPdfController extends Controller
         $path = RegistrationTemplatePath::resolve();
         if ($path === null) {
             return response()->json([
-                'message' => 'File berkas pendaftaran belum tersedia di server.',
+                'message' => 'File surat pernyataan orang tua belum tersedia di server.',
             ], 404);
         }
 
-        $filename = (string) config('registration_forms.template_pdf_download_name', 'berkas-pendaftaran.pdf');
+        $filename = (string) config('registration_forms.template_pdf_download_name', 'surat-pernyataan-orang-tua.pdf');
 
         return response()->download($path, $filename, [
             'Content-Type' => 'application/pdf',

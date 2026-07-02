@@ -160,13 +160,14 @@
       <!-- 4. Nilai per Mata Pelajaran -->
       <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
         <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai per Mata Pelajaran</h3>
-        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai (%) tiap mata pelajaran per tanggal</p>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Hasil aktivitas quiz per mata pelajaran (skala 0–100 dari total soal)</p>
         <div class="flex-1">
           <ProgressChart
             type="multiline"
             :series="progress.academic_subject_timeline || []"
-            value-mode="percent"
-            empty-text="Belum ada nilai akademik."
+            value-mode="value"
+            :max="100"
+            empty-text="Belum ada nilai quiz."
           />
         </div>
       </section>
@@ -199,16 +200,18 @@
         </div>
       </section>
 
-      <!-- 6. Nilai Tes -->
+      <!-- 6. Nilai Ujian -->
       <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
-        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai Tes</h3>
-        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan persentase nilai tes per tanggal</p>
+        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai Ujian</h3>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai ujian yang sudah dikerjakan peserta (skala 0–100 dari total soal)</p>
         <div class="flex-1">
           <ProgressChart
             type="line"
-            :data="progress.academic_timeline || []"
+            :data="progress.exam_timeline || []"
             color="#2F6BFF"
-            empty-text="Belum ada nilai tes."
+            value-mode="value"
+            :max="100"
+            empty-text="Belum ada nilai ujian."
           />
         </div>
       </section>

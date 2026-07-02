@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BimbleClass;
+use App\Models\ExamSubmission;
 use App\Models\ManualRankingEntry;
 use App\Models\RegistrationProgress;
 use App\Models\StudentGuardian;
@@ -175,7 +176,7 @@ class ProgressController extends Controller
     {
         return [
             'student' => ['id' => $student->id, 'name' => $student->name],
-            'academic_timeline' => $this->academicTimeline($student),
+            'exam_timeline' => $this->examTimeline($student),
             'academic_subjects' => $this->academicSubjects($student),
             'academic_subject_timeline' => $this->academicSubjectTimeline($student),
             'physical' => $this->physicalBars($student),
@@ -204,6 +205,14 @@ class ProgressController extends Controller
         $submissions = TestSubmission::query()
             ->where('user_id', $student->id)
             ->whereNotNull('score')
+            ->whereHas('testDefinition', function ($q) {
+                $q->where('is_free_tryout', false);
+                if (Schema::hasTable('bimble_class_test')) {
+                    $q->whereHas('bimbleClasses', function ($cq) {
+                        $cq->where('bimble_class_test.kind', 'quiz');
+                    });
+                }
+            })
             ->with('testDefinition:id,category,question_ids')
             ->orderBy('submitted_at')
             ->orderBy('id')
@@ -222,9 +231,13 @@ class ProgressController extends Controller
                 if ($total < 1) {
                     continue;
                 }
+                $scaled = $this->scaleScoreToHundred((float) $submission->score, $total);
+                if ($scaled === null) {
+                    continue;
+                }
                 $points[] = [
                     'date' => optional($submission->submitted_at ?? $submission->created_at)->toDateString(),
-                    'percent' => round(((float) $submission->score / $total) * 100, 1),
+                    'value' => $scaled,
                 ];
             }
 
@@ -288,20 +301,20 @@ class ProgressController extends Controller
     }
 
     /**
-     * Test scores over time (percentage).
+     * Exam scores over time (skala 0–100 dari total soal ujian).
      *
      * @return list<array<string, mixed>>
      */
-    private function academicTimeline(User $student): array
+    private function examTimeline(User $student): array
     {
-        if (! Schema::hasTable('test_submissions')) {
+        if (! Schema::hasTable('exam_submissions')) {
             return [];
         }
 
-        $submissions = TestSubmission::query()
+        $submissions = ExamSubmission::query()
             ->where('user_id', $student->id)
             ->whereNotNull('score')
-            ->with('testDefinition:id,name,category,question_ids')
+            ->with('examDefinition:id,name,question_ids')
             ->orderBy('submitted_at')
             ->orderBy('id')
             ->limit(60)
@@ -309,15 +322,17 @@ class ProgressController extends Controller
 
         $rows = [];
         foreach ($submissions as $sub) {
-            $total = count($sub->testDefinition?->question_ids ?? []);
+            $total = count($sub->examDefinition?->question_ids ?? []);
             if ($total < 1) {
                 continue;
             }
-            $pct = round(((float) $sub->score / $total) * 100, 1);
+            $scaled = $this->scaleScoreToHundred((float) $sub->score, $total);
+            if ($scaled === null) {
+                continue;
+            }
             $rows[] = [
-                'label' => $sub->testDefinition?->name ?? 'Tes',
-                'category' => $sub->testDefinition?->category,
-                'percent' => $pct,
+                'label' => $sub->examDefinition?->name ?? 'Ujian',
+                'value' => $scaled,
                 'date' => optional($sub->submitted_at ?? $sub->created_at)->toDateString(),
             ];
         }
@@ -358,6 +373,14 @@ class ProgressController extends Controller
         $submissions = TestSubmission::query()
             ->where('user_id', $student->id)
             ->whereNotNull('score')
+            ->whereHas('testDefinition', function ($q) {
+                $q->where('is_free_tryout', false);
+                if (Schema::hasTable('bimble_class_test')) {
+                    $q->whereHas('bimbleClasses', function ($cq) {
+                        $cq->where('bimble_class_test.kind', 'quiz');
+                    });
+                }
+            })
             ->with('testDefinition:id,category,question_ids')
             ->get();
 
@@ -374,14 +397,17 @@ class ProgressController extends Controller
                 if ($total < 1) {
                     continue;
                 }
-                $pct = round(((float) $submission->score / $total) * 100, 1);
-                $best = $best === null ? $pct : max($best, $pct);
+                $scaled = $this->scaleScoreToHundred((float) $submission->score, $total);
+                if ($scaled === null) {
+                    continue;
+                }
+                $best = $best === null ? $scaled : max($best, $scaled);
             }
 
             $rows[] = [
                 'id' => $sub['id'],
                 'label' => $sub['label'],
-                'percent' => $best,
+                'value' => $best,
             ];
         }
 
@@ -454,6 +480,15 @@ class ProgressController extends Controller
                 'activities_count' => $activitiesCount,
             ];
         })->values()->all();
+    }
+
+    private function scaleScoreToHundred(float $score, int $totalQuestions): ?float
+    {
+        if ($totalQuestions < 1) {
+            return null;
+        }
+
+        return round(($score / $totalQuestions) * 100, 1);
     }
 
     private function extractNumericScore(mixed $raw): ?float

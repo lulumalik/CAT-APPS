@@ -145,7 +145,7 @@ const timelineBars = computed(() =>
     .map((d) => {
       const raw = d.percent != null ? Number(d.percent) : Number(d.value)
       const pct = Number.isNaN(raw) ? 0 : Math.min(100, Math.round((raw / singleMax.value) * 100))
-      const display = d.percent != null ? `${raw}%` : (d.unit ? `${raw} ${d.unit}` : String(raw))
+      const display = props.valueMode === 'percent' ? `${raw}%` : (d.unit ? `${raw} ${d.unit}` : String(raw))
       const label = d.date ? fmtDate(d.date) : (d.label || '')
       return { label, height: pct, display }
     }),
@@ -193,6 +193,7 @@ const allDates = computed(() => {
 
 const multiMax = computed(() => {
   if (props.valueMode === 'percent') return 100
+  if (props.max) return props.max
   let m = 0
   activeSeries.value.forEach((s) => s.points.forEach((p) => { if (p.value > m) m = p.value }))
   return m > 0 ? m : 1

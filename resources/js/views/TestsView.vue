@@ -114,8 +114,8 @@
               <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewTryoutResults(test)">
                 Tryout Result
               </button>
-              <button v-if="!isExamPage" class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="openAssign(test)">
-                {{ t('tests.assignQuestions') }}
+              <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="openAssign(test)">
+                {{ t(`${i18nPrefix}.assignQuestions`) }}
               </button>
               <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)">
                 {{ t('common.edit') }}
@@ -201,12 +201,11 @@
 
           <div class="mt-6 flex items-center justify-end gap-3 pt-6 border-t border-gray-50">
             <button
-              v-if="!isExamPage"
               class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600"
               @click="openAssign(test)"
               :disabled="deletingId === test.id"
             >
-              {{ t('tests.assignQuestions') }}
+              {{ t(`${i18nPrefix}.assignQuestions`) }}
             </button>
             <button v-if="!isExamPage" class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewSubmissions(test)" :disabled="deletingId === test.id">{{ t('tests.submissions') }}</button>
             <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)" :disabled="deletingId === test.id">{{ t('common.edit') }}</button>
@@ -492,10 +491,10 @@ const createTest = async (formData) => {
       toast.success('Success', t(`${i18nPrefix.value}.createTest`))
       
       // Prompt to assign questions
-      const assignNow = isExamPage.value ? false : await confirm({
-        title: t('tests.assignQuestions'),
-        message: t('modals.testCreate.subtitle'),
-        confirmText: t('tests.assignQuestions'),
+      const assignNow = await confirm({
+        title: t(`${i18nPrefix.value}.assignQuestions`),
+        message: t(isExamPage.value ? 'modals.examCreate.subtitle' : 'modals.testCreate.subtitle'),
+        confirmText: t(`${i18nPrefix.value}.assignQuestions`),
         cancelText: t('common.close')
       })
       
@@ -628,12 +627,32 @@ const assignQuestions = async (updatedTest) => {
     const idx = tests.value.findIndex(t => t.id === updatedTest.id)
     if (idx !== -1) tests.value[idx] = data
     
-    toast.success('Success', t('tests.assignQuestions'))
+    toast.success('Success', t(`${i18nPrefix.value}.assignQuestions`))
     closeAssign()
   } catch (e) {
     toast.error('Error', 'Failed to assign questions')
   }
 }
+
+const resetPageState = () => {
+  search.value = ''
+  regularPage.value = 1
+  showCreateModal.value = false
+  showAssignModal.value = false
+  showSubmissionsModal.value = false
+  showFreeTryoutResultsModal.value = false
+  selectedTest.value = null
+  editingIndex.value = -1
+  deletingId.value = null
+}
+
+watch(() => route.name, (name, prev) => {
+  const isManagementRoute = (n) => n === 'tests' || n === 'exams'
+  if (isManagementRoute(name) && isManagementRoute(prev) && name !== prev) {
+    resetPageState()
+    loadTests()
+  }
+})
 
 onMounted(() => {
   loadTests()

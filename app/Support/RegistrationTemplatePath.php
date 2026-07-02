@@ -9,9 +9,8 @@ class RegistrationTemplatePath
         $configured = config('registration_forms.template_pdf_path');
         $candidates = array_filter([
             is_string($configured) ? $configured : null,
-            resource_path('registration-templates/berkas-pendaftaran-akpol-2026.pdf'),
-            storage_path('app/registration-templates/berkas-pendaftaran-akpol-2026.pdf'),
-            base_path('berkas_pendaftaran_SELEKSI akpol_2026 - Copy.pdf'),
+            resource_path('registration-templates/surat_pernyataan_orang_tua.pdf'),
+            storage_path('app/registration-templates/surat_pernyataan_orang_tua.pdf'),
         ]);
 
         foreach ($candidates as $path) {

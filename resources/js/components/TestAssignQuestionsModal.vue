@@ -112,7 +112,9 @@ const categoryOptions = computed(() => {
   return Array.from(set)
 })
 const filtered = computed(() => {
-  const allow = mapCategories(category.value || props.test?.category)
+  const testCat = category.value || props.test?.category
+  const allowAll = testCat === 'Gabungan'
+  const allow = allowAll ? null : mapCategories(testCat)
   const seenIds = new Set()
   const uniqueQuestions = []
   for (const q of props.questions) {
@@ -122,12 +124,13 @@ const filtered = computed(() => {
     uniqueQuestions.push(q)
   }
   return uniqueQuestions.filter(q => 
-    allow.includes(q.category) &&
+    (allowAll || allow.includes(q.category)) &&
     (!difficulty.value || q.difficulty === difficulty.value)
   )
 })
 function mapCategories(cat) {
   const m = {
+    'Gabungan': [],
     'Kewarganegaraan': ['Kewarganegaraan', 'Citizenship', 'Law', 'Hukum'],
     'Math': ['Math', 'Mathematics', 'Matematika'],
     'English': ['English', 'Bahasa Inggris'],
@@ -145,7 +148,7 @@ watch(() => props.test, (t) => {
   const ids = Array.isArray(t?.questionIds) ? t.questionIds : (Array.isArray(t?.question_ids) ? t.question_ids : [])
   selected.value = Array.from(new Set(ids))
   active.value = ids.length === 0 ? true : !!(t?.isActive ?? t?.is_active ?? true)
-  category.value = t?.category || ''
+  category.value = t?.category === 'Gabungan' ? '' : (t?.category || '')
   difficulty.value = ''
 }, { immediate: true })
 

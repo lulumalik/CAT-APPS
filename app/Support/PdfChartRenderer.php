@@ -9,20 +9,27 @@ class PdfChartRenderer
     private const BAR_AREA_HEIGHT = 110;
 
     /**
-     * @param  list<array{percent?: float|int, date?: string}>  $data
+     * @param  list<array{percent?: float|int, value?: float|int, date?: string}>  $data
      */
-    public static function lineChart(array $data, string $color = '#2F6BFF', string $emptyText = 'Belum ada data.'): string
-    {
+    public static function lineChart(
+        array $data,
+        string $color = '#2F6BFF',
+        string $emptyText = 'Belum ada data.',
+        string $valueMode = 'percent',
+        float $fixedMax = 100,
+        string $seriesLabel = 'Nilai Tes (%)',
+    ): string {
         $points = [];
         foreach ($data as $row) {
-            if (! isset($row['percent'])) {
+            $val = $row['value'] ?? $row['percent'] ?? null;
+            if ($val === null) {
                 continue;
             }
             $date = (string) ($row['date'] ?? '');
             if ($date === '') {
                 continue;
             }
-            $points[$date] = (float) $row['percent'];
+            $points[$date] = (float) $val;
         }
 
         if ($points === []) {
@@ -31,24 +38,29 @@ class PdfChartRenderer
 
         ksort($points, SORT_STRING);
         $dates = array_keys($points);
+        $max = $valueMode === 'percent' ? 100 : $fixedMax;
 
         return self::htmlChart(
             $dates,
             [[
-                'label' => 'Nilai Tes (%)',
+                'label' => $seriesLabel,
                 'color' => $color,
                 'values' => $points,
             ]],
-            100,
-            'percent',
+            $max,
+            $valueMode,
         );
     }
 
     /**
      * @param  list<array{label?: string, unit?: string|null, points?: list<array{date?: string, percent?: float|int, value?: float|int}>}>  $series
      */
-    public static function multiLineChart(array $series, string $valueMode = 'percent', string $emptyText = 'Belum ada data.'): string
-    {
+    public static function multiLineChart(
+        array $series,
+        string $valueMode = 'percent',
+        string $emptyText = 'Belum ada data.',
+        float $fixedMax = 100,
+    ): string {
         $clean = [];
         foreach ($series as $idx => $s) {
             $pts = [];
@@ -83,7 +95,7 @@ class PdfChartRenderer
 
         $max = $valueMode === 'percent'
             ? 100
-            : max(1, ...array_map(fn ($s) => max($s['values']), $clean));
+            : $fixedMax;
 
         return self::htmlChart($dates, $clean, $max, $valueMode, true);
     }

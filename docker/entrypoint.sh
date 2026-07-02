@@ -22,9 +22,9 @@ fi
 php artisan storage:link --force >/dev/null 2>&1 || true
 
 # Seed berkas template into mounted storage (optional fallback for legacy path)
-if [ -f resources/registration-templates/berkas-pendaftaran-akpol-2026.pdf ]; then
-  cp -n resources/registration-templates/berkas-pendaftaran-akpol-2026.pdf \
-    storage/app/registration-templates/berkas-pendaftaran-akpol-2026.pdf 2>/dev/null || true
+if [ -f resources/registration-templates/surat_pernyataan_orang_tua.pdf ]; then
+  cp -n resources/registration-templates/surat_pernyataan_orang_tua.pdf \
+    storage/app/registration-templates/surat_pernyataan_orang_tua.pdf 2>/dev/null || true
 fi
 
 # Hint in container logs
