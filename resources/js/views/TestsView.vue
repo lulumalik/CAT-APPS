@@ -14,25 +14,25 @@
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-[#9DB359]/30 transition-colors">
         <div class="text-4xl font-bold text-[#1A1A1A] mb-1 group-hover:text-[#9DB359] transition-colors">{{ tests.length }}</div>
-        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('tests.statsTotalTests') }}</div>
+        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t(`${i18nPrefix}.statsTotalTests`) }}</div>
       </div>
       <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-green-500/30 transition-colors">
         <div class="text-4xl font-bold text-green-600 mb-1">{{ activeCount }}</div>
-        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('tests.statsActiveTests') }}</div>
+        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t(`${i18nPrefix}.statsActiveTests`) }}</div>
       </div>
       <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-blue-500/30 transition-colors">
         <div class="text-4xl font-bold text-blue-600 mb-1">{{ questions.length }}</div>
-        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('tests.statsAvailableQuestions') }}</div>
+        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t(`${i18nPrefix}.statsAvailableQuestions`) }}</div>
       </div>
       <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-purple-500/30 transition-colors">
         <div class="text-4xl font-bold text-purple-600 mb-1">{{ assignments }}</div>
-        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('tests.statsTotalAssignments') }}</div>
+        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t(`${i18nPrefix}.statsTotalAssignments`) }}</div>
       </div>
     </div>
 
     <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 mt-8">
       <div class="relative">
-        <input v-model="search" type="text" :placeholder="t('tests.searchPlaceholder')" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
+        <input v-model="search" type="text" :placeholder="t(`${i18nPrefix}.searchPlaceholder`)" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
         <Search class="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-400" />
       </div>
     </div>
@@ -65,12 +65,12 @@
           <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-50 text-gray-400">
             <FileText class="h-9 w-9" />
           </div>
-          <div class="font-bold text-lg text-[#1A1A1A]">{{ t('tests.noTestsTitle') }}</div>
-          <div class="text-gray-500 mt-2 text-sm">{{ t('tests.noTestsDescription') }}</div>
-          <button class="mt-6 px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors cursor-pointer" @click="openCreate">{{ t('tests.startCreate') }}</button>
+          <div class="font-bold text-lg text-[#1A1A1A]">{{ t(`${i18nPrefix}.noTestsTitle`) }}</div>
+          <div class="text-gray-500 mt-2 text-sm">{{ t(`${i18nPrefix}.noTestsDescription`) }}</div>
+          <button class="mt-6 px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors cursor-pointer" @click="openCreate">{{ t(`${i18nPrefix}.startCreate`) }}</button>
         </div>
 
-        <section v-if="filteredTryout.length > 0" class="space-y-4">
+        <section v-if="!isExamPage && filteredTryout.length > 0" class="space-y-4">
           <div class="flex items-center justify-between">
             <h2 class="text-lg font-bold text-text">Section Soal Tryout Gratis</h2>
             <span class="text-xs font-semibold text-primary bg-sky px-3 py-1 rounded-full">{{ filteredTryout.length }} test</span>
@@ -96,7 +96,7 @@
               <div class="flex flex-wrap items-center gap-2 justify-end">
                 <span class="text-xs font-semibold text-primary bg-sky px-3 py-1 rounded-full">Tryout Gratis</span>
                 <span v-if="isExpired(test)" class="text-xs font-semibold text-red-700 bg-red-100 px-3 py-1 rounded-full">
-                  {{ t('tests.expiredLabel') }}
+                  {{ t(`${i18nPrefix}.expiredLabel`) }}
                 </span>
               </div>
             </div>
@@ -125,7 +125,7 @@
                 class="px-4 py-2 rounded-full border border-blue-100 text-blue-700 text-sm font-medium hover:bg-blue-50 transition-colors"
                 @click="duplicateById(test.id)"
               >
-                Duplikat Ujian
+                {{ t(`${i18nPrefix}.duplicate`) }}
               </button>
               <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" @click="removeById(test.id)">
                 {{ t('common.delete') }}
@@ -154,15 +154,15 @@
             </div>
             <div class="text-right">
               <div v-if="test.start_time" class="text-sm">
-                <span class="text-gray-400 text-xs uppercase tracking-wide block">{{ t('tests.start') }}</span> 
+                <span class="text-gray-400 text-xs uppercase tracking-wide block">{{ t(`${i18nPrefix}.start`) }}</span> 
                 <span class="font-medium text-[#1A1A1A]">{{ formatDate(test.start_time) }}</span>
               </div>
               <div v-if="test.end_time" class="text-sm mt-1">
-                <span class="text-gray-400 text-xs uppercase tracking-wide block">{{ t('tests.end') }}</span> 
+                <span class="text-gray-400 text-xs uppercase tracking-wide block">{{ t(`${i18nPrefix}.end`) }}</span> 
                 <span class="font-medium text-[#1A1A1A]">{{ formatDate(test.end_time) }}</span>
               </div>
               <div v-else class="text-sm">
-                <span class="text-gray-400 text-xs uppercase tracking-wide block">{{ t('tests.scheduled') }}</span>
+                <span class="text-gray-400 text-xs uppercase tracking-wide block">{{ t(`${i18nPrefix}.scheduled`) }}</span>
                 <span class="font-medium text-[#1A1A1A]">{{ formatDate(test.schedule_at) }}</span>
               </div>
             </div>
@@ -185,15 +185,15 @@
               <span class="text-xs text-gray-400 uppercase font-bold">{{ t('common.status') }}</span>
               <span v-if="test.status === 'upcoming'" class="text-sm font-medium text-yellow-600 flex items-center gap-1">
                 <Lock class="h-4 w-4" />
-                {{ t('tests.upcoming') }}
+                {{ t(`${i18nPrefix}.upcoming`) }}
               </span>
               <span v-else-if="test.status === 'ongoing'" class="text-sm font-medium text-green-600 flex items-center gap-1">
                 <Check class="h-4 w-4" />
-                {{ t('tests.ongoing') }}
+                {{ t(`${i18nPrefix}.ongoing`) }}
               </span>
               <span v-else-if="isExpired(test) || test.status === 'ended'" class="text-sm font-medium text-red-700 flex items-center gap-1">
                 <Lock class="h-4 w-4" />
-                {{ t('tests.expiredLabel') }}
+                {{ t(`${i18nPrefix}.expiredLabel`) }}
               </span>
               <span v-else class="text-sm font-medium text-gray-700">{{ isActive(test) ? t('common.active') : t('common.scheduled') }}</span>
             </div>
@@ -224,7 +224,7 @@
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                {{ t('tests.deleting') }}
+                {{ t(`${i18nPrefix}.deleting`) }}
               </span>
               <span v-else>{{ t('common.delete') }}</span>
             </button>
@@ -258,10 +258,10 @@
         <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-8 sticky top-24">
           <h3 class="font-bold text-lg text-[#1A1A1A] mb-4 flex items-center gap-2">
             <span class="w-1.5 h-6 rounded-full bg-[#9DB359]"></span>
-            {{ t('tests.upcomingTests') }}
+            {{ t(`${i18nPrefix}.upcomingTests`) }}
           </h3>
           <ul class="space-y-4">
-            <li v-if="upcoming.length === 0" class="text-gray-400 text-sm italic">{{ t('tests.noUpcoming') }}</li>
+            <li v-if="upcoming.length === 0" class="text-gray-400 text-sm italic">{{ t(`${i18nPrefix}.noUpcoming`) }}</li>
             <li v-for="u in upcoming" :key="u.name" class="flex items-start justify-between pb-4 border-b border-gray-50 last:border-0 last:pb-0">
               <div>
                 <div class="font-medium text-[#1A1A1A] text-sm">{{ u.name }}</div>
@@ -322,9 +322,10 @@ const deletingId = ref(null)
 const regularPage = ref(1)
 const regularPageSize = 5
 const isExamPage = computed(() => route.name === 'exams')
-const pageTitle = computed(() => (isExamPage.value ? 'Manajemen Ujian' : t('tests.title')))
-const pageSubtitle = computed(() => (isExamPage.value ? 'Buat ujian gabungan lintas mata pelajaran.' : t('tests.subtitle')))
-const createButtonLabel = computed(() => (isExamPage.value ? 'Buat Ujian' : t('tests.createTest')))
+const i18nPrefix = computed(() => (isExamPage.value ? 'exams' : 'tests'))
+const pageTitle = computed(() => (isExamPage.value ? t('exams.title') : t('tests.title')))
+const pageSubtitle = computed(() => (isExamPage.value ? t('exams.subtitle') : t('tests.subtitle')))
+const createButtonLabel = computed(() => (isExamPage.value ? t('exams.createTest') : t('tests.createTest')))
 const apiBase = computed(() => (isExamPage.value ? '/api/exams' : '/api/tests'))
 
 const categories = [
@@ -427,7 +428,7 @@ const loadTests = async () => {
     const qRes = await window.axios.get('/api/questions')
     questions.value = qRes.data.items || []
   } catch (e) {
-    toast.error('Error', 'Failed to load tests')
+    toast.error('Error', t(`${i18nPrefix.value}.loadFailed`))
   } finally {
     loading.value = false
   }
@@ -488,7 +489,7 @@ const createTest = async (formData) => {
       const { data } = await window.axios.post(apiBase.value, payload)
       savedTest = data
       tests.value.unshift(data)
-      toast.success('Success', t('tests.createTest'))
+      toast.success('Success', t(`${i18nPrefix.value}.createTest`))
       
       // Prompt to assign questions
       const assignNow = isExamPage.value ? false : await confirm({
@@ -512,16 +513,16 @@ const createTest = async (formData) => {
     }
   } catch (e) {
     console.error(e)
-    toast.error('Error', 'Failed to save test')
+    toast.error('Error', t(`${i18nPrefix.value}.saveFailed`))
   }
 }
 
 const remove = async (i) => {
   const test = filtered.value[i]
   const confirmed = await confirm({
-    title: t('tests.deleteTestConfirmTitle'),
-    message: t('tests.deleteTestConfirmMessage'),
-    confirmText: t('tests.delete'),
+    title: t(`${i18nPrefix.value}.deleteTestConfirmTitle`),
+    message: t(`${i18nPrefix.value}.deleteTestConfirmMessage`),
+    confirmText: t(`${i18nPrefix.value}.delete`),
     type: 'danger'
   })
   
@@ -530,9 +531,9 @@ const remove = async (i) => {
     try {
       await window.axios.delete(`${apiBase.value}/${test.id}`)
       tests.value = tests.value.filter(item => item.id !== test.id)
-      toast.success('Success', t('tests.delete'))
+      toast.success('Success', t(`${i18nPrefix.value}.delete`))
     } catch (e) {
-      toast.error('Error', 'Failed to delete test')
+      toast.error('Error', t(`${i18nPrefix.value}.deleteFailed`))
     } finally {
       deletingId.value = null
     }
@@ -550,9 +551,9 @@ const duplicateById = async (id) => {
   try {
     const { data } = await window.axios.post(`${apiBase.value}/${id}/duplicate`)
     tests.value.unshift(data)
-    toast.success('Success', 'Ujian berhasil diduplikat')
+    toast.success('Success', t(`${i18nPrefix.value}.duplicateSuccess`))
   } catch (e) {
-    toast.error('Error', 'Gagal menduplikat ujian')
+    toast.error('Error', t(`${i18nPrefix.value}.duplicateFailed`))
   }
 }
 

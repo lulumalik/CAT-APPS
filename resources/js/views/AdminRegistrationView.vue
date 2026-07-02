@@ -61,163 +61,124 @@
     </div>
 
     <div v-if="modal.open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @click.self="modal.open = false">
-      <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <h3 class="font-bold text-lg mb-4">{{ t('adminRegistration.review') }}</h3>
         <div v-if="modal.row" class="space-y-5 text-sm">
           <p class="text-xs text-amber-900 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 leading-relaxed">
             {{ t('adminRegistration.offlineStaffHint') }}
           </p>
 
-          <div>
-            <div class="font-semibold text-gray-800 mb-2">{{ t('registration.steps.admin') }}</div>
-            <dl class="grid gap-3 sm:grid-cols-2">
-              <template v-for="f in administrationFieldOrder" :key="f.key">
-                <div class="sm:col-span-2" :class="{ 'sm:col-span-1': f.short }">
-                  <dt class="text-xs font-medium text-gray-500">{{ t(f.labelKey) }}</dt>
-                  <dd class="mt-0.5 text-gray-900 break-words">
-                    <a
-                      v-if="f.isFile && isUploadedFile(modal.row, f.key) && registrationFileHref(modal.row, f.key)"
-                      :href="registrationFileHref(modal.row, f.key)"
-                      class="text-[#9DB359] underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {{ registrationFileHref(modal.row, f.key) }}
-                    </a>
-                    <span v-else-if="f.isFile">—</span>
-                    <a
-                      v-else-if="isHttpUrl(modal.row.administration_data?.[f.key])"
-                      :href="modal.row.administration_data[f.key]"
-                      class="text-[#9DB359] underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {{ modal.row.administration_data[f.key] }}
-                    </a>
-                    <span v-else>{{ formatAdminScalar(f.key, modal.row.administration_data?.[f.key]) }}</span>
-                  </dd>
-                </div>
-              </template>
-            </dl>
-          </div>
+          <div
+            v-for="step in reviewSteps"
+            :key="step.key"
+            class="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden"
+          >
+            <div class="flex items-start gap-3 p-5 border-b border-gray-100">
+              <div
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                :class="step.iconBg"
+              >
+                <component :is="step.icon" class="h-5 w-5" :class="step.iconColor" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="font-bold text-base text-[#1A1A1A]">{{ t(step.labelKey) }}</div>
+                <span
+                  class="mt-1.5 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                  :class="statusBadgeClass(modal.row[`${step.key}_status`])"
+                >
+                  <Check v-if="modal.row[`${step.key}_status`] === 'approved'" class="h-3 w-3" />
+                  <AlertCircle v-else-if="modal.row[`${step.key}_status`] === 'revision_requested'" class="h-3 w-3" />
+                  {{ formatStepStatus(modal.row[`${step.key}_status`]) }}
+                </span>
+              </div>
+            </div>
 
-          <div class="space-y-4">
-            <div class="rounded-xl border border-gray-100 bg-white p-4">
-              <div class="font-semibold text-gray-700">{{ t('registration.steps.psychology') }}</div>
-              <p class="mt-1 text-xs text-gray-500 capitalize">{{ modal.row.psychology_status }}</p>
-              <div class="mt-3 space-y-2">
-                <div class="flex items-center gap-2">
-                  <button
-                    type="button"
-                    class="rounded-full px-3 py-1.5 text-xs font-semibold"
-                    :class="modal.actions.psychology.decision === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'"
-                    @click="setDecision('psychology', 'approved')"
-                  >
-                    {{ t('adminRegistration.approve') }}
-                  </button>
-                  <button
-                    type="button"
-                    class="rounded-full px-3 py-1.5 text-xs font-semibold"
-                    :class="modal.actions.psychology.decision === 'revision_requested' ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-600'"
-                    @click="setDecision('psychology', 'revision_requested')"
-                  >
-                    {{ t('adminRegistration.requestRevision') }}
-                  </button>
-                </div>
-                <textarea
-                  v-if="modal.actions.psychology.decision === 'revision_requested'"
-                  v-model="modal.actions.psychology.note"
-                  rows="2"
-                  class="w-full rounded-xl border border-gray-200 px-2 py-1.5 text-xs"
-                  :placeholder="t('adminRegistration.note')"
-                />
-                <button
-                  type="button"
-                  class="rounded-full bg-[#9DB359] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
-                  :disabled="modal.actions.psychology.saving"
-                  @click="submitDecision('psychology')"
-                >
-                  {{ modal.actions.psychology.saving ? '…' : t('common.save') }}
-                </button>
-              </div>
+            <div v-if="step.key === 'administration'" class="border-b border-gray-100 bg-gray-50/50 px-5 py-4">
+              <dl class="grid gap-3 sm:grid-cols-2">
+                <template v-for="f in administrationFieldOrder" :key="f.key">
+                  <div class="sm:col-span-2" :class="{ 'sm:col-span-1': f.short }">
+                    <dt class="text-xs font-medium text-gray-500">{{ t(f.labelKey) }}</dt>
+                    <dd class="mt-0.5 text-gray-900 break-words">
+                      <a
+                        v-if="f.isFile && isUploadedFile(modal.row, f.key) && registrationFileHref(modal.row, f.key)"
+                        :href="registrationFileHref(modal.row, f.key)"
+                        class="text-[#9DB359] underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {{ registrationFileHref(modal.row, f.key) }}
+                      </a>
+                      <span v-else-if="f.isFile">—</span>
+                      <a
+                        v-else-if="isHttpUrl(modal.row.administration_data?.[f.key])"
+                        :href="modal.row.administration_data[f.key]"
+                        class="text-[#9DB359] underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {{ modal.row.administration_data[f.key] }}
+                      </a>
+                      <span v-else>{{ formatAdminScalar(f.key, modal.row.administration_data?.[f.key]) }}</span>
+                    </dd>
+                  </div>
+                </template>
+              </dl>
             </div>
-            <div class="rounded-xl border border-gray-100 bg-white p-4">
-              <div class="font-semibold text-gray-700">{{ t('registration.steps.health') }}</div>
-              <p class="mt-1 text-xs text-gray-500 capitalize">{{ modal.row.health_status }}</p>
-              <div class="mt-3 space-y-2">
-                <div class="flex items-center gap-2">
+
+            <div class="p-5 space-y-4">
+              <div>
+                <div class="text-sm font-semibold text-gray-700 mb-2">{{ t('adminRegistration.action') }}</div>
+                <div class="grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    class="rounded-full px-3 py-1.5 text-xs font-semibold"
-                    :class="modal.actions.health.decision === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'"
-                    @click="setDecision('health', 'approved')"
+                    class="flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-colors"
+                    :class="modal.actions[step.key].decision === 'approved'
+                      ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                      : 'border-gray-200 bg-white text-gray-600 hover:border-emerald-200'"
+                    @click="setDecision(step.key, 'approved')"
                   >
+                    <Check class="h-4 w-4" />
                     {{ t('adminRegistration.approve') }}
                   </button>
                   <button
                     type="button"
-                    class="rounded-full px-3 py-1.5 text-xs font-semibold"
-                    :class="modal.actions.health.decision === 'revision_requested' ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-600'"
-                    @click="setDecision('health', 'revision_requested')"
+                    class="flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-colors"
+                    :class="modal.actions[step.key].decision === 'revision_requested'
+                      ? 'border-amber-500 bg-amber-50 text-amber-700'
+                      : 'border-gray-200 bg-white text-gray-600 hover:border-amber-200'"
+                    @click="setDecision(step.key, 'revision_requested')"
                   >
+                    <AlertCircle class="h-4 w-4" />
                     {{ t('adminRegistration.requestRevision') }}
                   </button>
                 </div>
-                <textarea
-                  v-if="modal.actions.health.decision === 'revision_requested'"
-                  v-model="modal.actions.health.note"
-                  rows="2"
-                  class="w-full rounded-xl border border-gray-200 px-2 py-1.5 text-xs"
-                  :placeholder="t('adminRegistration.note')"
-                />
-                <button
-                  type="button"
-                  class="rounded-full bg-[#9DB359] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
-                  :disabled="modal.actions.health.saving"
-                  @click="submitDecision('health')"
-                >
-                  {{ modal.actions.health.saving ? '…' : t('common.save') }}
-                </button>
               </div>
-            </div>
-            <div class="rounded-xl border border-gray-100 bg-white p-4">
-              <div class="font-semibold text-gray-700">{{ t('registration.steps.physical') }}</div>
-              <p class="mt-1 text-xs text-gray-500 capitalize">{{ modal.row.physical_status }}</p>
-              <div class="mt-3 space-y-2">
-                <div class="flex items-center gap-2">
-                  <button
-                    type="button"
-                    class="rounded-full px-3 py-1.5 text-xs font-semibold"
-                    :class="modal.actions.physical.decision === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'"
-                    @click="setDecision('physical', 'approved')"
-                  >
-                    {{ t('adminRegistration.approve') }}
-                  </button>
-                  <button
-                    type="button"
-                    class="rounded-full px-3 py-1.5 text-xs font-semibold"
-                    :class="modal.actions.physical.decision === 'revision_requested' ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-600'"
-                    @click="setDecision('physical', 'revision_requested')"
-                  >
-                    {{ t('adminRegistration.requestRevision') }}
-                  </button>
+
+              <div>
+                <div class="text-sm font-semibold text-gray-700 mb-2">{{ t('adminRegistration.note') }}</div>
+                <div class="relative">
+                  <textarea
+                    v-model="modal.actions[step.key].note"
+                    rows="3"
+                    maxlength="500"
+                    class="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm resize-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+                    :placeholder="t('adminRegistration.notePlaceholder')"
+                  />
+                  <span class="absolute bottom-2 right-3 text-xs text-gray-400">
+                    {{ modal.actions[step.key].note.length }}/500
+                  </span>
                 </div>
-                <textarea
-                  v-if="modal.actions.physical.decision === 'revision_requested'"
-                  v-model="modal.actions.physical.note"
-                  rows="2"
-                  class="w-full rounded-xl border border-gray-200 px-2 py-1.5 text-xs"
-                  :placeholder="t('adminRegistration.note')"
-                />
-                <button
-                  type="button"
-                  class="rounded-full bg-[#9DB359] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
-                  :disabled="modal.actions.physical.saving"
-                  @click="submitDecision('physical')"
-                >
-                  {{ modal.actions.physical.saving ? '…' : t('common.save') }}
-                </button>
               </div>
+
+              <button
+                type="button"
+                class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                :disabled="modal.actions[step.key].saving"
+                @click="submitDecision(step.key)"
+              >
+                <Save class="h-4 w-4" />
+                {{ modal.actions[step.key].saving ? '…' : t('common.save') }}
+              </button>
             </div>
           </div>
 
@@ -233,11 +194,42 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
-import { Check } from 'lucide-vue-next'
+import { AlertCircle, Brain, Check, ClipboardList, Dumbbell, HeartPulse, Save } from 'lucide-vue-next'
 import { useI18n } from '@/composables/useI18n'
 import { registrationFileHref } from '@/utils/storageUrl'
 
 const { t } = useI18n()
+
+const reviewSteps = [
+  {
+    key: 'administration',
+    labelKey: 'registration.steps.admin',
+    icon: ClipboardList,
+    iconBg: 'bg-sky-100',
+    iconColor: 'text-sky-600',
+  },
+  {
+    key: 'psychology',
+    labelKey: 'registration.steps.psychology',
+    icon: Brain,
+    iconBg: 'bg-sky-100',
+    iconColor: 'text-sky-600',
+  },
+  {
+    key: 'health',
+    labelKey: 'registration.steps.health',
+    icon: HeartPulse,
+    iconBg: 'bg-rose-100',
+    iconColor: 'text-rose-600',
+  },
+  {
+    key: 'physical',
+    labelKey: 'registration.steps.physical',
+    icon: Dumbbell,
+    iconBg: 'bg-emerald-100',
+    iconColor: 'text-emerald-600',
+  },
+]
 
 const administrationFieldOrder = [
   { key: 'full_name', labelKey: 'registration.fields.fullNameKk', short: false },
@@ -267,13 +259,16 @@ const items = ref([])
 const search = ref('')
 const errorMessage = ref('')
 
+const defaultAction = () => ({ decision: 'approved', note: '', saving: false })
+
 const modal = reactive({
   open: false,
   row: null,
   actions: {
-    psychology: { decision: 'approved', note: '', saving: false },
-    health: { decision: 'approved', note: '', saving: false },
-    physical: { decision: 'approved', note: '', saving: false },
+    administration: defaultAction(),
+    psychology: defaultAction(),
+    health: defaultAction(),
+    physical: defaultAction(),
   },
 })
 
@@ -290,12 +285,28 @@ function formatAdminScalar(key, val) {
   return String(val)
 }
 
-function hasJsonData(data) {
-  return data != null && typeof data === 'object' && Object.keys(data).length > 0
-}
-
 function isUploadedFile(row, pathKey) {
   return Boolean(row?.administration_files_present?.[pathKey])
+}
+
+function formatStepStatus(status) {
+  if (status === 'approved') return t('adminRegistration.statusApproved')
+  if (status === 'revision_requested') return t('adminRegistration.statusRevision')
+  if (status === 'not_started') return t('adminRegistration.statusNotStarted')
+  return t('adminRegistration.statusPending')
+}
+
+function statusBadgeClass(status) {
+  if (status === 'approved') return 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+  if (status === 'revision_requested') return 'bg-amber-50 text-amber-700 border border-amber-200'
+  return 'bg-gray-100 text-gray-600 border border-gray-200'
+}
+
+function hydrateAction(step, row) {
+  const status = row[`${step}_status`]
+  modal.actions[step].decision = status === 'revision_requested' ? 'revision_requested' : 'approved'
+  modal.actions[step].note = row[`${step}_admin_note`] || ''
+  modal.actions[step].saving = false
 }
 
 async function load() {
@@ -317,22 +328,11 @@ async function load() {
 function openReview(row) {
   modal.open = true
   modal.row = row
-  modal.actions.psychology.decision = row.psychology_status === 'revision_requested' ? 'revision_requested' : 'approved'
-  modal.actions.psychology.note = ''
-  modal.actions.psychology.saving = false
-  modal.actions.health.decision = row.health_status === 'revision_requested' ? 'revision_requested' : 'approved'
-  modal.actions.health.note = ''
-  modal.actions.health.saving = false
-  modal.actions.physical.decision = row.physical_status === 'revision_requested' ? 'revision_requested' : 'approved'
-  modal.actions.physical.note = ''
-  modal.actions.physical.saving = false
+  reviewSteps.forEach((step) => hydrateAction(step.key, row))
 }
 
 function setDecision(step, decision) {
   modal.actions[step].decision = decision
-  if (decision !== 'revision_requested') {
-    modal.actions[step].note = ''
-  }
 }
 
 async function submitDecision(step) {
@@ -340,16 +340,17 @@ async function submitDecision(step) {
   if (!uid) return
   modal.actions[step].saving = true
   try {
+    const action = modal.actions[step]
     await axios.patch(`/api/admin/registration-progress/${uid}`, {
       step,
-      status: modal.actions[step].decision,
-      admin_note: modal.actions[step].decision === 'revision_requested'
-        ? (modal.actions[step].note || null)
-        : null,
+      status: action.decision,
+      admin_note: action.note.trim() || null,
     })
     const { data } = await axios.get(`/api/admin/registration-progress/${uid}`)
     modal.row = data
-    modal.actions[step].note = ''
+    hydrateAction(step, data)
+    const listIdx = items.value.findIndex((item) => (item.user_id ?? item.user?.id) === uid)
+    if (listIdx !== -1) items.value[listIdx] = data
     errorMessage.value = ''
   } catch (error) {
     errorMessage.value = error?.response?.data?.message || 'Gagal menyimpan keputusan admin.'
