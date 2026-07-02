@@ -58,10 +58,10 @@
         <div v-if="form.type === 'multiple_choice'" class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
           <label class="block text-sm font-medium text-gray-900 mb-4">{{ t('modals.question.optionsLabel') }}</label>
           <div class="space-y-3">
-            <div v-for="(opt,idx) in form.options" :key="opt.key" class="flex items-center gap-3 group">
-              <div class="relative flex items-center justify-center">
+            <div v-for="(opt,idx) in form.options" :key="opt.key" class="flex items-start gap-3 group">
+              <div class="relative flex shrink-0 items-center justify-center pt-1">
                 <input type="radio" :value="opt.key" v-model="form.correct" class="peer sr-only" :id="'opt-'+idx" />
-                <label :for="'opt-'+idx" class="w-8 h-8 rounded-full border-2 border-gray-300 peer-checked:border-[#9DB359] peer-checked:bg-[#9DB359] cursor-pointer flex items-center justify-center transition-all">
+                <label :for="'opt-'+idx" class="flex h-8 w-8 shrink-0 aspect-square items-center justify-center rounded-full border-2 border-gray-300 cursor-pointer transition-all peer-checked:border-[#9DB359] peer-checked:bg-[#9DB359]">
                   <span class="text-white text-xs font-bold opacity-0 peer-checked:opacity-100">{{ opt.key }}</span>
                 </label>
               </div>

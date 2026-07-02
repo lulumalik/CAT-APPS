@@ -110,12 +110,12 @@
               <h2 class="text-xl font-medium text-[#1A1A1A] leading-relaxed">{{ q.question }}</h2>
               
               <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div v-for="opt in q.options" :key="opt.key" class="rounded-xl border px-5 py-3 flex items-center justify-between transition-colors" :class="opt.key===q.correct ? 'border-[#9DB359] bg-[#9DB359]/5' : 'border-gray-200 bg-white'">
-                  <div class="flex items-center">
-                    <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-medium mr-3" :class="opt.key===q.correct ? 'border-[#9DB359] text-[#9DB359] bg-white' : 'border-gray-300 text-gray-500'">{{ opt.key }}</span>
-                    <span :class="opt.key===q.correct ? 'text-[#1A1A1A] font-medium' : 'text-gray-600'">{{ opt.label }}</span>
+                <div v-for="opt in q.options" :key="opt.key" class="rounded-xl border px-5 py-3 flex items-start justify-between gap-3 transition-colors" :class="opt.key===q.correct ? 'border-[#9DB359] bg-[#9DB359]/5' : 'border-gray-200 bg-white'">
+                  <div class="flex items-start gap-3 min-w-0 flex-1">
+                    <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium aspect-square" :class="opt.key===q.correct ? 'border-[#9DB359] text-[#9DB359] bg-white' : 'border-gray-300 text-gray-500'">{{ opt.key }}</span>
+                    <span class="pt-0.5 leading-relaxed" :class="opt.key===q.correct ? 'text-[#1A1A1A] font-medium' : 'text-gray-600'">{{ opt.label }}</span>
                   </div>
-                  <span v-if="opt.key===q.correct" class="px-2 py-0.5 rounded-full bg-[#9DB359] text-white text-[10px] font-bold uppercase tracking-wider">{{ t('questionBank.correct') }}</span>
+                  <span v-if="opt.key===q.correct" class="shrink-0 px-2 py-0.5 rounded-full bg-[#9DB359] text-white text-[10px] font-bold uppercase tracking-wider">{{ t('questionBank.correct') }}</span>
                 </div>
               </div>
             </div>
