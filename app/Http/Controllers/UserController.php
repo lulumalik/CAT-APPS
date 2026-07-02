@@ -36,14 +36,23 @@ class UserController extends Controller
         $query = User::query();
 
         if ($search = $request->input('search')) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('username', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%");
             });
         }
 
-        $users = $query->latest()->paginate(10);
+        if ($request->filled('role')) {
+            $role = $request->string('role')->toString();
+            if (in_array($role, ['admin', 'user', 'mentor', 'parent'], true)) {
+                $query->where('role', $role);
+            }
+        }
+
+        $perPage = min(max((int) $request->input('per_page', 10), 1), 50);
+
+        $users = $query->latest()->paginate($perPage);
 
         return response()->json($users);
     }

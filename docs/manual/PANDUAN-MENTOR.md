@@ -11,11 +11,12 @@ Sebagai mentor, Anda dapat:
 - Melihat **dashboard** kelas yang Anda ampu
 - **Mengelola kelas kursus** (hanya kelas Anda sendiri)
 - **Menulis laporan harian** & **ringkasan mingguan** peserta
-- **Input nilai manual** & melihat peringkat (jasmani & akademik)
-- **Mengundang orang tua** peserta
-- Melihat **tes terjadwal** dan aktivitas kelas
+- **Input nilai jasmani manual** & melihat peringkat
+- **Mengundang orang tua** peserta (login berbasis **username**)
+- Membuat & menjadwalkan **quiz/test** dan **ujian**
+- Melihat aktivitas kelas & quiz terjadwal
 
-> Mentor **tidak** dapat: mengelola bank soal, manajemen user, sertifikat, atau admin pendaftaran (khusus admin).
+> Mentor **tidak** dapat: manajemen user, review pendaftaran (khusus admin).
 
 ---
 
@@ -23,18 +24,19 @@ Sebagai mentor, Anda dapat:
 
 1. Buka **https://pratisthaindonesia.com/login**
 2. Masukkan username & password yang diberikan admin
-3. Setelah masuk, menu sidebar kiri menampilkan:
+3. Menu sidebar kiri:
 
-| Menu | Fungsi |
-|------|--------|
-| Dashboard | Ringkasan kelas & tes mendatang |
-| Kelas kursus | Kelola kelas yang Anda ampu |
-| Kelola Materi | Upload/edit materi belajar |
-| Tes | Lihat daftar tes (admin buat) |
-| Bank Soal | *(Admin only — mentor tidak akses)* |
-| Nilai & Peringkat Siswa | Input & lihat peringkat per kelas |
-| Undang Orang Tua | Buat link undangan untuk wali |
-| Laporan Peserta | Tulis laporan harian & mingguan |
+| Menu | URL | Fungsi |
+|------|-----|--------|
+| Dashboard | `/dashboard` | Ringkasan kelas & tes mendatang |
+| Ujian | `/exams` | Buat & kelola ujian lintas mapel |
+| Kelas kursus | `/bimble-classes` | Kelola kelas yang Anda ampu |
+| Kelola Materi | `/materials` | Upload/edit materi belajar |
+| Quiz/Test | `/tests` | Buat quiz per mata pelajaran untuk kelas |
+| Bank Soal | `/question-bank` | Kelola soal |
+| Nilai & Peringkat Siswa | `/rankings` | Input nilai jasmani & lihat peringkat |
+| Undang Orang Tua | `/admin/guardians` | Buat link undangan untuk wali |
+| Laporan Peserta | `/admin/student-reports` | Tulis laporan harian & mingguan |
 
 ---
 
@@ -43,7 +45,7 @@ Sebagai mentor, Anda dapat:
 Dashboard menampilkan:
 
 - **Kelas yang Diusung** — nama, kode, jumlah peserta, aktivitas terakhir
-- **Test Akan Berlangsung** — tes terjadwal di kelas Anda
+- **Test Akan Berlangsung** — quiz/ujian terjadwal
 - **Aktivitas Kelas Terbaru** — log kegiatan
 
 Klik **Refresh** jika data perlu dimuat ulang.
@@ -54,108 +56,118 @@ Klik **Refresh** jika data perlu dimuat ulang.
 
 1. Buka menu **Kelas kursus**
 2. Anda hanya melihat kelas yang **Anda buat** atau **Anda ampu sebagai pengajar**
-3. Untuk setiap kelas:
 
 ### Buat Kelas Baru
 
 1. Klik **Buat Kelas**
-2. Isi:
-   - Nama kelas
-   - Kode kelas (opsional — otomatis jika kosong)
-   - Jenis program (VIP/Karantina, Reguler, Online, Ujian)
-   - Periode (tanggal mulai & selesai)
-   - Pengajar (mentor: otomatis diri sendiri)
+2. Isi: nama, kode (opsional), jenis program, periode, pengajar
 3. Simpan
 
 ### Kelola Isi Kelas
 
-1. Klik **Kelola kelas** pada kartu kelas
-2. Di halaman kelola:
-   - **Tambah/hapus peserta** (siswa)
-   - **Lampirkan materi** ke sesi tertentu
-   - **Lampirkan tes** ke kelas
-   - **Catat aktivitas kelas** (judul, deskripsi, tanggal)
+Klik **Kelola kelas** — modal terstruktur dalam 3 bagian:
+
+| Bagian | Fungsi |
+|--------|--------|
+| **1) Tambah Peserta** | Cari & tambah siswa ke kelas |
+| **2) Assign Materi** | Lampirkan materi ke sesi tertentu |
+| **3) Assign Quiz** | Lampirkan quiz dari `/tests` (jenis: **Quiz**) |
+
+> **Penting:** Peserta yang **belum selesai pendaftaran** dan **masa aktif sudah kedaluwarsa** tidak bisa ditambahkan ke kelas.
 
 ### Buka Ruang Kelas (Preview)
 
 - Klik **Buka ruang kelas** untuk melihat tampilan yang sama seperti peserta
+- Tab **Quiz kelas** menampilkan quiz yang dilampirkan (bukan ujian lintas mapel)
 
 ---
 
-## 5. Langkah 3 — Kelola Materi
+## 5. Langkah 3 — Quiz/Test vs Ujian
+
+### Quiz/Test (`/tests`)
+
+- Untuk tes **per mata pelajaran**
+- Dilampirkan ke **kelas** sebagai quiz
+- Wajib pilih **kategori** (Math, English, dll.)
+- Bisa dijadikan **Tryout Gratis** untuk halaman publik
+
+**Alur:** Buat quiz → Atur soal → Lampirkan ke kelas via **Assign Quiz**
+
+### Ujian (`/exams`)
+
+- Untuk tes **gabungan lintas mata pelajaran**
+- Peserta mengakses lewat menu **Ujian** (`/ujian`), bukan dari kelas
+- Tanpa field kategori & tanpa opsi tryout
+- Fitur **Duplikat Ujian** untuk membuat pretest/posttest dengan soal sama
+
+**Alur:** Buat ujian → Atur soal (dari berbagai kategori) → Peserta kerjakan di menu Ujian
+
+### Tips Umum
+
+- Tes **kedaluwarsa** ditandai merah dan tidak bisa dibuka
+- Daftar quiz di `/tests` memakai pagination (5 per halaman)
+
+---
+
+## 6. Langkah 4 — Kelola Materi
 
 1. Buka menu **Kelola Materi**
-2. Buat materi baru:
-   - Judul, slug, konten (rich text)
-   - Kategori, cover image
-3. Materi yang sudah dibuat bisa **dilampirkan** ke kelas via halaman Kelola Kelas
+2. Buat materi baru: judul, slug, konten, kategori, cover
+3. Lampirkan ke kelas via **Assign Materi** di halaman Kelola Kelas
 
 ---
 
-## 6. Langkah 4 — Laporan Peserta
+## 7. Langkah 5 — Laporan Peserta
 
 Menu **Laporan Peserta** (`/admin/student-reports`)
 
 ### Tulis Laporan Harian
 
 1. **Cari peserta** — ketik nama/email/username
-2. Pilih peserta dari daftar
-3. Isi:
-   - **Judul** (mis. "Latihan Fisik Pagi")
-   - **Tanggal** (default hari ini)
-   - **Ringkasan** singkat
-   - Kategori: akademik, jasmani, kedisiplinan, dll.
+2. Pilih peserta
+3. Isi judul, tanggal, ringkasan, kategori (akademik, jasmani, kedisiplinan, dll.)
 4. Klik **Simpan Laporan Harian**
-5. Laporan langsung terlihat di dashboard peserta & orang tua
 
 ### Buat Ringkasan Mingguan
 
 1. Pilih peserta yang sama
 2. Atur **mulai minggu** (opsional)
 3. Klik **Buat Ringkasan**
-4. Sistem menggabungkan laporan harian pekan tersebut menjadi satu ringkasan
 
 ### Lihat & Hapus Laporan
 
 - Panel kanan menampilkan laporan tersimpan per peserta
-- Klik **Muat ulang** untuk refresh
 - Hapus laporan jika perlu diperbaiki (lalu buat ulang)
 
 ---
 
-## 7. Langkah 5 — Nilai & Peringkat Siswa
+## 8. Langkah 6 — Nilai & Peringkat Siswa
 
 Menu **Nilai & Peringkat Siswa** (`/rankings`)
 
-### Setup
+### Kategori Aktif
 
-1. Pilih **kategori** di panel kiri (Jasmani / Akademik)
-2. Pilih **subkategori** (mis. Sprint, Push Up, Kewarganegaraan)
-3. Pilih **kelas** dari dropdown
+Halaman ini menampilkan kategori **Jasmani** (Sprint, Push Up, Pull Up, Sit Up, Shuttle Run, Renang).
 
-### Lihat Peringkat
-
-- Tabel menampilkan peringkat peserta di kelas terpilih
-- Untuk **jasmani**: pilih **tanggal penilaian** di header — setiap tanggal punya peringkat sendiri
-- Untuk **akademik**: peringkat dari tes CAT otomatis + input manual
+> Nilai akademik dari aktivitas tes di web otomatis masuk ke grafik perkembangan peserta.
 
 ### Input Nilai Manual
 
-1. Klik **+ Input manual**
-2. Cari & pilih peserta
-3. Isi **nilai** dan **satuan** (mis. 10 detik)
-4. Untuk jasmani: pilih **tanggal penilaian**
-   - **Tanggal berbeda = entri baru** (tidak menimpa nilai tanggal lain)
-5. Klik **Simpan peringkat**
+1. Pilih subkategori (mis. Sprint)
+2. Pilih **kelas**
+3. Pilih **tanggal penilaian**
+4. Klik **+ Input manual** → pilih peserta
+5. Isi nilai **1–100** (bukan persentase) dan satuan
+6. Klik **Simpan peringkat**
+7. **Tanggal berbeda = entri baru** (tidak menimpa nilai tanggal lain)
 
 ### Edit / Hapus
 
 - Entri bertanda **MANUAL** bisa di-**Ubah** atau **Hapus**
-- Nilai otomatis dari tes tidak bisa dihapus dari sini — gunakan override manual jika perlu
 
 ---
 
-## 8. Langkah 6 — Undang Orang Tua
+## 9. Langkah 7 — Undang Orang Tua
 
 Menu **Undang Orang Tua** (`/admin/guardians`)
 
@@ -166,8 +178,7 @@ Menu **Undang Orang Tua** (`/admin/guardians`)
    - Nama orang tua/wali
    - Hubungan (Ayah / Ibu / Wali)
    - No. WhatsApp
-   - Email (opsional)
-3. Klik **Buat Undangan**
+3. Klik **Buat Undangan** — **tidak perlu email**
 4. Sistem menghasilkan **link undangan**
 
 ### Kirim ke Orang Tua
@@ -175,6 +186,12 @@ Menu **Undang Orang Tua** (`/admin/guardians`)
 1. Klik **Salin Pesan WA** — pesan siap kirim
 2. Atau klik **Buka WhatsApp** langsung
 3. Setelah terkirim, klik **Tandai Terkirim**
+
+### Yang Dilakukan Orang Tua
+
+1. Buka link undangan
+2. Isi **nama**, **username** (untuk login), dan **kata sandi**
+3. Akun orang tua terhubung ke ananda
 
 ### Pantau Status
 
@@ -186,14 +203,14 @@ Menu **Undang Orang Tua** (`/admin/guardians`)
 
 ---
 
-## 9. Alur Kerja Harian (Rekomendasi)
+## 10. Alur Kerja Harian (Rekomendasi)
 
 ```
 Pagi   → Input laporan harian peserta setelah latihan
        → Input nilai jasmani (dengan tanggal hari ini)
 
-Sore   → Cek tes terjadwal di dashboard
-       → Pantau peserta mengerjakan tes di ruang kelas
+Sore   → Cek quiz/ujian terjadwal di dashboard
+       → Pantau peserta mengerjakan quiz di ruang kelas
 
 Minggu → Buat ringkasan mingguan per peserta
        → Review grafik perkembangan di dashboard peserta
@@ -203,25 +220,31 @@ Bulan  → Undang orang tua peserta baru yang registrasinya selesai
 
 ---
 
-## 10. FAQ — Pertanyaan Umum
+## 11. FAQ — Pertanyaan Umum
 
-**Q: Saya tidak bisa buat tes baru?**  
-A: Pembuatan tes hanya oleh **admin**. Lampirkan tes yang sudah ada ke kelas Anda.
+**Q: Apa bedanya quiz di kelas dan ujian?**  
+A: **Quiz** = per mata pelajaran, diakses dari **ruang kelas**. **Ujian** = gabungan lintas mapel, diakses dari menu **Ujian** peserta.
 
 **Q: Peserta tidak muncul saat undang orang tua?**  
 A: Peserta harus **menyelesaikan seluruh tahap pendaftaran** dulu.
 
-**Q: Nilai jasmani menimpa nilai kemarin?**  
-A: Tidak, jika tanggal berbeda. Pastikan pilih **tanggal penilaian** yang benar saat input.
+**Q: Peserta tidak bisa ditambahkan ke kelas?**  
+A: Cek apakah pendaftaran sudah selesai dan masa aktif belum kedaluwarsa.
 
-**Q: Materi tidak muncul di ruang kelas peserta?**  
-A: Pastikan materi sudah **dilampirkan** ke kelas dengan nomor sesi yang benar.
+**Q: Nilai jasmani menimpa nilai kemarin?**  
+A: Tidak, jika tanggal berbeda. Pastikan pilih **tanggal penilaian** yang benar.
+
+**Q: Quiz tidak muncul di ruang kelas peserta?**  
+A: Pastikan quiz sudah **di-assign** lewat **Assign Quiz** di kelola kelas.
+
+**Q: Quiz kedaluwarsa masih bisa dikerjakan?**  
+A: Tidak. Quiz kedaluwarsa ditandai merah dan tombol mulai dinonaktifkan.
 
 ---
 
-## 11. Kontak Admin
+## 12. Kontak Admin
 
-Jika butuh akses tambahan, pembuatan tes, atau bantuan teknis:
+Jika butuh akses tambahan atau bantuan teknis:
 
 | Kanal | Informasi |
 |-------|-----------|

@@ -4,8 +4,8 @@
     <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[2rem] bg-white p-8 shadow-2xl shadow-black/10 border border-gray-100 transform transition-all">
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900 tracking-tight">{{ t('modals.testCreate.title') }}</h2>
-          <p class="text-gray-500 mt-1">{{ t('modals.testCreate.subtitle') }}</p>
+          <h2 class="text-2xl font-bold text-gray-900 tracking-tight">{{ t(`${i18nKey}.title`) }}</h2>
+          <p class="text-gray-500 mt-1">{{ t(`${i18nKey}.subtitle`) }}</p>
         </div>
         <button class="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600" @click="$emit('close')">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,18 +17,18 @@
       <form class="space-y-6" @submit.prevent="submit">
         <div class="grid grid-cols-1 gap-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.nameLabel') }}</label>
-            <input v-model="form.name" :placeholder="t('modals.testCreate.namePlaceholder')" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" />
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t(`${i18nKey}.nameLabel`) }}</label>
+            <input v-model="form.name" :placeholder="t(`${i18nKey}.namePlaceholder`)" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.descriptionLabel') }}</label>
-            <textarea v-model="form.description" rows="2" :placeholder="t('modals.testCreate.descriptionPlaceholder')" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all resize-none"></textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t(`${i18nKey}.descriptionLabel`) }}</label>
+            <textarea v-model="form.description" rows="2" :placeholder="t(`${i18nKey}.descriptionPlaceholder`)" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all resize-none"></textarea>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-6">
-          <div>
+        <div :class="isExam ? 'grid grid-cols-1 gap-6' : 'grid grid-cols-2 gap-6'">
+          <div v-if="!isExam">
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.categoryLabel') }}</label>
             <select v-model="form.category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
               <option value="">{{ t('modals.testCreate.categoryPlaceholder') }}</option>
@@ -36,12 +36,12 @@
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.durationLabel') }}</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t(`${i18nKey}.durationLabel`) }}</label>
             <input v-model.number="form.duration" type="number" min="1" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all" />
           </div>
         </div>
 
-        <div class="rounded-xl border border-border bg-sky/40 px-4 py-3">
+        <div v-if="!isExam" class="rounded-xl border border-border bg-sky/40 px-4 py-3">
           <label class="inline-flex items-center gap-3 text-sm font-medium text-text cursor-pointer">
             <input v-model="form.isFreeTryout" type="checkbox" class="rounded border-border text-secondary focus:ring-secondary" />
             Jadikan ini soal Tryout Gratis (muncul di halaman publik free tryout)
@@ -50,7 +50,7 @@
 
         <div class="grid grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.scheduleLabel') }}</label>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t(`${i18nKey}.scheduleLabel`) }}</label>
             <div class="flex items-center w-full rounded-xl border border-gray-100 bg-gray-50 focus-within:bg-white focus-within:border-gray-200 focus-within:ring-2 focus-within:ring-gray-100 transition-all overflow-hidden">
               <input v-model="scheduleDate" type="date" class="bg-transparent border-none focus:ring-0 px-4 py-3 flex-1 min-w-[140px] text-gray-700" required />
               <div class="flex items-center px-3 border-l border-gray-200 gap-1 bg-gray-100/50 h-full">
@@ -70,11 +70,11 @@
         <!-- Start and End Time -->
         <div class="rounded-2xl border border-blue-100 bg-blue-50/50 p-6">
           <h3 class="font-bold text-gray-900 text-sm mb-4 flex items-center gap-2">
-            <span class="text-lg">🕐</span> {{ t('modals.testCreate.timeSettingsTitle') }}
+            <span class="text-lg">🕐</span> {{ t(`${i18nKey}.timeSettingsTitle`) }}
           </h3>
           <div class="grid grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.startTimeLabel') }}</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{ t(`${i18nKey}.startTimeLabel`) }}</label>
               <div class="flex items-center w-full rounded-xl border border-blue-100 bg-white focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
                 <input v-model="startDate" type="date" class="bg-transparent border-none focus:ring-0 pl-4 py-3 flex-1 min-w-[130px] text-gray-700" />
                 <div class="flex items-center px-3 border-l border-blue-100 gap-1 bg-blue-50/30 h-full">
@@ -87,10 +87,10 @@
                   </select>
                 </div>
               </div>
-              <p class="text-xs text-gray-500 mt-2">{{ t('modals.testCreate.startTimeHint') }}</p>
+              <p class="text-xs text-gray-500 mt-2">{{ t(`${i18nKey}.startTimeHint`) }}</p>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.endTimeLabel') }}</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{ t(`${i18nKey}.endTimeLabel`) }}</label>
               <div class="flex items-center w-full rounded-xl border border-blue-100 bg-white focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all overflow-hidden">
                 <input v-model="endDate" type="date" class="bg-transparent border-none focus:ring-0 pl-4 py-3 flex-1 min-w-[130px] text-gray-700" :min="startDate" required />
                 <div class="flex items-center px-3 border-l border-blue-100 gap-1 bg-blue-50/30 h-full">
@@ -103,15 +103,15 @@
                   </select>
                 </div>
               </div>
-              <p class="text-xs text-gray-500 mt-2">{{ t('modals.testCreate.endTimeHint') }}</p>
+              <p class="text-xs text-gray-500 mt-2">{{ t(`${i18nKey}.endTimeHint`) }}</p>
             </div>
           </div>
-          <div class="mt-4 text-xs text-blue-600 font-medium">{{ t('modals.testCreate.activeHint') }}</div>
+          <div class="mt-4 text-xs text-blue-600 font-medium">{{ t(`${i18nKey}.activeHint`) }}</div>
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-4">
-          <button type="button" class="px-6 py-2.5 rounded-full text-gray-600 hover:bg-gray-100 font-medium transition-colors" @click="$emit('close')">{{ t('modals.testCreate.cancel') }}</button>
-          <button type="submit" class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white font-medium shadow-lg shadow-black/20 hover:bg-black hover:shadow-black/30 transform active:scale-95 transition-all">{{ isEdit ? t('modals.testCreate.update') : t('modals.testCreate.submit') }}</button>
+          <button type="button" class="px-6 py-2.5 rounded-full text-gray-600 hover:bg-gray-100 font-medium transition-colors" @click="$emit('close')">{{ t(`${i18nKey}.cancel`) }}</button>
+          <button type="submit" class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white font-medium shadow-lg shadow-black/20 hover:bg-black hover:shadow-black/30 transform active:scale-95 transition-all">{{ isEdit ? t(`${i18nKey}.update`) : t(`${i18nKey}.submit`) }}</button>
         </div>
       </form>
     </div>
@@ -126,8 +126,12 @@ const props = defineProps({
   initial: { type: Object, default: null },
   questions: { type: Array, default: () => [] },
   categories: { type: Array, default: () => [] },
+  isExam: { type: Boolean, default: false },
 })
 const emit = defineEmits(['close','submit'])
+
+const { t } = useI18n()
+const i18nKey = computed(() => (props.isExam ? 'modals.examCreate' : 'modals.testCreate'))
 
 const toJakartaDatetimeInputValue = (value) => {
   if (!value) return ''
@@ -207,7 +211,6 @@ const base = () => {
 }
 const form = reactive(base())
 const isEdit = computed(() => !!props.initial)
-const { t } = useI18n()
 const isHydratingFromInitial = ref(false)
 
 const hourOptions = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
@@ -316,6 +319,8 @@ const submit = () => {
   emit('submit', {
     ...JSON.parse(JSON.stringify(form)),
     scheduleAt: form.startTime,
+    category: props.isExam ? 'Gabungan' : form.category,
+    isFreeTryout: props.isExam ? false : form.isFreeTryout,
   })
 }
 </script>

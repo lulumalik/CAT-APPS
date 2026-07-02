@@ -8,17 +8,20 @@ Manual book untuk **administrator** Pratistha Cendekia Prestasi — pengelola pe
 
 Admin memiliki akses **penuh** ke seluruh fitur:
 
-- Manajemen **user** (admin, mentor, peserta)
-- **Bank soal** & **manajemen tes**
+- Manajemen **pengguna** (admin, mentor, peserta, orang tua) — dengan **pagination** & **filter peran**
+- **Bank soal**
+- **Quiz/Test** (tes per mata pelajaran untuk kelas)
+- **Ujian** (tes gabungan lintas mata pelajaran — modul terpisah)
 - **Kelas kursus** (semua kelas)
 - **Materi** belajar
-- **Admin pendaftaran** (review & approve tahap peserta)
-- **Nilai & peringkat siswa**
+- **Admin pendaftaran** (review & approve per tahap)
+- **Nilai & peringkat siswa** (kategori jasmani)
 - **Laporan peserta** & ringkasan mingguan
-- **Undang orang tua**
-- **Sertifikat**
+- **Undang orang tua** (berbasis **username**)
 - Dashboard statistik
 - **Dashboard siswa** (lihat & unduh laporan PDF per peserta)
+
+> Menu **Sertifikat** sementara dinonaktifkan di navigasi.
 
 ---
 
@@ -31,15 +34,15 @@ Admin memiliki akses **penuh** ke seluruh fitur:
 | Menu | URL | Fungsi |
 |------|-----|--------|
 | Dashboard | `/dashboard` | Statistik & ringkasan |
+| Ujian | `/exams` | Buat & jadwalkan ujian lintas mapel |
 | Kelas kursus | `/bimble-classes` | CRUD semua kelas |
 | Kelola Materi | `/materials` | CRUD materi |
-| Tes | `/tests` | Buat & jadwalkan tes |
+| Quiz/Test | `/tests` | Buat & jadwalkan quiz per mata pelajaran |
 | Bank Soal | `/question-bank` | Kelola soal per kategori |
-| Nilai & Peringkat Siswa | `/rankings` | Input nilai & lihat peringkat |
+| Nilai & Peringkat Siswa | `/rankings` | Input nilai jasmani & lihat peringkat |
 | Undang Orang Tua | `/admin/guardians` | Undangan wali |
 | Laporan Peserta | `/admin/student-reports` | Laporan harian/mingguan |
-| Pengguna | `/users` | Manajemen akun |
-| Sertifikat | `/admin/certificates` | Template & penerbitan |
+| Pengguna | `/users` | Manajemen akun + filter peran |
 | Admin pendaftaran | `/admin/registration` | Review pendaftaran peserta |
 
 ---
@@ -49,16 +52,17 @@ Admin memiliki akses **penuh** ke seluruh fitur:
 Urutan rekomendasi saat platform baru dipakai:
 
 ```
-1. Buat akun mentor        → /users
-2. Buat bank soal          → /question-bank
-3. Buat tes                → /tests
-4. Buat materi             → /materials
-5. Buat kelas              → /bimble-classes
-6. Tambah peserta ke kelas   → kelola kelas
-7. Lampirkan materi & tes  → kelola kelas
-8. Review pendaftaran      → /admin/registration
-9. Input laporan & nilai   → /admin/student-reports, /rankings
-10. Undang orang tua       → /admin/guardians
+1. Buat akun mentor              → /users
+2. Buat bank soal                → /question-bank
+3. Buat quiz/test per mapel     → /tests
+4. Buat ujian lintas mapel      → /exams (opsional, untuk pretest/posttest)
+5. Buat materi                   → /materials
+6. Buat kelas                    → /bimble-classes
+7. Tambah peserta ke kelas       → kelola kelas
+8. Lampirkan materi & quiz       → kelola kelas (jenis: Quiz)
+9. Review pendaftaran            → /admin/registration
+10. Input laporan & nilai jasmani → /admin/student-reports, /rankings
+11. Undang orang tua             → /admin/guardians
 ```
 
 ---
@@ -67,16 +71,23 @@ Urutan rekomendasi saat platform baru dipakai:
 
 Menu **Pengguna** (`/users`)
 
+### Fitur Daftar
+
+- **Pencarian** nama, email, atau username
+- **Filter peran**: Semua / Admin / Peserta / Mentor / Orang tua
+- **Pagination** — 10 pengguna per halaman, dengan info halaman & total
+- **Masa aktif** — untuk peserta (`role: user`), atur tanggal kedaluwarsa akses aplikasi
+
 ### Buat Akun Baru
 
-1. Klik **Tambah User**
-2. Isi: nama, username, email, password, **role** (admin / mentor / user)
+1. Klik **Tambah pengguna**
+2. Isi: nama, username, email, password, **peran** (admin / mentor / user / parent)
 3. Untuk peserta: pilih **program category**
 4. Simpan
 
-### Edit / Nonaktifkan
+### Edit / Hapus
 
-- Ubah role, program, atau reset data
+- Ubah peran, program, atau masa aktif
 - Hapus user jika diperlukan (hati-hati — data terkait ikut terpengaruh)
 
 ### Lihat Dashboard Siswa
@@ -84,22 +95,24 @@ Menu **Pengguna** (`/users`)
 Untuk peserta (`role: user`):
 
 1. Di tabel **Pengguna**, klik **Dashboard Siswa** pada baris peserta
-2. Anda diarahkan ke `/dashboard/student/{id}` — tampilan sama seperti dashboard peserta:
-   - Kelas & aktivitas
-   - Perkembangan (laporan harian/mingguan, materi, grafik nilai)
-3. Klik **Download PDF** untuk menyimpan laporan lengkap (nama file memakai nama peserta)
-4. Gunakan **Kembali ke Manajemen User** untuk kembali ke daftar pengguna
+2. Anda diarahkan ke `/dashboard/student/{id}` — tampilan sama seperti dashboard peserta
+3. Klik **Download PDF** untuk menyimpan laporan lengkap
+4. Gunakan **Kembali ke Manajemen User** untuk kembali ke daftar
 
 > **Catatan:** Nomor WhatsApp dan telepon orang tua **tidak** diisi saat signup — peserta mengisinya di tahap **Administrasi** (`/registration`).
 
-### Role yang Tersedia
+### Pembatasan Undang ke Kelas
 
-| Role | Keterangan |
-|------|------------|
+Peserta yang **belum menyelesaikan pendaftaran** dan **masa aktif sudah kedaluwarsa** **tidak bisa** diundang ke kelas. Pastikan pendaftaran selesai atau perpanjang masa aktif sebelum menambahkan peserta.
+
+### Peran yang Tersedia
+
+| Peran | Keterangan |
+|-------|------------|
 | `admin` | Akses penuh |
 | `mentor` | Kelola kelas sendiri, laporan, nilai, undang ortu |
-| `user` | Peserta — daftar, pendaftaran, kelas, tes |
-| `parent` | Orang tua — dibuat via link undangan |
+| `user` | Peserta — daftar, pendaftaran, kelas, quiz, ujian |
+| `parent` | Orang tua — dibuat via link undangan (login **username**) |
 
 ---
 
@@ -112,48 +125,79 @@ Menu **Bank Soal** (`/question-bank`)
 1. Klik **Tambah Soal**
 2. Isi:
    - **Pertanyaan** (teks/gambar)
-   - **Kategori** — harus selaras dengan kategori tes (Kewarganegaraan, Matematika, dll.)
-   - **Tipe** — pilihan ganda / benar-salah
+   - **Kategori** — selaras dengan kategori quiz/test (Kewarganegaraan, Math, English, dll.)
+   - **Tipe** — pilihan ganda / esai
    - **Opsi jawaban** & tandai jawaban benar
-   - **Tingkat kesulitan** (opsional)
+   - **Tingkat kesulitian** (opsional)
 3. Simpan
 
-### Tips
-
-- Kelompokkan soal per **kategori** sesuai config peringkat akademik
-- Review soal sebelum masuk ke tes production
+Soal yang sama bisa dipakai di **quiz kelas** maupun **ujian lintas mapel**.
 
 ---
 
-## 6. Manajemen Tes
+## 6. Manajemen Quiz/Test
 
-Menu **Tes** (`/tests`)
+Menu **Quiz/Test** (`/tests`)
 
-### Buat Tes Baru
+Digunakan untuk tes **per mata pelajaran** yang dilampirkan ke **kelas kursus** sebagai quiz.
 
-1. Klik **Buat Tes**
+### Buat Quiz/Test Baru
+
+1. Klik **Buat tes**
 2. Isi:
    - Nama tes
-   - **Kategori** (penting — dipakai peringkat akademik)
+   - **Kategori** (wajib — mis. Math, English)
    - Durasi (menit)
    - **Jadwal** — tanggal & jam mulai/selesai
-   - Pilih soal dari bank soal
-3. Simpan
+   - Opsional: centang **Tryout Gratis** untuk halaman publik `/free-tryout`
+3. Simpan → **Atur soal** dari bank soal
 
-### Lampirkan ke Kelas
+### Fitur Tambahan
+
+- Tes **kedaluwarsa** ditandai merah dan tidak bisa diklik
+- Daftar diurutkan: tes aktif di atas, kedaluwarsa di bawah
+- **Pagination** — 5 item per halaman
+- Lihat **submisi** hasil peserta
+
+### Lampirkan ke Kelas (sebagai Quiz)
 
 1. Buka **Kelas kursus** → **Kelola kelas**
-2. Tab/section **Tes** → tambahkan tes yang sudah dibuat
-3. Peserta hanya bisa mengerjakan saat jadwal **aktif**
-
-### Pantau Hasil
-
-- Nilai otomatis masuk ke **peringkat akademik** dan grafik peserta
-- Lihat submission via dashboard atau modul terkait
+2. Section **Assign Quiz** → pilih quiz yang sudah dibuat (jenis tetap **Quiz**)
+3. Peserta mengerjakan dari tab **Quiz kelas** di ruang kelas
 
 ---
 
-## 7. Materi & Kelas
+## 7. Manajemen Ujian
+
+Menu **Ujian** (`/exams`)
+
+Modul **terpisah** dari Quiz/Test — untuk ujian **gabungan lintas mata pelajaran**.
+
+### Buat Ujian Baru
+
+1. Klik **Buat Ujian**
+2. Isi:
+   - Nama ujian
+   - Deskripsi
+   - Durasi (menit)
+   - **Jadwal** — tanggal & jam mulai/selesai
+3. Simpan → **Atur soal** (bisa dari berbagai kategori mapel)
+
+> Modal ujian **tidak** memiliki field kategori maupun opsi tryout gratis.
+
+### Duplikat Ujian
+
+- Klik **Duplikat Ujian** pada kartu ujian
+- Sistem menyalin soal yang sama dengan nama "(Duplikat)" — berguna untuk pretest/posttest dengan deskripsi berbeda
+
+### Akses Peserta
+
+- Peserta melihat ujian di menu **Ujian** (`/ujian`)
+- Ujian hanya bisa dikerjakan sesuai jadwal aktif
+
+---
+
+## 8. Materi & Kelas
 
 ### Materi (`/materials`)
 
@@ -166,73 +210,87 @@ Menu **Tes** (`/tests`)
 **Buat kelas:**
 - Nama, kode, program type, periode, pengajar (mentor)
 
-**Kelola kelas:**
-- **Peserta** — tambah/hapus siswa dari kelas
-- **Materi** — assign ke nomor sesi (Sesi 1, 2, 3…)
-- **Tes** — lampirkan tes CBT
-- **Aktivitas** — catat kegiatan (judul, tanggal, deskripsi)
+**Kelola kelas** (modal terstruktur):
+
+1. **Tambah Peserta** — cari & tambah siswa (perhatikan aturan masa aktif/pendaftaran)
+2. **Assign Materi** — lampirkan ke nomor sesi (Sesi 1, 2, 3…)
+3. **Assign Quiz** — lampirkan quiz dari `/tests` (bukan ujian `/exams`)
+4. **Aktivitas** — catat kegiatan (judul, tanggal, deskripsi)
 
 ---
 
-## 8. Admin Pendaftaran
+## 9. Admin Pendaftaran
 
 Menu **Admin pendaftaran** (`/admin/registration`)
 
-### Review Tahap Administrasi
+### Cara Review
 
-1. Cari peserta (nama/email)
-2. Buka detail — lihat data & berkas upload:
-   - KTP, KK, rapor, pas foto, full body
-   - WhatsApp, telepon ortu, alamat, gender, TB/BB
-3. **Periksa kelengkapan berkas secara manual** — sistem tidak memblokir peserta yang belum mengunggah semua dokumen
-4. Klik tautan berkas untuk melihat (harus login sebagai admin); berkas dilayani lewat API internal
-5. Putuskan:
-   - **Approved** — lanjut ke tahap berikutnya (pastikan dokumen sudah memadai)
-   - **Revision requested** — tulis catatan jelas (berkas/data mana yang kurang), minta perbaikan
-   - **Rejected** — jika tidak memenuhi syarat
+1. Cari peserta (nama/email) di tabel utama
+2. Klik **Tinjau** — modal menampilkan kartu per tahap:
+   - **Administrasi** (dengan data & berkas)
+   - **Psikologi**
+   - **Kesehatan**
+   - **Fisik**
 
-> **Slot berkas:** `id_document` (KTP), `kk`, `report_card`, `passport_photo`, `full_body_photo`. Peserta dapat mengganti berkas kapan saja sebelum disetujui — unggahan baru menimpa file lama.
+### UI Persetujuan per Tahap
+
+Setiap kartu berisi:
+
+| Bagian | Fungsi |
+|--------|--------|
+| Badge status | Disetujui / Perlu perbaikan / Menunggu |
+| **Tindakan** | Tombol **Setujui** atau **Minta perbaikan** |
+| **Catatan untuk peserta** | Opsional, maks. 500 karakter |
+| **Simpan** | Kirim keputusan untuk tahap tersebut |
+
+### Tahap Administrasi
+
+- Lihat data teks & tautan berkas (hanya jika benar-benar sudah diunggah)
+- Berkas: KTP, KK, rapor, pas foto, full body
+- Setujui jika lengkap → peserta lanjut ke tahap Psikologi
 
 ### Tahap Offline (Psikologi, Kesehatan, Fisik)
 
-1. Setelah tes offline selesai di lokasi, update status peserta:
-   - Pilih tahap → **Approved** atau **Revision**
-2. Urutan wajib: Administrasi → Psikologi → Kesehatan → Fisik
-3. Setelah **Fisik approved** → `fully_completed = true` → dashboard peserta terbuka
+1. Setelah tes offline selesai di lokasi, buka kartu tahap terkait
+2. Pilih **Setujui** atau **Minta perbaikan** + catatan
+3. Klik **Simpan**
+4. Urutan wajib: Administrasi → Psikologi → Kesehatan → Fisik
+5. Setelah **Fisik disetujui** → `fully_completed = true` → dashboard peserta terbuka
 
-### Input Nilai Fisik (Opsional)
-
-- Nilai jasmani dari tes offline bisa diinput via **Nilai & Peringkat** atau langsung di data fisik registrasi
+> **Slot berkas:** `id_document`, `kk`, `report_card`, `passport_photo`, `full_body_photo`. Unggahan baru menimpa file lama.
 
 ---
 
-## 9. Nilai & Peringkat Siswa
+## 10. Nilai & Peringkat Siswa
 
 Menu **Nilai & Peringkat Siswa** (`/rankings`)
 
-### Kategori
+### Kategori yang Aktif di UI
 
-| Grup | Sumber Nilai | Contoh Subkategori |
-|------|--------------|-------------------|
-| **Jasmani** | Input manual (+ data registrasi) | Sprint, Push Up, Pull Up |
-| **Akademik** | Tes CAT otomatis + manual | Kewarganegaraan, Matematika, Bahasa |
+Saat ini halaman peringkat menampilkan kategori **Jasmani** saja:
+
+| Subkategori | Satuan | Contoh |
+|-------------|--------|--------|
+| Sprint | detik | 10.5 |
+| Push Up | reps | 30 |
+| Pull Up | reps | 15 |
+| Sit Up | reps | 40 |
+| Shuttle Run | detik | — |
+| Renang | detik | — |
+
+> Nilai akademik dari aktivitas tes di web **otomatis** masuk ke grafik perkembangan peserta — tidak perlu input manual di halaman peringkat.
 
 ### Workflow Input Jasmani
 
 1. Pilih subkategori (mis. Sprint)
 2. Pilih kelas
 3. Pilih **tanggal penilaian**
-4. Klik **+ Input manual** → pilih peserta → isi nilai
+4. Klik **+ Input manual** → pilih peserta → isi nilai **1–100** (bukan persentase)
 5. Tanggal berbeda = **entri terpisah** (riwayat perkembangan)
-
-### Workflow Akademik
-
-- Nilai otomatis dari tes selesai
-- Override manual jika perlu koreksi
 
 ---
 
-## 10. Laporan Peserta
+## 11. Laporan Peserta
 
 Sama seperti panduan mentor — admin punya akses penuh:
 
@@ -243,30 +301,24 @@ Sama seperti panduan mentor — admin punya akses penuh:
 
 ---
 
-## 11. Undang Orang Tua
+## 12. Undang Orang Tua
 
 1. Pastikan peserta **registrasi selesai**
-2. Buat undangan di `/admin/guardians`
-3. Kirim link via WhatsApp
-4. Tandai **Ter kirim** → pantau **Accepted**
-
----
-
-## 12. Sertifikat
-
-Menu **Sertifikat** (`/admin/certificates`)
-
-1. **Template** — edit desain sertifikat per program
-2. **Terbitkan** — pilih peserta & program → generate sertifikat
-3. **Riwayat** — lihat sertifikat yang sudah diterbitkan
+2. Buka `/admin/guardians`
+3. Cari peserta → isi:
+   - Nama orang tua/wali
+   - Hubungan (Ayah / Ibu / Wali)
+   - No. WhatsApp
+4. Klik **Buat Undangan** — **tidak perlu email**
+5. Kirim link via WhatsApp
+6. Orang tua buka link → buat akun dengan **username** & kata sandi
+7. Tandai **Terkirim** → pantau **Accepted**
 
 ---
 
 ## 13. Dashboard Admin
 
 ### Dashboard utama (`/dashboard`)
-
-Menampilkan statistik:
 
 | Metrik | Keterangan |
 |--------|------------|
@@ -292,8 +344,8 @@ Akses dari menu **Pengguna** → **Dashboard Siswa**:
 
 ## 14. Tryout Gratis (Publik)
 
-- Halaman `/free-tryout` — tidak perlu admin setup khusus
-- Admin/mentor buat **tes tryout** dengan jadwal aktif
+- Halaman `/free-tryout` — tidak perlu akun
+- Admin/mentor buat **quiz/test** dengan centang **Tryout Gratis** dan jadwal aktif
 - Pengunjung isi form singkat → kerjakan → lihat skor
 
 ---
@@ -302,9 +354,9 @@ Akses dari menu **Pengguna** → **Dashboard Siswa**:
 
 | Waktu | Tugas |
 |-------|-------|
-| Pagi | Review pendaftaran baru, approve/revisi berkas |
-| Siang | Monitor tes berjalan, bantu mentor jika error |
-| Sore | Input laporan (jika perlu), cek nilai masuk |
+| Pagi | Review pendaftaran baru — setujui/revisi per tahap |
+| Siang | Monitor quiz & ujian berjalan, bantu mentor jika error |
+| Sore | Input laporan (jika perlu), cek nilai jasmani masuk |
 | Minggu | Generate ringkasan mingguan, undang ortu peserta baru |
 | Bulan | Backup database, review statistik dashboard |
 
@@ -316,10 +368,11 @@ Akses dari menu **Pengguna** → **Dashboard Siswa**:
 |---------|--------|
 | Dropdown kelas kosong di peringkat | Pastikan migrasi DB latest; cek log Laravel |
 | Email verifikasi tidak terkirim | Cek konfigurasi SMTP di `.env` |
-| Upload berkas gagal | Cek permission folder `storage/` (`chmod -R ug+rw storage bootstrap/cache`), `upload_max_filesize` & `post_max_size` PHP (min. 12M per berkas), `client_max_body_size` Nginx/Apache |
-| Berkas pendaftaran 404 / tidak tampil | Lihat [Berkas pendaftaran (storage)](#berkas-pendaftaran-storage) di bawah |
+| Upload berkas gagal | Cek permission `storage/`, `upload_max_filesize` PHP (min. 12M) |
+| Berkas pendaftaran 404 | Lihat [Berkas pendaftaran (storage)](#berkas-pendaftaran-storage) |
 | Peserta dashboard terkunci | Cek `fully_completed` di admin pendaftaran |
-| Download PDF gagal | Pastikan build frontend terbaru; coba refresh halaman lalu unduh lagi |
+| Peserta tidak bisa diundang ke kelas | Cek masa aktif & status pendaftaran |
+| Download PDF gagal | Refresh halaman, coba unduh lagi |
 | API error 500 | Cek `storage/logs/laravel.log`, jalankan `php artisan migrate` |
 
 ### Berkas pendaftaran (storage)
@@ -329,61 +382,12 @@ Berkas administrasi disimpan di disk **privat** (`REGISTRATION_FILESYSTEM_DISK=l
 | Item | Nilai / perintah |
 |------|------------------|
 | Disk privat (default) | `REGISTRATION_FILESYSTEM_DISK=local` di `.env` |
-| Akses berkas | `GET /api/registration-files/{user_id}/{field}` — **wajib login** (pemilik atau admin) |
+| Akses berkas | `GET /api/registration-files/{user_id}/{field}` — **wajib login** |
 | Upload | `POST /api/my-registration/administration-file` — wajib login |
-| Blokir URL publik | Apache: `public/.htaccess` · Nginx: `location ^~ /storage/registration/` |
-
-**Yang boleh melihat berkas:** peserta pemilik akun, atau admin (session login aktif). Orang lain yang menebak URL mendapat **403/404**.
-
-**Peserta lama (berkas masih di `storage/app/public/registration/`):**
-
-1. API tetap bisa membuka berkas legacy (dicari di disk `public` lalu `local`).
-2. Saat admin/peserta **klik Lihat berkas**, file otomatis dipindah ke disk privat (jika `REGISTRATION_FILESYSTEM_DISK=local`).
-3. Migrasi massal sekali jalan di server:
-   ```bash
-   php artisan registration:migrate-public-files --dry-run   # cek dulu
-   php artisan registration:migrate-public-files             # pindahkan semua
-   ```
-4. Setelah migrasi, salinan di folder `public/registration/` dihapus — URL `/storage/registration/...` tidak berisi file lagi.
-
-**Docker / Coolify — berkas hilang tiap redeploy:**
-
-Penyebab: `storage/` tidak di-mount → terhapus saat container/image baru.
-
-**Coolify:** tab **Persistent Storage** → Volume → Destination **`/var/www/html/storage`**. Detail: [docs/deploy/COOLIFY.md](../../deploy/COOLIFY.md)
-
-**Docker run manual:**
-
-```bash
-mkdir -p /data/cat-apps/storage
-docker run -d \
-  --name cat-apps \
-  --restart unless-stopped \
-  -p 80:80 \
-  -v /data/cat-apps/storage:/var/www/html/storage \
-  --env-file .env \
-  cat-apps
-```
-
-Setelah mount volume baru, **data lama di container sebelumnya tidak ikut** — restore dari backup jika ada.
-
-**Jika berkas 404:**
-
-1. Pastikan `REGISTRATION_FILESYSTEM_DISK=local` (atau `public` hanya untuk file lama).
-2. Cek file ada: `ls -la storage/app/private/registration/{id}/` (atau `storage/app/public/...` jika legacy).
-3. Cek log: `grep "Registration file missing" storage/logs/laravel.log`
-4. Jika folder kosong tetapi path ada di database → minta peserta **unggah ulang**.
-5. Backup rutin folder `storage/` — lihat `scripts/backup/` di repo.
-
-**API upload (referensi teknis):**
-
-| Aksi | Method & path |
-|------|----------------|
-| Unggah satu berkas | `POST /api/my-registration/administration-file` |
-| Kirim data administrasi | `POST /api/my-registration` |
-| Buka berkas | `GET /api/registration-files/{user}/{field}` |
 
 Field yang valid: `id_document`, `kk`, `report_card`, `passport_photo`, `full_body_photo`.
+
+**Docker / Coolify — berkas hilang tiap redeploy:** mount volume ke `/var/www/html/storage`. Detail: [docs/deploy/COOLIFY.md](../deploy/COOLIFY.md)
 
 ### Perintah Berguna (Server)
 
@@ -393,7 +397,6 @@ php artisan config:cache
 php artisan storage:link
 php artisan registration:migrate-public-files --dry-run
 php artisan registration:migrate-public-files
-php artisan route:cache   # setelah update route; jalankan route:clear jika route baru belum aktif
 ```
 
 ---
@@ -405,7 +408,7 @@ php artisan route:cache   # setelah update route; jalankan route:clear jika rout
 - Backup database rutin (lihat `scripts/backup/` di repo)
 - Pembayaran **hanya** ke rekening resmi BRI **1107-01-000931-56-9**
 - Verifikasi identitas peserta sebelum approve pendaftaran
-- Berkas administrasi (KTP, KK, dll.) **tidak publik** — hanya pemilik & admin yang login boleh membuka via API
+- Berkas administrasi **tidak publik** — hanya pemilik & admin yang login
 
 ---
 
@@ -423,4 +426,4 @@ php artisan route:cache   # setelah update route; jalankan route:clear jika rout
 
 ---
 
-*Manual ini mencakup seluruh modul aktif per Juni 2026. Perbarui jika ada fitur baru.*
+*Manual ini mencakup seluruh modul aktif per Juli 2026. Perbarui jika ada fitur baru.*

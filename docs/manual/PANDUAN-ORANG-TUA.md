@@ -9,9 +9,10 @@ Manual book untuk **orang tua atau wali** yang memantau perkembangan ananda di P
 Sebagai orang tua, Anda dapat:
 
 - Menerima **undangan** dari tim lembaga untuk terhubung dengan akun ananda
+- Login dengan **username** & kata sandi
 - Melihat **dashboard** perkembangan ananda (privat, hanya untuk Anda)
 - Membaca **laporan harian** dan **ringkasan mingguan**
-- Melihat **grafik nilai** akademik, jasmani, dan tes
+- Melihat **grafik nilai** akademik, jasmani, dan hasil tes
 - Menerima **notifikasi** saat ada laporan baru
 
 > Anda **tidak** dapat mengerjakan tes, mengubah nilai, atau mengakses kelas ananda secara langsung.
@@ -20,9 +21,9 @@ Sebagai orang tua, Anda dapat:
 
 ## 2. Sebelum Mulai — Persyaratan
 
-1. Tim Pratistha sudah **mengundang** Anda (via WhatsApp/email dari admin/mentor)
+1. Tim Pratistha sudah **mengundang** Anda (via WhatsApp dari admin/mentor)
 2. Ananda sudah **menyelesaikan pendaftaran** (registrasi selesai)
-3. Anda memiliki **email** dan **kata sandi** untuk login
+3. Anda akan membuat **username** dan **kata sandi** saat menerima undangan
 
 ---
 
@@ -38,17 +39,17 @@ Sebagai orang tua, Anda dapat:
    - Nama ananda yang akan dipantau
 4. Isi form:
    - **Nama lengkap**
-   - **Email** — gunakan email yang aktif
+   - **Username** — identitas login Anda (huruf, angka, underscore)
    - **Kata sandi** — minimal 6 karakter
 5. Klik **Buat Akun & Hubungkan**
 6. Anda otomatis masuk sebagai **orang tua** dan diarahkan ke dashboard
 
-> **Catatan:** Jika sudah punya akun orang tua sebelumnya, gunakan email & sandi yang sama — sistem akan menghubungkan ananda baru ke akun Anda.
+> **Catatan:** Tidak perlu mengisi email. Login selanjutnya memakai **username** & kata sandi. Jika sudah punya akun orang tua, gunakan username & sandi yang sama — sistem akan menghubungkan ananda baru ke akun Anda.
 
 ### Cara 2: Login Langsung (Sudah Punya Akun)
 
 1. Buka **https://pratisthaindonesia.com/login**
-2. Masukkan username/email dan password
+2. Masukkan **username** dan **kata sandi**
 3. Klik **Masuk**
 
 ---
@@ -96,7 +97,7 @@ Informasi ditampilkan **berurutan**:
 
 ### 4) Nilai per Mata Pelajaran
 
-- Grafik perkembangan nilai (%) per mata pelajaran dari waktu ke waktu
+- Grafik perkembangan nilai dari aktivitas tes/quiz di web
 
 ### 5) Hasil Jasmani
 
@@ -104,7 +105,7 @@ Informasi ditampilkan **berurutan**:
 
 ### 6) Nilai Tes
 
-- Grafik persentase nilai tes/ujian dari waktu ke waktu
+- Grafik hasil tes/ujian dari waktu ke waktu
 
 ---
 
@@ -132,7 +133,7 @@ Informasi ditampilkan **berurutan**:
 ## 8. Privasi & Keamanan
 
 - Data ananda **hanya** terlihat oleh Anda (orang tua terhubung) dan staff lembaga
-- **Jangan bagikan** password akun kepada pihak lain
+- **Jangan bagikan** username & password akun kepada pihak lain
 - Jika lupa password, hubungi admin lembaga
 - Peringkat internal **tidak** ditampilkan ke orang tua — yang tampil adalah laporan dan grafik perkembangan
 
@@ -145,6 +146,9 @@ A: Hubungi tim Pratistha via WhatsApp **+628138964488** — admin akan buat unda
 
 **Q: Ananda belum muncul di dashboard?**  
 A: Pastikan ananda sudah menyelesaikan registrasi dan admin sudah mengirim undangan yang Anda terima.
+
+**Q: Saya lupa username?**  
+A: Hubungi admin — username Anda yang dipakai saat menerima undangan.
 
 **Q: Laporan harian kosong hari ini?**  
 A: Mentor mungkin belum input laporan hari ini. Coba ganti tanggal di filter atau tunggu update dari pengajar.

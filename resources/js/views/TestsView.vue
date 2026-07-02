@@ -169,7 +169,7 @@
           </div>
           
           <div class="mt-6 flex flex-wrap gap-3">
-            <div class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+            <div v-if="!isExamPage" class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
               <span class="text-xs text-gray-400 uppercase font-bold">{{ t('common.category') }}</span>
               <span class="text-sm font-medium text-gray-700 capitalize">{{ test.category }}</span>
             </div>
@@ -274,7 +274,7 @@
       </aside>
     </div>
 
-    <TestCreateModal v-if="showCreateModal" :categories="categories" :initial="selectedTest" @close="closeCreate" @submit="createTest" />
+    <TestCreateModal v-if="showCreateModal" :categories="categories" :initial="selectedTest" :is-exam="isExamPage" @close="closeCreate" @submit="createTest" />
     <TestAssignQuestionsModal
       v-if="showAssignModal"
       :test="selectedTest"
@@ -468,12 +468,12 @@ const createTest = async (formData) => {
     const payload = {
       name: formData.name,
       description: formData.description,
-      category: formData.category,
+      category: isExamPage.value ? 'Gabungan' : formData.category,
       duration: formData.duration,
       schedule_at: formData.scheduleAt,
       start_time: formData.startTime,
       end_time: formData.endTime,
-      is_free_tryout: !!formData.isFreeTryout,
+      ...(isExamPage.value ? {} : { is_free_tryout: !!formData.isFreeTryout }),
     }
 
     let savedTest = null;
@@ -484,7 +484,7 @@ const createTest = async (formData) => {
       savedTest = data
       const idx = tests.value.findIndex(t => t.id === id)
       if (idx !== -1) tests.value[idx] = data
-      toast.success('Success', t('modals.testCreate.update'))
+      toast.success('Success', t(isExamPage.value ? 'modals.examCreate.update' : 'modals.testCreate.update'))
     } else {
       const { data } = await window.axios.post(apiBase.value, payload)
       savedTest = data

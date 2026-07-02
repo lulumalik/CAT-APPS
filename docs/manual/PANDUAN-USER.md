@@ -9,8 +9,8 @@ Manual book untuk **calon peserta / siswa** Pratistha Cendekia Prestasi — dari
 Sebagai peserta, Anda dapat:
 
 - Mendaftar akun dan mengikuti **alur pendaftaran** (administrasi, psikologi, kesehatan, fisik)
-- Mengakses **kelas kursus** (materi, sesi, tes)
-- Mengerjakan **tes CAT** sesuai jadwal kelas
+- Mengakses **kelas kursus** (materi, sesi, **quiz** per mata pelajaran)
+- Mengerjakan **ujian** lintas mata pelajaran lewat menu **Ujian**
 - Melihat **perkembangan** (laporan harian, nilai akademik, hasil jasmani, nilai tes)
 - Memantau **status pendaftaran** dan profil akun
 
@@ -32,7 +32,7 @@ Siapkan dokumen dan data berikut:
 | Foto full body | Format gambar |
 | Data fisik | Tinggi badan (cm) dan berat badan (kg) |
 
-> **Catatan:** Berkas **tidak wajib** diunggah sekaligus. Anda bisa mengisi bertahap; kelengkapan dokumen akan **ditinjau manual oleh admin** saat review pendaftaran.
+> **Catatan:** Berkas **tidak wajib** diunggah sekaligus. Anda bisa mengisi bertahap; kelengkapan dokumen akan **ditinjau manual oleh admin** saat review pendaftaran. Berkas hanya tampil di sistem jika benar-benar sudah diunggah.
 
 ---
 
@@ -56,13 +56,13 @@ Siapkan dokumen dan data berikut:
    - **Nama lengkap**
    - **Username** — hanya huruf, angka, dan underscore (contoh: `ahmad_taruna`)
    - **Email**
-   - **Kata sandi** — minimal 6 karakter
+   - **Kata sandi** — minimal 6 karakter (bisa ditampilkan dengan ikon mata)
    - **Konfirmasi kata sandi** — harus sama dengan kata sandi
 3. Klik **Daftar**
 4. Anda akan **otomatis masuk** ke sistem dan diarahkan ke **Alur Pendaftaran**
 5. **Cek email** — klik tautan verifikasi yang dikirim ke inbox Anda
 
-> **Tips:** Nomor WhatsApp dan telepon orang tua diisi di tahap **Administrasi** (`/registration`), bukan saat buat akun. Simpan username dan password di tempat aman. Jika email tidak masuk, cek folder Spam/Promosi.
+> **Tips:** Nomor WhatsApp dan telepon orang tua diisi di tahap **Administrasi** (`/registration`), bukan saat buat akun. Simpan username dan password di tempat aman.
 
 ---
 
@@ -88,17 +88,15 @@ Pendaftaran terdiri dari **4 tahap**:
    - Foto full body
    - Format: JPG, PNG, WebP, atau PDF (KTP/KK/rapor); pas foto & full body hanya gambar
    - Maksimal **12 MB per berkas**
-   - Jika memilih berkas baru di slot yang sama, **file lama otomatis diganti**
-   - Tidak perlu menunggu semua berkas lengkap — unggah yang sudah siap dulu
-   - Setelah tersimpan, klik **Lihat berkas** untuk memeriksa (harus **sudah login** — berkas tidak bisa dibuka orang lain lewat tebakan URL)
-3. Klik **Kirim administrasi untuk ditinjau** (mengirim data teks; berkas yang sudah diunggah ikut tersimpan)
+   - Link berkas **hanya muncul** jika file benar-benar sudah tersimpan di server
+3. Klik **Kirim administrasi untuk ditinjau**
 4. Status berubah menjadi **submitted** — tunggu review admin
 
 ### Tahap 2 — Psikologi (Offline)
 
 - Tes psikologi dilakukan **di lokasi lembaga**
 - Anda **tidak mengisi form** di website
-- Pantau status di wizard — admin akan mengubah menjadi **approved** setelah tes
+- Admin akan meninjau dan mengubah status menjadi **Disetujui** atau **Perlu perbaikan**
 
 ### Tahap 3 — Kesehatan (Offline)
 
@@ -108,14 +106,13 @@ Pendaftaran terdiri dari **4 tahap**:
 ### Tahap 4 — Fisik (Offline)
 
 - Tes fisik/jasmani dilakukan **offline**
-- Setelah semua tahap **approved**, pendaftaran selesai
+- Setelah semua tahap **disetujui**, pendaftaran selesai
 
 ### Jika Ada Revisi
 
-- Jika admin meminta revisi, status menjadi **revision_requested**
+- Jika admin meminta perbaikan, status menjadi **revision_requested**
 - Baca **catatan admin** di halaman pendaftaran
 - Perbaiki data/berkas yang diminta, lalu kirim ulang
-- Unggah ulang berkas yang perlu diganti — file baru akan **menimpa** yang lama
 
 ---
 
@@ -123,7 +120,7 @@ Pendaftaran terdiri dari **4 tahap**:
 
 Setelah **seluruh tahap pendaftaran disetujui**:
 
-1. Menu **Dashboard** dan **Kelas Saya** tidak lagi terkunci
+1. Menu **Dashboard**, **Ujian**, dan **Kelas Saya** tidak lagi terkunci
 2. Buka **Dashboard** untuk melihat:
    - Kelas yang Anda ikuti
    - Aktivitas kelas terbaru
@@ -141,28 +138,41 @@ Setelah **seluruh tahap pendaftaran disetujui**:
 
 ---
 
-## 7. Langkah 5 — Kelas Saya & Ruang Kelas
+## 7. Langkah 5 — Ujian vs Quiz Kelas
+
+Platform membedakan dua jenis penilaian:
+
+| Jenis | Diakses dari | Keterangan |
+|-------|--------------|------------|
+| **Ujian** | Menu **Ujian** (`/ujian`) | Gabungan lintas mata pelajaran |
+| **Quiz** | **Kelas Saya** → ruang kelas | Per mata pelajaran, dilampirkan ke kelas |
+
+### Mengerjakan Ujian
+
+1. Buka menu **Ujian**
+2. Pilih ujian yang tersedia
+3. Klik **Mulai Ujian**
+4. Kerjakan soal dalam waktu yang ditentukan
+5. Submit — nilai tercatat otomatis
+
+### Mengerjakan Quiz di Kelas
 
 1. Buka menu **Kelas Saya**
 2. Pilih kelas → klik **Buka ruang kelas**
-3. Di ruang kelas, Anda dapat mengakses:
+3. Buka tab **Quiz kelas**
+4. Klik **Mulai quiz** jika jadwal aktif
+5. Quiz **kedaluwarsa** ditandai merah dan tidak bisa dikerjakan
+
+> **Penting:** Quiz dan ujian hanya bisa dikerjakan sesuai jadwal yang ditetapkan admin/mentor.
+
+### Tab Ruang Kelas
 
 | Tab | Fungsi |
 |-----|--------|
+| **Informasi kelas** | Detail kelas |
 | **Diskusi** | Area diskusi kelas |
-| **Sesi** | Materi belajar per sesi — klik **Buka Materi** untuk membaca |
-| **Tes** | Daftar tes yang tersedia — klik **Mulai** jika sudah aktif |
-| **Aktivitas** | Log kegiatan kelas |
-
-### Mengerjakan Tes
-
-1. Masuk tab **Tes** di ruang kelas
-2. Pastikan status tes **Tersedia** (bukan Terkunci / Selesai)
-3. Klik **Mulai Tes**
-4. Kerjakan soal dalam waktu yang ditentukan
-5. Submit — nilai akan tercatat otomatis
-
-> **Penting:** Tes hanya bisa dikerjakan sesuai jadwal yang ditetapkan admin/mentor.
+| **Sesi** | Materi belajar per sesi — klik **Buka Materi** |
+| **Quiz kelas** | Daftar quiz per mata pelajaran |
 
 ---
 
@@ -172,6 +182,11 @@ Setelah **seluruh tahap pendaftaran disetujui**:
 
 - Lihat data akun dan **progress pendaftaran**
 - Pantau status setiap tahap
+- Pas foto profil hanya tampil jika berkas benar-benar sudah diunggah
+
+### Riwayat Aktivitas (`/activity-history`)
+
+- Lihat log aktivitas Anda di platform
 
 ### Notifikasi (`/notifications`)
 
@@ -194,31 +209,31 @@ Tryout gratis **tidak memerlukan** akun pendaftaran penuh.
 ## 10. FAQ — Pertanyaan Umum
 
 **Q: Dashboard saya terkunci, kenapa?**  
-A: Pendaftaran belum selesai. Lanjutkan di menu **Alur Pendaftaran** sampai semua tahap approved.
+A: Pendaftaran belum selesai. Lanjutkan di menu **Alur Pendaftaran** sampai semua tahap disetujui.
+
+**Q: Apa bedanya menu Ujian dan quiz di kelas?**  
+A: **Ujian** = tes gabungan lintas mapel. **Quiz kelas** = latihan per mata pelajaran di dalam kelas kursus.
 
 **Q: Email verifikasi tidak masuk?**  
 A: Cek Spam. Hubungi admin via WhatsApp **+628138964488** jika masih bermasalah.
 
 **Q: Berkas upload gagal?**  
-A: Pastikan format JPG/PNG/WebP/PDF dan ukuran maksimal 12 MB per berkas. Setiap berkas diunggah **terpisah** (bukan sekaligus), jadi tunggu hingga status "Berkas tersimpan di server" muncul sebelum melanjutkan.
+A: Pastikan format JPG/PNG/WebP/PDF dan ukuran maksimal 12 MB per berkas.
 
-**Q: Apakah semua berkas wajib diunggah sebelum kirim?**  
-A: Tidak wajib lengkap di form. Unggah yang sudah siap; admin akan meninjau kelengkapan dokumen secara manual saat review.
-
-**Q: "Lihat berkas" tidak bisa dibuka / halaman kosong?**  
-A: Pastikan Anda **masih login**. Link berkas dibuka lewat sistem internal (bukan folder publik langsung). Jika masih gagal, unggah ulang berkas atau hubungi admin.
+**Q: Nama berkas muncul padahal belum upload?**  
+A: Sistem sekarang hanya menampilkan berkas yang benar-benar tersimpan. Jika belum ada, slot akan kosong.
 
 **Q: Nomor WhatsApp ditolak?**  
-A: Isi di tahap **Administrasi** (`/registration`), bukan saat buat akun. Gunakan format angka Indonesia: awali dengan 8 setelah +62 (contoh: `8138964488`).
+A: Isi di tahap **Administrasi** (`/registration`). Gunakan format angka Indonesia: awali dengan 8 setelah +62 (contoh: `8138964488`).
 
-**Q: Kata sandi tidak bisa didaftarkan?**  
-A: Pastikan **Konfirmasi kata sandi** sama persis dengan kata sandi (minimal 6 karakter).
-
-**Q: Download PDF gagal?**  
-A: Refresh halaman dashboard, tunggu data selesai dimuat, lalu coba lagi. Jika masih gagal, hubungi admin.
+**Q: Quiz kedaluwarsa masih bisa dikerjakan?**  
+A: Tidak. Quiz kedaluwarsa ditandai merah dan tidak bisa diklik.
 
 **Q: Kapan orang tua bisa melihat progress saya?**  
-A: Setelah staff mengundang orang tua dan orang tua menerima undangan via link.
+A: Setelah staff mengundang orang tua dan orang tua menerima undangan via link (login dengan **username**).
+
+**Q: Saya tidak bisa diundang ke kelas?**  
+A: Pastikan pendaftaran sudah selesai dan masa aktif akun belum kedaluwarsa. Hubungi admin jika perlu perpanjangan.
 
 ---
 
