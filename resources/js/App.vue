@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="{ 'container-default': !isHomePage && !isFreeTryoutPage }"
+    :class="{ 'container-default': !isHomePage && !isFreeTryoutPage && !isTestRunnerPage }"
     class="bg-background rounded-3xl min-h-screen border-2 border-border font-sans text-text"
   >
     <StickyHeader v-if="showSidebarNav" />
@@ -56,7 +56,7 @@ const { modalState } = useModal()
 const { toasts, removeToast } = useToast()
 const { t, locale } = useI18n()
 
-const isTestRunnerPage = computed(() => route.name === 'quick-test')
+const isTestRunnerPage = computed(() => route.name === 'quick-test' || route.name === 'quick-exam')
 const isLoginPage = computed(() => route.name === 'login')
 const isSignupPage = computed(() => route.name === 'signup')
 const isHomePage = computed(() => route.name === 'home-demo')

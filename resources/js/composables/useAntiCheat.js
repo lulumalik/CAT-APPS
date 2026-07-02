@@ -1,18 +1,31 @@
 import { ref } from 'vue'
 import { useToast } from '@/composables/useNotification'
 
-export function useAntiCheat({ maxViolations = 3, onMaxViolations, isActive } = {}) {
+export function useAntiCheat({ maxViolations = 5, onMaxViolations, isActive } = {}) {
   const violations = ref(0)
   const antiCheatMessage = ref('')
+  const limitReached = ref(false)
   const toast = useToast()
 
   const registerViolation = async (reason) => {
     if (typeof isActive === 'function' ? !isActive() : isActive?.value === false) return
+
+    if (limitReached.value) {
+      antiCheatMessage.value = 'Kamu sudah terlalu banyak hal yang melanggar aturan anti-cheat.'
+      return
+    }
+
     violations.value += 1
     antiCheatMessage.value = reason
-    toast.error('Anti-cheat warning', reason)
+    toast.error('Peringatan anti-cheat', reason)
 
     if (violations.value >= maxViolations) {
+      limitReached.value = true
+      antiCheatMessage.value = 'Kamu sudah terlalu banyak hal yang melanggar aturan anti-cheat.'
+      toast.error(
+        'Peringatan anti-cheat',
+        'Kamu sudah terlalu banyak hal yang melanggar aturan anti-cheat. Tetap di halaman ujian dan lanjutkan mengerjakan soal.',
+      )
       await onMaxViolations?.()
     }
   }
@@ -96,6 +109,7 @@ export function useAntiCheat({ maxViolations = 3, onMaxViolations, isActive } = 
     violations,
     antiCheatMessage,
     maxViolations,
+    limitReached,
     attach,
     detach,
     requestFullscreen,

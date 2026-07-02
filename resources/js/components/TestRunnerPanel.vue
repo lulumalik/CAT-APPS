@@ -2,7 +2,13 @@
   <main class="h-screen bg-[#F9F9F7] py-4 md:py-6 font-sans text-[#1A1A1A] anti-cheat-mode overflow-hidden">
     <div class="mx-auto max-w-7xl px-4 md:px-8 h-full flex flex-col min-h-0">
       <div
-        v-if="antiCheatMessage"
+        v-if="limitReached"
+        class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 font-medium"
+      >
+        Kamu sudah terlalu banyak hal yang melanggar aturan anti-cheat. Tetap di halaman ujian dan lanjutkan mengerjakan soal.
+      </div>
+      <div
+        v-else-if="antiCheatMessage"
         class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
       >
         {{ antiCheatMessage }} ({{ violations }}/{{ maxViolations }})
@@ -29,8 +35,8 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 flex-1 min-h-0">
-        <div class="lg:col-span-3 space-y-4 min-h-0 flex flex-col">
+      <div class="grid grid-cols-1 gap-4 md:gap-6 flex-1 min-h-0" :class="isExam ? '' : 'lg:grid-cols-4'">
+        <div class="space-y-4 min-h-0 flex flex-col" :class="isExam ? '' : 'lg:col-span-3'">
           <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-4 md:p-5 shrink-0">
             <div class="flex items-center justify-between mb-3">
               <span class="text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('testRunner.progress') }}</span>
@@ -102,7 +108,11 @@
               ></textarea>
             </div>
 
-            <div class="mt-4 md:mt-6 flex items-center justify-between pt-4 md:pt-6 border-t border-gray-50 shrink-0">
+            <div class="mt-4 md:mt-6 flex flex-wrap items-center justify-between gap-3 pt-4 md:pt-6 border-t border-gray-50 shrink-0">
+              <div v-if="isExam" class="text-sm font-medium text-gray-500">
+                Soal {{ index + 1 }} / {{ questions.length }}
+              </div>
+              <div v-else class="hidden sm:block"></div>
               <button
                 class="px-5 md:px-8 py-2.5 md:py-3 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors font-medium text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
                 @click="prev"
@@ -134,7 +144,7 @@
           </div>
         </div>
 
-        <aside class="lg:col-span-1 min-h-0">
+        <aside v-if="!isExam" class="lg:col-span-1 min-h-0">
           <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-5 sticky top-4">
             <h3 class="font-bold text-[#1A1A1A] mb-4 flex items-center gap-2">
               <span class="w-1.5 h-6 rounded-full bg-[#9DB359]"></span>
@@ -195,6 +205,7 @@ const props = defineProps({
   testData: { type: Object, required: true },
   questions: { type: Array, required: true },
   submitting: { type: Boolean, default: false },
+  isExam: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['submit'])
@@ -209,10 +220,53 @@ const timeLeft = ref(0)
 const timer = ref(null)
 const canSubmit = ref(true)
 
-const { violations, antiCheatMessage, maxViolations, attach, detach, requestFullscreen } = useAntiCheat({
-  onMaxViolations: () => finishTest(true),
+const { violations, antiCheatMessage, maxViolations, limitReached, attach, detach, requestFullscreen } = useAntiCheat({
+  maxViolations: 5,
+  onMaxViolations: () => {
+    requestFullscreen()
+  },
   isActive: () => canSubmit.value && !props.submitting,
 })
+
+const progressStorageKey = computed(() =>
+  props.isExam && props.testData?.id ? `exam-progress-${props.testData.id}` : null,
+)
+
+function saveProgress() {
+  const key = progressStorageKey.value
+  if (!key) return
+  sessionStorage.setItem(key, JSON.stringify({
+    index: index.value,
+    answers: answers.value,
+    flags: flags.value,
+  }))
+}
+
+function restoreProgress() {
+  const key = progressStorageKey.value
+  if (!key) return
+  try {
+    const raw = sessionStorage.getItem(key)
+    if (!raw) return
+    const saved = JSON.parse(raw)
+    if (Number.isInteger(saved.index) && saved.index >= 0 && saved.index < props.questions.length) {
+      index.value = saved.index
+    }
+    if (saved.answers && typeof saved.answers === 'object') {
+      answers.value = { ...saved.answers }
+    }
+    if (saved.flags && typeof saved.flags === 'object') {
+      flags.value = { ...saved.flags }
+    }
+  } catch {
+    // ignore corrupt storage
+  }
+}
+
+function clearProgress() {
+  const key = progressStorageKey.value
+  if (key) sessionStorage.removeItem(key)
+}
 
 const current = computed(() => props.questions[index.value] || {})
 const selected = (idx) => {
@@ -286,15 +340,23 @@ const finishTest = async (force = false) => {
   }
 
   emit('submit', { answers: { ...answers.value }, force })
+  clearProgress()
 }
 
 watch(
   () => [props.testData, props.questions.length],
   () => {
-    if (props.testData && props.questions.length) initTimer()
+    if (props.testData && props.questions.length) {
+      restoreProgress()
+      initTimer()
+    }
   },
   { immediate: true },
 )
+
+watch([index, answers, flags], () => {
+  saveProgress()
+}, { deep: true })
 
 onMounted(() => {
   attach()
