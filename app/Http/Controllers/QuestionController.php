@@ -13,10 +13,6 @@ class QuestionController extends Controller
         $user = $request->user();
         $q = Question::query();
 
-        if ($user && $user->role === 'mentor') {
-            $q->where('created_by', $user->id);
-        }
-
         if ($search = $request->string('search')->toString()) {
             $q->where('question', 'like', "%$search%");
         }
@@ -27,13 +23,17 @@ class QuestionController extends Controller
             $q->where('difficulty', $dif);
         }
 
-        $statsQuery = Question::query();
         if ($user && $user->role === 'mentor') {
-            $statsQuery->where('created_by', $user->id);
+            $q->orderByRaw('CASE WHEN created_by = ? THEN 0 ELSE 1 END', [$user->id])
+                ->orderByDesc('id');
+        } else {
+            $q->orderByDesc('id');
         }
 
+        $statsQuery = Question::query();
+
         return response()->json([
-            'items' => $q->orderByDesc('id')->get(),
+            'items' => $q->get(),
             'stats' => [
                 'total' => (clone $statsQuery)->count(),
                 'easy' => (clone $statsQuery)->where('difficulty', 'Easy')->count(),

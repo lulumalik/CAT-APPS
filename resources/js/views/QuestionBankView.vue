@@ -88,39 +88,76 @@
         </div>
       </div>
 
-      <div class="mt-8 space-y-6">
-        <div v-for="(q,i) in filtered" :key="i" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center gap-2">
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 capitalize">{{ q.category }}</span>
-              <span class="px-3 py-1 rounded-full text-xs font-medium border" :class="diffBadge(q.difficulty)">{{ q.difficulty }}</span>
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100 capitalize">{{ q.type }}</span>
+      <div class="mt-8 space-y-8">
+        <template v-if="isMentor">
+          <section v-if="ownFiltered.length" class="space-y-4">
+            <div class="flex items-center justify-between gap-3">
+              <h2 class="text-lg font-semibold text-[#1A1A1A]">{{ t('questionBank.myQuestionsSection') }}</h2>
+              <span class="px-3 py-1 rounded-full text-xs font-medium bg-[#9DB359]/15 text-[#6c7c3f] border border-[#9DB359]/30">
+                {{ ownFiltered.length }}
+              </span>
             </div>
-            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button class="px-4 py-1.5 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors" @click="edit(i)">{{ t('common.edit') }}</button>
-              <button class="px-4 py-1.5 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" @click="remove(i)">{{ t('common.delete') }}</button>
+            <div class="space-y-6">
+              <article
+                v-for="q in ownFiltered"
+                :key="q.id"
+                class="rounded-[2rem] shadow-sm border-2 border-[#9DB359]/40 bg-gradient-to-br from-[#9DB359]/10 via-white to-white p-8 hover:shadow-md transition-shadow group"
+              >
+                <QuestionCardBody
+                  :question="q"
+                  :can-manage="true"
+                  highlighted
+                  @edit="edit(q)"
+                  @remove="remove(q)"
+                />
+              </article>
             </div>
+          </section>
+
+          <section v-if="globalFiltered.length" class="space-y-4">
+            <div class="flex items-center justify-between gap-3">
+              <h2 class="text-lg font-semibold text-[#1A1A1A]">{{ t('questionBank.globalQuestionsSection') }}</h2>
+              <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                {{ globalFiltered.length }}
+              </span>
+            </div>
+            <div class="space-y-6">
+              <article
+                v-for="q in globalFiltered"
+                :key="q.id"
+                class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group"
+              >
+                <QuestionCardBody
+                  :question="q"
+                  :can-manage="false"
+                  @edit="edit(q)"
+                  @remove="remove(q)"
+                />
+              </article>
+            </div>
+          </section>
+
+          <p v-if="!ownFiltered.length && !globalFiltered.length" class="text-center text-gray-500 py-8">
+            {{ t('questionBank.noResultsFound') }}
+          </p>
+        </template>
+
+        <template v-else>
+          <div class="space-y-6">
+            <article
+              v-for="q in filtered"
+              :key="q.id"
+              class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group"
+            >
+              <QuestionCardBody
+                :question="q"
+                :can-manage="canManageQuestion(q)"
+                @edit="edit(q)"
+                @remove="remove(q)"
+              />
+            </article>
           </div>
-          
-          <div class="flex gap-6">
-            <div v-if="q.image_url" class="flex-shrink-0">
-               <img :src="q.image_url" :alt="t('questionBank.title')" class="w-32 h-32 object-cover rounded-xl border border-gray-200" />
-            </div>
-            <div class="flex-grow">
-              <h2 class="text-xl font-medium text-[#1A1A1A] leading-relaxed">{{ q.question }}</h2>
-              
-              <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div v-for="opt in q.options" :key="opt.key" class="rounded-xl border px-5 py-3 flex items-start justify-between gap-3 transition-colors" :class="opt.key===q.correct ? 'border-[#9DB359] bg-[#9DB359]/5' : 'border-gray-200 bg-white'">
-                  <div class="flex items-start gap-3 min-w-0 flex-1">
-                    <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium aspect-square" :class="opt.key===q.correct ? 'border-[#9DB359] text-[#9DB359] bg-white' : 'border-gray-300 text-gray-500'">{{ opt.key }}</span>
-                    <span class="pt-0.5 leading-relaxed" :class="opt.key===q.correct ? 'text-[#1A1A1A] font-medium' : 'text-gray-600'">{{ opt.label }}</span>
-                  </div>
-                  <span v-if="opt.key===q.correct" class="shrink-0 px-2 py-0.5 rounded-full bg-[#9DB359] text-white text-[10px] font-bold uppercase tracking-wider">{{ t('questionBank.correct') }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        </template>
       </div>
     </div>
 
@@ -131,12 +168,16 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import QuestionModal from '@/components/QuestionModal.vue'
+import QuestionCardBody from '@/components/QuestionCardBody.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
+
+import { useAppStore } from '@/stores/app'
 
 const { confirm } = useModal()
 const toast = useToast()
 const { t } = useI18n()
+const store = useAppStore()
 
 const questions = ref([])
 const loading = ref(false)
@@ -151,33 +192,52 @@ const categories = computed(() => {
   return [...new Set(questions.value.map(q => q.category))]
 })
 
+const isMentor = computed(() => store.role === 'mentor')
+
+const matchesFilters = (q) => {
+  const s = search.value.toLowerCase()
+  const matchSearch = q.question.toLowerCase().includes(s)
+  const matchCat = !filterCategory.value || q.category === filterCategory.value
+  const matchDiff = !filterDifficulty.value || q.difficulty === filterDifficulty.value
+  return matchSearch && matchCat && matchDiff
+}
+
+const isOwnQuestion = (q) => Number(q?.created_by) === Number(store.user?.id)
+
 const filtered = computed(() => {
   if (!questions.value || !Array.isArray(questions.value)) return []
-  return questions.value.filter(q => {
-    const s = search.value.toLowerCase()
-    const matchSearch = q.question.toLowerCase().includes(s)
-    const matchCat = !filterCategory.value || q.category === filterCategory.value
-    const matchDiff = !filterDifficulty.value || q.difficulty === filterDifficulty.value
-    return matchSearch && matchCat && matchDiff
-  })
+  return questions.value.filter(matchesFilters)
 })
+
+const ownFiltered = computed(() => filtered.value.filter(isOwnQuestion))
+const globalFiltered = computed(() => filtered.value.filter((q) => !isOwnQuestion(q)))
 
 const total = computed(() => questions.value?.length || 0)
 const easy = computed(() => questions.value?.filter(q => q.difficulty === 'Easy').length || 0)
 const medium = computed(() => questions.value?.filter(q => q.difficulty === 'Medium').length || 0)
 const hard = computed(() => questions.value?.filter(q => q.difficulty === 'Hard').length || 0)
 
-const diffBadge = (d) => {
-  if (d === 'Easy') return 'bg-green-50 text-green-700 border-green-100'
-  if (d === 'Medium') return 'bg-yellow-50 text-yellow-700 border-yellow-100'
-  return 'bg-red-50 text-red-700 border-red-100'
+const canManageQuestion = (question) => {
+  if (store.role === 'admin') return true
+  if (store.role !== 'mentor') return false
+  return isOwnQuestion(question)
+}
+
+const sortQuestionsForDisplay = (items) => {
+  if (!isMentor.value) return items
+  return [...items].sort((a, b) => {
+    const aOwn = isOwnQuestion(a) ? 0 : 1
+    const bOwn = isOwnQuestion(b) ? 0 : 1
+    if (aOwn !== bOwn) return aOwn - bOwn
+    return Number(b.id) - Number(a.id)
+  })
 }
 
 const loadQuestions = async () => {
   loading.value = true
   try {
     const { data } = await window.axios.get('/api/questions')
-    questions.value = data.items
+    questions.value = sortQuestionsForDisplay((data.items || []).map(normalizeQuestion))
   } catch (e) {
     toast.error('Error', t('questionBank.toastLoadFailed'))
   } finally {
@@ -190,14 +250,12 @@ const openAdd = () => {
   showModal.value = true
 }
 
-const edit = (i) => {
-  // Use actual question object from filtered list
-  const questionToEdit = filtered.value[i]
-  editingItem.value = { ...questionToEdit }
+const edit = (question) => {
+  editingItem.value = { ...question }
   showModal.value = true
 }
 
-const remove = async (i) => {
+const remove = async (question) => {
   const confirmed = await confirm({
     title: t('questionBank.deleteConfirmTitle'),
     message: t('questionBank.deleteConfirmMessage'),
@@ -207,9 +265,8 @@ const remove = async (i) => {
   
   if (confirmed) {
     try {
-      const questionToDelete = filtered.value[i]
-      await window.axios.delete(`/api/questions/${questionToDelete.id}`)
-      questions.value = questions.value.filter(q => q.id !== questionToDelete.id)
+      await window.axios.delete(`/api/questions/${question.id}`)
+      questions.value = questions.value.filter(q => q.id !== question.id)
       toast.success('Success', t('questionBank.toastDeleted'))
     } catch (e) {
       toast.error('Error', t('questionBank.toastDeleteFailed'))
@@ -255,10 +312,11 @@ const onSubmit = async (payload) => {
       const { data } = await window.axios.put(`/api/questions/${editingItem.value.id}`, body, config)
       const idx = questions.value.findIndex(q => q.id === editingItem.value.id)
       if (idx !== -1) questions.value[idx] = normalizeQuestion(data)
+      questions.value = sortQuestionsForDisplay(questions.value)
       toast.success('Success', t('questionBank.toastUpdated'))
     } else {
       const { data } = await window.axios.post('/api/questions', body, config)
-      questions.value.unshift(normalizeQuestion(data))
+      questions.value = sortQuestionsForDisplay([normalizeQuestion(data), ...questions.value])
       toast.success('Success', t('questionBank.toastCreated'))
     }
     closeModal()

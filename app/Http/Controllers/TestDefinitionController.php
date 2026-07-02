@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\TestDefinition;
-use App\Models\Question;
 use App\Models\FreeTryoutSubmission;
 use App\Models\TestSubmission;
 use App\Services\AutoStudentReportService;
@@ -83,7 +82,6 @@ class TestDefinitionController extends Controller
 
         $data['created_by'] = optional($request->user())->id;
         $this->enforceQuestionDefaults($data);
-        $this->assertMentorOwnsQuestions($request, $data['question_ids'] ?? []);
         $this->enforceSingleFreeTryout($data, null, $request->user());
         $item = TestDefinition::create($data);
         return response()->json($item, 201);
@@ -127,9 +125,6 @@ class TestDefinitionController extends Controller
         }
 
         $this->enforceQuestionDefaults($data);
-        if (array_key_exists('question_ids', $data)) {
-            $this->assertMentorOwnsQuestions($request, $data['question_ids'] ?? []);
-        }
         $this->enforceSingleFreeTryout($data, $test->id, $request->user());
         $test->update($data);
         return response()->json($test);
@@ -410,23 +405,4 @@ class TestDefinitionController extends Controller
         return response()->json($items);
     }
 
-    private function assertMentorOwnsQuestions(Request $request, array $questionIds): void
-    {
-        $user = $request->user();
-        if (! $user || $user->role !== 'mentor' || $questionIds === []) {
-            return;
-        }
-
-        $hasForeign = Question::query()
-            ->whereIn('id', $questionIds)
-            ->where(function ($query) use ($user) {
-                $query->whereNull('created_by')
-                    ->orWhere('created_by', '!=', $user->id);
-            })
-            ->exists();
-
-        if ($hasForeign) {
-            abort(403, 'Unauthorized');
-        }
-    }
 }

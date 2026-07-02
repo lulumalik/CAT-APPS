@@ -323,6 +323,10 @@ export const messages = {
       toastUpdated: 'Soal diperbarui',
       toastCreated: 'Soal dibuat',
       toastSaveFailed: 'Gagal menyimpan soal',
+      myQuestionsSection: 'Soal buatan Anda',
+      globalQuestionsSection: 'Soal global',
+      myQuestionBadge: 'Soal Anda',
+      noResultsFound: 'Tidak ada soal yang cocok dengan filter.',
     },
     users: {
       title: 'Manajemen Pengguna',
@@ -880,6 +884,10 @@ export const messages = {
       toastUpdated: 'Question updated',
       toastCreated: 'Question created',
       toastSaveFailed: 'Failed to save question',
+      myQuestionsSection: 'Your questions',
+      globalQuestionsSection: 'Global questions',
+      myQuestionBadge: 'Your question',
+      noResultsFound: 'No questions match your filters.',
     },
     users: {
       title: 'User Management',
