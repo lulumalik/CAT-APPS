@@ -136,7 +136,7 @@
           </section>
 
           <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
-            <h4 class="font-semibold text-[#1A1A1A]">3) Assign Tes / Kuis</h4>
+            <h4 class="font-semibold text-[#1A1A1A]">3) Assign Quiz</h4>
             <p class="mt-1 mb-3 text-xs text-gray-500">Pilih tes yang akan ditautkan ke kelas.</p>
             <select v-model="forms.test_definition_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
               <option :value="null">Pilih tes</option>
@@ -145,13 +145,13 @@
             <div class="mb-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
               Jenis: <span class="font-semibold">Quiz</span>
             </div>
-            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachTest">Assign Tes</button>
+            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachTest">Assign Quiz</button>
             <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
               <li v-for="x in managedClass.test_definitions || []" :key="x.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
                 <span class="truncate">{{ x.name }}</span>
                 <button type="button" class="text-red-500" @click="detachTest(x.id)">hapus</button>
               </li>
-              <li v-if="!(managedClass.test_definitions || []).length" class="text-xs text-gray-400">Belum ada tes/kuis.</li>
+              <li v-if="!(managedClass.test_definitions || []).length" class="text-xs text-gray-400">Belum ada quiz.</li>
             </ul>
           </section>
         </div>

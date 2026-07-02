@@ -2,12 +2,12 @@
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('tests.title') }}</h1>
-        <p class="text-gray-500 mt-1">{{ t('tests.subtitle') }}</p>
+        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ pageTitle }}</h1>
+        <p class="text-gray-500 mt-1">{{ pageSubtitle }}</p>
       </div>
       <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openCreate">
         <Plus class="h-[18px] w-[18px]" />
-        {{ t('tests.createTest') }}
+        {{ createButtonLabel }}
       </button>
     </div>
 
@@ -120,6 +120,13 @@
               <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)">
                 {{ t('common.edit') }}
               </button>
+              <button
+                v-if="isExamPage"
+                class="px-4 py-2 rounded-full border border-blue-100 text-blue-700 text-sm font-medium hover:bg-blue-50 transition-colors"
+                @click="duplicateById(test.id)"
+              >
+                Duplikat Ujian
+              </button>
               <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" @click="removeById(test.id)">
                 {{ t('common.delete') }}
               </button>
@@ -202,6 +209,14 @@
             </button>
             <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewSubmissions(test)" :disabled="deletingId === test.id">{{ t('tests.submissions') }}</button>
             <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)" :disabled="deletingId === test.id">{{ t('common.edit') }}</button>
+            <button
+              v-if="isExamPage"
+              class="px-4 py-2 rounded-full border border-blue-100 text-blue-700 text-sm font-medium hover:bg-blue-50 transition-colors"
+              :disabled="deletingId === test.id"
+              @click="duplicateById(test.id)"
+            >
+              Duplikat Ujian
+            </button>
             <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" @click="removeById(test.id)" :disabled="deletingId === test.id">
               <span v-if="deletingId === test.id" class="flex items-center gap-2">
                 <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -275,6 +290,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { Check, FileText, Lock, Plus, Search } from 'lucide-vue-next'
 import TestCreateModal from '@/components/TestCreateModal.vue'
 import TestAssignQuestionsModal from '@/components/TestAssignQuestionsModal.vue'
@@ -286,6 +302,7 @@ import { useI18n } from '@/composables/useI18n'
 const { confirm } = useModal()
 const toast = useToast()
 const { t } = useI18n()
+const route = useRoute()
 
 const tests = ref([])
 const questions = ref([]) // For stats
@@ -303,6 +320,10 @@ const editingIndex = ref(-1)
 const deletingId = ref(null)
 const regularPage = ref(1)
 const regularPageSize = 5
+const isExamPage = computed(() => route.name === 'exams')
+const pageTitle = computed(() => (isExamPage.value ? 'Manajemen Ujian' : t('tests.title')))
+const pageSubtitle = computed(() => (isExamPage.value ? 'Buat ujian gabungan lintas mata pelajaran.' : t('tests.subtitle')))
+const createButtonLabel = computed(() => (isExamPage.value ? 'Buat Ujian' : t('tests.createTest')))
 
 const categories = [
   'Kewarganegaraan',
@@ -520,6 +541,16 @@ const removeById = async (id) => {
   const idx = filtered.value.findIndex(t => t.id === id)
   if (idx !== -1) {
     await remove(idx)
+  }
+}
+
+const duplicateById = async (id) => {
+  try {
+    const { data } = await window.axios.post(`/api/tests/${id}/duplicate`)
+    tests.value.unshift(data)
+    toast.success('Success', 'Ujian berhasil diduplikat')
+  } catch (e) {
+    toast.error('Error', 'Gagal menduplikat ujian')
   }
 }
 

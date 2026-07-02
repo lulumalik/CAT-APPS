@@ -151,6 +151,7 @@ const navItems = computed(() => {
 
     return [
       { to: '/dashboard', label: t('nav.dashboard'), locked: !onboardingDone.value },
+      { to: '/ujian', label: 'Ujian', locked: !onboardingDone.value },
       { to: '/my-classes', label: t('nav.myClasses'), locked: !onboardingDone.value },
       { to: '/profile', label: 'Profil' },
       { to: '/activity-history', label: 'Riwayat Aktivitas' },
@@ -161,6 +162,7 @@ const navItems = computed(() => {
 
   const items = [
     { to: '/dashboard', label: t('nav.dashboard') },
+    { to: '/exams', label: 'Ujian' },
     { to: '/bimble-classes', label: t('nav.bimbleClasses') },
     { to: '/materials', label: t('nav.manageMaterials') },
     { to: '/tests', label: t('nav.tests') },

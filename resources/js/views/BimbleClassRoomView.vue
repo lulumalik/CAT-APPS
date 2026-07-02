@@ -124,7 +124,7 @@
                 :to="{ name: 'quick-test', params: { id: test.id } }"
                 class="w-full sm:w-auto text-center rounded-full bg-gradient-to-r from-[#9DB359] to-[#7CB342] text-white px-5 py-2 text-sm font-semibold shadow-sm hover:opacity-95"
               >
-                {{ t('bimble.startTest') }}
+                {{ t('bimble.startQuiz') }}
               </router-link>
               <span
                 v-else-if="test?.id && isExpired(test)"
@@ -134,7 +134,7 @@
               </span>
               <span v-else class="text-xs text-gray-400">test id missing</span>
             </div>
-            <p v-if="!workspace.tests?.length" class="text-gray-500 text-sm">{{ t('bimble.noTests') }}</p>
+            <p v-if="!workspace.tests?.length" class="text-gray-500 text-sm">{{ t('bimble.noQuizzes') }}</p>
           </div>
 
           <div v-if="section === 'info'" class="rounded-2xl md:rounded-[2rem] bg-white border border-gray-100 shadow-lg shadow-black/5 p-4 md:p-8 text-sm text-gray-600 space-y-2">

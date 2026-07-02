@@ -163,6 +163,7 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::post('/tests', [TestDefinitionController::class, 'store']);
     Route::put('/tests/{test}', [TestDefinitionController::class, 'update']);
     Route::delete('/tests/{test}', [TestDefinitionController::class, 'destroy']);
+    Route::post('/tests/{test}/duplicate', [TestDefinitionController::class, 'duplicate']);
 
     Route::get('/tests/{test}/submissions', [TestDefinitionController::class, 'testSubmissions']);
     Route::get('/tests/{test}/free-tryout-submissions', [TestDefinitionController::class, 'freeTryoutSubmissions']);

@@ -28,6 +28,7 @@ import ParentJoinView from '@/views/ParentJoinView.vue';
 import ChildDetailView from '@/views/ChildDetailView.vue';
 import GuardianManageView from '@/views/GuardianManageView.vue';
 import StudentReportsManageView from '@/views/StudentReportsManageView.vue';
+import StudentExamsView from '@/views/StudentExamsView.vue';
 import { useAppStore } from '@/stores/app';
 
 const routes = [
@@ -40,6 +41,8 @@ const routes = [
   { path: '/dashboard/student/:id', name: 'student-dashboard', component: DashboardView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/question-bank', name: 'question-bank', component: QuestionBankView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/tests', name: 'tests', component: TestsView, meta: { requiresAuth: true, requiresStaff: true } },
+  { path: '/exams', name: 'exams', component: TestsView, meta: { requiresAuth: true, requiresStaff: true } },
+  { path: '/ujian', name: 'student-exams', component: StudentExamsView, meta: { requiresAuth: true } },
   { path: '/users', name: 'users', component: UserManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/materials', name: 'materials', component: MaterialsManageView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/blog', name: 'blog', component: BlogView },
@@ -130,6 +133,7 @@ router.beforeEach(async (to, from, next) => {
         'my-classes',
         'bimble-class-room',
         'quick-test',
+        'student-exams',
         'blog-detail',
         'free-tryout',
         'notifications',

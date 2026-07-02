@@ -1,6 +1,6 @@
 <template>
-  <main class="min-h-screen bg-[#F9F9F7] py-8 font-sans text-[#1A1A1A] anti-cheat-mode">
-    <div class="mx-auto max-w-7xl px-4 md:px-12">
+  <main class="h-screen bg-[#F9F9F7] py-4 md:py-6 font-sans text-[#1A1A1A] anti-cheat-mode overflow-hidden">
+    <div class="mx-auto max-w-7xl px-4 md:px-8 h-full flex flex-col min-h-0">
       <div
         v-if="antiCheatMessage"
         class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
@@ -8,7 +8,7 @@
         {{ antiCheatMessage }} ({{ violations }}/{{ maxViolations }})
       </div>
 
-      <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center justify-between mb-4 md:mb-6 shrink-0">
         <div>
           <h1 class="text-2xl font-bold text-[#1A1A1A]">{{ testData?.name || t('testRunner.defaultTitle') }}</h1>
           <p class="text-gray-500 mt-1 flex items-center gap-2">
@@ -29,9 +29,9 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <div class="lg:col-span-3 space-y-6">
-          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 flex-1 min-h-0">
+        <div class="lg:col-span-3 space-y-4 min-h-0 flex flex-col">
+          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-4 md:p-5 shrink-0">
             <div class="flex items-center justify-between mb-3">
               <span class="text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('testRunner.progress') }}</span>
               <span class="text-sm font-bold text-[#1A1A1A]">{{ answeredCount }} <span class="text-gray-400 font-normal">/</span> {{ questions.length }} <span class="text-gray-400 font-normal">{{ t('testRunner.answered') }}</span></span>
@@ -41,8 +41,8 @@
             </div>
           </div>
 
-          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-8">
-            <div class="flex items-center justify-between mb-8">
+          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-4 md:p-6 flex flex-col min-h-0 flex-1">
+            <div class="flex items-center justify-between mb-4 md:mb-6 shrink-0">
               <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200 uppercase tracking-wide">
                 {{ current.category }}
               </span>
@@ -56,20 +56,20 @@
               </button>
             </div>
 
-            <div class="mb-8">
+            <div class="mb-4 md:mb-6 shrink-0">
               <h2 class="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">{{ t('testRunner.question', { n: index + 1 }) }}</h2>
               <div v-if="current.image" class="mb-6">
                 <img :src="current.image" class="max-h-80 object-contain rounded-2xl border border-gray-200 shadow-sm" />
               </div>
-              <p class="text-2xl font-medium leading-relaxed text-[#1A1A1A]">{{ current.question }}</p>
+              <p class="text-xl md:text-2xl font-medium leading-relaxed text-[#1A1A1A]">{{ current.question }}</p>
             </div>
 
-            <div v-if="current.type === 'multiple_choice' || !current.type" class="space-y-4">
+            <div v-if="current.type === 'multiple_choice' || !current.type" class="space-y-3 overflow-y-auto pr-1 min-h-0">
               <div
                 v-for="opt in current.options"
                 :key="opt.key"
                 @click="canSubmit && !submitting && selectOption(opt.key)"
-                class="group rounded-xl border-2 px-6 py-5 flex items-center gap-5 transition-all relative overflow-hidden"
+                class="group rounded-xl border-2 px-4 md:px-6 py-4 flex items-center gap-4 transition-all relative overflow-hidden"
                 :class="[
                   selected(index) === opt.key
                     ? 'border-[#9DB359] bg-[#9DB359]/5'
@@ -85,14 +85,14 @@
                 >
                   {{ opt.key }}
                 </div>
-                <span class="text-lg text-[#1A1A1A]" :class="{ 'font-medium': selected(index) === opt.key }">{{ opt.label }}</span>
+                <span class="text-base md:text-lg text-[#1A1A1A]" :class="{ 'font-medium': selected(index) === opt.key }">{{ opt.label }}</span>
                 <div v-if="selected(index) === opt.key" class="absolute right-6 top-1/2 -translate-y-1/2 text-[#9DB359]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
               </div>
             </div>
 
-            <div v-else-if="current.type === 'essay'" class="space-y-3">
+            <div v-else-if="current.type === 'essay'" class="space-y-3 min-h-0">
               <textarea
                 v-model="answers[current.id]"
                 rows="8"
@@ -102,9 +102,9 @@
               ></textarea>
             </div>
 
-            <div class="mt-10 flex items-center justify-between pt-8 border-t border-gray-50">
+            <div class="mt-4 md:mt-6 flex items-center justify-between pt-4 md:pt-6 border-t border-gray-50 shrink-0">
               <button
-                class="px-8 py-3 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors font-medium text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
+                class="px-5 md:px-8 py-2.5 md:py-3 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors font-medium text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
                 @click="prev"
                 :disabled="index === 0"
               >
@@ -114,7 +114,7 @@
 
               <button
                 v-if="index < questions.length - 1"
-                class="px-8 py-3 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors font-medium cursor-pointer shadow-lg shadow-black/10 flex items-center gap-2"
+                class="px-5 md:px-8 py-2.5 md:py-3 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors font-medium cursor-pointer shadow-lg shadow-black/10 flex items-center gap-2"
                 @click="next"
               >
                 {{ t('testRunner.next') }}
@@ -123,7 +123,7 @@
 
               <button
                 v-else
-                class="px-8 py-3 rounded-full bg-[#9DB359] text-white hover:bg-[#8ca34b] transition-colors font-bold cursor-pointer shadow-lg shadow-[#9DB359]/20 flex items-center gap-2"
+                class="px-5 md:px-8 py-2.5 md:py-3 rounded-full bg-[#9DB359] text-white hover:bg-[#8ca34b] transition-colors font-bold cursor-pointer shadow-lg shadow-[#9DB359]/20 flex items-center gap-2"
                 @click="finishTest"
                 :disabled="!canSubmit || submitting"
               >
@@ -134,8 +134,8 @@
           </div>
         </div>
 
-        <aside class="lg:col-span-1">
-          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 sticky top-24">
+        <aside class="lg:col-span-1 min-h-0">
+          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-5 sticky top-4">
             <h3 class="font-bold text-[#1A1A1A] mb-4 flex items-center gap-2">
               <span class="w-1.5 h-6 rounded-full bg-[#9DB359]"></span>
               {{ t('testRunner.questionNavigator') }}

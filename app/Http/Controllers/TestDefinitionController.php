@@ -145,6 +145,33 @@ class TestDefinitionController extends Controller
         return response()->noContent();
     }
 
+    public function duplicate(Request $request, TestDefinition $test)
+    {
+        $user = $request->user();
+        if ($user && $user->role === 'mentor' && $test->created_by !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $copy = $test->replicate([
+            'name',
+            'description',
+            'category',
+            'duration',
+            'schedule_at',
+            'start_time',
+            'end_time',
+            'question_ids',
+            'is_free_tryout',
+        ]);
+        $copy->name = "{$test->name} (Duplikat)";
+        $copy->description = $test->description;
+        $copy->is_active = false;
+        $copy->created_by = optional($user)->id;
+        $copy->save();
+
+        return response()->json($copy, 201);
+    }
+
     /**
      * Get incoming tests (upcoming and ongoing)
      */
