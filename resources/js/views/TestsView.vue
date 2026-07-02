@@ -114,7 +114,7 @@
               <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewTryoutResults(test)">
                 Tryout Result
               </button>
-              <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="openAssign(test)">
+              <button v-if="!isExamPage" class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="openAssign(test)">
                 {{ t('tests.assignQuestions') }}
               </button>
               <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)">
@@ -145,7 +145,7 @@
               </span>
               <router-link
                 v-else
-                :to="{ name: 'quick-test', params: { id: test.id } }"
+                :to="{ name: isExamPage ? 'quick-exam' : 'quick-test', params: { id: test.id } }"
                 class="text-xl font-bold text-[#1A1A1A] group-hover:text-[#9DB359] transition-colors hover:underline"
               >
                 {{ test.name }}
@@ -201,13 +201,14 @@
 
           <div class="mt-6 flex items-center justify-end gap-3 pt-6 border-t border-gray-50">
             <button
+              v-if="!isExamPage"
               class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600"
               @click="openAssign(test)"
               :disabled="deletingId === test.id"
             >
               {{ t('tests.assignQuestions') }}
             </button>
-            <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewSubmissions(test)" :disabled="deletingId === test.id">{{ t('tests.submissions') }}</button>
+            <button v-if="!isExamPage" class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="viewSubmissions(test)" :disabled="deletingId === test.id">{{ t('tests.submissions') }}</button>
             <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)" :disabled="deletingId === test.id">{{ t('common.edit') }}</button>
             <button
               v-if="isExamPage"
@@ -324,6 +325,7 @@ const isExamPage = computed(() => route.name === 'exams')
 const pageTitle = computed(() => (isExamPage.value ? 'Manajemen Ujian' : t('tests.title')))
 const pageSubtitle = computed(() => (isExamPage.value ? 'Buat ujian gabungan lintas mata pelajaran.' : t('tests.subtitle')))
 const createButtonLabel = computed(() => (isExamPage.value ? 'Buat Ujian' : t('tests.createTest')))
+const apiBase = computed(() => (isExamPage.value ? '/api/exams' : '/api/tests'))
 
 const categories = [
   'Kewarganegaraan',
@@ -418,7 +420,7 @@ const formatDateShort = (d) => {
 const loadTests = async () => {
   loading.value = true
   try {
-    const { data } = await window.axios.get('/api/tests')
+    const { data } = await window.axios.get(apiBase.value)
     tests.value = data
     
     // Also load questions count for stats
@@ -477,19 +479,19 @@ const createTest = async (formData) => {
 
     if (editingIndex.value > -1) {
       const id = filtered.value[editingIndex.value].id
-      const { data } = await window.axios.put(`/api/tests/${id}`, payload)
+      const { data } = await window.axios.put(`${apiBase.value}/${id}`, payload)
       savedTest = data
       const idx = tests.value.findIndex(t => t.id === id)
       if (idx !== -1) tests.value[idx] = data
       toast.success('Success', t('modals.testCreate.update'))
     } else {
-      const { data } = await window.axios.post('/api/tests', payload)
+      const { data } = await window.axios.post(apiBase.value, payload)
       savedTest = data
       tests.value.unshift(data)
       toast.success('Success', t('tests.createTest'))
       
       // Prompt to assign questions
-      const assignNow = await confirm({
+      const assignNow = isExamPage.value ? false : await confirm({
         title: t('tests.assignQuestions'),
         message: t('modals.testCreate.subtitle'),
         confirmText: t('tests.assignQuestions'),
@@ -526,7 +528,7 @@ const remove = async (i) => {
   if (confirmed) {
     deletingId.value = test.id
     try {
-      await window.axios.delete(`/api/tests/${test.id}`)
+      await window.axios.delete(`${apiBase.value}/${test.id}`)
       tests.value = tests.value.filter(item => item.id !== test.id)
       toast.success('Success', t('tests.delete'))
     } catch (e) {
@@ -546,7 +548,7 @@ const removeById = async (id) => {
 
 const duplicateById = async (id) => {
   try {
-    const { data } = await window.axios.post(`/api/tests/${id}/duplicate`)
+    const { data } = await window.axios.post(`${apiBase.value}/${id}/duplicate`)
     tests.value.unshift(data)
     toast.success('Success', 'Ujian berhasil diduplikat')
   } catch (e) {
@@ -585,7 +587,7 @@ const refreshAssignData = async () => {
   try {
     const [qRes, testRes] = await Promise.all([
       window.axios.get('/api/questions'),
-      window.axios.get(`/api/tests/${selectedTest.value.id}`),
+      window.axios.get(`${apiBase.value}/${selectedTest.value.id}`),
     ])
     questions.value = qRes.data.items || []
     const fresh = testRes.data
@@ -621,7 +623,7 @@ const assignQuestions = async (updatedTest) => {
       is_active: updatedTest.isActive
     }
     
-    const { data } = await window.axios.put(`/api/tests/${updatedTest.id}`, payload)
+    const { data } = await window.axios.put(`${apiBase.value}/${updatedTest.id}`, payload)
     const idx = tests.value.findIndex(t => t.id === updatedTest.id)
     if (idx !== -1) tests.value[idx] = data
     

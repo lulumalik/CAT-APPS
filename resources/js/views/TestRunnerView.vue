@@ -24,10 +24,13 @@ const testId = route.params.id
 const questions = ref([])
 const testData = ref(null)
 const isSubmitting = ref(false)
+const isExam = route.name === 'quick-exam'
+const detailApi = isExam ? `/api/exams/${testId}` : `/api/tests/${testId}`
+const submitApi = isExam ? `/api/exams/${testId}/submit` : `/api/tests/${testId}/submit`
 
 const fetchTest = async () => {
   try {
-    const { data } = await window.axios.get(`/api/tests/${testId}`)
+    const { data } = await window.axios.get(detailApi)
 
     if (data.has_submitted) {
       toast.error('Error', 'You have already submitted this test')
@@ -37,8 +40,8 @@ const fetchTest = async () => {
 
     if (!data.can_submit) {
       const message = data?.status === 'upcoming'
-        ? 'Test belum dimulai sesuai jadwal'
-        : 'Test sudah berakhir atau tidak tersedia'
+        ? `${isExam ? 'Ujian' : 'Test'} belum dimulai sesuai jadwal`
+        : `${isExam ? 'Ujian' : 'Test'} sudah berakhir atau tidak tersedia`
       toast.error('Error', message)
       router.push('/dashboard')
       return
@@ -47,7 +50,7 @@ const fetchTest = async () => {
     testData.value = data
     questions.value = data.questions || []
   } catch (error) {
-    const message = error?.response?.data?.message || 'Failed to start test or test not found'
+    const message = error?.response?.data?.message || `Failed to start ${isExam ? 'exam' : 'test'} or data not found`
     toast.error('Error', message)
     router.push('/dashboard')
   }
@@ -58,11 +61,11 @@ const handleSubmit = async ({ answers }) => {
   isSubmitting.value = true
 
   try {
-    await window.axios.post(`/api/tests/${testId}/submit`, { answers })
+    await window.axios.post(submitApi, { answers })
     toast.success(t('testRunner.toastSubmittedTitle'), t('testRunner.toastSubmittedMessage'))
     router.push('/dashboard')
   } catch {
-    toast.error('Error', 'Failed to submit test')
+    toast.error('Error', `Failed to submit ${isExam ? 'exam' : 'test'}`)
     isSubmitting.value = false
   }
 }

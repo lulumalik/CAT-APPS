@@ -25,7 +25,7 @@
           <p class="text-sm text-gray-500">{{ test.category }} · {{ test.duration }} menit</p>
         </div>
         <router-link
-          :to="{ name: 'quick-test', params: { id: test.id } }"
+          :to="{ name: 'quick-exam', params: { id: test.id } }"
           class="inline-flex rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white hover:bg-black"
         >
           Mulai Ujian
@@ -46,7 +46,7 @@ const items = ref([])
 async function load() {
   loading.value = true
   try {
-    const { data } = await axios.get('/api/available-tests')
+    const { data } = await axios.get('/api/available-exams')
     items.value = Array.isArray(data) ? data : []
     errorMessage.value = ''
   } catch (error) {

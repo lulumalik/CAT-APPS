@@ -19,6 +19,7 @@ use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\RegistrationFormPdfController;
 use App\Http\Controllers\StudentDashboardPdfController;
 use App\Http\Controllers\StudentReportController;
+use App\Http\Controllers\ExamDefinitionController;
 
 Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()]));
 
@@ -94,6 +95,9 @@ Route::middleware(['auth', 'app.not_expired'])->group(function () {
 
     Route::get('/tests/{test}', [TestDefinitionController::class, 'show']);
     Route::post('/tests/{test}/submit', [TestDefinitionController::class, 'submit']);
+    Route::get('/available-exams', [ExamDefinitionController::class, 'available']);
+    Route::get('/exams/{exam}', [ExamDefinitionController::class, 'show']);
+    Route::post('/exams/{exam}/submit', [ExamDefinitionController::class, 'submit']);
     Route::get('/my-tests', [TestDefinitionController::class, 'myTests']);
     Route::get('/certificates/{certificateIssue}/download', [CertificateController::class, 'download']);
 
@@ -164,6 +168,11 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::put('/tests/{test}', [TestDefinitionController::class, 'update']);
     Route::delete('/tests/{test}', [TestDefinitionController::class, 'destroy']);
     Route::post('/tests/{test}/duplicate', [TestDefinitionController::class, 'duplicate']);
+    Route::get('/exams', [ExamDefinitionController::class, 'index']);
+    Route::post('/exams', [ExamDefinitionController::class, 'store']);
+    Route::put('/exams/{exam}', [ExamDefinitionController::class, 'update']);
+    Route::delete('/exams/{exam}', [ExamDefinitionController::class, 'destroy']);
+    Route::post('/exams/{exam}/duplicate', [ExamDefinitionController::class, 'duplicate']);
 
     Route::get('/tests/{test}/submissions', [TestDefinitionController::class, 'testSubmissions']);
     Route::get('/tests/{test}/free-tryout-submissions', [TestDefinitionController::class, 'freeTryoutSubmissions']);
