@@ -23,7 +23,10 @@
                   :style="{ height: item.height + '%', background: color }"
                   :class="item.height === 0 ? 'opacity-30' : ''"
                 ></div>
-                <span class="mt-2 text-[10px] text-gray-500 text-center leading-tight line-clamp-2">{{ item.label }}</span>
+                <span class="mt-2 text-center leading-tight min-w-0 px-0.5">
+                  <span v-if="item.label" class="text-[10px] text-gray-500 block">{{ item.label }}</span>
+                  <span v-if="item.sublabel" class="text-[9px] text-gray-400 block line-clamp-2">{{ item.sublabel }}</span>
+                </span>
               </div>
             </div>
           </div>
@@ -148,8 +151,9 @@ const timelineBars = computed(() =>
       const display = props.valueMode === 'percent'
         ? `${raw}%`
         : (d.unit ? `${raw} ${d.unit}` : String(Math.round(raw)))
-      const label = d.date ? fmtDate(d.date) : (d.label || '')
-      return { label, height: pct, display }
+      const dateLabel = d.date ? fmtDate(d.date) : ''
+      const subLabel = d.label || d.quiz_name || d.exam_name || ''
+      return { label: dateLabel, sublabel: subLabel, height: pct, display }
     }),
 )
 

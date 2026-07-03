@@ -141,7 +141,18 @@
             color: #9ca3af;
             text-align: center;
             margin-top: 6px;
+            padding-bottom: 0;
+        }
+        .chart-date-sub {
+            font-size: 8px;
+            color: #6b7280;
+            text-align: center;
+            font-weight: 600;
+            line-height: 1.25;
+            margin-top: 2px;
             padding-bottom: 2px;
+            max-width: 72px;
+            word-wrap: break-word;
         }
         .chart-bar-group { margin: 0 auto; }
         .chart-bar-slot {

@@ -333,6 +333,7 @@ const academicSubjectCharts = computed(() =>
         data: points.map((p) => ({
           date: p.date,
           value: Number(p.value),
+          label: p.quiz_name || p.label || undefined,
         })),
       }
     })
