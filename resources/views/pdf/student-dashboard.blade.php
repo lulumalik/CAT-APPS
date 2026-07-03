@@ -96,6 +96,22 @@
         }
         .stat-value { font-size: 16px; font-weight: 700; color: #9db359; }
         .stat-label { font-size: 9px; color: #6b7280; margin-top: 2px; }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .data-table th {
+            text-align: left;
+            font-size: 9px;
+            color: #6b7280;
+            font-weight: 700;
+            padding: 6px 8px 6px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .data-table td {
+            font-size: 10px;
+            padding: 8px 8px 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+        .data-table tr:last-child td { border-bottom: none; }
         .chart-panel {
             border: 1px solid #eef0f2;
             border-radius: 10px;
@@ -316,6 +332,31 @@
             'Belum ada nilai quiz.',
             100
         ) !!}
+        @php
+            $quizResults = $progress['quiz_subject_results'] ?? [];
+        @endphp
+        @if (count($quizResults))
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Mata Pelajaran</th>
+                        <th>Quiz</th>
+                        <th>Nilai</th>
+                        <th>Tanggal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($quizResults as $row)
+                        <tr>
+                            <td>{{ $row['subject_label'] ?? $row['subject'] ?? '-' }}</td>
+                            <td>{{ $row['quiz_name'] ?? '-' }}</td>
+                            <td><strong>{{ is_numeric($row['score'] ?? null) ? (floor((float) $row['score']) == (float) $row['score'] ? (int) $row['score'] : number_format((float) $row['score'], 1, '.', '')) : '-' }}</strong></td>
+                            <td>{{ isset($row['date']) ? \Carbon\Carbon::parse($row['date'])->locale('id')->translatedFormat('d M Y') : '-' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
     </div>
 
     <div class="section">

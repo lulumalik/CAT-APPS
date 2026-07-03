@@ -32,6 +32,18 @@ return [
                 ['id' => 'renang', 'label' => 'Renang', 'unit' => 'detik', 'sort' => 'asc'],
             ],
         ],
+        [
+            'id' => 'akademik',
+            'label' => 'Akademik',
+            'scoring_mode' => 'test',
+            'source' => 'academic',
+            'subcategories' => [
+                ['id' => 'kewarganegaraan', 'label' => 'Kewarganegaraan', 'test_categories' => ['Kewarganegaraan', 'Citizenship', 'Law', 'Hukum']],
+                ['id' => 'math', 'label' => 'Matematika', 'test_categories' => ['Math', 'Mathematics', 'Matematika']],
+                ['id' => 'english', 'label' => 'Bahasa Inggris', 'test_categories' => ['English', 'Bahasa Inggris']],
+                ['id' => 'interpersonal', 'label' => 'Interpersonal Skill', 'test_categories' => ['Interpersonal Skill', 'Interpersonal']],
+            ],
+        ],
         /*
         |--------------------------------------------------------------------------
         | Psikologi — dinonaktifkan sementara

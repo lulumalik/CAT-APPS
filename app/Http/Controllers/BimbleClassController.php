@@ -302,6 +302,10 @@ class BimbleClassController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        if ($test->status === 'ended') {
+            return response()->json(['message' => 'Quiz sudah kedaluwarsa dan tidak bisa ditautkan ke kelas.'], 422);
+        }
+
         $bimbleClass->testDefinitions()->syncWithoutDetaching([
             $data['test_definition_id'] => [
                 'kind' => $data['kind'],

@@ -170,6 +170,30 @@
             empty-text="Belum ada nilai quiz."
           />
         </div>
+        <div v-if="(progress.quiz_subject_results || []).length" class="mt-4 overflow-x-auto">
+          <table :class="pdfMode ? 'w-full text-sm border-collapse' : 'w-full text-sm'">
+            <thead>
+              <tr :class="pdfMode ? 'text-left text-xs text-gray-500 border-b border-gray-200' : 'text-left text-xs text-gray-500 border-b border-gray-100'">
+                <th class="pb-2 pr-3 font-semibold">Mata Pelajaran</th>
+                <th class="pb-2 pr-3 font-semibold">Quiz</th>
+                <th class="pb-2 pr-3 font-semibold">Nilai</th>
+                <th class="pb-2 font-semibold">Tanggal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(row, idx) in progress.quiz_subject_results"
+                :key="`${row.quiz_name}-${row.date}-${idx}`"
+                :class="pdfMode ? 'border-b border-gray-100' : 'border-b border-gray-50 last:border-0'"
+              >
+                <td class="py-2.5 pr-3">{{ row.subject_label || row.subject || '-' }}</td>
+                <td class="py-2.5 pr-3">{{ row.quiz_name || '-' }}</td>
+                <td class="py-2.5 pr-3 font-semibold">{{ formatScoreValue(row.score) }}</td>
+                <td class="py-2.5">{{ formatDate(row.date) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <!-- 5. Hasil Jasmani -->
@@ -486,6 +510,12 @@ function formatDateTime(d) {
   } catch {
     return d
   }
+}
+
+function formatScoreValue(value) {
+  if (value == null || Number.isNaN(Number(value))) return '-'
+  const num = Number(value)
+  return Number.isInteger(num) ? String(num) : num.toFixed(1)
 }
 
 watch(

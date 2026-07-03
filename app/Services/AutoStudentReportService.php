@@ -31,7 +31,7 @@ class AutoStudentReportService
             return null;
         }
 
-        $percent = round(((float) $submission->score / $total) * 100, 1);
+        $scaled = (int) round(((float) $submission->score / $total) * 100);
         $subjectLabel = $this->resolveSubjectLabel($test->category);
         $submittedAt = $submission->submitted_at ?? $submission->created_at ?? now();
 
@@ -43,15 +43,15 @@ class AutoStudentReportService
             'report_date' => $submittedAt->toDateString(),
             'title' => sprintf('Hasil tes: %s', $test->name),
             'summary' => sprintf(
-                'Ananda menyelesaikan tes %s (%s) dengan nilai %s%% (%d/%d benar).',
+                'Ananda menyelesaikan tes %s (%s) dengan nilai %d (%d/%d benar).',
                 $test->name,
                 $subjectLabel,
-                $percent,
+                $scaled,
                 (int) $submission->score,
                 $total
             ),
             'categories' => [
-                'akademik' => sprintf('%s — %s%% (%d/%d benar)', $subjectLabel, $percent, (int) $submission->score, $total),
+                'akademik' => sprintf('%s — %s: %d (%d/%d benar)', $subjectLabel, $test->name, $scaled, (int) $submission->score, $total),
             ],
             'metrics' => [
                 'auto_source' => 'test_submission',
@@ -60,7 +60,7 @@ class AutoStudentReportService
                 'test_name' => $test->name,
                 'category' => $test->category,
                 'subject_label' => $subjectLabel,
-                'percent' => $percent,
+                'scaled_score' => $scaled,
                 'score' => (int) $submission->score,
                 'total' => $total,
             ],
@@ -94,7 +94,7 @@ class AutoStudentReportService
             return null;
         }
 
-        $percent = round(((float) $submission->score / $total) * 100, 1);
+        $scaled = (int) round(((float) $submission->score / $total) * 100);
         $subjectLabel = $this->resolveSubjectLabel($exam->category);
         $submittedAt = $submission->submitted_at ?? $submission->created_at ?? now();
 
@@ -106,15 +106,15 @@ class AutoStudentReportService
             'report_date' => $submittedAt->toDateString(),
             'title' => sprintf('Hasil ujian: %s', $exam->name),
             'summary' => sprintf(
-                'Ananda menyelesaikan ujian %s (%s) dengan nilai %s%% (%d/%d benar).',
+                'Ananda menyelesaikan ujian %s (%s) dengan nilai %d (%d/%d benar).',
                 $exam->name,
                 $subjectLabel,
-                $percent,
+                $scaled,
                 (int) $submission->score,
                 $total
             ),
             'categories' => [
-                'akademik' => sprintf('%s — %s%% (%d/%d benar)', $subjectLabel, $percent, (int) $submission->score, $total),
+                'akademik' => sprintf('%s — %s: %d (%d/%d benar)', $subjectLabel, $exam->name, $scaled, (int) $submission->score, $total),
             ],
             'metrics' => [
                 'auto_source' => 'exam_submission',
@@ -123,7 +123,7 @@ class AutoStudentReportService
                 'exam_name' => $exam->name,
                 'category' => $exam->category,
                 'subject_label' => $subjectLabel,
-                'percent' => $percent,
+                'scaled_score' => $scaled,
                 'score' => (int) $submission->score,
                 'total' => $total,
             ],

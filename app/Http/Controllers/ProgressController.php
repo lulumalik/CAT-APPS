@@ -179,6 +179,7 @@ class ProgressController extends Controller
             'exam_timeline' => $this->examTimeline($student),
             'academic_subjects' => $this->academicSubjects($student),
             'academic_subject_timeline' => $this->academicSubjectTimeline($student),
+            'quiz_subject_results' => $this->quizSubjectResults($student),
             'physical' => $this->physicalBars($student),
             'physical_timeline' => $this->physicalTimeline($student),
             'materials' => $this->materialsPerClass($student),
@@ -192,28 +193,18 @@ class ProgressController extends Controller
      */
     private function academicSubjectTimeline(User $student): array
     {
-        if (! Schema::hasTable('test_submissions')) {
-            return [];
-        }
-
         $akademik = collect(config('rankings.groups', []))->firstWhere('id', 'akademik');
         $subcategories = $akademik['subcategories'] ?? [];
         if ($subcategories === []) {
             return [];
         }
 
-        $submissions = TestSubmission::query()
-            ->where('user_id', $student->id)
-            ->whereNotNull('score')
-            ->whereHas('testDefinition', function ($q) {
-                $q->where('is_free_tryout', false);
-                if (Schema::hasTable('bimble_class_test')) {
-                    $q->whereHas('bimbleClasses', function ($cq) {
-                        $cq->where('bimble_class_test.kind', 'quiz');
-                    });
-                }
-            })
-            ->with('testDefinition:id,category,question_ids')
+        $query = $this->quizSubmissionsQuery($student);
+        if ($query === null) {
+            return [];
+        }
+
+        $submissions = (clone $query)
             ->orderBy('submitted_at')
             ->orderBy('id')
             ->get();
@@ -223,11 +214,12 @@ class ProgressController extends Controller
             $categories = $sub['test_categories'] ?? [];
             $points = [];
             foreach ($submissions as $submission) {
-                $cat = $submission->testDefinition?->category;
+                $test = $submission->testDefinition;
+                $cat = $test?->category;
                 if (! $cat || ! in_array($cat, $categories, true)) {
                     continue;
                 }
-                $total = count($submission->testDefinition?->question_ids ?? []);
+                $total = count($test?->question_ids ?? []);
                 if ($total < 1) {
                     continue;
                 }
@@ -238,6 +230,8 @@ class ProgressController extends Controller
                 $points[] = [
                     'date' => optional($submission->submitted_at ?? $submission->created_at)->toDateString(),
                     'value' => $scaled,
+                    'quiz_name' => $test->name,
+                    'label' => $test->name,
                 ];
             }
 
@@ -249,6 +243,45 @@ class ProgressController extends Controller
         }
 
         return $series;
+    }
+
+    /**
+     * Flat list of quiz results per subject for detail tables.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function quizSubjectResults(User $student): array
+    {
+        $query = $this->quizSubmissionsQuery($student);
+        if ($query === null) {
+            return [];
+        }
+
+        $results = [];
+        foreach ((clone $query)->orderByDesc('submitted_at')->orderByDesc('id')->get() as $submission) {
+            $test = $submission->testDefinition;
+            if (! $test) {
+                continue;
+            }
+            $total = count($test->question_ids ?? []);
+            if ($total < 1) {
+                continue;
+            }
+            $scaled = $this->scaleScoreToHundred((float) $submission->score, $total);
+            if ($scaled === null) {
+                continue;
+            }
+
+            $results[] = [
+                'subject' => $test->category,
+                'subject_label' => $this->resolveAcademicSubjectLabel($test->category),
+                'quiz_name' => $test->name,
+                'score' => $scaled,
+                'date' => optional($submission->submitted_at ?? $submission->created_at)->toDateString(),
+            ];
+        }
+
+        return $results;
     }
 
     /**
@@ -360,29 +393,18 @@ class ProgressController extends Controller
      */
     private function academicSubjects(User $student): array
     {
-        if (! Schema::hasTable('test_submissions')) {
-            return [];
-        }
-
         $akademik = collect(config('rankings.groups', []))->firstWhere('id', 'akademik');
         $subcategories = $akademik['subcategories'] ?? [];
         if ($subcategories === []) {
             return [];
         }
 
-        $submissions = TestSubmission::query()
-            ->where('user_id', $student->id)
-            ->whereNotNull('score')
-            ->whereHas('testDefinition', function ($q) {
-                $q->where('is_free_tryout', false);
-                if (Schema::hasTable('bimble_class_test')) {
-                    $q->whereHas('bimbleClasses', function ($cq) {
-                        $cq->where('bimble_class_test.kind', 'quiz');
-                    });
-                }
-            })
-            ->with('testDefinition:id,category,question_ids')
-            ->get();
+        $query = $this->quizSubmissionsQuery($student);
+        if ($query === null) {
+            return [];
+        }
+
+        $submissions = $query->get();
 
         $rows = [];
         foreach ($subcategories as $sub) {
@@ -489,6 +511,50 @@ class ProgressController extends Controller
         }
 
         return round(($score / $totalQuestions) * 100, 1);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder<\App\Models\TestSubmission>|null
+     */
+    private function quizSubmissionsQuery(User $student)
+    {
+        if (! Schema::hasTable('test_submissions')) {
+            return null;
+        }
+
+        return TestSubmission::query()
+            ->where('user_id', $student->id)
+            ->whereNotNull('score')
+            ->whereHas('testDefinition', function ($q) {
+                $q->where('is_free_tryout', false);
+                if (Schema::hasTable('bimble_class_test')) {
+                    $q->whereHas('bimbleClasses', function ($cq) {
+                        $cq->where('bimble_class_test.kind', 'quiz');
+                    });
+                }
+            })
+            ->with('testDefinition:id,name,category,question_ids');
+    }
+
+    private function resolveAcademicSubjectLabel(?string $category): string
+    {
+        if (! $category) {
+            return 'Akademik';
+        }
+
+        foreach (config('rankings.groups', []) as $group) {
+            if (($group['id'] ?? '') !== 'akademik') {
+                continue;
+            }
+
+            foreach ($group['subcategories'] ?? [] as $sub) {
+                if (in_array($category, $sub['test_categories'] ?? [], true)) {
+                    return (string) $sub['label'];
+                }
+            }
+        }
+
+        return $category;
     }
 
     private function extractNumericScore(mixed $raw): ?float

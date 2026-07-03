@@ -178,7 +178,7 @@
             <h4 class="font-semibold text-[#1A1A1A]">3) Assign Quiz</h4>
             <p class="mt-1 mb-3 text-xs text-gray-500">Pilih tes yang akan ditautkan ke kelas.</p>
             <select v-model="forms.test_definition_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
-              <option :value="null">Pilih tes</option>
+              <option :value="null">{{ testOptions.length ? 'Pilih tes' : 'Tidak ada quiz aktif' }}</option>
               <option v-for="x in testOptions" :key="x.id" :value="x.id">{{ x.name }}</option>
             </select>
             <div class="mb-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
@@ -280,6 +280,18 @@ function formatProgram(programType) {
   return programCategoryLabel(programType)
 }
 
+function isTestExpired(test) {
+  if (test?.status === 'ended') return true
+  if (!test?.end_time) return false
+  const end = new Date(test.end_time)
+  return !Number.isNaN(end.getTime()) && end < new Date()
+}
+
+function filterAssignableTests(tests) {
+  const attachedIds = new Set((managedClass.value?.test_definitions || []).map((t) => t.id))
+  return (Array.isArray(tests) ? tests : []).filter((t) => !isTestExpired(t) && !attachedIds.has(t.id))
+}
+
 async function load() {
   loading.value = true
   try {
@@ -341,7 +353,10 @@ async function openManage(c) {
     ])
     managedClass.value = detail.data
     materialOptions.value = Array.isArray(mats.data) ? mats.data : (mats.data.data || [])
-    testOptions.value = Array.isArray(tests.data) ? tests.data : (tests.data.data || [])
+    testOptions.value = filterAssignableTests(Array.isArray(tests.data) ? tests.data : (tests.data?.data || []))
+    if (forms.test_definition_id && !testOptions.value.some((t) => t.id === forms.test_definition_id)) {
+      forms.test_definition_id = null
+    }
     await searchStudents()
   } catch (error) {
     errorMessage.value = error?.response?.data?.message || 'Gagal membuka panel kelola kelas.'
@@ -416,6 +431,11 @@ async function detachMaterial(materialId) {
   }
 }
 
+async function refreshTestOptions() {
+  const { data: tests } = await axios.get('/api/tests')
+  testOptions.value = filterAssignableTests(Array.isArray(tests) ? tests : (tests.data || []))
+}
+
 async function attachTest() {
   if (!managedClass.value?.id || !forms.test_definition_id) return
   try {
@@ -425,6 +445,7 @@ async function attachTest() {
     })
     forms.test_definition_id = null
     await reloadManagedClass()
+    await refreshTestOptions()
   } catch (error) {
     errorMessage.value = error?.response?.data?.message || 'Gagal assign test.'
   }
@@ -435,6 +456,7 @@ async function detachTest(testId) {
   try {
     await axios.delete(`/api/bimble-classes/${managedClass.value.id}/tests/${testId}`)
     await reloadManagedClass()
+    await refreshTestOptions()
   } catch (error) {
     errorMessage.value = error?.response?.data?.message || 'Gagal menghapus test dari kelas.'
   }
