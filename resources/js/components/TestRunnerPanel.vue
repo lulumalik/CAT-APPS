@@ -341,6 +341,7 @@ const finishTest = async (force = false) => {
 
   emit('submit', { answers: { ...answers.value }, force })
   clearProgress()
+  canSubmit.value = false
 }
 
 watch(

@@ -1,18 +1,20 @@
 <template>
   <main class="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-10">
     <!-- Hero header -->
-    <div class="flex flex-wrap items-start justify-between gap-6 mb-10">
-      <div class="min-w-0 flex-1">
-        <h1 class="text-4xl md:text-5xl font-bold text-[#1E3A8A] tracking-tight">Ujian</h1>
+    <div class="flex flex-wrap items-stretch justify-between gap-5 mb-10">
+      <div class="min-w-0 flex-1 flex flex-col justify-center py-0.5">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#1E3A8A] tracking-tight leading-tight">Ujian</h1>
         <p class="text-gray-500 mt-2 text-sm md:text-base max-w-xl leading-relaxed">
           Daftar ujian yang bisa dikerjakan (gabungan lintas mata pelajaran).
         </p>
       </div>
-      <div class="hidden sm:flex shrink-0 items-center justify-center w-36 h-36 md:w-44 md:h-44 rounded-[2rem] bg-gradient-to-br from-blue-50 to-blue-100/80 relative overflow-hidden">
-        <div class="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-blue-200/30"></div>
-        <div class="relative flex flex-col items-center">
-          <ClipboardList class="h-14 w-14 text-blue-500 drop-shadow-sm" stroke-width="1.5" />
-          <Pencil class="h-7 w-7 text-amber-400 absolute -bottom-1 -right-3 rotate-[-24deg]" stroke-width="2" />
+      <div class="hidden sm:block shrink-0 self-stretch">
+        <div class="h-full aspect-square rounded-[1.75rem] bg-gradient-to-br from-blue-50 to-blue-100/80 relative overflow-hidden flex items-center justify-center">
+          <div class="pointer-events-none absolute -top-4 -right-4 h-16 w-16 rounded-full bg-blue-200/35" aria-hidden="true" />
+          <div class="relative flex items-center justify-center">
+            <ClipboardList class="h-10 w-10 text-blue-500 drop-shadow-sm" stroke-width="1.5" />
+            <Pencil class="h-5 w-5 text-amber-400 absolute -bottom-0.5 -right-2.5 rotate-[-24deg]" stroke-width="2" />
+          </div>
         </div>
       </div>
     </div>

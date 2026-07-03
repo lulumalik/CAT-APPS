@@ -76,6 +76,16 @@ export function useAntiCheat({ maxViolations = 5, onMaxViolations, isActive } = 
     }
   }
 
+  const exitFullscreen = async () => {
+    if (document.fullscreenElement && document.exitFullscreen) {
+      try {
+        await document.exitFullscreen()
+      } catch {
+        // User may have already left fullscreen.
+      }
+    }
+  }
+
   const handleFullscreenChange = () => {
     if (!document.fullscreenElement) {
       registerViolation('Mode fullscreen ditutup selama ujian.')
@@ -103,6 +113,7 @@ export function useAntiCheat({ maxViolations = 5, onMaxViolations, isActive } = 
     document.removeEventListener('visibilitychange', handleVisibilityChange)
     window.removeEventListener('blur', handleWindowBlur)
     document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    void exitFullscreen()
   }
 
   return {
@@ -113,5 +124,6 @@ export function useAntiCheat({ maxViolations = 5, onMaxViolations, isActive } = 
     attach,
     detach,
     requestFullscreen,
+    exitFullscreen,
   }
 }
