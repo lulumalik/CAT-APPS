@@ -28,10 +28,22 @@ Daftar Akun → Verifikasi Email → Pendaftaran
     ↓
 Dashboard terbuka → Kelas Saya (materi & quiz kelas) + menu Ujian (lintas mapel)
     ↓
-Staff input nilai jasmani & laporan → Orang tua pantau perkembangan ananda
+Staff input nilai jasmani & laporan → Quiz/ujian selesai otomatis masuk laporan & grafik
     ↓
-Peserta / admin unduh laporan dashboard sebagai PDF
+Orang tua pantau perkembangan ananda & unduh laporan PDF
 ```
+
+### Sistem Penilaian di Dashboard
+
+Semua nilai akademik (quiz & ujian) ditampilkan dalam **skala 1–100** (bukan persentase). Tidak ada tampilan `66%` atau `2/3 benar` di dashboard peserta/orang tua.
+
+| Sumber nilai | Masuk ke | Keterangan |
+|--------------|----------|------------|
+| **Quiz kelas** (per mapel) | Nilai per Mata Pelajaran | Hanya quiz yang dilampirkan ke kelas (bukan tryout gratis) |
+| **Ujian** lintas mapel | Nilai Ujian | Dari menu Ujian peserta |
+| **Jasmani** (manual) | Hasil Jasmani | Diinput mentor/admin di halaman peringkat |
+
+Setelah peserta **menyelesaikan quiz atau ujian**, sistem otomatis membuat **laporan harian** dan memperbarui grafik perkembangan.
 
 ### Perbedaan Quiz/Test vs Ujian
 
@@ -55,7 +67,7 @@ Pada tahap **Administrasi**, berkas diunggah **satu per satu** (tersimpan langsu
 | Quiz kelas | ✅* | — | — | — |
 | Ujian lintas mapel | ✅* | — | — | — |
 | Dashboard perkembangan | ✅* | ✅** | — | ✅*** |
-| Unduh laporan PDF dashboard | ✅* | — | — | ✅*** |
+| Unduh laporan PDF perkembangan | — | ✅** | — | —**** |
 | Kelola kelas | — | — | ✅ | ✅ |
 | Input nilai jasmani & peringkat | — | — | ✅ | ✅ |
 | Laporan harian peserta | — | — | ✅ | ✅ |
@@ -68,8 +80,9 @@ Pada tahap **Administrasi**, berkas diunggah **satu per satu** (tersimpan langsu
 **Berkas pendaftaran:** disimpan privat di `storage/app/private/registration/` (bukan URL publik). Hanya pemilik & admin yang login dapat membuka — lihat [PANDUAN-ADMIN.md §16](./PANDUAN-ADMIN.md#16-troubleshooting-teknis).
 
 \* Setelah pendaftaran selesai disetujui  
-\** Hanya untuk ananda yang terhubung (login dengan **username**)  
-\*** Melalui menu Pengguna → Dashboard Siswa (`/dashboard/student/{id}`)
+\** Hanya untuk ananda yang terhubung (login dengan **username**); unduh PDF di halaman **Perkembangan ananda** (`/child/{id}`)  
+\*** Melalui menu Pengguna → Dashboard Siswa (`/dashboard/student/{id}`) — tampilan web, tanpa tombol unduh PDF di UI admin  
+\**** Admin dapat melihat konten yang sama di Dashboard Siswa; file PDF diunduh oleh **orang tua** dari halaman perkembangan ananda
 
 ---
 

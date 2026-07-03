@@ -11,7 +11,7 @@ Sebagai peserta, Anda dapat:
 - Mendaftar akun dan mengikuti **alur pendaftaran** (administrasi, psikologi, kesehatan, fisik)
 - Mengakses **kelas kursus** (materi, sesi, **quiz** per mata pelajaran)
 - Mengerjakan **ujian** lintas mata pelajaran lewat menu **Ujian**
-- Melihat **perkembangan** (laporan harian, nilai akademik, hasil jasmani, nilai tes)
+- Melihat **perkembangan** (laporan harian, nilai per mata pelajaran, hasil jasmani, nilai ujian)
 - Memantau **status pendaftaran** dan profil akun
 
 ---
@@ -123,18 +123,47 @@ Setelah **seluruh tahap pendaftaran disetujui**:
 1. Menu **Dashboard**, **Ujian**, dan **Kelas Saya** tidak lagi terkunci
 2. Buka **Dashboard** untuk melihat:
    - Kelas yang Anda ikuti
-   - Aktivitas kelas terbaru
+   - Riwayat aktivitas (kelas, quiz, ujian)
    - **Perkembangan Saya** (laporan, nilai, grafik)
-3. Klik **Download PDF** di kanan atas untuk menyimpan laporan dashboard sebagai file PDF
+
+> **Catatan:** Unduhan **PDF laporan perkembangan** hanya tersedia untuk **orang tua** yang sudah terhubung. Peserta melihat data langsung di dashboard.
 
 ### Urutan informasi di Perkembangan Saya
 
 1. **Laporan Harian** — filter tanggal (default: hari ini), dengan pagination
-2. **Ringkasan Mingguan**
-3. **Materi Kelas**
-4. **Nilai per Mata Pelajaran** (grafik)
-5. **Hasil Jasmani** (grafik)
-6. **Nilai Tes** (grafik)
+2. **Ringkasan Mingguan** — rekap otomatis per pekan
+3. **Materi Kelas** — ringkasan materi & aktivitas per kelas
+4. **Nilai per Mata Pelajaran** — grafik **terpisah per mapel** + tabel detail
+5. **Hasil Jasmani** — grafik per komponen (sprint, push up, dll.)
+6. **Nilai Ujian** — grafik hasil ujian lintas mata pelajaran
+
+### Format nilai (skala 1–100)
+
+- Semua nilai quiz & ujian ditampilkan sebagai **angka 1–100**, bukan persentase
+- Contoh laporan otomatis: *"Ananda menyelesaikan tes Ujian Akhir (Kewarganegaraan) dengan nilai 67."*
+- Riwayat aktivitas menampilkan: **Nilai: 67** (bukan `2/3` atau `%`)
+
+### Nilai per Mata Pelajaran — isi tampilan
+
+| Bagian | Keterangan |
+|--------|------------|
+| **Grafik per mapel** | Satu grafik untuk Kewarganegaraan, satu untuk Matematika, dst. (tidak digabung) |
+| **Sumbu grafik** | Tanggal di atas, **nama quiz** di bawah tiap batang |
+| **Tabel di bawah** | Kolom: Mata Pelajaran · Quiz · Nilai · Tanggal |
+
+Hanya quiz yang **dilampirkan ke kelas** yang masuk ke bagian ini (tryout gratis tidak masuk).
+
+### Nilai Ujian — isi tampilan
+
+- Grafik batang perkembangan nilai ujian (skala 1–100)
+- Di bawah tiap batang: **tanggal** dan **nama ujian**
+
+### Setelah menyelesaikan quiz atau ujian
+
+1. Nilai otomatis tercatat di grafik perkembangan
+2. Laporan harian otomatis dibuat (judul mis. *Hasil tes: …* atau *Hasil ujian: …*)
+3. Aktivitas muncul di **Riwayat Aktivitas** dengan badge Quiz / Ujian / Kelas
+4. Orang tua yang terhubung mendapat **notifikasi**
 
 ---
 
@@ -153,7 +182,7 @@ Platform membedakan dua jenis penilaian:
 2. Pilih ujian yang tersedia
 3. Klik **Mulai Ujian**
 4. Kerjakan soal dalam waktu yang ditentukan
-5. Submit — nilai tercatat otomatis
+5. Submit — nilai tercatat otomatis (skala 1–100) dan masuk ke **Nilai Ujian**
 
 ### Mengerjakan Quiz di Kelas
 
@@ -162,6 +191,7 @@ Platform membedakan dua jenis penilaian:
 3. Buka tab **Quiz kelas**
 4. Klik **Mulai quiz** jika jadwal aktif
 5. Quiz **kedaluwarsa** ditandai merah dan tidak bisa dikerjakan
+6. Setelah submit, nilai masuk ke **Nilai per Mata Pelajaran** (grafik mapel terkait + tabel detail)
 
 > **Penting:** Quiz dan ujian hanya bisa dikerjakan sesuai jadwal yang ditetapkan admin/mentor.
 
@@ -186,7 +216,9 @@ Platform membedakan dua jenis penilaian:
 
 ### Riwayat Aktivitas (`/activity-history`)
 
-- Lihat log aktivitas Anda di platform
+- Log aktivitas kelas, penyelesaian **quiz**, dan **ujian**
+- Badge warna: **Kelas** · **Quiz** · **Ujian**
+- Untuk quiz/ujian: deskripsi menampilkan **Nilai: …** (skala 1–100)
 
 ### Notifikasi (`/notifications`)
 
@@ -207,6 +239,15 @@ Tryout gratis **tidak memerlukan** akun pendaftaran penuh.
 ---
 
 ## 10. FAQ — Pertanyaan Umum
+
+**Q: Format nilai di dashboard seperti apa?**  
+A: Skala **1–100** (angka bulat). Bukan persentase dan bukan format `benar/total`.
+
+**Q: Kapan nilai quiz muncul di perkembangan?**  
+A: Setelah quiz **dilampirkan ke kelas** dan Anda menyelesaikannya. Tryout gratis tidak masuk grafik perkembangan.
+
+**Q: Bisa unduh PDF laporan sendiri?**  
+A: Tidak. PDF perkembangan diunduh oleh **orang tua** dari halaman Perkembangan ananda setelah terhubung.
 
 **Q: Dashboard saya terkunci, kenapa?**  
 A: Pendaftaran belum selesai. Lanjutkan di menu **Alur Pendaftaran** sampai semua tahap disetujui.

@@ -42,14 +42,14 @@ Panduan lengkap per peran: **[docs/manual/README.md](docs/manual/README.md)**
 - **Portal orang tua** — undangan via token, lihat perkembangan & unduh PDF
 - **Sertifikat** — template per program, penerbitan admin
 - **Blog/materi publik** — halaman beranda & artikel
-- **Notifikasi in-app** — laporan baru, nilai tes, dll.
+- **Notifikasi in-app** — laporan baru, nilai quiz/ujian, dll.
 - **PWA** — installable via Vite PWA plugin
 
 ### Laporan harian & ringkasan mingguan
 
 | Tipe | `type` di DB | Keterangan |
 |------|--------------|------------|
-| Harian | `daily` | Dibuat manual mentor/admin, atau otomatis dari tes & input jasmani |
+| Harian | `daily` | Dibuat manual mentor/admin, atau otomatis saat quiz kelas / ujian selesai & input jasmani |
 | Mingguan | `weekly_summary` | Diringkas dari laporan harian dalam satu minggu (Senin–Minggu, WIB) |
 
 **Ringkasan mingguan ter-generate otomatis** ketika:
@@ -70,8 +70,10 @@ GET  /api/student-reports              # daftar laporan (staff)
 POST /api/student-reports              # tulis laporan harian (staff)
 POST /api/student-reports/weekly       # generate/regenerate mingguan (staff; UI manual admin-only)
 GET  /api/students/{id}/reports        # laporan harian + mingguan untuk panel perkembangan
-GET  /api/students/{id}/pdf            # unduh PDF dashboard
+GET  /api/students/{id}/pdf            # unduh PDF perkembangan (orang tua; admin diizinkan via API)
 ```
+
+Nilai akademik di dashboard & PDF memakai skala **1–100** (bukan persentase). Grafik **Nilai per Mata Pelajaran** terpisah per mapel + tabel detail quiz; **Nilai Ujian** menampilkan tanggal & nama ujian di bawah batang grafik.
 
 ---
 

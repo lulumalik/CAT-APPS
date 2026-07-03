@@ -71,7 +71,7 @@ Klik **Kelola kelas** — modal terstruktur dalam 3 bagian:
 |--------|--------|
 | **1) Tambah Peserta** | Cari & tambah siswa ke kelas |
 | **2) Assign Materi** | Lampirkan materi ke sesi tertentu |
-| **3) Assign Quiz** | Lampirkan quiz dari `/tests` (jenis: **Quiz**) |
+| **3) Assign Quiz** | Lampirkan quiz dari `/tests` (jenis: **Quiz**); quiz kedaluwarsa/sudah ditaut tidak muncul di dropdown |
 
 > **Penting:** Peserta yang **belum selesai pendaftaran** dan **masa aktif sudah kedaluwarsa** tidak bisa ditambahkan ke kelas.
 
@@ -91,7 +91,10 @@ Klik **Kelola kelas** — modal terstruktur dalam 3 bagian:
 - Wajib pilih **kategori** (Math, English, dll.)
 - Bisa dijadikan **Tryout Gratis** untuk halaman publik
 
-**Alur:** Buat quiz → Atur soal → Lampirkan ke kelas via **Assign Quiz**
+**Alur:** Buat quiz → Atur soal → Lampirkan ke kelas via **Assign Quiz** → Peserta submit → nilai otomatis masuk perkembangan
+
+- Setelah peserta menyelesaikan quiz: **laporan harian otomatis** + grafik **Nilai per Mata Pelajaran** (mapel sesuai kategori quiz)
+- Lihat hasil di **Submisi** (`/tests/{id}/submissions`) — nilai skala 1–100
 
 ### Ujian (`/exams`)
 
@@ -100,7 +103,9 @@ Klik **Kelola kelas** — modal terstruktur dalam 3 bagian:
 - Tanpa field kategori & tanpa opsi tryout
 - Fitur **Duplikat Ujian** untuk membuat pretest/posttest dengan soal sama
 
-**Alur:** Buat ujian → Atur soal (dari berbagai kategori) → Peserta kerjakan di menu Ujian
+**Alur:** Buat ujian → Atur soal (dari berbagai kategori) → Peserta kerjakan di menu Ujian → nilai masuk **Nilai Ujian**
+
+- Lihat submisi di `/exams/{id}/submissions`
 
 ### Tips Umum
 
@@ -128,11 +133,13 @@ Menu **Laporan Peserta** (`/admin/student-reports`)
 3. Isi judul, tanggal, ringkasan, kategori (akademik, jasmani, kedisiplinan, dll.)
 4. Klik **Simpan Laporan Harian**
 
+> Selain laporan manual, sistem otomatis membuat laporan harian saat peserta **menyelesaikan quiz kelas** atau **ujian** (nilai skala 1–100).
+
 ### Buat Ringkasan Mingguan
 
 1. Pilih peserta yang sama
-2. Atur **mulai minggu** (opsional)
-3. Klik **Buat Ringkasan**
+2. Atur **mulai minggu** (opsional) atau gunakan **Generate minggu** di dashboard peserta (admin)
+3. Klik **Buat Ringkasan** / **Generate ulang** jika perlu perbarui narasi pekan
 
 ### Lihat & Hapus Laporan
 
@@ -149,7 +156,7 @@ Menu **Nilai & Peringkat Siswa** (`/rankings`)
 
 Halaman ini menampilkan kategori **Jasmani** (Sprint, Push Up, Pull Up, Sit Up, Shuttle Run, Renang).
 
-> Nilai akademik dari aktivitas tes di web otomatis masuk ke grafik perkembangan peserta.
+> Nilai akademik dari quiz kelas & ujian otomatis masuk grafik perkembangan peserta (**Nilai per Mata Pelajaran** — grafik terpisah per mapel + tabel detail; **Nilai Ujian**). Skala tampilan: **1–100**, bukan persentase.
 
 ### Input Nilai Manual
 
@@ -233,6 +240,12 @@ A: Cek apakah pendaftaran sudah selesai dan masa aktif belum kedaluwarsa.
 
 **Q: Nilai jasmani menimpa nilai kemarin?**  
 A: Tidak, jika tanggal berbeda. Pastikan pilih **tanggal penilaian** yang benar.
+
+**Q: Quiz tidak muncul di dropdown Assign Quiz?**  
+A: Quiz **kedaluwarsa** atau **sudah ditaut** ke kelas tidak ditampilkan. Buat quiz baru atau perpanjang jadwal.
+
+**Q: Nilai quiz tidak masuk grafik perkembangan?**  
+A: Pastikan quiz sudah **di-assign ke kelas** dan kategori mapel sesuai (Math, Kewarganegaraan, dll.). Tryout gratis tidak masuk grafik perkembangan.
 
 **Q: Quiz tidak muncul di ruang kelas peserta?**  
 A: Pastikan quiz sudah **di-assign** lewat **Assign Quiz** di kelola kelas.

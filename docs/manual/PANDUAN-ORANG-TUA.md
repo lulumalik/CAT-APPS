@@ -12,7 +12,8 @@ Sebagai orang tua, Anda dapat:
 - Login dengan **username** & kata sandi
 - Melihat **dashboard** perkembangan ananda (privat, hanya untuk Anda)
 - Membaca **laporan harian** dan **ringkasan mingguan**
-- Melihat **grafik nilai** akademik, jasmani, dan hasil tes
+- Melihat **grafik nilai** akademik (per mata pelajaran & ujian), jasmani
+- **Mengunduh laporan PDF** perkembangan ananda (rentang tanggal pilihan)
 - Menerima **notifikasi** saat ada laporan baru
 
 > Anda **tidak** dapat mengerjakan tes, mengubah nilai, atau mengakses kelas ananda secara langsung.
@@ -97,19 +98,50 @@ Informasi ditampilkan **berurutan**:
 
 ### 4) Nilai per Mata Pelajaran
 
-- Grafik perkembangan nilai dari aktivitas tes/quiz di web
+- **Grafik terpisah** per mata pelajaran (mis. Kewarganegaraan, Matematika) — tidak digabung dalam satu grafik
+- Setiap batang grafik menampilkan:
+  - **Tanggal** (baris atas)
+  - **Nama quiz** (baris bawah)
+- **Nilai** ditampilkan skala **1–100** (bukan persentase)
+- **Tabel detail** di bawah grafik:
+
+| Kolom | Isi |
+|-------|-----|
+| Mata Pelajaran | Nama mapel (mis. Matematika) |
+| Quiz | Nama quiz (mis. mtk 3) |
+| Nilai | Skor 1–100 |
+| Tanggal | Tanggal pengerjaan |
+
+> Hanya quiz yang dilampirkan ke kelas ananda yang masuk ke bagian ini.
 
 ### 5) Hasil Jasmani
 
-- Grafik perkembangan nilai jasmani (sprint, push up, dll.)
+- Grafik terpisah per komponen (sprint, push up, pull up, sit up, shuttle run, renang)
+- Satuan sesuai jenis tes (detik atau repetisi)
 
-### 6) Nilai Tes
+### 6) Nilai Ujian
 
-- Grafik hasil tes/ujian dari waktu ke waktu
+- Grafik hasil **ujian lintas mata pelajaran** (skala 1–100)
+- Di bawah tiap batang: **tanggal** dan **nama ujian**
 
 ---
 
-## 6. Langkah 4 — Notifikasi
+## 6. Langkah 4 — Unduh Laporan PDF
+
+Di halaman **Perkembangan [Nama Ananda]** (`/child/{id}`):
+
+1. Atur rentang tanggal:
+   - **From** — tanggal awal
+   - **To** — tanggal akhir
+   - Untuk **1 hari**, samakan From dan To
+2. Klik **Download PDF**
+3. File berisi: laporan harian dalam rentang, ringkasan mingguan, materi kelas, grafik nilai per mapel, hasil jasmani, dan nilai ujian — **sama seperti tampilan web**
+
+> Klik ringkasan mingguan di dashboard untuk mengisi rentang tanggal otomatis.
+
+---
+
+## 7. Langkah 5 — Notifikasi
 
 1. Buka menu **Notifikasi** di sidebar kiri
 2. Baca pemberitahuan, misalnya:
@@ -119,18 +151,19 @@ Informasi ditampilkan **berurutan**:
 
 ---
 
-## 7. Menu yang Tersedia untuk Orang Tua
+## 8. Menu yang Tersedia untuk Orang Tua
 
 | Menu | Fungsi |
 |------|--------|
 | Dashboard | Daftar ananda & laporan terbaru |
+| Perkembangan ananda | Detail laporan, grafik, unduh PDF |
 | Notifikasi | Pemberitahuan sistem |
 | Beranda | Kembali ke halaman publik lembaga |
 | Tentang Kami | Info lembaga & kontak |
 
 ---
 
-## 8. Privasi & Keamanan
+## 9. Privasi & Keamanan
 
 - Data ananda **hanya** terlihat oleh Anda (orang tua terhubung) dan staff lembaga
 - **Jangan bagikan** username & password akun kepada pihak lain
@@ -139,7 +172,13 @@ Informasi ditampilkan **berurutan**:
 
 ---
 
-## 9. FAQ — Pertanyaan Umum
+## 10. FAQ — Pertanyaan Umum
+
+**Q: Grafik Matematika hanya tampil 1 batang padahal ananda mengerjakan 2 quiz?**  
+A: Refresh halaman atau unduh ulang PDF. Setiap pengerjaan quiz seharusnya tampil sebagai batang terpisah dengan nama quiz di bawah tanggal.
+
+**Q: Nilai di PDF berbeda format dengan web?**  
+A: Seharusnya sama — skala 1–100, tanggal + nama quiz/ujian di bawah grafik. Jika tidak sesuai, unduh ulang PDF terbaru.
 
 **Q: Link undangan tidak valid / expired?**  
 A: Hubungi tim Pratistha via WhatsApp **+628138964488** — admin akan buat undangan baru.
@@ -161,7 +200,7 @@ A: Hubungi admin untuk bantuan perbaikan data akun.
 
 ---
 
-## 10. Kontak Bantuan
+## 11. Kontak Bantuan
 
 | Kanal | Informasi |
 |-------|-----------|

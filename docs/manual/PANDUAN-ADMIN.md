@@ -19,7 +19,7 @@ Admin memiliki akses **penuh** ke seluruh fitur:
 - **Laporan peserta** & ringkasan mingguan
 - **Undang orang tua** (berbasis **username**)
 - Dashboard statistik
-- **Dashboard siswa** (lihat & unduh laporan PDF per peserta)
+- **Dashboard siswa** (lihat perkembangan peserta di web)
 
 > Menu **Sertifikat** sementara dinonaktifkan di navigasi.
 
@@ -95,9 +95,10 @@ Menu **Pengguna** (`/users`)
 Untuk peserta (`role: user`):
 
 1. Di tabel **Pengguna**, klik **Dashboard Siswa** pada baris peserta
-2. Anda diarahkan ke `/dashboard/student/{id}` — tampilan sama seperti dashboard peserta
-3. Klik **Download PDF** untuk menyimpan laporan lengkap
-4. Gunakan **Kembali ke Manajemen User** untuk kembali ke daftar
+2. Anda diarahkan ke `/dashboard/student/{id}` — tampilan sama seperti dashboard peserta (kelas, aktivitas, perkembangan)
+3. Gunakan **Kembali ke Manajemen User** untuk kembali ke daftar
+
+> **Unduhan PDF** perkembangan dilakukan oleh **orang tua** dari halaman `/child/{id}`. Admin memantau lewat tampilan web di Dashboard Siswa.
 
 > **Catatan:** Nomor WhatsApp dan telepon orang tua **tidak** diisi saat signup — peserta mengisinya di tahap **Administrasi** (`/registration`).
 
@@ -157,13 +158,15 @@ Digunakan untuk tes **per mata pelajaran** yang dilampirkan ke **kelas kursus** 
 - Tes **kedaluwarsa** ditandai merah dan tidak bisa diklik
 - Daftar diurutkan: tes aktif di atas, kedaluwarsa di bawah
 - **Pagination** — 5 item per halaman
-- Lihat **submisi** hasil peserta
+- **Atur soal** — kelola soal dari bank soal
+- **Submisi** — halaman terpisah (`/tests/{id}/submissions`) menampilkan daftar peserta, nilai (skala 1–100), dan waktu submit
 
 ### Lampirkan ke Kelas (sebagai Quiz)
 
 1. Buka **Kelas kursus** → **Kelola kelas**
 2. Section **Assign Quiz** → pilih quiz yang sudah dibuat (jenis tetap **Quiz**)
-3. Peserta mengerjakan dari tab **Quiz kelas** di ruang kelas
+3. Quiz yang **sudah kedaluwarsa** atau **sudah ditautkan** tidak muncul di dropdown
+4. Peserta mengerjakan dari tab **Quiz kelas** di ruang kelas
 
 ---
 
@@ -194,6 +197,8 @@ Modul **terpisah** dari Quiz/Test — untuk ujian **gabungan lintas mata pelajar
 
 - Peserta melihat ujian di menu **Ujian** (`/ujian`)
 - Ujian hanya bisa dikerjakan sesuai jadwal aktif
+- Setelah submit: nilai (1–100) masuk **Nilai Ujian** + laporan harian otomatis
+- **Submisi** ujian: halaman terpisah (`/exams/{id}/submissions`)
 
 ---
 
@@ -278,7 +283,16 @@ Saat ini halaman peringkat menampilkan kategori **Jasmani** saja:
 | Shuttle Run | detik | — |
 | Renang | detik | — |
 
-> Nilai akademik dari aktivitas tes di web **otomatis** masuk ke grafik perkembangan peserta — tidak perlu input manual di halaman peringkat.
+> Nilai akademik dari quiz kelas & ujian **otomatis** masuk ke grafik perkembangan peserta (Nilai per Mata Pelajaran & Nilai Ujian) — tidak perlu input manual di halaman peringkat. Skala tampilan: **1–100**.
+
+### Mata pelajaran yang dikenali sistem
+
+| Mapel | Kategori soal/quiz |
+|-------|-------------------|
+| Kewarganegaraan | Kewarganegaraan, Citizenship, Law, Hukum |
+| Matematika | Math, Mathematics, Matematika |
+| Bahasa Inggris | English, Bahasa Inggris |
+| Interpersonal Skill | Interpersonal Skill, Interpersonal |
 
 ### Workflow Input Jasmani
 
@@ -294,10 +308,11 @@ Saat ini halaman peringkat menampilkan kategori **Jasmani** saja:
 
 Sama seperti panduan mentor — admin punya akses penuh:
 
-1. **Laporan harian** — judul, tanggal, ringkasan, kategori
-2. **Ringkasan mingguan** — generate otomatis dari laporan harian
-3. Laporan tampil di dashboard peserta & orang tua (dengan pagination & filter tanggal)
-4. Admin dapat membuka **Dashboard Siswa** dari menu Pengguna dan **mengunduh PDF** laporan lengkap
+1. **Laporan harian manual** — judul, tanggal, ringkasan, kategori
+2. **Laporan harian otomatis** — dibuat sistem saat peserta menyelesaikan quiz (kelas) atau ujian; format nilai **1–100**
+3. **Ringkasan mingguan** — generate otomatis dari laporan harian; admin/mentor bisa **generate ulang**
+4. Laporan tampil di dashboard peserta & orang tua (pagination & filter tanggal)
+5. Admin memantau lewat **Dashboard Siswa**; orang tua **mengunduh PDF** dari halaman perkembangan ananda
 
 ---
 
@@ -337,8 +352,9 @@ Akses dari menu **Pengguna** → **Dashboard Siswa**:
 |--------|------------|
 | Kelas Saya | Kelas yang diikuti peserta |
 | Aktivitas Kelas | Log aktivitas terbaru |
-| Perkembangan Saya | Laporan harian/mingguan, materi, grafik nilai |
-| Download PDF | Unduh laporan dashboard peserta sebagai file PDF |
+| Perkembangan Saya | Laporan harian/mingguan, materi, grafik nilai (per mapel terpisah + tabel quiz, nilai ujian) |
+
+> Unduhan file PDF dilakukan oleh orang tua di `/child/{id}`, bukan dari halaman admin ini.
 
 ---
 
@@ -372,7 +388,7 @@ Akses dari menu **Pengguna** → **Dashboard Siswa**:
 | Berkas pendaftaran 404 | Lihat [Berkas pendaftaran (storage)](#berkas-pendaftaran-storage) |
 | Peserta dashboard terkunci | Cek `fully_completed` di admin pendaftaran |
 | Peserta tidak bisa diundang ke kelas | Cek masa aktif & status pendaftaran |
-| Download PDF gagal | Refresh halaman, coba unduh lagi |
+| Download PDF gagal (orang tua) | Pastikan From/To valid; samakan tanggal untuk 1 hari; coba browser lain |
 | API error 500 | Cek `storage/logs/laravel.log`, jalankan `php artisan migrate` |
 
 ### Berkas pendaftaran (storage)
