@@ -1,6 +1,6 @@
 <template>
-  <header class="mb-10">
-    <div class="flex flex-wrap items-stretch justify-between gap-5">
+  <header class="mb-10 overflow-hidden">
+    <div class="flex flex-wrap items-center justify-between gap-4 md:gap-5">
       <div class="min-w-0 flex-1 flex flex-col justify-center py-0.5">
         <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight" :class="themeClasses.title">
           {{ title }}
@@ -13,26 +13,20 @@
         </div>
       </div>
 
-      <div v-if="icon" class="hidden sm:block shrink-0 self-stretch">
-        <div
-          class="h-full aspect-square rounded-[1.75rem] relative overflow-hidden flex items-center justify-center"
-          :class="themeClasses.box"
-        >
-          <div
-            class="pointer-events-none absolute -top-4 -right-4 h-16 w-16 rounded-full opacity-35"
-            :class="themeClasses.decoration"
-            aria-hidden="true"
+      <div
+        v-if="icon"
+        class="hidden sm:flex shrink-0 items-center justify-center w-[4.75rem] h-[4.75rem] md:w-[5.5rem] md:h-[5.5rem] rounded-[1.75rem] relative overflow-hidden"
+        :class="themeClasses.box"
+      >
+        <div class="relative flex items-center justify-center">
+          <component :is="icon" class="h-9 w-9 md:h-10 md:w-10 drop-shadow-sm" :class="themeClasses.icon" stroke-width="1.5" />
+          <component
+            v-if="secondaryIcon"
+            :is="secondaryIcon"
+            class="h-4 w-4 md:h-5 md:w-5 absolute -bottom-0.5 -right-2 rotate-[-24deg]"
+            :class="themeClasses.secondary"
+            stroke-width="2"
           />
-          <div class="relative flex items-center justify-center">
-            <component :is="icon" class="h-10 w-10 drop-shadow-sm" :class="themeClasses.icon" stroke-width="1.5" />
-            <component
-              v-if="secondaryIcon"
-              :is="secondaryIcon"
-              class="h-5 w-5 absolute -bottom-0.5 -right-2.5 rotate-[-24deg]"
-              :class="themeClasses.secondary"
-              stroke-width="2"
-            />
-          </div>
         </div>
       </div>
     </div>
