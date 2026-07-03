@@ -14,13 +14,16 @@
     </div>
 
     <template v-else>
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('submissionsPage.title') }}</h1>
-        <p class="text-gray-500 mt-1">
+      <PageHeroHeader
+        :title="t('submissionsPage.title')"
+        :theme="isExam ? 'blue' : 'green'"
+        :icon="ListChecks"
+      >
+        <template #subtitle>
           {{ assessment?.name || '—' }}
-          <span v-if="assessment?.category" class="text-gray-400">· {{ assessment.category }}</span>
-        </p>
-      </div>
+          <span v-if="assessment?.category" class="text-gray-400"> · {{ assessment.category }}</span>
+        </template>
+      </PageHeroHeader>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
@@ -176,8 +179,9 @@
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { ArrowLeft } from 'lucide-vue-next'
+import { ArrowLeft, ListChecks } from 'lucide-vue-next'
 import axios from 'axios'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 

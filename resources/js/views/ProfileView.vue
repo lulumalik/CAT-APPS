@@ -1,6 +1,11 @@
 <template>
   <main class="max-w-4xl mx-auto px-4 py-8 space-y-6">
-    <h1 class="text-2xl font-bold text-[#1A1A1A]">Profil Pendaftar</h1>
+    <PageHeroHeader
+      title="Profil Pendaftar"
+      subtitle="Kelola data akun dan informasi pendaftaran Anda."
+      theme="slate"
+      :icon="UserCircle"
+    />
 
     <div
       v-if="isAppExpired(user)"
@@ -104,7 +109,8 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import axios from 'axios'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
-import { CheckCircle2, AlertTriangle, Send, Loader2 } from 'lucide-vue-next'
+import { CheckCircle2, AlertTriangle, Send, Loader2, UserCircle } from 'lucide-vue-next'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { getProgramBadge, programCategoryLabel, supportsProgramQuarantine, formatAppExpiresAt, isAppExpired } from '@/utils/userMeta'
 import { registrationFileHref } from '@/utils/storageUrl'
 import { getCookie, setCookie } from '@/utils/cookies'

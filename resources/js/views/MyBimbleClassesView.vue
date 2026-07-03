@@ -1,9 +1,11 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('bimble.myClassesTitle') }}</h1>
-      <p class="text-gray-500 mt-1">{{ t('bimble.myClassesSubtitle') }}</p>
-    </div>
+    <PageHeroHeader
+      :title="t('bimble.myClassesTitle')"
+      :subtitle="t('bimble.myClassesSubtitle')"
+      theme="green"
+      :icon="GraduationCap"
+    />
 
     <section
       v-if="isLocked"
@@ -32,7 +34,7 @@
       {{ t('bimble.myClassesEmpty') }}
     </div>
 
-    <div v-else-if="!isLocked" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div v-else-if="!isLocked" class="grid gap-6 md:grid-cols-2">
       <router-link
         v-for="(c, idx) in classes"
         :key="c.id"
@@ -72,6 +74,7 @@
 import { computed, onMounted, ref } from 'vue'
 import axios from 'axios'
 import { Calculator, CalendarRange, Globe, GraduationCap, LockKeyhole } from 'lucide-vue-next'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'

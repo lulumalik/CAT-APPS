@@ -1,15 +1,19 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ pageTitle }}</h1>
-        <p class="text-gray-500 mt-1">{{ pageSubtitle }}</p>
-      </div>
-      <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openCreate">
-        <Plus class="h-[18px] w-[18px]" />
-        {{ createButtonLabel }}
-      </button>
-    </div>
+    <PageHeroHeader
+      :title="pageTitle"
+      :subtitle="pageSubtitle"
+      :theme="isExamPage ? 'blue' : 'green'"
+      :icon="isExamPage ? ClipboardList : FileQuestion"
+      :secondary-icon="isExamPage ? Pencil : null"
+    >
+      <template #actions>
+        <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openCreate">
+          <Plus class="h-[18px] w-[18px]" />
+          {{ createButtonLabel }}
+        </button>
+      </template>
+    </PageHeroHeader>
 
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-[#9DB359]/30 transition-colors">
@@ -303,10 +307,11 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Check, FileText, Lock, Plus, Search } from 'lucide-vue-next'
+import { Check, ClipboardList, FileQuestion, FileText, Lock, Pencil, Plus, Search } from 'lucide-vue-next'
 import TestCreateModal from '@/components/TestCreateModal.vue'
 import TestAssignQuestionsModal from '@/components/TestAssignQuestionsModal.vue'
 import FreeTryoutResultsModal from '@/components/FreeTryoutResultsModal.vue'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 

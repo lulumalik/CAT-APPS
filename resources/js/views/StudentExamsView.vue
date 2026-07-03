@@ -1,23 +1,12 @@
 <template>
   <main class="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-10">
-    <!-- Hero header -->
-    <div class="flex flex-wrap items-stretch justify-between gap-5 mb-10">
-      <div class="min-w-0 flex-1 flex flex-col justify-center py-0.5">
-        <h1 class="text-4xl md:text-5xl font-bold text-[#1E3A8A] tracking-tight leading-tight">Ujian</h1>
-        <p class="text-gray-500 mt-2 text-sm md:text-base max-w-xl leading-relaxed">
-          Daftar ujian yang bisa dikerjakan (gabungan lintas mata pelajaran).
-        </p>
-      </div>
-      <div class="hidden sm:block shrink-0 self-stretch">
-        <div class="h-full aspect-square rounded-[1.75rem] bg-gradient-to-br from-blue-50 to-blue-100/80 relative overflow-hidden flex items-center justify-center">
-          <div class="pointer-events-none absolute -top-4 -right-4 h-16 w-16 rounded-full bg-blue-200/35" aria-hidden="true" />
-          <div class="relative flex items-center justify-center">
-            <ClipboardList class="h-10 w-10 text-blue-500 drop-shadow-sm" stroke-width="1.5" />
-            <Pencil class="h-5 w-5 text-amber-400 absolute -bottom-0.5 -right-2.5 rotate-[-24deg]" stroke-width="2" />
-          </div>
-        </div>
-      </div>
-    </div>
+    <PageHeroHeader
+      title="Ujian"
+      subtitle="Daftar ujian yang bisa dikerjakan (gabungan lintas mata pelajaran)."
+      theme="blue"
+      :icon="ClipboardList"
+      :secondary-icon="Pencil"
+    />
 
     <!-- Section title -->
     <div class="flex items-center gap-2.5 mb-5">
@@ -111,6 +100,7 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import axios from 'axios'
 import { ArrowRight, CheckCircle2, ClipboardList, Clock, FileText, Pencil, Users } from 'lucide-vue-next'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 
 const loading = ref(true)
 const errorMessage = ref('')

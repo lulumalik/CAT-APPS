@@ -1,6 +1,11 @@
 <template>
   <main class="max-w-5xl mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold text-[#1A1A1A] mb-6">Announcement</h1>
+    <PageHeroHeader
+      title="Announcement"
+      subtitle="Pengumuman resmi dari tim kursus."
+      theme="purple"
+      :icon="Megaphone"
+    />
     <div v-if="loading" class="py-12 text-center text-gray-500">Memuat announcement...</div>
     <div v-else-if="errorMessage" class="rounded-2xl border border-red-100 bg-red-50 p-5 text-sm text-red-700">
       {{ errorMessage }}
@@ -28,7 +33,9 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { Megaphone } from 'lucide-vue-next'
 import axios from 'axios'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 
 const loading = ref(true)
 const items = ref([])

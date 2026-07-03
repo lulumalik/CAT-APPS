@@ -1,11 +1,17 @@
 <template>
   <main class="max-w-6xl mx-auto px-4 py-8">
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
-      <h1 class="text-2xl font-bold text-[#1A1A1A]">Announcement Management</h1>
-      <button type="button" class="rounded-full bg-[#1A1A1A] px-4 py-2 text-sm font-medium text-white" @click="openCreate">
-        Buat Announcement
-      </button>
-    </div>
+    <PageHeroHeader
+      title="Announcement Management"
+      subtitle="Buat dan kelola pengumuman untuk peserta."
+      theme="purple"
+      :icon="Megaphone"
+    >
+      <template #actions>
+        <button type="button" class="rounded-full bg-[#1A1A1A] px-4 py-2 text-sm font-medium text-white" @click="openCreate">
+          Buat Announcement
+        </button>
+      </template>
+    </PageHeroHeader>
 
     <div v-if="loading" class="py-12 text-center text-gray-500">Memuat announcement...</div>
     <div v-else-if="errorMessage" class="rounded-2xl border border-red-100 bg-red-50 p-5 text-sm text-red-700">
@@ -61,7 +67,9 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
+import { Megaphone } from 'lucide-vue-next'
 import axios from 'axios'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 
 const loading = ref(true)
 const items = ref([])

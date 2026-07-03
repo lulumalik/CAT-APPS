@@ -1,15 +1,18 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('questionBank.title') }}</h1>
-        <p class="text-gray-500 mt-1">{{ t('questionBank.subtitle') }}</p>
-      </div>
-      <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openAdd">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        {{ t('questionBank.addQuestion') }}
-      </button>
-    </div>
+    <PageHeroHeader
+      :title="t('questionBank.title')"
+      :subtitle="t('questionBank.subtitle')"
+      theme="green"
+      :icon="LibraryBig"
+    >
+      <template #actions>
+        <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openAdd">
+          <Plus class="h-[18px] w-[18px]" />
+          {{ t('questionBank.addQuestion') }}
+        </button>
+      </template>
+    </PageHeroHeader>
 
     <!-- Skeleton Loader -->
     <div v-if="loading" class="mt-6">
@@ -167,8 +170,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { LibraryBig, Plus } from 'lucide-vue-next'
 import QuestionModal from '@/components/QuestionModal.vue'
 import QuestionCardBody from '@/components/QuestionCardBody.vue'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 

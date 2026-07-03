@@ -312,7 +312,7 @@ class GuardianController extends Controller
         $url = "{$base}/parent/join/{$link->invite_token}";
         $studentName = $link->student?->name ?? 'ananda';
 
-        return "Assalamu'alaikum Bapak/Ibu {$link->guardian_name},\n\n"
+        return "Salam Sejahtera Bapak/Ibu {$link->guardian_name},\n\n"
             ."Kami dari tim Pratistha Cendekia Prestasi. Ananda {$studentName} sudah terdaftar dan "
             ."dashboard orang tua sudah tersedia.\n\n"
             ."Silakan buka tautan berikut untuk membuat akun & memantau perkembangan ananda:\n{$url}\n\n"

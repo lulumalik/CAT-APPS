@@ -1,14 +1,18 @@
 <template>
   <main class="max-w-5xl mx-auto px-4 md:px-12 py-8">
-    <h1 class="text-3xl font-bold text-[#1A1A1A]">Riwayat Aktivitas</h1>
-    <p class="text-gray-500 mt-1">Aktivitas kelas yang pernah Anda ikuti.</p>
+    <PageHeroHeader
+      title="Riwayat Aktivitas"
+      subtitle="Aktivitas kelas yang pernah Anda ikuti."
+      theme="purple"
+      :icon="History"
+    />
 
     <div v-if="loading" class="py-20 text-center text-gray-500">Memuat riwayat aktivitas...</div>
     <div v-else-if="errorMessage" class="mt-6 rounded-2xl border border-red-100 bg-red-50 p-6 text-sm text-red-700">
       {{ errorMessage }}
     </div>
     <template v-else>
-      <section class="mt-8 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+      <section class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
         <h2 class="font-bold text-lg mb-4">Kelas Saya</h2>
         <div v-if="!classes.length" class="text-sm text-gray-500">Belum ada kelas.</div>
         <div v-else class="space-y-3">
@@ -55,6 +59,8 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
+import { History } from 'lucide-vue-next'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 
 const loading = ref(true)
 const errorMessage = ref('')

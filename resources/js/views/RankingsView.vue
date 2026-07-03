@@ -1,9 +1,11 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('rankings.title') }}</h1>
-      <p class="text-gray-500 mt-2">{{ t('rankings.subtitle') }}</p>
-    </div>
+    <PageHeroHeader
+      :title="t('rankings.title')"
+      :subtitle="t('rankings.subtitle')"
+      theme="amber"
+      :icon="Trophy"
+    />
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <aside class="lg:col-span-4 space-y-4">
@@ -224,7 +226,9 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
+import { Trophy } from 'lucide-vue-next'
 import axios from 'axios'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useAppStore } from '@/stores/app'
 import { useModal, useToast } from '@/composables/useNotification'

@@ -1,15 +1,18 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Kelola Materi</h1>
-        <p class="text-gray-500 mt-2">Tambahkan dan kelola materi pembelajaran untuk siswa.</p>
-      </div>
-      <button @click="openCreate" class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white font-medium shadow-lg shadow-black/20 hover:bg-black hover:shadow-black/30 transform hover:-translate-y-0.5 transition-all inline-flex items-center gap-2">
-        <Plus class="h-4 w-4" />
-        Tambah Materi
-      </button>
-    </div>
+    <PageHeroHeader
+      title="Kelola Materi"
+      subtitle="Tambahkan dan kelola materi pembelajaran untuk siswa."
+      theme="green"
+      :icon="BookOpenText"
+    >
+      <template #actions>
+        <button @click="openCreate" class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white font-medium shadow-lg shadow-black/20 hover:bg-black hover:shadow-black/30 transform hover:-translate-y-0.5 transition-all inline-flex items-center gap-2">
+          <Plus class="h-4 w-4" />
+          Tambah Materi
+        </button>
+      </template>
+    </PageHeroHeader>
 
     <!-- Loading State -->
     <div v-if="loading" class="flex justify-center py-12">
@@ -121,6 +124,7 @@
 <script setup>
 import { ref, onMounted, reactive, computed } from 'vue'
 import { BookOpenText, Pencil, Plus, Trash2, X } from 'lucide-vue-next'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { useToast, useModal } from '@/composables/useNotification'

@@ -1,19 +1,24 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold text-[#1A1A1A] mb-6">{{ t('adminRegistration.title') }}</h1>
-
-    <div class="mb-4 flex flex-wrap gap-3 items-center">
-      <input
-        v-model="search"
-        type="search"
-        class="rounded-xl border border-gray-200 px-4 py-2 text-sm max-w-xs"
-        :placeholder="t('common.search')"
-        @keyup.enter="load"
-      />
-      <button type="button" class="rounded-full bg-[#1A1A1A] text-white px-4 py-2 text-sm font-medium" @click="load">
-        {{ t('common.refresh') }}
-      </button>
-    </div>
+    <PageHeroHeader
+      :title="t('adminRegistration.title')"
+      subtitle="Kelola dan verifikasi pendaftaran peserta."
+      theme="green"
+      :icon="ClipboardCheck"
+    >
+      <template #actions>
+        <input
+          v-model="search"
+          type="search"
+          class="rounded-xl border border-gray-200 px-4 py-2 text-sm max-w-xs"
+          :placeholder="t('common.search')"
+          @keyup.enter="load"
+        />
+        <button type="button" class="rounded-full bg-[#1A1A1A] text-white px-4 py-2 text-sm font-medium" @click="load">
+          {{ t('common.refresh') }}
+        </button>
+      </template>
+    </PageHeroHeader>
 
     <div v-if="loading" class="py-16 text-center text-gray-500">{{ t('common.refresh') }}…</div>
     <div
@@ -194,7 +199,8 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
-import { AlertCircle, Brain, Check, ClipboardList, Dumbbell, HeartPulse, Save } from 'lucide-vue-next'
+import { AlertCircle, Brain, Check, ClipboardCheck, ClipboardList, Dumbbell, HeartPulse, Save } from 'lucide-vue-next'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { registrationFileHref } from '@/utils/storageUrl'
 

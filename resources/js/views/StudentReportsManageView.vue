@@ -1,9 +1,11 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-[#1A1A1A]">Laporan Perkembangan Peserta</h1>
-      <p class="text-gray-500 mt-2">Catat aktivitas & perkembangan harian peserta. Orang tua akan melihatnya di dashboard.</p>
-    </div>
+    <PageHeroHeader
+      title="Laporan Perkembangan Peserta"
+      subtitle="Catat aktivitas & perkembangan harian peserta. Orang tua akan melihatnya di dashboard."
+      theme="blue"
+      :icon="LineChart"
+    />
 
     <div class="grid lg:grid-cols-12 gap-6">
       <section class="lg:col-span-5 bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
@@ -87,7 +89,9 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
+import { LineChart } from 'lucide-vue-next'
 import axios from 'axios'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useToast, useModal } from '@/composables/useNotification'
 
 const toast = useToast()

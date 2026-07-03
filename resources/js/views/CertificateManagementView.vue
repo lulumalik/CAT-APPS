@@ -1,11 +1,11 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 md:px-10 py-8 space-y-6">
-    <div class="flex items-center justify-between gap-3">
-      <div>
-        <h1 class="text-2xl font-bold text-[#1A1A1A]">Kelola Sertifikat</h1>
-        <p class="text-sm text-gray-500 mt-1">Template sertifikat per program dan distribusi ke siswa melalui notifikasi.</p>
-      </div>
-    </div>
+    <PageHeroHeader
+      title="Kelola Sertifikat"
+      subtitle="Template sertifikat per program dan distribusi ke siswa melalui notifikasi."
+      theme="amber"
+      :icon="Award"
+    />
 
     <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
       <div class="flex flex-wrap gap-2">
@@ -158,7 +158,9 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { Award } from 'lucide-vue-next'
 import axios from 'axios'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
 import { programCategoryLabel } from '@/utils/userMeta'
 import { useToast } from '@/composables/useNotification'

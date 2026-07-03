@@ -9,30 +9,33 @@
       Kembali ke Manajemen User
     </router-link>
 
-    <div class="mb-8 flex items-center justify-between">
-      <div>
-        <h1 class="text-3xl font-bold text-[#1A1A1A]">
-          {{ isAdminViewingStudent ? 'Dashboard Siswa' : 'Dashboard' }}
-        </h1>
-        <p v-if="isAdminViewingStudent" class="text-gray-500 mt-1 flex flex-wrap items-center gap-2">
+    <PageHeroHeader
+      :title="isAdminViewingStudent ? 'Dashboard Siswa' : 'Dashboard'"
+      theme="blue"
+      :icon="LayoutDashboard"
+    >
+      <template #subtitle>
+        <template v-if="isAdminViewingStudent">
           <span>{{ viewedStudent?.name || 'Memuat...' }}</span>
-          <span v-if="viewedStudent?.username" class="text-gray-400">@{{ viewedStudent.username }}</span>
-          <span class="text-xs rounded-full px-2 py-1" :class="displayProgramBadge.className">{{ displayProgramBadge.label }}</span>
-        </p>
-        <p v-else class="text-gray-500 mt-1 flex flex-wrap items-center gap-2">
+          <span v-if="viewedStudent?.username" class="text-gray-400"> · @{{ viewedStudent.username }}</span>
+          <span class="inline-block ml-1 text-xs rounded-full px-2 py-1" :class="displayProgramBadge.className">{{ displayProgramBadge.label }}</span>
+        </template>
+        <template v-else>
           <span>{{ user?.name }}</span>
-          <span class="capitalize">{{ user?.role }}</span>
-          <span class="text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span>
-        </p>
-      </div>
-      <button
-        type="button"
-        class="pdf-hide px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm"
-        @click="loadOverview"
-      >
-        Refresh
-      </button>
-    </div>
+          <span class="capitalize"> · {{ user?.role }}</span>
+          <span class="inline-block ml-1 text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span>
+        </template>
+      </template>
+      <template #actions>
+        <button
+          type="button"
+          class="pdf-hide px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm"
+          @click="loadOverview"
+        >
+          Refresh
+        </button>
+      </template>
+    </PageHeroHeader>
 
     <div v-if="loading" class="py-20 text-center text-gray-500">Memuat data dashboard...</div>
     <div v-else-if="errorMessage" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-red-700 text-sm">
@@ -86,15 +89,42 @@
           <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5"><div class="text-xs text-gray-500">Kelas Dibuat</div><div class="text-3xl font-bold">{{ overview.stats?.classes_count ?? 0 }}</div></div>
         </div>
 
-        <div class="mt-8 grid lg:grid-cols-2 gap-6">
+        <div class="mt-8 space-y-6">
           <section class="bg-white border border-gray-100 rounded-2xl p-5">
-            <h2 class="font-bold text-lg mb-4">Daftar Kelas</h2>
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <h2 class="font-bold text-lg">Daftar Kelas</h2>
+              <router-link to="/bimble-classes" class="text-sm font-semibold text-[#5a6b2e] hover:underline">
+                Lihat semua
+              </router-link>
+            </div>
             <div v-if="!overview.classes?.length" class="text-sm text-gray-500">Belum ada kelas.</div>
-            <div v-else class="space-y-3">
-              <div v-for="c in overview.classes" :key="c.id" class="rounded-xl border border-gray-100 p-3">
-                <div class="font-semibold">{{ c.name }}</div>
-                <div class="text-xs text-gray-500">{{ c.class_code }} · {{ formatProgram(c.program_type) }} · {{ c.students_count }} peserta</div>
-              </div>
+            <div v-else class="grid gap-4 md:grid-cols-2">
+              <router-link
+                v-for="(c, idx) in overview.classes"
+                :key="c.id"
+                :to="{ name: 'bimble-class-room', params: { id: c.id } }"
+                class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden block hover:shadow-xl transition-shadow"
+                :class="cardTheme(idx).topBorder"
+              >
+                <div class="p-5 flex flex-col gap-3">
+                  <div class="flex items-start gap-3">
+                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
+                      <component :is="cardTheme(idx).icon" class="h-5 w-5" :class="cardTheme(idx).iconColor" />
+                    </div>
+                    <div class="min-w-0">
+                      <div class="font-bold text-lg text-[#1A1A1A] leading-tight">{{ c.name }}</div>
+                      <span class="inline-block mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+                        {{ c.class_code }}
+                      </span>
+                    </div>
+                  </div>
+                  <p class="text-sm text-gray-600">{{ formatProgram(c.program_type) }}</p>
+                  <div class="flex items-center gap-2 text-xs text-gray-500">
+                    <Users class="h-3.5 w-3.5" />
+                    {{ c.students_count ?? 0 }} peserta
+                  </div>
+                </div>
+              </router-link>
             </div>
           </section>
           <section class="bg-white border border-gray-100 rounded-2xl p-5">
@@ -112,19 +142,45 @@
 
       <!-- MENTOR -->
       <template v-else-if="isMentor">
-        <div class="grid lg:grid-cols-2 gap-6">
+        <div class="space-y-6">
           <section class="bg-white border border-gray-100 rounded-2xl p-5">
-            <h2 class="font-bold text-lg mb-4">Kelas yang Diusung</h2>
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <h2 class="font-bold text-lg">Kelas yang Diusung</h2>
+              <router-link to="/bimble-classes" class="text-sm font-semibold text-[#5a6b2e] hover:underline">
+                Lihat semua
+              </router-link>
+            </div>
             <div v-if="!overview.classes?.length" class="text-sm text-gray-500">Belum ada kelas mentor.</div>
-            <div v-else class="space-y-3">
-              <div v-for="c in overview.classes" :key="c.id" class="rounded-xl border border-gray-100 p-3">
-                <div class="font-semibold">{{ c.name }}</div>
-                <div class="text-xs text-gray-500">{{ c.class_code }} · {{ c.students_count }} peserta</div>
-                <div class="text-xs text-gray-600 mt-1">
-                  Aktivitas terakhir:
-                  <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
+            <div v-else class="grid gap-4 md:grid-cols-2">
+              <router-link
+                v-for="(c, idx) in overview.classes"
+                :key="c.id"
+                :to="{ name: 'bimble-class-room', params: { id: c.id } }"
+                class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden block hover:shadow-xl transition-shadow"
+                :class="cardTheme(idx).topBorder"
+              >
+                <div class="p-5 flex flex-col gap-3">
+                  <div class="flex items-start gap-3">
+                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
+                      <component :is="cardTheme(idx).icon" class="h-5 w-5" :class="cardTheme(idx).iconColor" />
+                    </div>
+                    <div class="min-w-0">
+                      <div class="font-bold text-lg text-[#1A1A1A] leading-tight">{{ c.name }}</div>
+                      <span class="inline-block mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+                        {{ c.class_code }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 text-xs text-gray-500">
+                    <Users class="h-3.5 w-3.5" />
+                    {{ c.students_count ?? 0 }} peserta
+                  </div>
+                  <p class="text-xs text-gray-600">
+                    Aktivitas terakhir:
+                    <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
+                  </p>
                 </div>
-              </div>
+              </router-link>
             </div>
           </section>
 
@@ -210,18 +266,36 @@
         </div>
 
         <div class="pdf-grid-2">
-          <section class="pdf-section">
+          <section class="pdf-section lg:col-span-2">
             <h2 class="pdf-section-title">Kelas Saya</h2>
             <div v-if="!overview.classes?.length" class="pdf-muted">Belum ada kelas yang ditambahkan.</div>
-            <div v-else>
-              <div v-for="c in overview.classes" :key="c.id" class="pdf-card">
-                <div class="font-semibold text-sm">{{ c.name }}</div>
-                <div class="pdf-muted">{{ c.class_code }} · {{ formatProgram(c.program_type) }}</div>
-                <div class="pdf-text-sm mt-1">
-                  Aktivitas terakhir:
-                  <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
+            <div v-else class="grid gap-4 md:grid-cols-2">
+              <router-link
+                v-for="(c, idx) in overview.classes"
+                :key="c.id"
+                :to="{ name: 'bimble-class-room', params: { id: c.id } }"
+                class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden block hover:shadow-xl transition-shadow"
+                :class="cardTheme(idx).topBorder"
+              >
+                <div class="p-5 flex flex-col gap-3">
+                  <div class="flex items-start gap-3">
+                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
+                      <component :is="cardTheme(idx).icon" class="h-5 w-5" :class="cardTheme(idx).iconColor" />
+                    </div>
+                    <div class="min-w-0">
+                      <div class="font-bold text-lg text-[#1A1A1A] leading-tight">{{ c.name }}</div>
+                      <span class="inline-block mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+                        {{ c.class_code }}
+                      </span>
+                    </div>
+                  </div>
+                  <p class="text-sm text-gray-600">{{ formatProgram(c.program_type) }}</p>
+                  <p class="text-xs text-gray-600">
+                    Aktivitas terakhir:
+                    <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
+                  </p>
                 </div>
-              </div>
+              </router-link>
             </div>
           </section>
 
@@ -268,7 +342,8 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { ArrowLeft, LockKeyhole } from 'lucide-vue-next'
+import { ArrowLeft, Calculator, Globe, GraduationCap, LayoutDashboard, LockKeyhole, Users } from 'lucide-vue-next'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useAppStore } from '@/stores/app'
 import { getProgramBadge, programCategoryLabel, registrationCompleted, isAppExpired } from '@/utils/userMeta'
 import StudentProgressPanel from '@/components/StudentProgressPanel.vue'
@@ -309,6 +384,31 @@ const pdfReportName = computed(() => {
   return user.value?.name || 'Peserta'
 })
 const formatProgram = (programType) => programCategoryLabel(programType)
+
+const cardThemes = [
+  {
+    topBorder: 'border-t-4 border-t-[#9DB359]',
+    iconWrap: 'bg-[#9DB359]/15',
+    iconColor: 'text-[#5a6b2e]',
+    icon: GraduationCap,
+  },
+  {
+    topBorder: 'border-t-4 border-t-blue-500',
+    iconWrap: 'bg-blue-50',
+    iconColor: 'text-blue-600',
+    icon: Calculator,
+  },
+  {
+    topBorder: 'border-t-4 border-t-purple-500',
+    iconWrap: 'bg-purple-50',
+    iconColor: 'text-purple-600',
+    icon: Globe,
+  },
+]
+
+function cardTheme(index) {
+  return cardThemes[index % cardThemes.length]
+}
 
 const formatDate = (d) => {
   if (!d) return '-'

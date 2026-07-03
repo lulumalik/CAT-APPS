@@ -1,9 +1,11 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-[#1A1A1A]">Undang Orang Tua</h1>
-      <p class="text-gray-500 mt-2">Hubungkan orang tua/wali dengan peserta yang sudah menyelesaikan registrasi.</p>
-    </div>
+    <PageHeroHeader
+      title="Undang Orang Tua"
+      subtitle="Hubungkan orang tua/wali dengan peserta yang sudah menyelesaikan registrasi."
+      theme="rose"
+      :icon="HeartHandshake"
+    />
 
     <div class="grid lg:grid-cols-12 gap-6">
       <!-- Create invite -->
@@ -121,7 +123,9 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
+import { HeartHandshake } from 'lucide-vue-next'
 import axios from 'axios'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useToast, useModal } from '@/composables/useNotification'
 
 const toast = useToast()

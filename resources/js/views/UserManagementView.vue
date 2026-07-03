@@ -1,11 +1,12 @@
 <template>
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-[#1A1A1A]">{{ t('users.title') }}</h1>
-        <p class="text-gray-500 mt-1">{{ t('users.subtitle') }}</p>
-      </div>
-      <div class="flex flex-wrap gap-3 items-center">
+    <PageHeroHeader
+      :title="t('users.title')"
+      :subtitle="t('users.subtitle')"
+      theme="purple"
+      :icon="Users"
+    >
+      <template #actions>
         <div class="relative">
           <input v-model="searchQuery" @input="handleSearch" type="text" :placeholder="t('users.searchPlaceholder')" class="rounded-full border border-gray-200 bg-white px-4 py-2 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -29,8 +30,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           {{ t('users.addUser') }}
         </button>
-      </div>
-    </div>
+      </template>
+    </PageHeroHeader>
 
     <!-- Loading Skeleton -->
     <div v-if="loading" class="space-y-4">
@@ -161,7 +162,9 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { Users } from 'lucide-vue-next'
 import UserModal from '@/components/UserModal.vue'
+import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 import { formatAppExpiresAt, isAppExpired, dateInputToExpiresAt } from '@/utils/userMeta'
