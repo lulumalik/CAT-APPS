@@ -126,33 +126,16 @@
             color: #9ca3af;
             text-align: right;
             padding-right: 6px;
-            padding-bottom: 28px;
+            padding-bottom: 42px;
         }
         .chart-axis-labels div { line-height: 2.8; }
         .chart-axis-body { vertical-align: bottom; }
         .chart-dates-row { width: 100%; border-collapse: collapse; }
+        .chart-dates-row > tr > td { border-bottom: 1px solid #eef0f2; padding-bottom: 4px; }
         .chart-date-col {
             vertical-align: bottom;
-            padding: 0 4px;
-            border-bottom: 1px solid #eef0f2;
-        }
-        .chart-date-label {
-            font-size: 9px;
-            color: #9ca3af;
-            text-align: center;
-            margin-top: 6px;
-            padding-bottom: 0;
-        }
-        .chart-date-sub {
-            font-size: 8px;
-            color: #6b7280;
-            text-align: center;
-            font-weight: 600;
-            line-height: 1.25;
-            margin-top: 2px;
-            padding-bottom: 2px;
-            max-width: 72px;
-            word-wrap: break-word;
+            padding: 0 6px;
+            min-width: 56px;
         }
         .chart-bar-group { margin: 0 auto; }
         .chart-bar-slot {

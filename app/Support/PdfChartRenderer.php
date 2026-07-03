@@ -196,10 +196,20 @@ class PdfChartRenderer
             $axisLabel = $axisLabels[$date] ?? self::fmtDate($date);
             $axisSubtitle = trim((string) ($axisSubtitles[$date] ?? ''));
 
-            $dateCells .= '<td class="chart-date-col" align="center">'
+            $captionRows = '<tr><td style="text-align:center;font-size:9px;color:#9ca3af;padding-top:6px;line-height:1.2;">'
+                .e($axisLabel)
+                .'</td></tr>';
+            if ($axisSubtitle !== '') {
+                $captionRows .= '<tr><td style="text-align:center;font-size:8px;font-weight:700;color:#374151;padding-top:2px;line-height:1.25;word-wrap:break-word;">'
+                    .e($axisSubtitle)
+                    .'</td></tr>';
+            }
+
+            $dateCells .= '<td class="chart-date-col" align="center" style="vertical-align:bottom;padding:0 6px;">'
                 .'<table class="chart-bar-group" cellpadding="0" cellspacing="3" align="center"><tr valign="bottom">'.$bars.'</tr></table>'
-                .'<div class="chart-date-label">'.e($axisLabel).'</div>'
-                .($axisSubtitle !== '' ? '<div class="chart-date-sub">'.e($axisSubtitle).'</div>' : '')
+                .'<table cellpadding="0" cellspacing="0" style="width:100%;margin-top:2px;border-collapse:collapse;">'
+                .$captionRows
+                .'</table>'
                 .'</td>';
         }
 
