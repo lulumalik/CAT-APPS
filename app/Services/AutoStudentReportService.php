@@ -43,15 +43,13 @@ class AutoStudentReportService
             'report_date' => $submittedAt->toDateString(),
             'title' => sprintf('Hasil tes: %s', $test->name),
             'summary' => sprintf(
-                'Ananda menyelesaikan tes %s (%s) dengan nilai %d (%d/%d benar).',
+                'Ananda menyelesaikan tes %s (%s) dengan nilai %d.',
                 $test->name,
                 $subjectLabel,
                 $scaled,
-                (int) $submission->score,
-                $total
             ),
             'categories' => [
-                'akademik' => sprintf('%s — %s: %d (%d/%d benar)', $subjectLabel, $test->name, $scaled, (int) $submission->score, $total),
+                'akademik' => sprintf('%s — %s: %d', $subjectLabel, $test->name, $scaled),
             ],
             'metrics' => [
                 'auto_source' => 'test_submission',
@@ -106,15 +104,13 @@ class AutoStudentReportService
             'report_date' => $submittedAt->toDateString(),
             'title' => sprintf('Hasil ujian: %s', $exam->name),
             'summary' => sprintf(
-                'Ananda menyelesaikan ujian %s (%s) dengan nilai %d (%d/%d benar).',
+                'Ananda menyelesaikan ujian %s (%s) dengan nilai %d.',
                 $exam->name,
                 $subjectLabel,
                 $scaled,
-                (int) $submission->score,
-                $total
             ),
             'categories' => [
-                'akademik' => sprintf('%s — %s: %d (%d/%d benar)', $subjectLabel, $exam->name, $scaled, (int) $submission->score, $total),
+                'akademik' => sprintf('%s — %s: %d', $subjectLabel, $exam->name, $scaled),
             ],
             'metrics' => [
                 'auto_source' => 'exam_submission',

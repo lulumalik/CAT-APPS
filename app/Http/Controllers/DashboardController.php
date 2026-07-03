@@ -346,13 +346,13 @@ class DashboardController extends Controller
                     }
 
                     $total = is_array($exam->question_ids) ? count($exam->question_ids) : 0;
-                    $percent = $total > 0 ? round(((float) $submission->score / $total) * 100, 1) : 0;
+                    $scaled = $total > 0 ? (int) round(((float) $submission->score / $total) * 100) : 0;
 
                     $items->push([
                         'id' => 'exam-submission-'.$submission->id,
                         'activity_type' => 'exam',
                         'title' => 'Menyelesaikan ujian: '.$exam->name,
-                        'description' => sprintf('Nilai %d/%d (%s%%)', (int) $submission->score, $total, $percent),
+                        'description' => sprintf('Nilai: %d', $scaled),
                         'happened_at' => $submission->submitted_at ?? $submission->created_at,
                         'created_at' => $submission->created_at,
                         'bimble_class' => null,
@@ -376,13 +376,13 @@ class DashboardController extends Controller
                     }
 
                     $total = is_array($test->question_ids) ? count($test->question_ids) : 0;
-                    $percent = $total > 0 ? round(((float) $submission->score / $total) * 100, 1) : 0;
+                    $scaled = $total > 0 ? (int) round(((float) $submission->score / $total) * 100) : 0;
 
                     $items->push([
                         'id' => 'test-submission-'.$submission->id,
                         'activity_type' => 'quiz',
                         'title' => 'Menyelesaikan quiz: '.$test->name,
-                        'description' => sprintf('Nilai %d/%d (%s%%)', (int) $submission->score, $total, $percent),
+                        'description' => sprintf('Nilai: %d', $scaled),
                         'happened_at' => $submission->submitted_at ?? $submission->created_at,
                         'created_at' => $submission->created_at,
                         'bimble_class' => null,

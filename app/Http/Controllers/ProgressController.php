@@ -504,13 +504,13 @@ class ProgressController extends Controller
         })->values()->all();
     }
 
-    private function scaleScoreToHundred(float $score, int $totalQuestions): ?float
+    private function scaleScoreToHundred(float $score, int $totalQuestions): ?int
     {
         if ($totalQuestions < 1) {
             return null;
         }
 
-        return round(($score / $totalQuestions) * 100, 1);
+        return (int) round(($score / $totalQuestions) * 100);
     }
 
     /**

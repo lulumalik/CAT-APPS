@@ -123,7 +123,7 @@ const props = defineProps({
   type: { type: String, default: 'hbars' }, // 'bars' | 'line' | 'multiline' | 'hbars'
   data: { type: Array, default: () => [] },
   series: { type: Array, default: () => [] },
-  valueMode: { type: String, default: 'percent' },
+  valueMode: { type: String, default: 'value' },
   color: { type: String, default: '#9DB359' },
   emptyText: { type: String, default: 'Belum ada data.' },
   max: { type: Number, default: null },
@@ -145,7 +145,9 @@ const timelineBars = computed(() =>
     .map((d) => {
       const raw = d.percent != null ? Number(d.percent) : Number(d.value)
       const pct = Number.isNaN(raw) ? 0 : Math.min(100, Math.round((raw / singleMax.value) * 100))
-      const display = props.valueMode === 'percent' ? `${raw}%` : (d.unit ? `${raw} ${d.unit}` : String(raw))
+      const display = props.valueMode === 'percent'
+        ? `${raw}%`
+        : (d.unit ? `${raw} ${d.unit}` : String(Math.round(raw)))
       const label = d.date ? fmtDate(d.date) : (d.label || '')
       return { label, height: pct, display }
     }),
@@ -164,8 +166,7 @@ const normalizedBars = computed(() =>
     const pct = raw == null ? 0 : Math.min(100, Math.round((raw / maxValue.value) * 100))
     let display = '—'
     if (raw != null) {
-      if (d.percent != null) display = `${raw}%`
-      else display = d.unit ? `${raw} ${d.unit}` : String(raw)
+      display = props.valueMode === 'percent' ? `${raw}%` : (d.unit ? `${raw} ${d.unit}` : String(Math.round(raw)))
     }
     return { label: d.label, height: pct, display }
   }),
@@ -214,7 +215,7 @@ function formatSeriesValue(series, date) {
   const val = valueForSeriesDate(series, date)
   if (val == null) return '—'
   if (props.valueMode === 'percent') return `${val}%`
-  return series.unit ? `${val}` : String(val)
+  return series.unit ? `${Math.round(val)}` : String(Math.round(val))
 }
 
 function yLabel(frac) {

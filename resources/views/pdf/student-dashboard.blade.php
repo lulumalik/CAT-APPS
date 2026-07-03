@@ -325,8 +325,8 @@
 
     <div class="section">
         <h2>Nilai per Mata Pelajaran</h2>
-            <p class="muted" style="margin:0 0 8px;">Hasil aktivitas quiz per mata pelajaran (skala 0–100 dari total soal)</p>
-        {!! PdfChartRenderer::multiLineChart(
+            <p class="muted" style="margin:0 0 8px;">Hasil aktivitas quiz per mata pelajaran (skala 1–100)</p>
+        {!! PdfChartRenderer::splitSeriesCharts(
             $progress['academic_subject_timeline'] ?? [],
             'value',
             'Belum ada nilai quiz.',
@@ -350,7 +350,7 @@
                         <tr>
                             <td>{{ $row['subject_label'] ?? $row['subject'] ?? '-' }}</td>
                             <td>{{ $row['quiz_name'] ?? '-' }}</td>
-                            <td><strong>{{ is_numeric($row['score'] ?? null) ? (floor((float) $row['score']) == (float) $row['score'] ? (int) $row['score'] : number_format((float) $row['score'], 1, '.', '')) : '-' }}</strong></td>
+                            <td><strong>{{ is_numeric($row['score'] ?? null) ? (int) round((float) $row['score']) : '-' }}</strong></td>
                             <td>{{ isset($row['date']) ? \Carbon\Carbon::parse($row['date'])->locale('id')->translatedFormat('d M Y') : '-' }}</td>
                         </tr>
                     @endforeach
@@ -371,7 +371,7 @@
 
     <div class="section">
         <h2>Nilai Ujian</h2>
-            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai ujian yang sudah dikerjakan peserta (skala 0–100 dari total soal)</p>
+            <p class="muted" style="margin:0 0 8px;">Perkembangan nilai ujian yang sudah dikerjakan peserta (skala 1–100)</p>
         {!! PdfChartRenderer::lineChart(
             $progress['exam_timeline'] ?? [],
             '#2F6BFF',

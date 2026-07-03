@@ -160,15 +160,28 @@
       <!-- 4. Nilai per Mata Pelajaran -->
       <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
         <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai per Mata Pelajaran</h3>
-        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Hasil aktivitas quiz per mata pelajaran (skala 0–100 dari total soal)</p>
-        <div class="flex-1">
-          <ProgressChart
-            type="multiline"
-            :series="progress.academic_subject_timeline || []"
-            value-mode="value"
-            :max="100"
-            empty-text="Belum ada nilai quiz."
-          />
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Hasil aktivitas quiz per mata pelajaran (skala 1–100)</p>
+        <div v-if="!academicSubjectCharts.length" :class="pdfMode ? 'pdf-muted py-6 text-center' : 'text-sm text-gray-400 py-6 text-center'">
+          Belum ada nilai quiz.
+        </div>
+        <div v-else class="space-y-5">
+          <div
+            v-for="chart in academicSubjectCharts"
+            :key="chart.id"
+            :class="pdfMode ? 'pdf-card' : 'rounded-xl border border-gray-100 p-4'"
+          >
+            <h4 :class="pdfMode ? 'font-semibold text-sm mb-3' : 'font-semibold text-sm text-[#1A1A1A] mb-3'">
+              {{ chart.label }}
+            </h4>
+            <ProgressChart
+              type="line"
+              :data="chart.data"
+              :color="chart.color"
+              value-mode="value"
+              :max="100"
+              :empty-text="`Belum ada nilai ${chart.label}.`"
+            />
+          </div>
         </div>
         <div v-if="(progress.quiz_subject_results || []).length" class="mt-4 overflow-x-auto">
           <table :class="pdfMode ? 'w-full text-sm border-collapse' : 'w-full text-sm'">
@@ -227,7 +240,7 @@
       <!-- 6. Nilai Ujian -->
       <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
         <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai Ujian</h3>
-        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai ujian yang sudah dikerjakan peserta (skala 0–100 dari total soal)</p>
+        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai ujian yang sudah dikerjakan peserta (skala 1–100)</p>
         <div class="flex-1">
           <ProgressChart
             type="line"
@@ -304,6 +317,27 @@ const dailyRangeLabel = computed(() => {
 })
 
 const physicalPalette = ['#2F6BFF', '#9DB359', '#E8833A', '#8B5CF6', '#EC4899', '#14B8A6']
+
+const academicSubjectCharts = computed(() =>
+  (progress.value.academic_subject_timeline || [])
+    .map((series, idx) => {
+      const points = (series.points || [])
+        .filter((p) => p.date && p.value != null)
+        .sort((a, b) => String(a.date).localeCompare(String(b.date)))
+      if (!points.length) return null
+
+      return {
+        id: series.id || `academic-${idx}`,
+        label: series.label || 'Mata Pelajaran',
+        color: physicalPalette[idx % physicalPalette.length],
+        data: points.map((p) => ({
+          date: p.date,
+          value: Number(p.value),
+        })),
+      }
+    })
+    .filter(Boolean),
+)
 
 const physicalCharts = computed(() =>
   (progress.value.physical_timeline || [])
@@ -514,8 +548,7 @@ function formatDateTime(d) {
 
 function formatScoreValue(value) {
   if (value == null || Number.isNaN(Number(value))) return '-'
-  const num = Number(value)
-  return Number.isInteger(num) ? String(num) : num.toFixed(1)
+  return String(Math.round(Number(value)))
 }
 
 watch(

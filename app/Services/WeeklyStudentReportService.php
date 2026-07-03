@@ -207,9 +207,8 @@ class WeeklyStudentReportService
             $paragraph = $this->buildMeasurementNarrative(
                 $subject,
                 $entries,
-                '%',
+                '',
                 'desc',
-                true,
             );
             if ($paragraph !== '') {
                 $paragraphs[] = $paragraph;
@@ -293,17 +292,17 @@ class WeeklyStudentReportService
             $metrics = $daily->metrics ?? [];
             $date = Carbon::parse($daily->report_date)->timezone($this->timezone())->toDateString();
 
-            if (($metrics['auto_source'] ?? '') === 'test_submission') {
-                $percent = $metrics['percent'] ?? null;
-                if (! is_numeric($percent)) {
+            if (in_array($metrics['auto_source'] ?? '', ['test_submission', 'exam_submission'], true)) {
+                $scaled = $metrics['scaled_score'] ?? $metrics['percent'] ?? null;
+                if (! is_numeric($scaled)) {
                     continue;
                 }
 
-                $subject = (string) ($metrics['subject_label'] ?? $metrics['test_name'] ?? 'Akademik');
-                $dedupeKey = (string) ($metrics['submission_id'] ?? "{$date}:{$percent}");
+                $subject = (string) ($metrics['subject_label'] ?? $metrics['test_name'] ?? $metrics['exam_name'] ?? 'Akademik');
+                $dedupeKey = (string) ($metrics['submission_id'] ?? "{$date}:{$scaled}");
                 $bySubject[$subject]['entries'][$dedupeKey] = [
                     'date' => $date,
-                    'value' => (float) $percent,
+                    'value' => (float) $scaled,
                 ];
 
                 continue;
@@ -500,6 +499,20 @@ class WeeklyStudentReportService
      */
     private function parseAkademikCategory(string $note): ?array
     {
+        if (preg_match('/^(.+?)\s*[—–-]\s*.+?:\s*([\d.,]+)\s*$/u', trim($note), $matches)) {
+            return [
+                'label' => trim($matches[1]),
+                'value' => (float) str_replace(',', '.', $matches[2]),
+            ];
+        }
+
+        if (preg_match('/^(.+?)\s*[—–-]\s*([\d.,]+)\s*$/u', trim($note), $matches)) {
+            return [
+                'label' => trim($matches[1]),
+                'value' => (float) str_replace(',', '.', $matches[2]),
+            ];
+        }
+
         if (preg_match('/^(.+?)\s*[—–-]\s*([\d.,]+)\s*%/u', trim($note), $matches)) {
             return [
                 'label' => trim($matches[1]),
@@ -545,15 +558,15 @@ class WeeklyStudentReportService
                 ->with('testDefinition:id,question_ids')
                 ->get();
 
-            $percents = [];
+            $scaledScores = [];
             foreach ($subs as $sub) {
                 $total = count($sub->testDefinition?->question_ids ?? []);
                 if ($total > 0) {
-                    $percents[] = round(((float) $sub->score / $total) * 100, 1);
+                    $scaledScores[] = (int) round(((float) $sub->score / $total) * 100);
                 }
             }
-            if ($percents !== []) {
-                $tesAvg = round(array_sum($percents) / count($percents), 1);
+            if ($scaledScores !== []) {
+                $tesAvg = (int) round(array_sum($scaledScores) / count($scaledScores));
             }
         }
 
@@ -579,7 +592,7 @@ class WeeklyStudentReportService
     {
         $parts = [sprintf('%d laporan harian tercatat pekan ini.', $dailyCount)];
         if ($metrics['tes_rata'] !== null) {
-            $parts[] = sprintf('Rata-rata nilai tes pekan ini %s%%.', $this->formatScore((float) $metrics['tes_rata']));
+            $parts[] = sprintf('Rata-rata nilai tes pekan ini %d.', (int) $metrics['tes_rata']);
         }
 
         return implode(' ', $parts);

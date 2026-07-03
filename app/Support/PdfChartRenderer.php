@@ -105,8 +105,12 @@ class PdfChartRenderer
      *
      * @param  list<array{label?: string, unit?: string|null, points?: list<array{date?: string, percent?: float|int, value?: float|int}>}>  $series
      */
-    public static function splitSeriesCharts(array $series, string $valueMode = 'value', string $emptyText = 'Belum ada data.'): string
-    {
+    public static function splitSeriesCharts(
+        array $series,
+        string $valueMode = 'value',
+        string $emptyText = 'Belum ada data.',
+        ?float $fixedMax = null,
+    ): string {
         $clean = [];
         foreach ($series as $idx => $s) {
             $pts = [];
@@ -141,9 +145,9 @@ class PdfChartRenderer
         foreach ($clean as $s) {
             ksort($s['values']);
             $dates = array_keys($s['values']);
-            $max = $valueMode === 'percent'
+            $max = $fixedMax ?? ($valueMode === 'percent'
                 ? 100
-                : max(1, max($s['values']));
+                : max(1, max($s['values'])));
 
             $html .= '<div class="chart-split-block">'
                 .'<h3 class="chart-split-title">'.e($s['label']).'</h3>'
