@@ -31,8 +31,8 @@
           <p class="text-3xl font-bold text-[#1A1A1A] mt-1">{{ submissions.length }}</p>
         </div>
         <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Rata-rata skor</p>
-          <p class="text-3xl font-bold text-[#9DB359] mt-1">{{ averageScore }}%</p>
+          <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Rata-rata nilai</p>
+          <p class="text-3xl font-bold text-[#9DB359] mt-1">{{ averageScore }}</p>
         </div>
         <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
           <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Total soal</p>
@@ -49,7 +49,7 @@
                 <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modals.submissions.tableUser') }}</th>
                 <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modals.submissions.tableSubmittedAt') }}</th>
                 <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Skor</th>
-                <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Persentase</th>
+                <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Nilai</th>
                 <th class="px-5 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modals.submissions.tableActions') }}</th>
               </tr>
             </thead>
@@ -72,10 +72,10 @@
                 </td>
                 <td class="px-5 py-4 whitespace-nowrap">
                   <span
-                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold"
-                    :class="scorePercent(sub.score) >= 70 ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'"
+                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tabular-nums"
+                    :class="scoreValue(sub.score) >= 70 ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'"
                   >
-                    {{ scorePercent(sub.score) }}%
+                    {{ scoreValue(sub.score) }}
                   </span>
                 </td>
                 <td class="px-5 py-4 text-right whitespace-nowrap">
@@ -209,16 +209,17 @@ const totalQuestions = computed(() => assessment.value?.total_questions || asses
 
 const averageScore = computed(() => {
   if (!submissions.value.length || !totalQuestions.value) return 0
-  const sum = submissions.value.reduce((acc, s) => acc + scorePercent(s.score), 0)
-  return Math.round((sum / submissions.value.length) * 10) / 10
+  const sum = submissions.value.reduce((acc, s) => acc + scoreValue(s.score), 0)
+  return Math.round(sum / submissions.value.length)
 })
 
-const hasEssayQuestions = computed(() => questions.value.some((q) => q.type === 'essay'))
-
-function scorePercent(score) {
+/** Skala nilai 0–100 dari jumlah jawaban benar / total soal. */
+function scoreValue(score) {
   if (!totalQuestions.value) return 0
-  return Math.round(((Number(score) || 0) / totalQuestions.value) * 1000) / 10
+  return Math.round(((Number(score) || 0) / totalQuestions.value) * 100)
 }
+
+const hasEssayQuestions = computed(() => questions.value.some((q) => q.type === 'essay'))
 
 async function load() {
   loading.value = true

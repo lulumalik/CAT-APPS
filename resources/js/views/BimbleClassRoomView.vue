@@ -9,6 +9,19 @@
     </div>
 
     <template v-else-if="workspace">
+      <!-- Back -->
+      <div class="bg-[#F3F4F6] border-b border-gray-200/80">
+        <div class="max-w-7xl mx-auto px-4 md:px-10 py-3">
+          <router-link
+            :to="backRoute"
+            class="inline-flex items-center gap-2.5 rounded-full bg-white border border-gray-200 shadow-sm px-5 py-2.5 text-sm font-semibold text-[#1A1A1A] hover:bg-gray-50 hover:shadow transition-all"
+          >
+            <ArrowLeft class="h-4 w-4 shrink-0" stroke-width="2.25" />
+            {{ t('bimble.back') }}
+          </router-link>
+        </div>
+      </div>
+
       <!-- Header — keep existing gray gradient -->
       <header class="bg-gradient-to-r from-[#333333] via-[#636363] to-[#595959] text-white px-4 md:px-10 py-6 md:py-9 relative overflow-hidden">
         <div class="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,white,transparent_45%)]" />
@@ -19,19 +32,19 @@
           </svg>
         </div>
 
-        <div class="relative max-w-7xl mx-auto flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div class="flex gap-4 items-start">
+        <div class="relative max-w-7xl mx-auto flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between xl:gap-10">
+          <div class="flex gap-4 items-start flex-1 min-w-0 xl:max-w-[58%]">
             <img src="../../assets/logo.png" alt="CAT Apps" class="w-16 h-16 md:w-20 md:h-20 object-contain shrink-0" />
-            <div>
+            <div class="min-w-0 flex-1">
               <p class="inline-flex rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide text-white/90 mb-2">
                 {{ t('bimble.classLabel') }}
               </p>
-              <h1 class="text-2xl md:text-4xl font-bold tracking-tight leading-tight">{{ workspace.class.name }}</h1>
+              <h1 class="text-2xl md:text-4xl font-bold tracking-tight leading-tight md:whitespace-nowrap">{{ workspace.class.name }}</h1>
               <p class="text-white/85 text-sm mt-1.5">{{ t('bimble.code') }}: {{ workspace.class.class_code }}</p>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8 text-sm">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-5 gap-y-4 lg:gap-x-6 text-sm xl:shrink-0 xl:max-w-[42%]">
             <div class="flex items-start gap-2.5">
               <UserRound class="h-5 w-5 text-white/70 shrink-0 mt-0.5" stroke-width="1.75" />
               <div>
@@ -46,11 +59,11 @@
                 <div class="font-semibold mt-0.5">{{ formattedPeriod }}</div>
               </div>
             </div>
-            <div class="flex items-start gap-2.5">
+            <div class="flex items-start gap-2.5 min-w-0">
               <BookOpen class="h-5 w-5 text-white/70 shrink-0 mt-0.5" stroke-width="1.75" />
-              <div>
+              <div class="min-w-0">
                 <div class="text-[10px] font-semibold uppercase tracking-wider text-white/60">{{ t('bimble.programType') }}</div>
-                <div class="font-semibold mt-0.5">{{ formatProgram(workspace.class.program_type) }}</div>
+                <div class="font-semibold mt-0.5 leading-snug">{{ formatProgram(workspace.class.program_type) }}</div>
               </div>
             </div>
           </div>
@@ -319,12 +332,6 @@
           </aside>
         </div>
 
-        <router-link
-          to="/dashboard"
-          class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-[#1A1A1A] transition-colors"
-        >
-          ← {{ t('bimble.back') }}
-        </router-link>
       </div>
     </template>
   </div>
@@ -335,6 +342,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import {
+  ArrowLeft,
   BookOpen,
   CalendarClock,
   CalendarDays,
@@ -348,10 +356,17 @@ import {
   UserRound,
 } from 'lucide-vue-next'
 import { useI18n } from '@/composables/useI18n'
+import { useAppStore } from '@/stores/app'
 import { programCategoryLabel } from '@/utils/userMeta'
 
 const { t } = useI18n()
 const route = useRoute()
+const appStore = useAppStore()
+
+const backRoute = computed(() => {
+  const role = appStore.user?.role
+  return ['admin', 'mentor'].includes(role) ? '/bimble-classes' : '/my-classes'
+})
 
 const loading = ref(true)
 const workspace = ref(null)
