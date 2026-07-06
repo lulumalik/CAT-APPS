@@ -520,9 +520,9 @@ export const messages = {
       },
       fields: {
         fullName: 'Nama lengkap (sesuai dokumen)',
-        fullNameKk: 'Nama lengkap (sesuai kartu keluarga)',
+        fullNameKk: 'Nama lengkap calon peserta (sesuai kartu keluarga)',
         phone: 'Nomor telepon orang tua',
-        whatsapp: 'Nomor WhatsApp',
+        whatsapp: 'Nomor WhatsApp peserta',
         address: 'Alamat lengkap',
         addressKk: 'Alamat lengkap sesuai kartu keluarga',
         addressDomicile: 'Alamat lengkap domisili',
