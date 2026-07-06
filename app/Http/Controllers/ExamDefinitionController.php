@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\ExamDefinition;
 use App\Models\ExamSubmission;
+use App\Models\RegistrationProgress;
+use App\Models\User;
 use App\Services\AutoStudentReportService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class ExamDefinitionController extends Controller
 {
@@ -154,6 +158,10 @@ class ExamDefinitionController extends Controller
     {
         $user = $request->user();
 
+        if ($blocked = $this->registrationRequiredResponse($user)) {
+            return $blocked;
+        }
+
         $exams = ExamDefinition::query()
             ->where('is_active', true)
             ->orderBy('start_time')
@@ -176,8 +184,13 @@ class ExamDefinitionController extends Controller
 
     public function show(Request $request, ExamDefinition $exam)
     {
-        $hasSubmitted = false;
         $user = $request->user();
+
+        if ($blocked = $this->registrationRequiredResponse($user)) {
+            return $blocked;
+        }
+
+        $hasSubmitted = false;
         if ($user) {
             $hasSubmitted = ExamSubmission::where('user_id', $user->id)
                 ->where('exam_definition_id', $exam->id)
@@ -190,6 +203,10 @@ class ExamDefinitionController extends Controller
     public function submit(Request $request, ExamDefinition $exam)
     {
         $user = $request->user();
+
+        if ($blocked = $this->registrationRequiredResponse($user)) {
+            return $blocked;
+        }
 
         $existing = ExamSubmission::where('user_id', $user->id)
             ->where('exam_definition_id', $exam->id)
@@ -259,5 +276,33 @@ class ExamDefinitionController extends Controller
             ],
             'submissions' => $submissions,
         ]);
+    }
+
+    private function registrationRequiredResponse(?User $user): ?JsonResponse
+    {
+        if (! $user || $user->role !== 'user') {
+            return null;
+        }
+
+        if ($this->isRegistrationCompleted($user)) {
+            return null;
+        }
+
+        return response()->json([
+            'message' => 'Selesaikan pendaftaran terlebih dahulu untuk mengakses ujian.',
+        ], 403);
+    }
+
+    private function isRegistrationCompleted(User $user): bool
+    {
+        if (! Schema::hasTable('registration_progress')) {
+            return false;
+        }
+
+        $progress = RegistrationProgress::query()
+            ->where('user_id', $user->id)
+            ->first();
+
+        return (bool) ($progress?->fully_completed);
     }
 }

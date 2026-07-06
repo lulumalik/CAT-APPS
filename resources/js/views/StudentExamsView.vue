@@ -8,22 +8,38 @@
       :secondary-icon="Pencil"
     />
 
+    <section
+      v-if="isLocked"
+      class="rounded-[2rem] border border-amber-200 bg-amber-50 p-8 text-amber-900"
+    >
+      <h2 class="text-xl font-bold flex items-center gap-2">
+        <LockKeyhole class="h-5 w-5" />
+        Ujian masih terkunci
+      </h2>
+      <p class="text-sm mt-2">
+        Selesaikan pendaftaran hingga tahap fisik selesai disetujui admin untuk membuka akses ujian.
+      </p>
+      <router-link to="/registration" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
+        Buka halaman pendaftaran
+      </router-link>
+    </section>
+
     <!-- Section title -->
-    <div class="flex items-center gap-2.5 mb-5">
+    <div v-if="!isLocked" class="flex items-center gap-2.5 mb-5">
       <ClipboardList class="h-5 w-5 text-blue-500" stroke-width="2" />
       <h2 class="text-lg font-bold text-[#1E3A8A]">Daftar Ujian</h2>
     </div>
 
-    <div v-if="loading" class="py-16 text-center text-gray-500">Memuat ujian...</div>
-    <div v-else-if="errorMessage" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm text-red-700">
+    <div v-if="!isLocked && loading" class="py-16 text-center text-gray-500">Memuat ujian...</div>
+    <div v-else-if="!isLocked && errorMessage" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm text-red-700">
       {{ errorMessage }}
     </div>
 
-    <div v-else-if="!items.length" class="rounded-2xl border border-blue-100 bg-white p-10 text-center text-gray-500 shadow-sm">
+    <div v-else-if="!isLocked && !items.length" class="rounded-2xl border border-blue-100 bg-white p-10 text-center text-gray-500 shadow-sm">
       Belum ada ujian yang tersedia.
     </div>
 
-    <div v-else class="space-y-4">
+    <div v-else-if="!isLocked" class="space-y-4">
       <article
         v-for="test in items"
         :key="test.id"
@@ -97,10 +113,17 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import axios from 'axios'
-import { ArrowRight, CheckCircle2, ClipboardList, Clock, FileText, Pencil, Users } from 'lucide-vue-next'
+import { storeToRefs } from 'pinia'
+import { ArrowRight, CheckCircle2, ClipboardList, Clock, FileText, LockKeyhole, Pencil, Users } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
+import { useAppStore } from '@/stores/app'
+import { registrationCompleted } from '@/utils/userMeta'
+
+const store = useAppStore()
+const { user } = storeToRefs(store)
+const isLocked = computed(() => user.value?.role === 'user' && !registrationCompleted(user.value))
 
 const loading = ref(true)
 const errorMessage = ref('')
@@ -179,6 +202,10 @@ async function load() {
 }
 
 onMounted(() => {
+  if (isLocked.value) {
+    loading.value = false
+    return
+  }
   load()
   tickTimer = setInterval(() => {
     now.value = Date.now()
