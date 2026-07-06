@@ -7,9 +7,9 @@
       :icon="HeartHandshake"
     />
 
-    <div class="grid lg:grid-cols-12 gap-6">
+    <div class="space-y-6">
       <!-- Create invite -->
-      <section class="lg:col-span-5 bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
+      <section class="bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
         <h2 class="font-bold text-lg mb-4">Buat Undangan</h2>
 
         <label class="block text-sm font-medium text-gray-700 mb-1">Cari Peserta (sudah registrasi)</label>
@@ -77,13 +77,14 @@
       </section>
 
       <!-- Invite list -->
-      <section class="lg:col-span-7 bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
+      <section class="bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="font-bold text-lg">Daftar Undangan</h2>
-          <button type="button" class="text-sm text-gray-500 hover:text-[#1A1A1A]" @click="loadInvites">Muat ulang</button>
+          <button type="button" class="text-sm text-gray-500 hover:text-[#1A1A1A]" @click="loadInvites(currentPage)">Muat ulang</button>
         </div>
 
-        <div v-if="!invites.length" class="text-sm text-gray-500 py-8 text-center">Belum ada undangan.</div>
+        <div v-if="loadingInvites" class="text-sm text-gray-500 py-8 text-center">Memuat undangan...</div>
+        <div v-else-if="!invites.length" class="text-sm text-gray-500 py-8 text-center">Belum ada undangan.</div>
         <div v-else class="space-y-3">
           <article v-for="inv in invites" :key="inv.id" class="rounded-xl border border-gray-100 p-4">
             <div class="flex items-start justify-between gap-3">
@@ -116,6 +117,33 @@
             </div>
           </article>
         </div>
+
+        <div v-if="!loadingInvites && lastPage > 0" class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-gray-100 pt-4">
+          <p class="text-sm text-gray-500">
+            Menampilkan {{ rangeFrom }}–{{ rangeTo }} dari {{ totalInvites }} undangan
+          </p>
+          <div class="flex items-center justify-end gap-3">
+            <span class="text-xs text-gray-500 px-1">
+              Halaman {{ currentPage }} dari {{ lastPage }}
+            </span>
+            <button
+              type="button"
+              @click="goToPage(currentPage - 1)"
+              :disabled="currentPage <= 1"
+              class="px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+            >
+              Sebelumnya
+            </button>
+            <button
+              type="button"
+              @click="goToPage(currentPage + 1)"
+              :disabled="currentPage >= lastPage"
+              class="px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+            >
+              Berikutnya
+            </button>
+          </div>
+        </div>
       </section>
     </div>
   </main>
@@ -138,7 +166,21 @@ const showStudentDropdown = ref(false)
 const invites = ref([])
 const saving = ref(false)
 const searchingStudents = ref(false)
+const loadingInvites = ref(false)
+const currentPage = ref(1)
+const lastPage = ref(1)
+const totalInvites = ref(0)
+const perPage = 10
 let searchTimer = null
+
+const rangeFrom = computed(() => {
+  if (totalInvites.value === 0) return 0
+  return (currentPage.value - 1) * perPage + 1
+})
+const rangeTo = computed(() => {
+  if (totalInvites.value === 0) return 0
+  return Math.min(currentPage.value * perPage, totalInvites.value)
+})
 
 const form = reactive({
   student_user_id: null,
@@ -198,13 +240,29 @@ function searchStudents() {
   searchTimer = setTimeout(fetchStudents, 300)
 }
 
-async function loadInvites() {
+async function loadInvites(page = 1) {
+  loadingInvites.value = true
   try {
-    const { data } = await axios.get('/api/guardians')
-    invites.value = data.items || []
+    const { data } = await axios.get('/api/guardians', {
+      params: { page, per_page: perPage },
+    })
+    invites.value = data.data || []
+    currentPage.value = data.current_page || 1
+    lastPage.value = data.last_page || 1
+    totalInvites.value = data.total || 0
   } catch (e) {
     invites.value = []
+    currentPage.value = 1
+    lastPage.value = 1
+    totalInvites.value = 0
+  } finally {
+    loadingInvites.value = false
   }
+}
+
+function goToPage(page) {
+  if (page < 1 || page > lastPage.value) return
+  loadInvites(page)
 }
 
 async function createInvite() {
@@ -214,7 +272,7 @@ async function createInvite() {
     toast.success('OK', 'Undangan dibuat. Salin link / pesan WA untuk dikirim.')
     form.guardian_name = ''
     form.phone = ''
-    await loadInvites()
+    await loadInvites(1)
   } catch (e) {
     toast.error('Gagal', e?.response?.data?.message || 'Tidak bisa membuat undangan.')
   } finally {
@@ -225,7 +283,7 @@ async function createInvite() {
 async function markSent(inv) {
   try {
     await axios.patch(`/api/guardians/${inv.id}/sent`)
-    await loadInvites()
+    await loadInvites(currentPage.value)
   } catch (e) {
     toast.error('Gagal', 'Tidak bisa memperbarui status.')
   }
@@ -241,7 +299,10 @@ async function remove(inv) {
   if (!ok) return
   try {
     await axios.delete(`/api/guardians/${inv.id}`)
-    await loadInvites()
+    const nextPage = invites.value.length === 1 && currentPage.value > 1
+      ? currentPage.value - 1
+      : currentPage.value
+    await loadInvites(nextPage)
   } catch (e) {
     toast.error('Gagal', 'Tidak bisa menghapus undangan.')
   }
@@ -274,6 +335,6 @@ function statusClass(s) {
 }
 
 onMounted(async () => {
-  await Promise.all([loadInvites(), fetchStudents()])
+  await Promise.all([loadInvites(1), fetchStudents()])
 })
 </script>

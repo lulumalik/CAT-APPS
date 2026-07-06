@@ -73,7 +73,7 @@
                 <td class="px-5 py-4 whitespace-nowrap">
                   <span
                     class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tabular-nums"
-                    :class="scoreValue(sub.score) >= 70 ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'"
+                    :class="scoreTagClass(scoreValue(sub.score))"
                   >
                     {{ scoreValue(sub.score) }}
                   </span>
@@ -184,6 +184,7 @@ import axios from 'axios'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
+import { scoreTagClass } from '@/utils/scoreMeta'
 
 const route = useRoute()
 const toast = useToast()

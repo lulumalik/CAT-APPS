@@ -71,10 +71,13 @@ class GuardianController extends Controller
             $query->where('invite_status', $status);
         }
 
-        $items = $query->orderByDesc('id')->limit(200)->get()
-            ->map(fn ($link) => $this->serialize($request, $link));
+        $perPage = min(max((int) $request->input('per_page', 10), 1), 50);
 
-        return response()->json(['items' => $items]);
+        $paginator = $query->orderByDesc('id')->paginate($perPage);
+
+        return response()->json(
+            $paginator->through(fn ($link) => $this->serialize($request, $link))
+        );
     }
 
     public function store(Request $request)

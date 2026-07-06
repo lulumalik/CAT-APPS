@@ -37,8 +37,11 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDateTime(sub.submitted_at) }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="sub.score >= 70 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                    {{ sub.score }}
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    :class="scoreTagClass(scaledScore(sub.score))"
+                  >
+                    {{ scaledScore(sub.score) }}
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -89,9 +92,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
+import { scoreTagClass } from '@/utils/scoreMeta'
 
 const props = defineProps({ 
     test: Object,
@@ -104,6 +108,13 @@ const { t } = useI18n()
 const submissions = ref([])
 const loading = ref(true)
 const selectedSubmission = ref(null)
+
+const totalQuestions = computed(() => props.questions?.length || props.test?.question_ids?.length || 0)
+
+function scaledScore(score) {
+  if (!totalQuestions.value) return Number(score) || 0
+  return Math.round(((Number(score) || 0) / totalQuestions.value) * 100)
+}
 
 const loadSubmissions = async () => {
     try {

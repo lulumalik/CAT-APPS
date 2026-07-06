@@ -201,7 +201,14 @@
               >
                 <td class="py-2.5 pr-3">{{ row.subject_label || row.subject || '-' }}</td>
                 <td class="py-2.5 pr-3">{{ row.quiz_name || '-' }}</td>
-                <td class="py-2.5 pr-3 font-semibold">{{ formatScoreValue(row.score) }}</td>
+                <td class="py-2.5 pr-3">
+                  <span
+                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tabular-nums"
+                    :class="scoreTagClass(row.score)"
+                  >
+                    {{ formatScoreValue(row.score) }}
+                  </span>
+                </td>
                 <td class="py-2.5">{{ formatDate(row.date) }}</td>
               </tr>
             </tbody>
@@ -263,6 +270,7 @@ import axios from 'axios'
 import ProgressChart from '@/components/ProgressChart.vue'
 import { useAppStore } from '@/stores/app'
 import { useToast } from '@/composables/useNotification'
+import { scoreTagClass } from '@/utils/scoreMeta'
 
 const props = defineProps({
   studentId: { type: [Number, String], required: true },

@@ -185,7 +185,16 @@
                       {{ t('rankings.sourceManual') }}
                     </span>
                   </td>
-                  <td class="px-6 py-4 text-right font-semibold text-[#9DB359]">{{ row.display }}</td>
+                  <td class="px-6 py-4 text-right">
+                    <span
+                      v-if="!isJasmaniGroup"
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tabular-nums"
+                      :class="scoreTagClass(row.score)"
+                    >
+                      {{ row.display }}
+                    </span>
+                    <span v-else class="font-semibold text-[#9DB359]">{{ row.display }}</span>
+                  </td>
                   <td v-if="isStaff" class="px-6 py-4 text-right">
                     <template v-if="row.source === 'manual' && row.manual_id">
                       <button type="button" class="text-xs font-medium text-gray-600 hover:text-[#1A1A1A] mr-3" @click="openManualEdit(row)">
@@ -230,6 +239,7 @@ import { Trophy } from 'lucide-vue-next'
 import axios from 'axios'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
+import { scoreTagClass } from '@/utils/scoreMeta'
 import { useAppStore } from '@/stores/app'
 import { useModal, useToast } from '@/composables/useNotification'
 import RankingManualModal from '@/components/RankingManualModal.vue'
