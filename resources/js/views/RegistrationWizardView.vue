@@ -23,10 +23,12 @@
           </div>
         </section>
 
-        <ProgramAdminContactCard :whatsapp-message="adminWhatsAppMessage" />
-
         <div v-if="registrationCompleted(user)" class="rounded-2xl bg-emerald-50 border border-emerald-100 p-6 text-emerald-900 text-sm">
           {{ t('registration.simplifiedCompleteMessage') }}
+        </div>
+        <div v-else-if="emailVerified" class="rounded-2xl bg-amber-50 border border-amber-100 p-6 text-amber-900 text-sm">
+          {{ t('registration.simplifiedPaymentPending') }}
+          <router-link to="/profile" class="block mt-2 font-semibold underline">Buka profil untuk kontak admin</router-link>
         </div>
       </div>
     </template>
@@ -344,8 +346,7 @@ import { storeToRefs } from 'pinia'
 import { useI18n } from '@/composables/useI18n'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useAppStore } from '@/stores/app'
-import ProgramAdminContactCard from '@/components/ProgramAdminContactCard.vue'
-import { registrationCompleted, usesSimplifiedOnboarding, programCategoryLabel } from '@/utils/userMeta'
+import { registrationCompleted, usesSimplifiedOnboarding } from '@/utils/userMeta'
 import { registrationFileHref } from '@/utils/storageUrl'
 
 const store = useAppStore()
@@ -357,11 +358,6 @@ const toast = useToast()
 const isSimplifiedProgram = computed(() => usesSimplifiedOnboarding(user.value))
 const emailVerified = computed(() => Boolean(user.value?.email_verified_at))
 const resendingEmail = ref(false)
-
-const adminWhatsAppMessage = computed(() => {
-  const label = programCategoryLabel(user.value?.program_category)
-  return `Halo admin, saya ${user.value?.name || 'peserta'} mendaftar ${label}. Mohon info biaya dan cara pembayaran.`
-})
 
 async function resendVerificationEmail() {
   resendingEmail.value = true

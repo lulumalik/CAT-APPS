@@ -78,7 +78,34 @@
         </p>
       </section>
 
-      <section class="rounded-[2rem] bg-white border border-gray-100 shadow-lg shadow-black/5 p-6">
+      <section v-if="isSimplifiedProgram" class="rounded-[2rem] bg-white border border-gray-100 shadow-lg shadow-black/5 p-6 space-y-4">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h2 class="font-semibold text-lg">Pembayaran Program</h2>
+            <p class="mt-1 text-sm text-gray-500">Kelas Online dan Kelas Ujian memerlukan konfirmasi pembayaran oleh admin.</p>
+          </div>
+          <span
+            class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
+            :class="paymentConfirmed ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'"
+          >
+            <component :is="paymentConfirmed ? CheckCircle2 : AlertTriangle" class="h-4 w-4" />
+            {{ paymentConfirmed ? 'Sudah dibayar' : 'Menunggu konfirmasi' }}
+          </span>
+        </div>
+
+        <p v-if="!isEmailVerified" class="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
+          Verifikasi email terlebih dahulu sebelum menghubungi admin untuk pembayaran.
+        </p>
+        <ProgramAdminContactCard
+          v-else-if="!paymentConfirmed"
+          :whatsapp-message="adminWhatsAppMessage"
+        />
+        <p v-else class="text-sm text-emerald-700">
+          Admin telah mengonfirmasi pembayaran Anda. Fitur program sekarang aktif.
+        </p>
+      </section>
+
+      <section v-if="!isSimplifiedProgram" class="rounded-[2rem] bg-white border border-gray-100 shadow-lg shadow-black/5 p-6">
         <h2 class="font-semibold text-lg mb-4">Progress Pendaftaran</h2>
         <ol class="space-y-3">
           <li v-for="s in steps" :key="s.key" class="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3">
@@ -111,7 +138,8 @@ import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
 import { CheckCircle2, AlertTriangle, Send, Loader2, UserCircle } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
-import { getProgramBadge, programCategoryLabel, supportsProgramQuarantine, formatAppExpiresAt, isAppExpired } from '@/utils/userMeta'
+import ProgramAdminContactCard from '@/components/ProgramAdminContactCard.vue'
+import { getProgramBadge, programCategoryLabel, supportsProgramQuarantine, formatAppExpiresAt, isAppExpired, usesSimplifiedOnboarding } from '@/utils/userMeta'
 import { registrationFileHref } from '@/utils/storageUrl'
 import { getCookie, setCookie } from '@/utils/cookies'
 import { useToast } from '@/composables/useNotification'
@@ -131,6 +159,12 @@ const cooldownRemaining = ref(0)
 let cooldownTimer = null
 
 const isEmailVerified = computed(() => Boolean(user.value?.email_verified_at))
+const isSimplifiedProgram = computed(() => usesSimplifiedOnboarding(user.value))
+const paymentConfirmed = computed(() => Boolean(progress.value?.payment_confirmed))
+const adminWhatsAppMessage = computed(() => {
+  const label = programLabel.value
+  return `Halo admin, saya ${user.value?.name || 'peserta'} mendaftar ${label}. Mohon info biaya dan cara pembayaran.`
+})
 const resendDisabled = computed(() => isSending.value || cooldownRemaining.value > 0)
 
 const startCooldownFrom = (untilMs) => {

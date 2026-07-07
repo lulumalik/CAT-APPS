@@ -25,6 +25,8 @@ class RegistrationProgress extends Model
         'physical_data',
         'physical_admin_note',
         'fully_completed',
+        'payment_confirmed',
+        'payment_confirmed_at',
     ];
 
     protected function casts(): array
@@ -35,6 +37,8 @@ class RegistrationProgress extends Model
             'psychology_data' => 'array',
             'physical_data' => 'array',
             'fully_completed' => 'boolean',
+            'payment_confirmed' => 'boolean',
+            'payment_confirmed_at' => 'datetime',
         ];
     }
 

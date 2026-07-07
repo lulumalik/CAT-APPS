@@ -73,15 +73,21 @@
           Dashboard terkunci
         </h2>
         <p class="text-sm mt-2">
-          <template v-if="usesSimplifiedOnboarding(user)">
-            Verifikasi email Anda terlebih dahulu melalui tautan yang dikirim ke inbox. Setelah terverifikasi, dashboard dan ujian akan terbuka.
+          <template v-if="usesSimplifiedOnboarding(user) && !user?.email_verified_at">
+            Verifikasi email Anda terlebih dahulu melalui tautan yang dikirim ke inbox.
+          </template>
+          <template v-else-if="usesSimplifiedOnboarding(user)">
+            Lakukan pembayaran lalu hubungi admin melalui halaman profil. Dashboard akan terbuka setelah admin mengonfirmasi pembayaran.
           </template>
           <template v-else>
             Fitur dashboard dan kelas akan terbuka setelah pendaftaran selesai: administrasi, psikologi, kesehatan, lalu fisik.
           </template>
         </p>
-        <router-link to="/registration" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
-          {{ usesSimplifiedOnboarding(user) ? 'Verifikasi Email' : 'Lanjutkan Pendaftaran' }}
+        <router-link
+          :to="usesSimplifiedOnboarding(user) && user?.email_verified_at ? '/profile' : '/registration'"
+          class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white"
+        >
+          {{ usesSimplifiedOnboarding(user) ? (user?.email_verified_at ? 'Buka Profil' : 'Verifikasi Email') : 'Lanjutkan Pendaftaran' }}
         </router-link>
       </section>
 

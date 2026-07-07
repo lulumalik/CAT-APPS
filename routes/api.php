@@ -119,6 +119,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminShow']);
     Route::get('/admin/storage-diagnostic', [RegistrationProgressController::class, 'adminStorageDiagnostic']);
     Route::patch('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminUpdate']);
+    Route::patch('/admin/registration-progress/{user}/payment', [RegistrationProgressController::class, 'adminConfirmPayment']);
     Route::get('/admin/registration-progress/{user}/berkas-pdf', [RegistrationFormPdfController::class, 'adminDownloadTemplate']);
     Route::get('/admin/registration-progress/{user}/forms/pdf', [RegistrationFormPdfController::class, 'adminDownloadAll']);
     Route::get('/admin/registration-progress/{user}/forms/{slug}/pdf', [RegistrationFormPdfController::class, 'adminDownloadPage']);

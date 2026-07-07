@@ -34,12 +34,6 @@
               </option>
             </select>
 
-            <ProgramAdminContactCard
-              v-if="showAdminContact"
-              class="text-left"
-              :whatsapp-message="adminWhatsAppMessage"
-            />
-
             <input
               id="name"
               v-model="name"
@@ -143,15 +137,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { CircleAlert, Eye, EyeOff } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
-import ProgramAdminContactCard from '@/components/ProgramAdminContactCard.vue'
-import { normalizeProgramCategory } from '@/utils/userMeta'
 
 const programCategory = ref('regular')
 const name = ref('')
@@ -167,16 +159,6 @@ const router = useRouter()
 const store = useAppStore()
 const toast = useToast()
 const { t } = useI18n()
-
-const showAdminContact = computed(() => {
-  const program = normalizeProgramCategory(programCategory.value)
-  return program === 'bimbingan_online' || program === 'try_out'
-})
-
-const adminWhatsAppMessage = computed(() => {
-  const label = ONLINE_PROGRAMS.find((p) => p.value === normalizeProgramCategory(programCategory.value))?.name || 'program'
-  return `Halo admin, saya ingin mendaftar ${label}. Mohon info biaya dan cara pembayaran.`
-})
 
 const onSubmit = async () => {
   loading.value = true

@@ -65,7 +65,7 @@ export const getProgramBadge = (user) => {
 export const registrationCompleted = (user) => {
   if (user?.onboarding_completed === true) return true
   if (usesSimplifiedOnboarding(user)) {
-    return Boolean(user?.email_verified_at)
+    return Boolean(user?.email_verified_at) && Boolean(user?.registration?.payment_confirmed)
   }
   return Boolean(user?.registration?.fully_completed)
 }

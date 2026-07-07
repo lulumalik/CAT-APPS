@@ -129,7 +129,19 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         if (self::usesSimplifiedOnboarding($this->program_category)) {
-            return $this->hasVerifiedEmail();
+            if (! $this->hasVerifiedEmail()) {
+                return false;
+            }
+
+            if (! \Illuminate\Support\Facades\Schema::hasTable('registration_progress')) {
+                return false;
+            }
+
+            $progress = $this->relationLoaded('registrationProgress')
+                ? $this->registrationProgress
+                : $this->registrationProgress()->first();
+
+            return (bool) ($progress?->payment_confirmed);
         }
 
         if (! \Illuminate\Support\Facades\Schema::hasTable('registration_progress')) {

@@ -627,6 +627,62 @@ class RegistrationProgressController extends Controller
         ));
     }
 
+    public function adminConfirmPayment(Request $request, User $user)
+    {
+        if (! Schema::hasTable('registration_progress')) {
+            return response()->json([
+                'message' => 'Struktur pendaftaran belum aktif. Jalankan migrasi database terbaru.',
+            ], 503);
+        }
+
+        if (! User::usesSimplifiedOnboarding($user->program_category)) {
+            return response()->json([
+                'message' => 'Konfirmasi pembayaran hanya berlaku untuk program Kelas Online dan Kelas Ujian.',
+            ], 422);
+        }
+
+        $data = $request->validate([
+            'payment_confirmed' => 'required|boolean',
+        ]);
+
+        $progress = RegistrationProgress::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'current_step' => 'administration',
+                'administration_status' => 'not_started',
+                'psychology_status' => 'not_started',
+                'health_status' => 'not_started',
+                'physical_status' => 'not_started',
+                'fully_completed' => false,
+                'payment_confirmed' => false,
+            ]
+        );
+
+        $progress->payment_confirmed = (bool) $data['payment_confirmed'];
+        $progress->payment_confirmed_at = $data['payment_confirmed'] ? now() : null;
+        $progress->fully_completed = $data['payment_confirmed'] && $user->hasVerifiedEmail();
+        $progress->current_step = $progress->fully_completed ? 'completed' : 'administration';
+        $progress->save();
+
+        if (Schema::hasTable('user_notifications')) {
+            UserNotification::create([
+                'user_id' => $user->id,
+                'type' => $data['payment_confirmed'] ? 'payment_confirmed' : 'payment_pending',
+                'title' => $data['payment_confirmed'] ? 'Pembayaran dikonfirmasi' : 'Status pembayaran diperbarui',
+                'message' => $data['payment_confirmed']
+                    ? 'Admin telah mengonfirmasi pembayaran Anda. Fitur program sekarang aktif.'
+                    : 'Status pembayaran Anda ditandai belum dikonfirmasi. Hubungi admin jika sudah transfer.',
+                'payload' => [
+                    'payment_confirmed' => (bool) $data['payment_confirmed'],
+                ],
+            ]);
+        }
+
+        return response()->json($this->serializeRegistrationProgress(
+            $progress->fresh()->load('user:id,name,email,program_category')
+        ));
+    }
+
     public function adminStorageDiagnostic(Request $request, RegistrationFileStorage $files)
     {
         if (! config('app.debug')) {

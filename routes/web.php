@@ -105,12 +105,13 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, 
         RegistrationProgress::updateOrCreate(
             ['user_id' => $user->id],
             [
-                'current_step' => 'completed',
-                'administration_status' => 'approved',
-                'psychology_status' => 'approved',
-                'health_status' => 'approved',
-                'physical_status' => 'approved',
-                'fully_completed' => true,
+                'current_step' => 'administration',
+                'administration_status' => 'not_started',
+                'psychology_status' => 'not_started',
+                'health_status' => 'not_started',
+                'physical_status' => 'not_started',
+                'fully_completed' => false,
+                'payment_confirmed' => false,
             ]
         );
     }

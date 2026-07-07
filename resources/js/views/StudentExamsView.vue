@@ -17,15 +17,21 @@
         Ujian masih terkunci
       </h2>
       <p class="text-sm mt-2">
-        <template v-if="usesSimplifiedOnboarding(user)">
+        <template v-if="usesSimplifiedOnboarding(user) && !user?.email_verified_at">
           Verifikasi email Anda terlebih dahulu. Program Kelas Ujian hanya dapat mengakses menu ujian.
+        </template>
+        <template v-else-if="usesSimplifiedOnboarding(user)">
+          Lakukan pembayaran lalu hubungi admin melalui halaman profil. Ujian akan terbuka setelah admin mengonfirmasi pembayaran.
         </template>
         <template v-else>
           Selesaikan pendaftaran hingga tahap fisik selesai disetujui admin untuk membuka akses ujian.
         </template>
       </p>
-      <router-link to="/registration" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
-        Buka halaman pendaftaran
+      <router-link
+        :to="usesSimplifiedOnboarding(user) && user?.email_verified_at ? '/profile' : '/registration'"
+        class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white"
+      >
+        {{ usesSimplifiedOnboarding(user) ? (user?.email_verified_at ? 'Buka Profil' : 'Verifikasi Email') : 'Buka halaman pendaftaran' }}
       </router-link>
     </section>
 

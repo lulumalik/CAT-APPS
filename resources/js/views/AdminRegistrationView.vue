@@ -33,10 +33,12 @@
         <thead class="bg-gray-50 text-left text-gray-600">
           <tr>
             <th class="px-4 py-3 font-semibold">{{ t('adminRegistration.user') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('adminRegistration.programColumn') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('registration.steps.admin') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('registration.steps.psychology') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('registration.steps.health') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('registration.steps.physical') }}</th>
+            <th class="px-4 py-3 font-semibold">{{ t('adminRegistration.paymentColumn') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('common.status') }}</th>
             <th class="px-4 py-3 font-semibold">{{ t('common.actions') }}</th>
           </tr>
@@ -47,10 +49,21 @@
               <div class="font-medium text-[#1A1A1A]">{{ row.user?.name }}</div>
               <div class="text-xs text-gray-500">{{ row.user?.email }}</div>
             </td>
-            <td class="px-4 py-3 capitalize">{{ row.administration_status }}</td>
-            <td class="px-4 py-3 capitalize">{{ row.psychology_status }}</td>
-            <td class="px-4 py-3 capitalize">{{ row.health_status }}</td>
-            <td class="px-4 py-3 capitalize">{{ row.physical_status }}</td>
+            <td class="px-4 py-3 text-xs text-gray-600">{{ programLabel(row.user?.program_category) }}</td>
+            <td class="px-4 py-3 capitalize">{{ isSimplifiedRow(row) ? '—' : row.administration_status }}</td>
+            <td class="px-4 py-3 capitalize">{{ isSimplifiedRow(row) ? '—' : row.psychology_status }}</td>
+            <td class="px-4 py-3 capitalize">{{ isSimplifiedRow(row) ? '—' : row.health_status }}</td>
+            <td class="px-4 py-3 capitalize">{{ isSimplifiedRow(row) ? '—' : row.physical_status }}</td>
+            <td class="px-4 py-3">
+              <span
+                v-if="isSimplifiedRow(row)"
+                class="text-xs rounded-full px-2 py-0.5 font-semibold"
+                :class="row.payment_confirmed ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+              >
+                {{ row.payment_confirmed ? t('adminRegistration.paymentConfirmed') : t('adminRegistration.paymentPending') }}
+              </span>
+              <span v-else class="text-gray-400">—</span>
+            </td>
             <td class="px-4 py-3">
               <span class="text-xs rounded-full px-2 py-0.5 bg-gray-100">{{ row.current_step }}</span>
               <Check v-if="row.fully_completed" class="ml-1 inline h-3.5 w-3.5 text-emerald-600" />
@@ -68,7 +81,55 @@
     <div v-if="modal.open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @click.self="modal.open = false">
       <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <h3 class="font-bold text-lg mb-4">{{ t('adminRegistration.review') }}</h3>
-        <div v-if="modal.row" class="space-y-5 text-sm">
+        <div v-if="modal.row && isSimplifiedRow(modal.row)" class="space-y-5 text-sm">
+          <div>
+            <div class="font-medium text-[#1A1A1A]">{{ modal.row.user?.name }}</div>
+            <div class="text-xs text-gray-500">{{ modal.row.user?.email }}</div>
+            <div class="mt-1 text-xs text-gray-600">{{ programLabel(modal.row.user?.program_category) }}</div>
+          </div>
+          <p class="text-xs text-amber-900 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 leading-relaxed">
+            {{ t('adminRegistration.paymentSubtitle') }}
+          </p>
+          <div class="rounded-2xl border border-gray-200 p-5 space-y-4">
+            <div class="text-sm font-semibold text-gray-700">{{ t('adminRegistration.paymentTitle') }}</div>
+            <span
+              class="inline-flex text-xs rounded-full px-2.5 py-1 font-semibold"
+              :class="modal.row.payment_confirmed ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'"
+            >
+              {{ modal.row.payment_confirmed ? t('adminRegistration.paymentConfirmed') : t('adminRegistration.paymentPending') }}
+            </span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                class="flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-colors"
+                :class="modal.row.payment_confirmed
+                  ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                  : 'border-gray-200 bg-white text-gray-600 hover:border-emerald-200'"
+                :disabled="modal.paymentSaving"
+                @click="submitPayment(true)"
+              >
+                <Check class="h-4 w-4" />
+                {{ t('adminRegistration.paymentConfirmAction') }}
+              </button>
+              <button
+                type="button"
+                class="flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 text-sm font-semibold transition-colors"
+                :class="!modal.row.payment_confirmed
+                  ? 'border-amber-500 bg-amber-50 text-amber-700'
+                  : 'border-gray-200 bg-white text-gray-600 hover:border-amber-200'"
+                :disabled="modal.paymentSaving"
+                @click="submitPayment(false)"
+              >
+                <AlertCircle class="h-4 w-4" />
+                {{ t('adminRegistration.paymentUnconfirmAction') }}
+              </button>
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" class="px-4 py-2 rounded-full border border-gray-200 text-sm" @click="modal.open = false">{{ t('common.close') }}</button>
+          </div>
+        </div>
+        <div v-else-if="modal.row" class="space-y-5 text-sm">
           <p class="text-xs text-amber-900 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 leading-relaxed">
             {{ t('adminRegistration.offlineStaffHint') }}
           </p>
@@ -202,6 +263,7 @@ import axios from 'axios'
 import { AlertCircle, Brain, Check, ClipboardCheck, ClipboardList, Dumbbell, HeartPulse, Save } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
+import { programCategoryLabel, usesSimplifiedOnboarding } from '@/utils/userMeta'
 import { registrationFileHref } from '@/utils/storageUrl'
 
 const { t } = useI18n()
@@ -270,6 +332,7 @@ const defaultAction = () => ({ decision: 'approved', note: '', saving: false })
 const modal = reactive({
   open: false,
   row: null,
+  paymentSaving: false,
   actions: {
     administration: defaultAction(),
     psychology: defaultAction(),
@@ -277,6 +340,14 @@ const modal = reactive({
     physical: defaultAction(),
   },
 })
+
+function isSimplifiedRow(row) {
+  return usesSimplifiedOnboarding(row?.user)
+}
+
+function programLabel(category) {
+  return programCategoryLabel(category)
+}
 
 function isHttpUrl(val) {
   return typeof val === 'string' && /^https?:\/\//i.test(val.trim())
@@ -334,7 +405,29 @@ async function load() {
 function openReview(row) {
   modal.open = true
   modal.row = row
-  reviewSteps.forEach((step) => hydrateAction(step.key, row))
+  modal.paymentSaving = false
+  if (!isSimplifiedRow(row)) {
+    reviewSteps.forEach((step) => hydrateAction(step.key, row))
+  }
+}
+
+async function submitPayment(confirmed) {
+  const uid = modal.row?.user_id ?? modal.row?.user?.id
+  if (!uid) return
+  modal.paymentSaving = true
+  try {
+    const { data } = await axios.patch(`/api/admin/registration-progress/${uid}/payment`, {
+      payment_confirmed: confirmed,
+    })
+    modal.row = data
+    const listIdx = items.value.findIndex((item) => (item.user_id ?? item.user?.id) === uid)
+    if (listIdx !== -1) items.value[listIdx] = data
+    errorMessage.value = ''
+  } catch (error) {
+    errorMessage.value = error?.response?.data?.message || 'Gagal memperbarui status pembayaran.'
+  } finally {
+    modal.paymentSaving = false
+  }
 }
 
 function setDecision(step, decision) {
