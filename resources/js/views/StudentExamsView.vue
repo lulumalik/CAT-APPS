@@ -17,7 +17,12 @@
         Ujian masih terkunci
       </h2>
       <p class="text-sm mt-2">
-        Selesaikan pendaftaran hingga tahap fisik selesai disetujui admin untuk membuka akses ujian.
+        <template v-if="usesSimplifiedOnboarding(user)">
+          Verifikasi email Anda terlebih dahulu. Program Kelas Ujian hanya dapat mengakses menu ujian.
+        </template>
+        <template v-else>
+          Selesaikan pendaftaran hingga tahap fisik selesai disetujui admin untuk membuka akses ujian.
+        </template>
       </p>
       <router-link to="/registration" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
         Buka halaman pendaftaran
@@ -119,7 +124,7 @@ import { storeToRefs } from 'pinia'
 import { ArrowRight, CheckCircle2, ClipboardList, Clock, FileText, LockKeyhole, Pencil, Users } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useAppStore } from '@/stores/app'
-import { registrationCompleted } from '@/utils/userMeta'
+import { registrationCompleted, usesSimplifiedOnboarding } from '@/utils/userMeta'
 
 const store = useAppStore()
 const { user } = storeToRefs(store)

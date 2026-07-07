@@ -109,7 +109,7 @@ import axios from 'axios'
 import { Bell, Lock, Menu, X } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/app'
 import { useI18n } from '@/composables/useI18n'
-import { getProgramBadge, registrationCompleted, isAppExpired } from '@/utils/userMeta'
+import { getProgramBadge, registrationCompleted, isAppExpired, isExamOnlyProgram } from '@/utils/userMeta'
 
 const store = useAppStore()
 const route = useRoute()
@@ -122,6 +122,7 @@ const unreadCount = ref(0)
 const isAdmin = computed(() => role.value === 'admin')
 const isStudent = computed(() => role.value === 'user')
 const isParent = computed(() => role.value === 'parent')
+const isExamOnlyStudent = computed(() => isStudent.value && isExamOnlyProgram(user.value))
 const onboardingDone = computed(() => registrationCompleted(user.value))
 const appExpired = computed(() => isAppExpired(user.value))
 const programBadge = computed(() => getProgramBadge(user.value))
@@ -149,15 +150,23 @@ const navItems = computed(() => {
       ]
     }
 
-    return [
+    const studentItems = [
       { to: '/dashboard', label: t('nav.dashboard'), locked: !onboardingDone.value },
       { to: '/ujian', label: 'Ujian', locked: !onboardingDone.value },
-      { to: '/my-classes', label: t('nav.myClasses'), locked: !onboardingDone.value },
+    ]
+
+    if (!isExamOnlyStudent.value) {
+      studentItems.push({ to: '/my-classes', label: t('nav.myClasses'), locked: !onboardingDone.value })
+    }
+
+    studentItems.push(
       { to: '/profile', label: 'Profil' },
       { to: '/activity-history', label: 'Riwayat Aktivitas' },
       { to: '/registration', label: t('nav.registrationWizard') },
       { to: '/notifications', label: t('nav.notifications') },
-    ]
+    )
+
+    return studentItems
   }
 
   const items = [

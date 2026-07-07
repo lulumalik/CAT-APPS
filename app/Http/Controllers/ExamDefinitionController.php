@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\ExamDefinition;
 use App\Models\ExamSubmission;
-use App\Models\RegistrationProgress;
 use App\Models\User;
 use App\Services\AutoStudentReportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 
 class ExamDefinitionController extends Controller
 {
@@ -284,25 +282,12 @@ class ExamDefinitionController extends Controller
             return null;
         }
 
-        if ($this->isRegistrationCompleted($user)) {
+        if ($user->hasCompletedOnboarding()) {
             return null;
         }
 
         return response()->json([
             'message' => 'Selesaikan pendaftaran terlebih dahulu untuk mengakses ujian.',
         ], 403);
-    }
-
-    private function isRegistrationCompleted(User $user): bool
-    {
-        if (! Schema::hasTable('registration_progress')) {
-            return false;
-        }
-
-        $progress = RegistrationProgress::query()
-            ->where('user_id', $user->id)
-            ->first();
-
-        return (bool) ($progress?->fully_completed);
     }
 }

@@ -31,6 +31,7 @@ import StudentReportsManageView from '@/views/StudentReportsManageView.vue';
 import TestSubmissionsView from '@/views/TestSubmissionsView.vue';
 import StudentExamsView from '@/views/StudentExamsView.vue';
 import { useAppStore } from '@/stores/app';
+import { normalizeProgramCategory } from '@/utils/userMeta';
 
 const routes = [
   { path: '/', name: 'home-demo', component: HomeDemoView },
@@ -146,6 +147,13 @@ router.beforeEach(async (to, from, next) => {
 
     if (!allowedForStudent.includes(String(to.name))) {
       next({ name: expired ? 'profile' : 'dashboard' })
+      return
+    }
+
+    const examOnly = store.user?.is_exam_only_program === true
+      || normalizeProgramCategory(store.user?.program_category) === 'try_out'
+    if (examOnly && ['my-classes', 'bimble-class-room'].includes(String(to.name))) {
+      next({ name: 'student-exams' })
       return
     }
   }

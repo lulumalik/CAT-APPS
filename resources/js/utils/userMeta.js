@@ -23,6 +23,17 @@ export const supportsProgramQuarantine = (program) => {
   return normalizeProgramCategory(program) === 'vip'
 }
 
+export const usesSimplifiedOnboarding = (user) => {
+  if (user?.uses_simplified_onboarding === true) return true
+  const program = normalizeProgramCategory(user?.program_category)
+  return program === 'bimbingan_online' || program === 'try_out'
+}
+
+export const isExamOnlyProgram = (user) => {
+  if (user?.is_exam_only_program === true) return true
+  return normalizeProgramCategory(user?.program_category) === 'try_out'
+}
+
 const badgeStyleByValue = {
   vip: { className: 'bg-sky text-primary border border-border' },
   regular: { className: 'bg-mint text-primary border border-border' },
@@ -52,6 +63,10 @@ export const getProgramBadge = (user) => {
 }
 
 export const registrationCompleted = (user) => {
+  if (user?.onboarding_completed === true) return true
+  if (usesSimplifiedOnboarding(user)) {
+    return Boolean(user?.email_verified_at)
+  }
   return Boolean(user?.registration?.fully_completed)
 }
 

@@ -21,7 +21,12 @@ class BimbleClassController extends Controller
             return response()->json([]);
         }
 
-        $classes = $request->user()->bimbleClasses()->orderBy('bimble_classes.name')->get();
+        $user = $request->user();
+        if (User::isExamOnlyProgram($user->program_category)) {
+            return response()->json([]);
+        }
+
+        $classes = $user->bimbleClasses()->orderBy('bimble_classes.name')->get();
 
         return response()->json($classes);
     }
@@ -156,6 +161,13 @@ class BimbleClassController extends Controller
     public function workspace(Request $request, BimbleClass $bimbleClass)
     {
         $user = $request->user();
+
+        if (User::isExamOnlyProgram($user->program_category)) {
+            return response()->json([
+                'message' => 'Program Kelas Ujian hanya dapat mengakses menu ujian, bukan ruang kelas.',
+            ], 403);
+        }
+
         $bimbleClass->load('instructor:id,name,role');
         $ok = $user->role === 'admin'
             || ($user->role === 'mentor' && ((int) $bimbleClass->created_by === (int) $user->id || (int) $bimbleClass->instructor_id === (int) $user->id))
@@ -385,14 +397,6 @@ class BimbleClassController extends Controller
 
     private function isRegistrationCompleted(User $user): bool
     {
-        if (! Schema::hasTable('registration_progress')) {
-            return false;
-        }
-
-        $progress = RegistrationProgress::query()
-            ->where('user_id', $user->id)
-            ->first();
-
-        return (bool) ($progress?->fully_completed);
+        return $user->hasCompletedOnboarding();
     }
 }

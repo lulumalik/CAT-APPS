@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\RegistrationProgressController;
+use App\Models\RegistrationProgress;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
@@ -98,6 +100,20 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, string $id, 
 
     $user->markEmailAsVerified();
     event(new Verified($user));
+
+    if (User::usesSimplifiedOnboarding($user->program_category) && Schema::hasTable('registration_progress')) {
+        RegistrationProgress::updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'current_step' => 'completed',
+                'administration_status' => 'approved',
+                'psychology_status' => 'approved',
+                'health_status' => 'approved',
+                'physical_status' => 'approved',
+                'fully_completed' => true,
+            ]
+        );
+    }
 
     return redirect('/email/verified?status=success');
 })->name('verification.verify');

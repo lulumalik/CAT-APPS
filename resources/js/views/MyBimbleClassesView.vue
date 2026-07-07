@@ -8,7 +8,20 @@
     />
 
     <section
-      v-if="isLocked"
+      v-if="isExamOnly"
+      class="rounded-[2rem] border border-purple-200 bg-purple-50 p-8 text-purple-900"
+    >
+      <h2 class="text-xl font-bold">Program Kelas Ujian</h2>
+      <p class="text-sm mt-2">
+        Peserta program Kelas Ujian hanya dapat mengakses menu ujian. Ruang kelas tidak tersedia untuk program ini.
+      </p>
+      <router-link to="/ujian" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
+        Buka halaman ujian
+      </router-link>
+    </section>
+
+    <section
+      v-else-if="isLocked"
       class="rounded-[2rem] border border-amber-200 bg-amber-50 p-8 text-amber-900"
     >
       <h2 class="text-xl font-bold flex items-center gap-2">
@@ -23,18 +36,18 @@
       </router-link>
     </section>
 
-    <div v-if="!isLocked && loading" class="py-16 text-center text-gray-500">{{ t('common.refresh') }}…</div>
+    <div v-if="!isLocked && !isExamOnly && loading" class="py-16 text-center text-gray-500">{{ t('common.refresh') }}…</div>
     <div
-      v-else-if="!isLocked && errorMessage"
+      v-else-if="!isLocked && !isExamOnly && errorMessage"
       class="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm text-red-700"
     >
       {{ errorMessage }}
     </div>
-    <div v-else-if="!isLocked && !classes.length" class="rounded-2xl border border-gray-100 bg-white p-10 text-center text-gray-500 text-sm">
+    <div v-else-if="!isLocked && !isExamOnly && !classes.length" class="rounded-2xl border border-gray-100 bg-white p-10 text-center text-gray-500 text-sm">
       {{ t('bimble.myClassesEmpty') }}
     </div>
 
-    <div v-else-if="!isLocked" class="grid gap-6 md:grid-cols-2">
+    <div v-else-if="!isLocked && !isExamOnly" class="grid gap-6 md:grid-cols-2">
       <router-link
         v-for="(c, idx) in classes"
         :key="c.id"
@@ -78,7 +91,7 @@ import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useAppStore } from '@/stores/app'
 import { storeToRefs } from 'pinia'
-import { programCategoryLabel, registrationCompleted } from '@/utils/userMeta'
+import { programCategoryLabel, registrationCompleted, isExamOnlyProgram } from '@/utils/userMeta'
 
 const { t } = useI18n()
 const store = useAppStore()
@@ -86,7 +99,8 @@ const { user } = storeToRefs(store)
 const loading = ref(true)
 const classes = ref([])
 const errorMessage = ref('')
-const isLocked = computed(() => user.value?.role === 'user' && !registrationCompleted(user.value))
+const isExamOnly = computed(() => user.value?.role === 'user' && isExamOnlyProgram(user.value))
+const isLocked = computed(() => user.value?.role === 'user' && !isExamOnly.value && !registrationCompleted(user.value))
 const formatProgram = (programType) => programCategoryLabel(programType)
 
 const cardThemes = [
@@ -125,7 +139,7 @@ function formatPeriod(c) {
 }
 
 onMounted(async () => {
-  if (isLocked.value) {
+  if (isLocked.value || isExamOnly.value) {
     loading.value = false
     classes.value = []
     return

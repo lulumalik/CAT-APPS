@@ -110,6 +110,39 @@ class User extends Authenticatable implements MustVerifyEmail
         return $normalized === self::PROGRAM_VIP;
     }
 
+    public static function usesSimplifiedOnboarding(?string $programCategory): bool
+    {
+        $normalized = self::normalizeProgramCategory($programCategory);
+
+        return in_array($normalized, [self::PROGRAM_BIMBINGAN_ONLINE, self::PROGRAM_TRY_OUT], true);
+    }
+
+    public static function isExamOnlyProgram(?string $programCategory): bool
+    {
+        return self::normalizeProgramCategory($programCategory) === self::PROGRAM_TRY_OUT;
+    }
+
+    public function hasCompletedOnboarding(): bool
+    {
+        if ($this->role !== 'user') {
+            return true;
+        }
+
+        if (self::usesSimplifiedOnboarding($this->program_category)) {
+            return $this->hasVerifiedEmail();
+        }
+
+        if (! \Illuminate\Support\Facades\Schema::hasTable('registration_progress')) {
+            return false;
+        }
+
+        $progress = $this->relationLoaded('registrationProgress')
+            ? $this->registrationProgress
+            : $this->registrationProgress()->first();
+
+        return (bool) ($progress?->fully_completed);
+    }
+
     public static function normalizeUsername(?string $username): string
     {
         $normalized = Str::of((string) $username)

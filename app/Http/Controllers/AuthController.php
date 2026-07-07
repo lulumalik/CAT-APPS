@@ -26,6 +26,9 @@ class AuthController extends Controller
             'in_quarantine' => (bool) $user->in_quarantine,
             'app_expires_at' => $user->app_expires_at?->toIso8601String(),
             'app_expired' => $user->isAppExpired(),
+            'onboarding_completed' => $user->hasCompletedOnboarding(),
+            'uses_simplified_onboarding' => User::usesSimplifiedOnboarding($user->program_category),
+            'is_exam_only_program' => User::isExamOnlyProgram($user->program_category),
             'registration' => Schema::hasTable('registration_progress') ? $user->registrationProgress : null,
         ];
     }

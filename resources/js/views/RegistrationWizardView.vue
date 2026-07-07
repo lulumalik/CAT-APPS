@@ -1,5 +1,37 @@
 <template>
   <main class="max-w-5xl mx-auto px-4 py-10">
+    <template v-if="isSimplifiedProgram">
+      <h1 class="text-2xl font-bold text-[#1A1A1A] mb-2">{{ t('registration.simplifiedTitle') }}</h1>
+      <p class="text-gray-500 text-sm mb-8">{{ t('registration.simplifiedSubtitle') }}</p>
+
+      <div class="space-y-6">
+        <section class="rounded-2xl border border-gray-100 bg-white shadow-lg shadow-black/5 p-6">
+          <h2 class="font-semibold text-lg mb-3">{{ t('registration.emailVerificationTitle') }}</h2>
+          <p v-if="emailVerified" class="text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
+            {{ t('registration.emailVerifiedMessage') }}
+          </p>
+          <div v-else class="space-y-3">
+            <p class="text-sm text-gray-600">{{ t('registration.emailVerificationPending') }}</p>
+            <button
+              type="button"
+              class="rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+              :disabled="resendingEmail"
+              @click="resendVerificationEmail"
+            >
+              {{ resendingEmail ? t('registration.emailResending') : t('registration.emailResend') }}
+            </button>
+          </div>
+        </section>
+
+        <ProgramAdminContactCard :whatsapp-message="adminWhatsAppMessage" />
+
+        <div v-if="registrationCompleted(user)" class="rounded-2xl bg-emerald-50 border border-emerald-100 p-6 text-emerald-900 text-sm">
+          {{ t('registration.simplifiedCompleteMessage') }}
+        </div>
+      </div>
+    </template>
+
+    <template v-else>
     <h1 class="text-2xl font-bold text-[#1A1A1A] mb-2">{{ t('registration.title') }}</h1>
     <p class="text-gray-500 text-sm mb-8">{{ t('registration.subtitle') }}</p>
 
@@ -301,18 +333,47 @@
         {{ t('registration.completeMessage') }}
       </div>
     </div>
+    </template>
   </main>
 </template>
 
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import axios from 'axios'
+import { storeToRefs } from 'pinia'
 import { useI18n } from '@/composables/useI18n'
-import { useModal } from '@/composables/useNotification'
+import { useModal, useToast } from '@/composables/useNotification'
+import { useAppStore } from '@/stores/app'
+import ProgramAdminContactCard from '@/components/ProgramAdminContactCard.vue'
+import { registrationCompleted, usesSimplifiedOnboarding, programCategoryLabel } from '@/utils/userMeta'
 import { registrationFileHref } from '@/utils/storageUrl'
 
+const store = useAppStore()
+const { user } = storeToRefs(store)
 const { t } = useI18n()
 const { alert: showAlert } = useModal()
+const toast = useToast()
+
+const isSimplifiedProgram = computed(() => usesSimplifiedOnboarding(user.value))
+const emailVerified = computed(() => Boolean(user.value?.email_verified_at))
+const resendingEmail = ref(false)
+
+const adminWhatsAppMessage = computed(() => {
+  const label = programCategoryLabel(user.value?.program_category)
+  return `Halo admin, saya ${user.value?.name || 'peserta'} mendaftar ${label}. Mohon info biaya dan cara pembayaran.`
+})
+
+async function resendVerificationEmail() {
+  resendingEmail.value = true
+  try {
+    await axios.post('/api/email/verification-notification')
+    toast.success('OK', t('registration.emailResent'))
+  } catch (error) {
+    toast.error('Gagal', error?.response?.data?.message || t('registration.emailResendFailed'))
+  } finally {
+    resendingEmail.value = false
+  }
+}
 
 const fileSlots = [
   {
@@ -728,6 +789,10 @@ async function submitStep() {
 }
 
 onMounted(() => {
+  if (isSimplifiedProgram.value) {
+    loading.value = false
+    return
+  }
   fetchProgress()
   fetchFormPages()
 })

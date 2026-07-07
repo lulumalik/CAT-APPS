@@ -73,10 +73,15 @@
           Dashboard terkunci
         </h2>
         <p class="text-sm mt-2">
-          Fitur dashboard dan kelas akan terbuka setelah pendaftaran selesai: administrasi, psikologi, kesehatan, lalu fisik.
+          <template v-if="usesSimplifiedOnboarding(user)">
+            Verifikasi email Anda terlebih dahulu melalui tautan yang dikirim ke inbox. Setelah terverifikasi, dashboard dan ujian akan terbuka.
+          </template>
+          <template v-else>
+            Fitur dashboard dan kelas akan terbuka setelah pendaftaran selesai: administrasi, psikologi, kesehatan, lalu fisik.
+          </template>
         </p>
         <router-link to="/registration" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
-          Lanjutkan Pendaftaran
+          {{ usesSimplifiedOnboarding(user) ? 'Verifikasi Email' : 'Lanjutkan Pendaftaran' }}
         </router-link>
       </section>
 
@@ -345,7 +350,7 @@ import { storeToRefs } from 'pinia'
 import { ArrowLeft, Calculator, Globe, GraduationCap, LayoutDashboard, LockKeyhole, Users } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useAppStore } from '@/stores/app'
-import { getProgramBadge, programCategoryLabel, registrationCompleted, isAppExpired } from '@/utils/userMeta'
+import { getProgramBadge, programCategoryLabel, registrationCompleted, isAppExpired, usesSimplifiedOnboarding } from '@/utils/userMeta'
 import StudentProgressPanel from '@/components/StudentProgressPanel.vue'
 
 const store = useAppStore()
