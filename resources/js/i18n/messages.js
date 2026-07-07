@@ -498,7 +498,7 @@ export const messages = {
       submitStep: 'Kirim administrasi untuk ditinjau',
       completeMessage: 'Selamat — proses pendaftaran Anda telah selesai disetujui.',
       simplifiedTitle: 'Verifikasi Email & Pembayaran',
-      simplifiedSubtitle: 'Program Kelas Online dan Kelas Ujian cukup verifikasi email. Tidak perlu upload berkas administrasi, tes psikologi, kesehatan, atau fisik.',
+      simplifiedSubtitle: 'Program Kelas Online dan Kelas Ujian cukup verifikasi email.',
       simplifiedCompleteMessage: 'Pendaftaran selesai. Anda sekarang dapat mengakses fitur program.',
       simplifiedPaymentPending: 'Email sudah terverifikasi. Lakukan pembayaran lalu hubungi admin melalui halaman profil. Fitur program akan aktif setelah admin mengonfirmasi pembayaran.',
       emailVerificationTitle: 'Verifikasi email',
