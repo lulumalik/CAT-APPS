@@ -664,6 +664,15 @@ class RegistrationProgressController extends Controller
         $progress->current_step = $progress->fully_completed ? 'completed' : 'administration';
         $progress->save();
 
+        if (Schema::hasColumn('users', 'app_expires_at')) {
+            if ($data['payment_confirmed']) {
+                $user->app_expires_at = User::defaultAppExpiresAt($user->program_category);
+            } else {
+                $user->app_expires_at = null;
+            }
+            $user->save();
+        }
+
         if (Schema::hasTable('user_notifications')) {
             UserNotification::create([
                 'user_id' => $user->id,

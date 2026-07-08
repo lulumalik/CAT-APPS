@@ -15,6 +15,7 @@ return [
     */
     'class_subject_guide' => [
         'jasmani' => 'Gunakan materi kelas untuk panduan latihan. Nilai peringkat diinput manual di halaman ini atau lewat progres pendaftaran — bukan bank soal.',
+        'akademik' => 'Nilai akademik dihasilkan otomatis setelah peserta menyelesaikan tes online. Lampirkan tes ke kelas di Manajemen Tes — tidak perlu input manual.',
         // 'psikologi' => 'Materi + tes khusus bila ada; bisa juga input manual untuk tes offline.',
     ],
     'groups' => [

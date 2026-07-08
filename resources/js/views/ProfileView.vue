@@ -37,7 +37,7 @@
           <div v-if="user?.role === 'user'">
             <dt class="text-gray-500">Masa Aktif Aplikasi</dt>
             <dd class="font-medium text-[#1A1A1A]">
-              {{ user?.app_expires_at ? formatAppExpiresAt(user.app_expires_at) : 'Tidak dibatasi' }}
+              {{ appExpiresDisplay }}
             </dd>
           </div>
         </dl>
@@ -139,7 +139,7 @@ import { storeToRefs } from 'pinia'
 import { CheckCircle2, AlertTriangle, Send, Loader2, UserCircle } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import ProgramAdminContactCard from '@/components/ProgramAdminContactCard.vue'
-import { getProgramBadge, programCategoryLabel, supportsProgramQuarantine, formatAppExpiresAt, isAppExpired, usesSimplifiedOnboarding } from '@/utils/userMeta'
+import { getProgramBadge, programCategoryLabel, supportsProgramQuarantine, formatAppExpiresAt, isAppExpired, usesSimplifiedOnboarding, normalizeProgramCategory } from '@/utils/userMeta'
 import { registrationFileHref } from '@/utils/storageUrl'
 import { getCookie, setCookie } from '@/utils/cookies'
 import { useToast } from '@/composables/useNotification'
@@ -161,6 +161,16 @@ let cooldownTimer = null
 const isEmailVerified = computed(() => Boolean(user.value?.email_verified_at))
 const isSimplifiedProgram = computed(() => usesSimplifiedOnboarding(user.value))
 const paymentConfirmed = computed(() => Boolean(progress.value?.payment_confirmed))
+const appExpiresDisplay = computed(() => {
+  if (user.value?.app_expires_at) {
+    return formatAppExpiresAt(user.value.app_expires_at)
+  }
+  if (usesSimplifiedOnboarding(user.value)) {
+    const months = normalizeProgramCategory(user.value?.program_category) === 'try_out' ? 3 : 6
+    return `Belum aktif — ${months} bulan setelah pembayaran dikonfirmasi admin`
+  }
+  return 'Tidak dibatasi'
+})
 const adminWhatsAppMessage = computed(() => {
   const label = programLabel.value
   return `Halo admin, saya ${user.value?.name || 'peserta'} mendaftar ${label}. Mohon info biaya dan cara pembayaran.`

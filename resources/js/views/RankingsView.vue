@@ -100,7 +100,7 @@
                 </datalist>
               </div>
               <button
-                v-if="isStaff && canLoad"
+                v-if="isStaff && canLoad && allowsManualInput"
                 type="button"
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-[#9DB359] text-white hover:bg-[#8aa44d] disabled:opacity-50"
                 @click="openManualAdd"
@@ -129,7 +129,7 @@
             <p class="text-gray-600 font-medium">{{ t('rankings.selectScoreDatePlaceholder') }}</p>
             <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">{{ t('rankings.emptyManualHint') }}</p>
             <button
-              v-if="isStaff"
+              v-if="isStaff && allowsManualInput"
               type="button"
               class="mt-4 px-5 py-2 rounded-full bg-[#1A1A1A] text-white text-sm font-medium"
               @click="openManualAdd"
@@ -143,7 +143,7 @@
             <p class="text-gray-600 font-medium">{{ t('rankings.emptyTitle') }}</p>
             <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">{{ emptyHint }}</p>
             <button
-              v-if="isStaff"
+              v-if="isStaff && allowsManualInput"
               type="button"
               class="mt-4 px-5 py-2 rounded-full bg-[#1A1A1A] text-white text-sm font-medium"
               @click="openManualAdd"
@@ -158,7 +158,7 @@
                   <th class="px-6 py-4 font-semibold w-16">{{ t('rankings.rank') }}</th>
                   <th class="px-6 py-4 font-semibold">{{ t('rankings.participant') }}</th>
                   <th class="px-6 py-4 font-semibold text-right">{{ t('common.score') }}</th>
-                  <th v-if="isStaff" class="px-6 py-4 font-semibold w-28 text-right">{{ t('common.actions') }}</th>
+                  <th v-if="isStaff && allowsManualInput" class="px-6 py-4 font-semibold w-28 text-right">{{ t('common.actions') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -195,7 +195,7 @@
                     </span>
                     <span v-else class="font-semibold text-[#9DB359]">{{ row.display }}</span>
                   </td>
-                  <td v-if="isStaff" class="px-6 py-4 text-right">
+                  <td v-if="isStaff && allowsManualInput" class="px-6 py-4 text-right">
                     <template v-if="row.source === 'manual' && row.manual_id">
                       <button type="button" class="text-xs font-medium text-gray-600 hover:text-[#1A1A1A] mr-3" @click="openManualEdit(row)">
                         {{ t('common.edit') }}
@@ -205,7 +205,7 @@
                       </button>
                     </template>
                     <button
-                      v-else-if="isStaff"
+                      v-else
                       type="button"
                       class="text-xs font-medium text-[#9DB359] hover:underline"
                       @click="openManualAddForUser(row)"
@@ -276,6 +276,7 @@ const activeSub = computed(() => activeGroup.value?.subcategories?.find((s) => s
 const activeGroupLabel = computed(() => activeGroup.value?.label || '')
 const activeSubLabel = computed(() => activeSub.value?.label || '')
 const isJasmaniGroup = computed(() => selectedGroupId.value === 'jasmani')
+const allowsManualInput = computed(() => isJasmaniGroup.value)
 
 const selectedClassMeta = computed(() =>
   classes.value.find((c) => String(c.id) === String(selectedClassId.value)),

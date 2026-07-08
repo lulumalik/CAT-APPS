@@ -84,16 +84,16 @@
                 <div v-if="user.role !== 'user'" class="text-sm text-gray-400">—</div>
                 <div v-else-if="!user.app_expires_at" class="space-y-1.5">
                   <p class="text-xs text-gray-500">{{ t('users.expiresNotSet') }}</p>
-                  <div class="flex items-center gap-2">
+                  <div class="flex flex-col items-stretch gap-2 max-w-[9.5rem]">
                     <input
                       v-model="expiresDraft[user.id]"
                       type="date"
-                      class="rounded-lg border border-gray-200 bg-gray-50 px-2 py-1.5 text-sm focus:bg-white focus:border-[#9DB359] focus:ring-0 transition-colors"
+                      class="w-full rounded-lg border border-gray-200 bg-gray-50 px-2 py-1.5 text-sm focus:bg-white focus:border-[#9DB359] focus:ring-0 transition-colors"
                     />
                     <button
                       type="button"
                       :disabled="!expiresDraft[user.id] || savingExpiresId === user.id"
-                      class="px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-[#9DB359] hover:bg-[#8ca34b]"
+                      class="w-full px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-[#9DB359] hover:bg-[#8ca34b]"
                       @click="saveExpires(user)"
                     >
                       {{ savingExpiresId === user.id ? '...' : t('users.expiresSave') }}

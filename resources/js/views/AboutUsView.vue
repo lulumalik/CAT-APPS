@@ -446,7 +446,7 @@ const briLogoUrl = new URL('../../assets/logotransaksi/BRI_2025.png', import.met
 
 const heroLeaders = [
   {
-    name: 'Jenderal Polisi (Purn.) Tan Sri Drs. Badrodin Haiti',
+    name: 'Jenderal Pol (P) Tan Sri Drs. Badrodin Haiti',
     role: 'Pembina',
     batch: '-',
     position: 'Pembina Pratistha Cendekia Prestasi',

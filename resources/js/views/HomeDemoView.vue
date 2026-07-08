@@ -791,7 +791,7 @@ const quickNavItems = [
 
 const leaders = [
   {
-    name: 'Jenderal Polisi (Purn.) Tan Sri Drs. Badrodin Haiti',
+    name: 'Jenderal Pol (P) Tan Sri Drs. Badrodin Haiti',
     batch: '',
     position: 'Pembina Pratistha Cendekia Prestasi',
     jabatan: 'Pembina',

@@ -280,6 +280,16 @@ class DashboardController extends Controller
             ];
         }
 
+        $student = User::find($userId);
+        if ($student && User::isExamOnlyProgram($student->program_category)) {
+            return [
+                'role' => 'user',
+                'registration' => $this->studentRegistrationStatus($userId),
+                'classes' => [],
+                'class_activities' => $this->mergeStudentActivities($userId, collect()),
+            ];
+        }
+
         $classes = User::find($userId)
             ?->bimbleClasses()
             ->withCount('students')

@@ -163,6 +163,7 @@ class RankingController extends Controller
         }
 
         $validated = $this->validateManualPayload($request);
+        $this->assertGroupAllowsManualEntry($validated['group_id']);
         $sub = $this->resolveSubcategory($validated['group_id'], $validated['subcategory_id']);
 
         $entry = ManualRankingEntry::create([
@@ -179,6 +180,8 @@ class RankingController extends Controller
 
     public function manualUpdate(Request $request, ManualRankingEntry $entry)
     {
+        $this->assertGroupAllowsManualEntry($entry->group_id);
+
         $validated = $request->validate([
             'score' => 'required|numeric|min:1|max:100',
             'unit' => 'nullable|string|max:32',
@@ -236,6 +239,7 @@ class RankingController extends Controller
 
     public function manualDestroy(ManualRankingEntry $entry)
     {
+        $this->assertGroupAllowsManualEntry($entry->group_id);
         $entry->delete();
 
         return response()->json(['success' => true]);
@@ -362,6 +366,15 @@ class RankingController extends Controller
         }
 
         return null;
+    }
+
+    private function assertGroupAllowsManualEntry(string $groupId): void
+    {
+        if ($groupId !== 'jasmani') {
+            throw ValidationException::withMessages([
+                'group_id' => ['Input manual hanya tersedia untuk kategori Jasmani. Nilai Akademik dihasilkan otomatis dari tes online.'],
+            ]);
+        }
     }
 
     private function findSubcategory(array $group, string $subId): ?array

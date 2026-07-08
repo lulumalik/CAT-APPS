@@ -97,7 +97,10 @@ class UserController extends Controller
         }
 
         if ($hasAppExpires) {
-            $payload['app_expires_at'] = $validated['app_expires_at'] ?? null;
+            $payload['app_expires_at'] = $validated['app_expires_at']
+                ?? ($validated['role'] === 'user'
+                    ? User::defaultAppExpiresAt($payload['program_category'])
+                    : null);
         }
 
         $user = User::create($payload);

@@ -221,9 +221,27 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->app_expires_at !== null && $this->app_expires_at->isPast();
     }
 
-    public static function defaultAppExpiresAt(): \Illuminate\Support\Carbon
+    public static function defaultAppExpiresAt(?string $programCategory = null, ?\Illuminate\Support\Carbon $from = null): \Illuminate\Support\Carbon
     {
-        return now()->addYear();
+        $from = $from ?? now();
+        $normalized = self::normalizeProgramCategory($programCategory);
+
+        return match ($normalized) {
+            self::PROGRAM_BIMBINGAN_ONLINE => $from->copy()->addMonths(6),
+            self::PROGRAM_TRY_OUT => $from->copy()->addMonths(3),
+            default => $from->copy()->addYear(),
+        };
+    }
+
+    public static function defaultAppExpiresMonths(?string $programCategory): ?int
+    {
+        $normalized = self::normalizeProgramCategory($programCategory);
+
+        return match ($normalized) {
+            self::PROGRAM_BIMBINGAN_ONLINE => 6,
+            self::PROGRAM_TRY_OUT => 3,
+            default => null,
+        };
     }
 
     public function registrationProgress()

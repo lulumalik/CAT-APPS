@@ -277,7 +277,17 @@
         </div>
 
         <div class="pdf-grid-2">
-          <section class="pdf-section lg:col-span-2">
+          <section v-if="isExamOnlyStudent" class="pdf-section lg:col-span-2">
+            <h2 class="pdf-section-title">Program Kelas Ujian</h2>
+            <p class="text-sm text-gray-600">
+              Anda terdaftar di program Kelas Ujian — hanya menu ujian yang tersedia, tanpa kelas kursus online.
+            </p>
+            <router-link to="/ujian" class="inline-flex mt-4 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
+              Buka Daftar Ujian
+            </router-link>
+          </section>
+
+          <section v-else class="pdf-section lg:col-span-2">
             <h2 class="pdf-section-title">Kelas Saya</h2>
             <div v-if="!overview.classes?.length" class="pdf-muted">Belum ada kelas yang ditambahkan.</div>
             <div v-else class="grid gap-4 md:grid-cols-2">
@@ -356,7 +366,7 @@ import { storeToRefs } from 'pinia'
 import { ArrowLeft, Calculator, Globe, GraduationCap, LayoutDashboard, LockKeyhole, Users } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useAppStore } from '@/stores/app'
-import { getProgramBadge, programCategoryLabel, registrationCompleted, isAppExpired, usesSimplifiedOnboarding } from '@/utils/userMeta'
+import { getProgramBadge, programCategoryLabel, registrationCompleted, isAppExpired, usesSimplifiedOnboarding, isExamOnlyProgram } from '@/utils/userMeta'
 import StudentProgressPanel from '@/components/StudentProgressPanel.vue'
 
 const store = useAppStore()
@@ -381,6 +391,12 @@ const isStudent = computed(() => user.value?.role === 'user')
 const isAdminViewingStudent = computed(() => isAdmin.value && !!viewingStudentId.value)
 const isExpiredForStudent = computed(() => isStudent.value && !isAdminViewingStudent.value && isAppExpired(user.value))
 const isLockedForStudent = computed(() => isStudent.value && !isAdminViewingStudent.value && !isExpiredForStudent.value && !registrationCompleted(user.value))
+const isExamOnlyStudent = computed(() => {
+  if (isAdminViewingStudent.value && viewedStudent.value) {
+    return isExamOnlyProgram({ program_category: viewedStudent.value.program_category })
+  }
+  return isStudent.value && isExamOnlyProgram(user.value)
+})
 const showStudentDashboard = computed(() => isStudent.value || isAdminViewingStudent.value)
 const activeStudentId = computed(() => viewingStudentId.value || user.value?.id)
 const programBadge = computed(() => getProgramBadge(user.value))

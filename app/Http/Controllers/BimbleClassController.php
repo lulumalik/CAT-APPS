@@ -230,6 +230,11 @@ class BimbleClassController extends Controller
         ]);
 
         $targetUser = User::query()->findOrFail($data['user_id']);
+        if (User::isExamOnlyProgram($targetUser->program_category)) {
+            return response()->json([
+                'message' => 'Peserta program Kelas Ujian tidak dapat diundang ke kelas kursus.',
+            ], 422);
+        }
         if (! $this->canBeInvitedToClass($targetUser)) {
             return response()->json([
                 'message' => 'Peserta tidak bisa diundang ke kelas: masa aktif aplikasi sudah berakhir dan pendaftaran belum selesai.',

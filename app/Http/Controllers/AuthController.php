@@ -61,7 +61,9 @@ class AuthController extends Controller
         }
 
         if (Schema::hasColumn('users', 'app_expires_at')) {
-            $payload['app_expires_at'] = now()->addYear();
+            $payload['app_expires_at'] = User::usesSimplifiedOnboarding($programCategory)
+                ? null
+                : User::defaultAppExpiresAt($programCategory);
         }
 
         $user = User::create($payload);
