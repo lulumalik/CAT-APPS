@@ -147,7 +147,7 @@ export const messages = {
       emptyManualHint: 'Gunakan tombol Input manual untuk mencatat nilai tes fisik / lapangan.',
       classGuideTitle: 'Cara penilaian di kelas',
       modeManual: 'Manual',
-      modeTest: 'Tes CAT',
+      modeTest: 'Quiz/Test',
       modeMaterial: 'Materi',
       sourceManual: 'Manual',
       manualAdd: 'Input manual',
