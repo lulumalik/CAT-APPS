@@ -112,8 +112,11 @@
                 class="text-xs px-3 py-1.5 rounded-full bg-gray-50 border border-gray-100 hover:bg-gray-100"
                 @click="markSent(inv)">Tandai Terkirim</button>
               <button type="button"
-                class="text-xs px-3 py-1.5 rounded-full text-red-600 hover:bg-red-50"
-                @click="remove(inv)">Hapus</button>
+                class="inline-flex items-center justify-center w-8 h-8 rounded-full text-red-600 hover:bg-red-50 transition-colors"
+                title="Hapus"
+                @click="remove(inv)">
+                <Trash2 class="h-3.5 w-3.5" />
+              </button>
             </div>
           </article>
         </div>
@@ -151,7 +154,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
-import { HeartHandshake } from 'lucide-vue-next'
+import { HeartHandshake, Trash2 } from 'lucide-vue-next'
 import axios from 'axios'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useToast, useModal } from '@/composables/useNotification'

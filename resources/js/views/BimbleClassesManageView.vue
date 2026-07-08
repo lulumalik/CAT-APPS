@@ -217,7 +217,14 @@
             <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
               <li v-for="s in managedClass.students || []" :key="s.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
                 <span class="truncate">{{ s.name }}</span>
-                <button type="button" class="text-red-500" @click="detachStudent(s.id)">hapus</button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50"
+                  title="Hapus"
+                  @click="detachStudent(s.id)"
+                >
+                  <Trash2 class="h-3.5 w-3.5" />
+                </button>
               </li>
               <li v-if="!(managedClass.students || []).length" class="text-xs text-gray-400">Belum ada peserta.</li>
             </ul>
@@ -235,7 +242,14 @@
             <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
               <li v-for="m in managedClass.materials || []" :key="m.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
                 <span class="truncate">{{ m.title }}</span>
-                <button type="button" class="text-red-500" @click="detachMaterial(m.id)">hapus</button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50"
+                  title="Hapus"
+                  @click="detachMaterial(m.id)"
+                >
+                  <Trash2 class="h-3.5 w-3.5" />
+                </button>
               </li>
               <li v-if="!(managedClass.materials || []).length" class="text-xs text-gray-400">Belum ada materi.</li>
             </ul>
@@ -255,7 +269,14 @@
             <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
               <li v-for="x in managedClass.test_definitions || []" :key="x.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
                 <span class="truncate">{{ x.name }}</span>
-                <button type="button" class="text-red-500" @click="detachTest(x.id)">hapus</button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50"
+                  title="Hapus"
+                  @click="detachTest(x.id)"
+                >
+                  <Trash2 class="h-3.5 w-3.5" />
+                </button>
               </li>
               <li v-if="!(managedClass.test_definitions || []).length" class="text-xs text-gray-400">Belum ada quiz.</li>
             </ul>
@@ -270,7 +291,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import { BookOpen, Calculator, CalendarRange, Globe, GraduationCap, Layers, UserRound, Users } from 'lucide-vue-next'
+import { BookOpen, Calculator, CalendarRange, Globe, GraduationCap, Layers, Trash2, UserRound, Users } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'

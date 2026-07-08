@@ -149,17 +149,33 @@
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  v-if="user.role === 'user'"
-                  type="button"
-                  class="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-600 hover:bg-[#9DB359]/15 hover:text-[#5a6b2e] mr-1 transition-colors"
-                  :title="t('users.studentDashboard')"
-                  @click="openDashboardPopup(user)"
-                >
-                  <LayoutDashboard class="h-4 w-4" />
-                </button>
-                <button @click="edit(user)" class="text-[#9DB359] hover:text-[#8ca34b] mr-3 transition-colors">{{ t('common.edit') }}</button>
-                <button @click="remove(user)" class="text-red-500 hover:text-red-700 transition-colors">{{ t('common.delete') }}</button>
+                <div class="inline-flex items-center justify-end gap-1">
+                  <button
+                    v-if="user.role === 'user'"
+                    type="button"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-600 hover:bg-[#9DB359]/15 hover:text-[#5a6b2e] transition-colors"
+                    :title="t('users.studentDashboard')"
+                    @click="openDashboardPopup(user)"
+                  >
+                    <LayoutDashboard class="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full text-[#9DB359] hover:bg-[#9DB359]/15 hover:text-[#8ca34b] transition-colors"
+                    :title="t('common.edit')"
+                    @click="edit(user)"
+                  >
+                    <Pencil class="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors"
+                    :title="t('common.delete')"
+                    @click="remove(user)"
+                  >
+                    <Trash2 class="h-4 w-4" />
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -229,7 +245,7 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { ChevronDown, ChevronUp, LayoutDashboard, Users } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp, LayoutDashboard, Pencil, Trash2, Users } from 'lucide-vue-next'
 import UserModal from '@/components/UserModal.vue'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useModal, useToast } from '@/composables/useNotification'

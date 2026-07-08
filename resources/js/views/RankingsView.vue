@@ -197,12 +197,24 @@
                   </td>
                   <td v-if="isStaff && allowsManualInput" class="px-6 py-4 text-right">
                     <template v-if="row.source === 'manual' && row.manual_id">
-                      <button type="button" class="text-xs font-medium text-gray-600 hover:text-[#1A1A1A] mr-3" @click="openManualEdit(row)">
-                        {{ t('common.edit') }}
-                      </button>
-                      <button type="button" class="text-xs font-medium text-red-600 hover:text-red-800" @click="deleteManual(row)">
-                        {{ t('common.delete') }}
-                      </button>
+                      <div class="inline-flex items-center justify-end gap-1">
+                        <button
+                          type="button"
+                          class="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-600 hover:bg-gray-100 hover:text-[#1A1A1A] transition-colors"
+                          :title="t('common.edit')"
+                          @click="openManualEdit(row)"
+                        >
+                          <Pencil class="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          class="inline-flex items-center justify-center w-8 h-8 rounded-full text-red-600 hover:bg-red-50 hover:text-red-800 transition-colors"
+                          :title="t('common.delete')"
+                          @click="deleteManual(row)"
+                        >
+                          <Trash2 class="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     </template>
                     <button
                       v-else
@@ -235,7 +247,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { Trophy } from 'lucide-vue-next'
+import { Pencil, Trash2, Trophy } from 'lucide-vue-next'
 import axios from 'axios'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'

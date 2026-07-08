@@ -64,15 +64,25 @@
           <span>·</span>
           <span>{{ t('batches.classCount', { count: batch.bimble_classes_count || 0 }) }}</span>
         </div>
-        <div class="mt-5 flex flex-wrap gap-2">
+        <div class="mt-5 flex flex-wrap items-center gap-2">
           <button type="button" class="rounded-full border border-[#9DB359] px-4 py-2 text-sm font-semibold text-[#5a6b2e] hover:bg-[#9DB359]/10" @click="openManage(batch)">
             {{ t('batches.manage') }}
           </button>
-          <button type="button" class="rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50" @click="openEdit(batch)">
-            {{ t('common.edit') }}
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+            :title="t('common.edit')"
+            @click="openEdit(batch)"
+          >
+            <Pencil class="h-4 w-4" />
           </button>
-          <button type="button" class="rounded-full border border-red-100 px-4 py-2 text-sm font-medium text-red-500 hover:bg-red-50" @click="removeBatch(batch)">
-            {{ t('common.delete') }}
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-red-100 text-red-500 hover:bg-red-50 transition-colors"
+            :title="t('common.delete')"
+            @click="removeBatch(batch)"
+          >
+            <Trash2 class="h-4 w-4" />
           </button>
         </div>
       </article>
@@ -179,8 +189,13 @@
                   <p class="truncate text-sm font-medium text-[#1A1A1A]">{{ s.name }}</p>
                   <p class="truncate text-xs text-gray-400">{{ s.username ? `@${s.username}` : s.email }}</p>
                 </div>
-                <button type="button" class="shrink-0 text-xs text-red-500 hover:text-red-700" @click="detachStudent(s.id)">
-                  {{ t('common.delete') }}
+                <button
+                  type="button"
+                  class="inline-flex shrink-0 items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50 hover:text-red-700"
+                  :title="t('common.delete')"
+                  @click="detachStudent(s.id)"
+                >
+                  <Trash2 class="h-3.5 w-3.5" />
                 </button>
               </li>
               <li v-if="!rosterLoading && !rosterStudents.length" class="py-4 text-center text-xs text-gray-400">
@@ -220,7 +235,7 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
-import { Layers } from 'lucide-vue-next'
+import { Layers, Pencil, Trash2 } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useModal, useToast } from '@/composables/useNotification'

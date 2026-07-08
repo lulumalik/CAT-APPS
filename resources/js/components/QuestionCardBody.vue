@@ -12,9 +12,23 @@
         <span class="px-3 py-1 rounded-full text-xs font-medium border" :class="diffBadge(question.difficulty)">{{ question.difficulty }}</span>
         <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100 capitalize">{{ question.type }}</span>
       </div>
-      <div v-if="canManage" class="flex items-center gap-2 shrink-0">
-        <button class="px-4 py-1.5 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors" @click="$emit('edit')">{{ t('common.edit') }}</button>
-        <button class="px-4 py-1.5 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" @click="$emit('remove')">{{ t('common.delete') }}</button>
+      <div v-if="canManage" class="flex items-center gap-1 shrink-0">
+        <button
+          type="button"
+          class="inline-flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+          :title="t('common.edit')"
+          @click="$emit('edit')"
+        >
+          <Pencil class="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          class="inline-flex items-center justify-center w-8 h-8 rounded-full border border-red-100 text-red-600 hover:bg-red-50 transition-colors"
+          :title="t('common.delete')"
+          @click="$emit('remove')"
+        >
+          <Trash2 class="h-4 w-4" />
+        </button>
       </div>
     </div>
 
@@ -48,6 +62,7 @@
 </template>
 
 <script setup>
+import { Pencil, Trash2 } from 'lucide-vue-next'
 import { useI18n } from '@/composables/useI18n'
 
 defineProps({

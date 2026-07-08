@@ -77,7 +77,14 @@
                 </div>
                 <div class="text-xs text-gray-500">{{ r.report_date }} · {{ r.created_by }}</div>
               </div>
-              <button type="button" class="text-xs text-red-600 hover:bg-red-50 px-2 py-1 rounded-full" @click="remove(r)">Hapus</button>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-8 h-8 rounded-full text-red-600 hover:bg-red-50 transition-colors"
+                title="Hapus"
+                @click="remove(r)"
+              >
+                <Trash2 class="h-3.5 w-3.5" />
+              </button>
             </div>
             <p v-if="r.summary" class="text-sm text-gray-600 mt-1">{{ r.summary }}</p>
           </article>
@@ -89,7 +96,7 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { LineChart } from 'lucide-vue-next'
+import { LineChart, Trash2 } from 'lucide-vue-next'
 import axios from 'axios'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useToast, useModal } from '@/composables/useNotification'

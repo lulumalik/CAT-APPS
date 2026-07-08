@@ -28,9 +28,23 @@
             <h2 class="font-semibold text-[#1A1A1A]">{{ item.title }}</h2>
             <p class="text-xs text-gray-500 mt-0.5">{{ item.target_role }} · {{ item.is_published ? 'published' : 'draft' }}</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button class="text-sm text-[#9DB359] font-medium" @click="openEdit(item)">Edit</button>
-            <button class="text-sm text-red-500 font-medium" @click="remove(item.id)">Hapus</button>
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-8 h-8 rounded-full text-[#9DB359] hover:bg-[#9DB359]/15 transition-colors"
+              title="Edit"
+              @click="openEdit(item)"
+            >
+              <Pencil class="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-8 h-8 rounded-full text-red-500 hover:bg-red-50 transition-colors"
+              title="Hapus"
+              @click="remove(item.id)"
+            >
+              <Trash2 class="h-4 w-4" />
+            </button>
           </div>
         </div>
         <p class="text-sm text-gray-700 mt-2 whitespace-pre-line">{{ item.body }}</p>
@@ -67,7 +81,7 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
-import { Megaphone } from 'lucide-vue-next'
+import { Megaphone, Pencil, Trash2 } from 'lucide-vue-next'
 import axios from 'axios'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 

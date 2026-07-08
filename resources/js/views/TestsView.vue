@@ -121,8 +121,13 @@
               <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="openAssign(test)">
                 {{ t(`${i18nPrefix}.assignQuestions`) }}
               </button>
-              <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)">
-                {{ t('common.edit') }}
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                :title="t('common.edit')"
+                @click="editById(test.id)"
+              >
+                <Pencil class="h-4 w-4" />
               </button>
               <button
                 v-if="isExamPage"
@@ -138,8 +143,13 @@
               >
                 {{ t(`${i18nPrefix}.submissions`) }}
               </button>
-              <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" @click="removeById(test.id)">
-                {{ t('common.delete') }}
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-red-100 text-red-600 hover:bg-red-50 transition-colors"
+                :title="t('common.delete')"
+                @click="removeById(test.id)"
+              >
+                <Trash2 class="h-4 w-4" />
               </button>
             </div>
           </div>
@@ -225,7 +235,15 @@
             >
               {{ t(`${i18nPrefix}.submissions`) }}
             </button>
-            <button class="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors text-gray-600" @click="editById(test.id)" :disabled="deletingId === test.id">{{ t('common.edit') }}</button>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              :title="t('common.edit')"
+              :disabled="deletingId === test.id"
+              @click="editById(test.id)"
+            >
+              <Pencil class="h-4 w-4" />
+            </button>
             <button
               v-if="isExamPage"
               class="px-4 py-2 rounded-full border border-blue-100 text-blue-700 text-sm font-medium hover:bg-blue-50 transition-colors"
@@ -234,15 +252,18 @@
             >
               Duplikat Ujian
             </button>
-            <button class="px-4 py-2 rounded-full border border-red-100 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" @click="removeById(test.id)" :disabled="deletingId === test.id">
-              <span v-if="deletingId === test.id" class="flex items-center gap-2">
-                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                {{ t(`${i18nPrefix}.deleting`) }}
-              </span>
-              <span v-else>{{ t('common.delete') }}</span>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-red-100 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              :title="t('common.delete')"
+              :disabled="deletingId === test.id"
+              @click="removeById(test.id)"
+            >
+              <svg v-if="deletingId === test.id" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <Trash2 v-else class="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -307,7 +328,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Check, ClipboardList, FileQuestion, FileText, Lock, Pencil, Plus, Search } from 'lucide-vue-next'
+import { Check, ClipboardList, FileQuestion, FileText, Lock, Pencil, Plus, Search, Trash2 } from 'lucide-vue-next'
 import TestCreateModal from '@/components/TestCreateModal.vue'
 import TestAssignQuestionsModal from '@/components/TestAssignQuestionsModal.vue'
 import FreeTryoutResultsModal from '@/components/FreeTryoutResultsModal.vue'
