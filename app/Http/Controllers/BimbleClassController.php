@@ -300,9 +300,9 @@ class BimbleClassController extends Controller
         ]);
 
         $targetUser = User::query()->findOrFail($data['user_id']);
-        if (User::isExamOnlyProgram($targetUser->program_category)) {
+        if (! $targetUser->canJoinBatch()) {
             return response()->json([
-                'message' => 'Peserta program Kelas Ujian tidak dapat diundang ke kelas kursus.',
+                'message' => $targetUser->batchIneligibleMessage(),
             ], 422);
         }
         if (! $this->canBeInvitedToClass($targetUser)) {

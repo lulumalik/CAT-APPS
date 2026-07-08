@@ -127,13 +127,8 @@ class BatchController extends Controller
         if ($student->role !== 'user') {
             return response()->json(['message' => 'Hanya peserta (siswa) yang bisa dimasukkan ke batch.'], 422);
         }
-        if (User::isExamOnlyProgram($student->program_category)) {
-            return response()->json(['message' => 'Peserta Kelas Ujian tidak dimasukkan ke batch kursus.'], 422);
-        }
-
-        $progress = $student->registrationProgress;
-        if ($progress && ! $progress->payment_confirmed) {
-            return response()->json(['message' => 'Peserta belum lunas, belum bisa dimasukkan ke batch.'], 422);
+        if (! $student->canJoinBatch()) {
+            return response()->json(['message' => $student->batchIneligibleMessage()], 422);
         }
 
         $batch->students()->syncWithoutDetaching([$student->id]);

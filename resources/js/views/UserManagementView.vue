@@ -34,42 +34,40 @@
           <thead class="bg-gray-50/50">
             <tr>
               <th scope="col" class="px-6 py-4 text-left">
-                <button type="button" class="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-800" @click="toggleSort('name')">
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider hover:text-gray-800"
+                  :class="sortBy === 'name' ? 'text-[#5a6b2e]' : 'text-gray-500'"
+                  @click="toggleSort('name')"
+                >
                   {{ t('users.tableName') }}
-                  <span class="inline-flex flex-col leading-none text-[9px] text-gray-400">
-                    <ChevronUp class="h-3 w-3" :class="sortBy === 'name' && sortDir === 'asc' ? 'text-[#9DB359]' : ''" />
-                    <ChevronDown class="h-3 w-3 -mt-1" :class="sortBy === 'name' && sortDir === 'desc' ? 'text-[#9DB359]' : ''" />
+                  <span class="inline-flex flex-col leading-none">
+                    <ChevronUp
+                      class="h-3.5 w-3.5"
+                      :stroke-width="sortBy === 'name' && sortDir === 'asc' ? 3 : 1.75"
+                      :class="sortBy === 'name' && sortDir === 'asc' ? 'text-[#9DB359]' : 'text-gray-300'"
+                    />
+                    <ChevronDown
+                      class="h-3.5 w-3.5 -mt-1"
+                      :stroke-width="sortBy === 'name' && sortDir === 'desc' ? 3 : 1.75"
+                      :class="sortBy === 'name' && sortDir === 'desc' ? 'text-[#9DB359]' : 'text-gray-300'"
+                    />
                   </span>
                 </button>
               </th>
               <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableEmail') }}</th>
               <th scope="col" class="px-6 py-4 text-left">
-                <div class="relative inline-block" data-role-filter>
-                  <button
-                    type="button"
-                    class="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider hover:text-gray-800"
-                    :class="roleFilter ? 'text-[#9DB359]' : 'text-gray-500'"
-                    @click.stop="roleMenuOpen = !roleMenuOpen"
-                  >
-                    {{ roleFilterLabel }}
-                    <ChevronDown class="h-3.5 w-3.5" />
-                  </button>
-                  <div
-                    v-if="roleMenuOpen"
-                    class="absolute left-0 z-20 mt-2 w-40 rounded-xl border border-gray-100 bg-white py-1 shadow-xl"
-                  >
-                    <button
-                      v-for="opt in roleOptions"
-                      :key="opt.value || 'all'"
-                      type="button"
-                      class="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
-                      :class="roleFilter === opt.value ? 'font-semibold text-[#9DB359]' : 'text-gray-700'"
-                      @click="selectRole(opt.value)"
-                    >
-                      {{ opt.label }}
-                    </button>
-                  </div>
-                </div>
+                <button
+                  ref="roleFilterBtn"
+                  type="button"
+                  data-role-filter
+                  class="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider hover:text-gray-800"
+                  :class="roleFilter ? 'text-[#9DB359]' : 'text-gray-500'"
+                  @click.stop="toggleRoleMenu"
+                >
+                  {{ roleFilterLabel }}
+                  <ChevronDown class="h-3.5 w-3.5" />
+                </button>
               </th>
               <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableBatch') }}</th>
               <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableExpires') }}</th>
@@ -212,6 +210,27 @@
 
     <UserModal v-if="showModal" :initial="editingUser" @close="closeModal" @submit="saveUser" />
 
+    <Teleport to="body">
+      <div
+        v-if="roleMenuOpen"
+        data-role-filter
+        class="fixed z-[80] w-44 rounded-xl border border-gray-100 bg-white py-1 shadow-xl"
+        :style="roleMenuStyle"
+        @click.stop
+      >
+        <button
+          v-for="opt in roleOptions"
+          :key="opt.value || 'all'"
+          type="button"
+          class="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
+          :class="roleFilter === opt.value ? 'font-semibold text-[#9DB359]' : 'text-gray-700'"
+          @click="selectRole(opt.value)"
+        >
+          {{ opt.label }}
+        </button>
+      </div>
+    </Teleport>
+
     <!-- Dashboard siswa popup -->
     <div v-if="dashboardUser" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @click.self="dashboardUser = null">
       <div class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
@@ -244,7 +263,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { ChevronDown, ChevronUp, LayoutDashboard, Pencil, Trash2, Users } from 'lucide-vue-next'
 import UserModal from '@/components/UserModal.vue'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
@@ -271,6 +290,8 @@ const importFile = ref(null)
 const searchQuery = ref('')
 const roleFilter = ref('')
 const roleMenuOpen = ref(false)
+const roleFilterBtn = ref(null)
+const roleMenuStyle = ref({})
 const sortBy = ref('created_at')
 const sortDir = ref('desc')
 const expiresDraft = ref({})
@@ -316,6 +337,24 @@ const handleSearch = () => {
   searchTimeout = setTimeout(() => loadUsers(1), 300)
 }
 
+const updateRoleMenuPosition = () => {
+  const el = roleFilterBtn.value
+  if (!el) return
+  const rect = el.getBoundingClientRect()
+  roleMenuStyle.value = {
+    top: `${rect.bottom + 8}px`,
+    left: `${rect.left}px`,
+  }
+}
+
+const toggleRoleMenu = async () => {
+  roleMenuOpen.value = !roleMenuOpen.value
+  if (roleMenuOpen.value) {
+    await nextTick()
+    updateRoleMenuPosition()
+  }
+}
+
 const selectRole = (value) => {
   roleFilter.value = value
   roleMenuOpen.value = false
@@ -338,6 +377,10 @@ const closeMenus = () => {
 
 const onDocClick = (e) => {
   if (!e.target.closest('[data-role-filter]')) closeMenus()
+}
+
+const onReposition = () => {
+  if (roleMenuOpen.value) updateRoleMenuPosition()
 }
 
 const loadUsers = async (page = 1) => {
@@ -468,9 +511,13 @@ const saveUser = async (formData) => {
 onMounted(() => {
   loadUsers()
   document.addEventListener('click', onDocClick)
+  window.addEventListener('resize', onReposition)
+  window.addEventListener('scroll', onReposition, true)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', onDocClick)
+  window.removeEventListener('resize', onReposition)
+  window.removeEventListener('scroll', onReposition, true)
 })
 </script>

@@ -106,16 +106,7 @@ class BatchClassSyncService
 
     private function canInvite(User $user): bool
     {
-        if (User::isExamOnlyProgram($user->program_category)) {
-            return false;
-        }
-
-        $progress = $user->relationLoaded('registrationProgress')
-            ? $user->registrationProgress
-            : $user->registrationProgress()->first();
-
-        // Ada progress daftar tapi belum lunas → skip. Tanpa progress (admin-created) OK.
-        if ($progress && ! $progress->payment_confirmed) {
+        if (! $user->canJoinBatch()) {
             return false;
         }
 

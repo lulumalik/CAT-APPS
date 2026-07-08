@@ -137,7 +137,15 @@
             <h3 class="text-xl font-bold text-[#1A1A1A]">{{ managedBatch.name }}</h3>
             <p class="text-xs text-gray-500">{{ t('batches.manageHint') }}</p>
           </div>
-          <button type="button" class="rounded-full border border-gray-200 px-3 py-1.5 text-sm" @click="closeManage">{{ t('common.close') }}</button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+            :title="t('common.close')"
+            :aria-label="t('common.close')"
+            @click="closeManage"
+          >
+            <X class="h-5 w-5" />
+          </button>
         </div>
 
         <div class="flex flex-col gap-4 lg:flex-row lg:items-stretch">
@@ -235,7 +243,7 @@
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
-import { Layers, Pencil, Trash2 } from 'lucide-vue-next'
+import { Layers, Pencil, Trash2, X } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useModal, useToast } from '@/composables/useNotification'

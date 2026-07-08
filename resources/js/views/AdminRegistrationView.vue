@@ -126,7 +126,15 @@
             </div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
-            <button type="button" class="px-4 py-2 rounded-full border border-gray-200 text-sm" @click="modal.open = false">{{ t('common.close') }}</button>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-9 h-9 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+              :title="t('common.close')"
+              :aria-label="t('common.close')"
+              @click="modal.open = false"
+            >
+              <X class="h-5 w-5" />
+            </button>
           </div>
         </div>
         <div v-else-if="modal.row" class="space-y-5 text-sm">
@@ -249,7 +257,15 @@
           </div>
 
           <div class="flex justify-end gap-2 pt-2">
-            <button type="button" class="px-4 py-2 rounded-full border border-gray-200 text-sm" @click="modal.open = false">{{ t('common.close') }}</button>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-9 h-9 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+              :title="t('common.close')"
+              :aria-label="t('common.close')"
+              @click="modal.open = false"
+            >
+              <X class="h-5 w-5" />
+            </button>
           </div>
         </div>
       </div>
@@ -260,7 +276,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
-import { AlertCircle, Brain, Check, ClipboardCheck, ClipboardList, Dumbbell, HeartPulse, Save } from 'lucide-vue-next'
+import { AlertCircle, Brain, Check, ClipboardCheck, ClipboardList, Dumbbell, HeartPulse, Save, X } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { programCategoryLabel, usesSimplifiedOnboarding } from '@/utils/userMeta'

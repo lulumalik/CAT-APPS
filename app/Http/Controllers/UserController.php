@@ -45,12 +45,34 @@ class UserController extends Controller
             $q->whereDoesntHave('batches');
         }
 
-        // Batch/class picker: sembunyikan yang daftar online tapi belum lunas.
-        // Akun admin-created tanpa registration_progress tetap boleh.
+        // Batch/class picker eligibility:
+        // - try_out already excluded above
+        // - bimbingan_online: harus lunas (payment_confirmed)
+        // - regular/vip: administrasi fully_completed
+        // - tanpa registration_progress (admin-created): boleh
         if ($request->boolean('batch_eligible') && Schema::hasTable('registration_progress')) {
-            $q->where(function ($outer) {
+            $onlinePrograms = [User::PROGRAM_BIMBINGAN_ONLINE];
+            $adminPrograms = [
+                User::PROGRAM_VIP,
+                User::PROGRAM_VIP_OFFLINE,
+                User::PROGRAM_VIP_ONLINE,
+                User::PROGRAM_REGULAR,
+                User::PROGRAM_REGULAR_OFFLINE,
+                User::PROGRAM_REGULAR_ONLINE,
+            ];
+
+            $q->where(function ($outer) use ($onlinePrograms, $adminPrograms) {
                 $outer->whereDoesntHave('registrationProgress')
-                    ->orWhereHas('registrationProgress', fn ($p) => $p->where('payment_confirmed', true));
+                    ->orWhere(function ($online) use ($onlinePrograms) {
+                        $online->whereIn('program_category', $onlinePrograms)
+                            ->whereHas('registrationProgress', fn ($p) => $p->where('payment_confirmed', true));
+                    })
+                    ->orWhere(function ($admin) use ($adminPrograms) {
+                        $admin->where(function ($prog) use ($adminPrograms) {
+                            $prog->whereNull('program_category')
+                                ->orWhereIn('program_category', $adminPrograms);
+                        })->whereHas('registrationProgress', fn ($p) => $p->where('fully_completed', true));
+                    });
             });
         }
 

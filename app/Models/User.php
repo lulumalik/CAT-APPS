@@ -122,6 +122,56 @@ class User extends Authenticatable implements MustVerifyEmail
         return self::normalizeProgramCategory($programCategory) === self::PROGRAM_TRY_OUT;
     }
 
+    /**
+     * Eligible for batch/class roster:
+     * - try_out (kelas ujian) → never
+     * - bimbingan_online → payment confirmed (lunas)
+     * - regular / vip → administration fully completed
+     * - no registration_progress (admin-created) → allowed
+     */
+    public function canJoinBatch(): bool
+    {
+        if ($this->role !== 'user') {
+            return false;
+        }
+
+        if (self::isExamOnlyProgram($this->program_category)) {
+            return false;
+        }
+
+        if (! \Illuminate\Support\Facades\Schema::hasTable('registration_progress')) {
+            return true;
+        }
+
+        $progress = $this->relationLoaded('registrationProgress')
+            ? $this->registrationProgress
+            : $this->registrationProgress()->first();
+
+        // Akun dibuat admin tanpa alur pendaftaran.
+        if (! $progress) {
+            return true;
+        }
+
+        if (self::usesSimplifiedOnboarding($this->program_category)) {
+            return (bool) $progress->payment_confirmed;
+        }
+
+        return (bool) $progress->fully_completed;
+    }
+
+    public function batchIneligibleMessage(): string
+    {
+        if (self::isExamOnlyProgram($this->program_category)) {
+            return 'Peserta Kelas Ujian tidak dimasukkan ke batch kursus.';
+        }
+
+        if (self::usesSimplifiedOnboarding($this->program_category)) {
+            return 'Peserta bimbingan online belum lunas, belum bisa dimasukkan ke batch.';
+        }
+
+        return 'Administrasi peserta (reguler/VIP) belum selesai, belum bisa dimasukkan ke batch.';
+    }
+
     public function hasCompletedOnboarding(): bool
     {
         if ($this->role !== 'user') {

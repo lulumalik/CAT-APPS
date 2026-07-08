@@ -159,7 +159,15 @@
             <h3 class="font-bold text-xl text-[#1A1A1A]">Kelola {{ managedClass.name }}</h3>
             <p class="text-xs text-gray-500">{{ managedClass.class_code }} · {{ formatProgram(managedClass.program_type) }}</p>
           </div>
-          <button type="button" class="px-3 py-1.5 rounded-full border border-gray-200 text-sm" @click="closeManage">Tutup</button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+            :title="t('common.close')"
+            :aria-label="t('common.close')"
+            @click="closeManage"
+          >
+            <X class="h-5 w-5" />
+          </button>
         </div>
 
         <section class="mb-4 rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
@@ -291,7 +299,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import { BookOpen, Calculator, CalendarRange, Globe, GraduationCap, Layers, Trash2, UserRound, Users } from 'lucide-vue-next'
+import { BookOpen, Calculator, CalendarRange, Globe, GraduationCap, Layers, Trash2, UserRound, Users, X } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
