@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ShuffledQuestionOrder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -138,13 +139,16 @@ class TestDefinition extends Model
     /**
      * Serialize test for exam takers without leaking answer keys.
      */
-    public function serializeForExam(array $extra = []): array
+    public function serializeForExam(array $extra = [], ?int $shuffleSeed = null): array
     {
         $data = $this->toArray();
         unset($data['question_ids']);
 
-        $data['questions'] = Question::whereIn('id', $this->question_ids ?? [])
-            ->get()
+        $data['questions'] = ShuffledQuestionOrder::orderedQuestions(
+            $this->question_ids ?? [],
+            (int) $this->id,
+            $shuffleSeed
+        )
             ->map(fn (Question $question) => $question->makeHidden(['correct'])->toArray())
             ->values()
             ->all();

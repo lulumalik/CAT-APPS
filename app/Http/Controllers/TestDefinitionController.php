@@ -205,13 +205,15 @@ class TestDefinitionController extends Controller
         return response()->json($item ? [$item->serializeForPublicList()] : []);
     }
 
-    public function freeTryoutShow(TestDefinition $test)
+    public function freeTryoutShow(Request $request, TestDefinition $test)
     {
         if (! $test->is_free_tryout || ! $test->is_active) {
             return response()->json(['message' => 'Tryout gratis tidak tersedia.'], 404);
         }
 
-        return response()->json($test->serializeForExam());
+        $seed = crc32($request->session()->getId());
+
+        return response()->json($test->serializeForExam([], $seed));
     }
 
     public function freeTryoutSubmit(Request $request, TestDefinition $test)
@@ -284,7 +286,9 @@ class TestDefinitionController extends Controller
 
         $test->has_submitted = $hasSubmitted;
 
-        return response()->json($test->serializeForExam(['has_submitted' => $hasSubmitted]));
+        $shuffleSeed = $user ? (int) $user->id : crc32($request->session()->getId());
+
+        return response()->json($test->serializeForExam(['has_submitted' => $hasSubmitted], $shuffleSeed));
     }
 
     /**

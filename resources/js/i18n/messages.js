@@ -811,7 +811,7 @@ export const messages = {
       emptyManualHint: 'Use Add manual entry to record physical / field test scores.',
       classGuideTitle: 'Scoring in class',
       modeManual: 'Manual',
-      modeTest: 'CAT test',
+      modeTest: 'Quiz/Test',
       modeMaterial: 'Material',
       sourceManual: 'Manual',
       manualAdd: 'Add manual',

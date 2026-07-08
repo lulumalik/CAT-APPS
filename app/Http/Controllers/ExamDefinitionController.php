@@ -195,7 +195,9 @@ class ExamDefinitionController extends Controller
                 ->exists();
         }
 
-        return response()->json($exam->serializeForExam(['has_submitted' => $hasSubmitted]));
+        $shuffleSeed = $user ? (int) $user->id : null;
+
+        return response()->json($exam->serializeForExam(['has_submitted' => $hasSubmitted], $shuffleSeed));
     }
 
     public function submit(Request $request, ExamDefinition $exam)
