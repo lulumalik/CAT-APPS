@@ -8,6 +8,7 @@ import DashboardView from '@/views/DashboardView.vue';
 import QuestionBankView from '@/views/QuestionBankView.vue';
 import TestsView from '@/views/TestsView.vue';
 import UserManagementView from '@/views/UserManagementView.vue';
+import BatchManagementView from '@/views/BatchManagementView.vue';
 import RankingsView from '@/views/RankingsView.vue';
 import TestRunnerView from '@/views/TestRunnerView.vue';
 import MaterialsManageView from '@/views/MaterialsManageView.vue';
@@ -48,6 +49,7 @@ const routes = [
   { path: '/exams/:id/submissions', name: 'exam-submissions', component: TestSubmissionsView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/ujian', name: 'student-exams', component: StudentExamsView, meta: { requiresAuth: true } },
   { path: '/users', name: 'users', component: UserManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/batches', name: 'batches', component: BatchManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/materials', name: 'materials', component: MaterialsManageView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/blog', name: 'blog', component: BlogView },
   { path: '/blog/:slug', name: 'blog-detail', component: BlogDetailView },

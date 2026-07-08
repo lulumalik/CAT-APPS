@@ -256,6 +256,12 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
+    public function batches()
+    {
+        return $this->belongsToMany(Batch::class, 'batch_user')
+            ->withTimestamps();
+    }
+
     public function announcements()
     {
         return $this->hasMany(Announcement::class, 'created_by');

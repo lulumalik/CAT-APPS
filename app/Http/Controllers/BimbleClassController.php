@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\BimbleClass;
 use App\Models\Material;
-use App\Models\RegistrationProgress;
 use App\Models\UserNotification;
 use App\Models\User;
+use App\Services\BatchClassSyncService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +15,10 @@ use Illuminate\Validation\Rule;
 
 class BimbleClassController extends Controller
 {
+    public function __construct(private BatchClassSyncService $batchSync)
+    {
+    }
+
     public function mine(Request $request)
     {
         if (! Schema::hasTable('bimble_classes') || ! Schema::hasTable('bimble_class_user')) {
@@ -38,7 +42,9 @@ class BimbleClassController extends Controller
         }
 
         $user = $request->user();
-        $q = BimbleClass::withCount('students')->with('instructor:id,name,role');
+        $q = BimbleClass::withCount('students')
+            ->with(['instructor:id,name,role'])
+            ->with(['batches:id,name,code,is_active']);
 
         if ($user->role === 'mentor') {
             $q->where(function ($inner) use ($user) {
@@ -61,7 +67,13 @@ class BimbleClassController extends Controller
     {
         $this->authorizeManage($request, $bimbleClass);
 
-        $bimbleClass->load(['students:id,name,email,program_category', 'materials', 'testDefinitions', 'instructor:id,name,role']);
+        $bimbleClass->load([
+            'students:id,name,email,program_category',
+            'materials',
+            'testDefinitions',
+            'instructor:id,name,role',
+            'batches:id,name,code,is_active',
+        ]);
 
         return response()->json($bimbleClass);
     }
@@ -76,7 +88,11 @@ class BimbleClassController extends Controller
             'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
             'program_type' => 'required|string|in:'.implode(',', BimbleClass::programTypes()),
+            'batch_ids' => 'nullable|array',
+            'batch_ids.*' => 'integer|exists:batches,id',
         ]);
+        $batchIds = collect($data['batch_ids'] ?? [])->filter()->unique()->values()->all();
+        unset($data['batch_ids']);
         $data['program_type'] = BimbleClass::normalizeProgramType($data['program_type']);
 
         if (empty($data['class_code'])) {
@@ -102,7 +118,16 @@ class BimbleClassController extends Controller
 
         $class = BimbleClass::create($data);
 
-        return response()->json($class->load('instructor:id,name,role'), 201);
+        $autoAssigned = ['attached' => 0, 'skipped' => 0];
+        if ($batchIds !== [] && Schema::hasTable('batch_bimble_class')) {
+            $class->batches()->sync($batchIds);
+            $autoAssigned = $this->batchSync->syncBatchesToClass($class, $batchIds);
+        }
+
+        return response()->json([
+            ...$class->load(['instructor:id,name,role', 'batches:id,name,code,is_active'])->toArray(),
+            'auto_assigned' => $autoAssigned,
+        ], 201);
     }
 
     public function update(Request $request, BimbleClass $bimbleClass)
@@ -117,6 +142,8 @@ class BimbleClassController extends Controller
             'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
             'program_type' => 'sometimes|required|string|in:'.implode(',', BimbleClass::programTypes()),
+            'batch_ids' => 'nullable|array',
+            'batch_ids.*' => 'integer|exists:batches,id',
         ]);
         if (array_key_exists('program_type', $data)) {
             $data['program_type'] = BimbleClass::normalizeProgramType($data['program_type']);
@@ -145,9 +172,52 @@ class BimbleClassController extends Controller
             $data['academic_period'] = $this->composeAcademicPeriod($start, $end);
         }
 
+        $syncBatches = array_key_exists('batch_ids', $data);
+        $batchIds = collect($data['batch_ids'] ?? [])->filter()->unique()->values()->all();
+        unset($data['batch_ids']);
+
         $bimbleClass->update($data);
 
-        return response()->json($bimbleClass->fresh()->load('instructor:id,name,role'));
+        $autoAssigned = null;
+        if ($syncBatches && Schema::hasTable('batch_bimble_class')) {
+            $bimbleClass->batches()->sync($batchIds);
+            $autoAssigned = $this->batchSync->syncBatchesToClass($bimbleClass, $batchIds);
+        }
+
+        return response()->json([
+            ...$bimbleClass->fresh()->load(['instructor:id,name,role', 'batches:id,name,code,is_active'])->toArray(),
+            'auto_assigned' => $autoAssigned,
+        ]);
+    }
+
+    public function syncBatches(Request $request, BimbleClass $bimbleClass)
+    {
+        $this->authorizeManage($request, $bimbleClass);
+
+        if (! Schema::hasTable('batch_bimble_class')) {
+            return response()->json(['message' => 'Fitur batch belum tersedia.'], 422);
+        }
+
+        $data = $request->validate([
+            'batch_ids' => 'required|array',
+            'batch_ids.*' => 'integer|exists:batches,id',
+        ]);
+
+        $batchIds = collect($data['batch_ids'])->filter()->unique()->values()->all();
+        $bimbleClass->batches()->sync($batchIds);
+        $autoAssigned = $this->batchSync->syncBatchesToClass($bimbleClass, $batchIds);
+
+        return response()->json([
+            'message' => 'Batch kelas diperbarui. Peserta batch otomatis di-assign.',
+            'auto_assigned' => $autoAssigned,
+            'class' => $bimbleClass->fresh()->load([
+                'students:id,name,email,program_category',
+                'batches:id,name,code,is_active',
+                'materials',
+                'testDefinitions',
+                'instructor:id,name,role',
+            ]),
+        ]);
     }
 
     public function destroy(Request $request, BimbleClass $bimbleClass)

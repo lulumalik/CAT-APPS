@@ -64,6 +64,10 @@
               <Users class="h-4 w-4 text-gray-400 shrink-0" />
               <span>{{ c.students_count ?? 0 }} peserta</span>
             </li>
+            <li v-if="(c.batches || []).length" class="flex items-start gap-2.5">
+              <Layers class="h-4 w-4 text-gray-400 shrink-0 mt-0.5" />
+              <span class="text-xs leading-relaxed">{{ (c.batches || []).map((b) => b.name).join(', ') }}</span>
+            </li>
           </ul>
         </div>
 
@@ -117,6 +121,21 @@
               <input v-model="form.academic_period_end" type="date" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" />
             </div>
           </div>
+          <div>
+            <label class="text-sm font-medium text-gray-700">{{ t('batches.linkBatches') }}</label>
+            <p class="mt-0.5 text-[11px] text-gray-500">{{ t('batches.linkBatchesHint') }}</p>
+            <div class="mt-2 max-h-36 space-y-1.5 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-2">
+              <label
+                v-for="b in batchOptions"
+                :key="b.id"
+                class="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-white"
+              >
+                <input v-model="form.batch_ids" type="checkbox" :value="b.id" class="rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359]" />
+                <span class="truncate">{{ b.name }}</span>
+              </label>
+              <p v-if="!batchOptions.length" class="px-2 py-1 text-xs text-gray-400">{{ t('batches.noBatchesYet') }}</p>
+            </div>
+          </div>
           <div class="flex justify-end gap-2 pt-2">
             <button type="button" class="px-4 py-2 rounded-full border border-gray-200 text-sm" @click="showCreate = false">{{ t('common.cancel') }}</button>
             <button type="submit" class="px-4 py-2 rounded-full bg-[#1A1A1A] text-white text-sm font-semibold" :disabled="creating">
@@ -137,10 +156,34 @@
           <button type="button" class="px-3 py-1.5 rounded-full border border-gray-200 text-sm" @click="closeManage">Tutup</button>
         </div>
 
+        <section class="mb-4 rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
+          <h4 class="font-semibold text-[#1A1A1A]">{{ t('batches.linkBatches') }}</h4>
+          <p class="mt-1 mb-3 text-xs text-gray-500">{{ t('batches.linkBatchesManageHint') }}</p>
+          <div class="mb-3 flex flex-wrap gap-2">
+            <label
+              v-for="b in batchOptions"
+              :key="b.id"
+              class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs"
+            >
+              <input v-model="manageBatchIds" type="checkbox" :value="b.id" class="rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359]" />
+              {{ b.name }}
+            </label>
+            <span v-if="!batchOptions.length" class="text-xs text-gray-400">{{ t('batches.noBatchesYet') }}</span>
+          </div>
+          <button
+            type="button"
+            class="rounded-xl bg-[#9DB359] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            :disabled="savingBatches"
+            @click="saveClassBatches"
+          >
+            {{ savingBatches ? '…' : t('batches.saveAndAssign') }}
+          </button>
+        </section>
+
         <div class="grid gap-4 lg:grid-cols-3">
           <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
             <h4 class="font-semibold text-[#1A1A1A]">1) Tambah Peserta</h4>
-            <p class="mt-1 mb-3 text-xs text-gray-500">Cari siswa lalu tambahkan ke kelas.</p>
+            <p class="mt-1 mb-3 text-xs text-gray-500">Cari siswa lalu tambahkan ke kelas. Preferensi: manage lewat Batch.</p>
             <input v-model="studentSearch" @input="searchStudents" placeholder="Cari nama/email" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2" />
             <select v-model="forms.student_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
               <option :value="null">Pilih siswa</option>
@@ -203,7 +246,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import { BookOpen, Calculator, CalendarRange, Globe, GraduationCap, UserRound, Users } from 'lucide-vue-next'
+import { BookOpen, Calculator, CalendarRange, Globe, GraduationCap, Layers, UserRound, Users } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
@@ -258,7 +301,10 @@ const materialOptions = ref([])
 const testOptions = ref([])
 const studentOptions = ref([])
 const instructorOptions = ref([])
+const batchOptions = ref([])
 const studentSearch = ref('')
+const manageBatchIds = ref([])
+const savingBatches = ref(false)
 
 const form = reactive({
   name: '',
@@ -266,6 +312,7 @@ const form = reactive({
   instructor_id: null,
   academic_period_start: '',
   academic_period_end: '',
+  batch_ids: [],
 })
 
 const forms = reactive({
@@ -309,20 +356,25 @@ async function load() {
 async function createClass() {
   creating.value = true
   try {
-    await axios.post('/api/bimble-classes', {
+    const { data } = await axios.post('/api/bimble-classes', {
       name: form.name,
       program_type: form.program_type,
       instructor_id: form.instructor_id || null,
       academic_period_start: form.academic_period_start || null,
       academic_period_end: form.academic_period_end || null,
+      batch_ids: form.batch_ids || [],
     })
     showCreate.value = false
     form.name = ''
     form.instructor_id = null
     form.academic_period_start = ''
     form.academic_period_end = ''
+    form.batch_ids = []
     await load()
-    errorMessage.value = ''
+    const attached = data?.auto_assigned?.attached || 0
+    errorMessage.value = attached
+      ? `Kelas dibuat. ${attached} peserta dari batch otomatis di-assign.`
+      : ''
   } catch (error) {
     errorMessage.value = error?.response?.data?.message || 'Gagal membuat kelas baru.'
   } finally {
@@ -342,9 +394,19 @@ async function loadInstructors() {
   }
 }
 
+async function loadBatches() {
+  try {
+    const { data } = await axios.get('/api/batches', { params: { active_only: 1 } })
+    batchOptions.value = Array.isArray(data) ? data : []
+  } catch {
+    batchOptions.value = []
+  }
+}
+
 async function openManage(c) {
   showManage.value = true
   managedClass.value = null
+  manageBatchIds.value = []
   try {
     const [detail, mats, tests] = await Promise.all([
       axios.get(`/api/bimble-classes/${c.id}`),
@@ -352,6 +414,7 @@ async function openManage(c) {
       axios.get('/api/tests'),
     ])
     managedClass.value = detail.data
+    manageBatchIds.value = (detail.data.batches || []).map((b) => b.id)
     materialOptions.value = Array.isArray(mats.data) ? mats.data : (mats.data.data || [])
     testOptions.value = filterAssignableTests(Array.isArray(tests.data) ? tests.data : (tests.data?.data || []))
     if (forms.test_definition_id && !testOptions.value.some((t) => t.id === forms.test_definition_id)) {
@@ -373,6 +436,28 @@ async function reloadManagedClass() {
   if (!managedClass.value?.id) return
   const { data } = await axios.get(`/api/bimble-classes/${managedClass.value.id}`)
   managedClass.value = data
+  manageBatchIds.value = (data.batches || []).map((b) => b.id)
+}
+
+async function saveClassBatches() {
+  if (!managedClass.value?.id) return
+  savingBatches.value = true
+  try {
+    const { data } = await axios.post(`/api/bimble-classes/${managedClass.value.id}/batches`, {
+      batch_ids: manageBatchIds.value,
+    })
+    managedClass.value = data.class
+    manageBatchIds.value = (data.class?.batches || []).map((b) => b.id)
+    const attached = data.auto_assigned?.attached || 0
+    errorMessage.value = attached
+      ? `${attached} peserta dari batch otomatis di-assign ke kelas.`
+      : ''
+    await load()
+  } catch (error) {
+    errorMessage.value = error?.response?.data?.message || 'Gagal menyimpan batch kelas.'
+  } finally {
+    savingBatches.value = false
+  }
 }
 
 async function searchStudents() {
@@ -473,6 +558,6 @@ function formatPeriod(c) {
 }
 
 onMounted(async () => {
-  await Promise.all([load(), loadInstructors()])
+  await Promise.all([load(), loadInstructors(), loadBatches()])
 })
 </script>

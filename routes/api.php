@@ -20,6 +20,7 @@ use App\Http\Controllers\RegistrationFormPdfController;
 use App\Http\Controllers\StudentDashboardPdfController;
 use App\Http\Controllers\StudentReportController;
 use App\Http\Controllers\ExamDefinitionController;
+use App\Http\Controllers\BatchController;
 
 Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()]));
 
@@ -139,6 +140,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/guardians', [GuardianController::class, 'store']);
     Route::patch('/guardians/{guardian}/sent', [GuardianController::class, 'markSent']);
     Route::delete('/guardians/{guardian}', [GuardianController::class, 'destroy']);
+
+    Route::post('/batches', [BatchController::class, 'store']);
+    Route::get('/batches/{batch}', [BatchController::class, 'show']);
+    Route::put('/batches/{batch}', [BatchController::class, 'update']);
+    Route::delete('/batches/{batch}', [BatchController::class, 'destroy']);
+    Route::post('/batches/{batch}/students', [BatchController::class, 'attachStudent']);
+    Route::delete('/batches/{batch}/students/{user}', [BatchController::class, 'detachStudent']);
+    Route::patch('/batches/{batch}/students/{user}/expires', [BatchController::class, 'updateStudentExpires']);
+    Route::post('/batches/{batch}/classes', [BatchController::class, 'attachClass']);
+    Route::delete('/batches/{batch}/classes/{bimbleClass}', [BatchController::class, 'detachClass']);
+    Route::post('/batches/{batch}/classes/{bimbleClass}/sync', [BatchController::class, 'syncClass']);
 });
 
 Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
@@ -156,6 +168,8 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::post('/student-reports', [StudentReportController::class, 'store']);
     Route::post('/student-reports/weekly', [StudentReportController::class, 'generateWeekly']);
     Route::delete('/student-reports/{report}', [StudentReportController::class, 'destroy']);
+
+    Route::get('/batches', [BatchController::class, 'index']);
 
     Route::get('/students/search', [UserController::class, 'searchableStudents']);
 
@@ -191,6 +205,7 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::delete('/bimble-classes/{bimbleClass}', [BimbleClassController::class, 'destroy']);
     Route::post('/bimble-classes/{bimbleClass}/students', [BimbleClassController::class, 'attachStudent']);
     Route::delete('/bimble-classes/{bimbleClass}/students/{user}', [BimbleClassController::class, 'detachStudent']);
+    Route::post('/bimble-classes/{bimbleClass}/batches', [BimbleClassController::class, 'syncBatches']);
     Route::post('/bimble-classes/{bimbleClass}/materials', [BimbleClassController::class, 'attachMaterial']);
     Route::delete('/bimble-classes/{bimbleClass}/materials/{material}', [BimbleClassController::class, 'detachMaterial']);
     Route::post('/bimble-classes/{bimbleClass}/tests', [BimbleClassController::class, 'attachTest']);

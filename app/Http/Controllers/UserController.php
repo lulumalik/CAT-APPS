@@ -24,16 +24,26 @@ class UserController extends Controller
             });
         }
 
+        if ($request->filled('batch_id') && Schema::hasTable('batch_user')) {
+            $batchId = (int) $request->input('batch_id');
+            $q->whereHas('batches', fn ($b) => $b->where('batches.id', $batchId));
+        }
+
+        if ($request->boolean('without_batch') && Schema::hasTable('batch_user')) {
+            $q->whereDoesntHave('batches');
+        }
+
         return response()->json(
             $q->orderBy('name')
                 ->limit(30)
-                ->get(['id', 'name', 'username', 'email', 'program_category', 'in_quarantine'])
+                ->with(['batches:id,name'])
+                ->get(['id', 'name', 'username', 'email', 'program_category', 'in_quarantine', 'app_expires_at'])
         );
     }
 
     public function index(Request $request)
     {
-        $query = User::query();
+        $query = User::query()->with(['batches:id,name,code']);
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -50,9 +60,25 @@ class UserController extends Controller
             }
         }
 
+        $sortBy = $request->input('sort_by', 'created_at');
+        $sortDir = strtolower((string) $request->input('sort_dir', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $allowedSorts = ['name', 'username', 'created_at'];
+        if (! in_array($sortBy, $allowedSorts, true)) {
+            $sortBy = 'created_at';
+        }
+
+        if ($sortBy === 'username' && ! Schema::hasColumn('users', 'username')) {
+            $sortBy = 'name';
+        }
+
+        $query->orderBy($sortBy, $sortDir);
+        if ($sortBy !== 'created_at') {
+            $query->orderByDesc('created_at');
+        }
+
         $perPage = min(max((int) $request->input('per_page', 10), 1), 50);
 
-        $users = $query->latest()->paginate($perPage);
+        $users = $query->paginate($perPage);
 
         return response()->json($users);
     }

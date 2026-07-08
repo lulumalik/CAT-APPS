@@ -64,6 +64,12 @@ class BimbleClass extends Model
             ->withTimestamps();
     }
 
+    public function batches(): BelongsToMany
+    {
+        return $this->belongsToMany(Batch::class, 'batch_bimble_class')
+            ->withTimestamps();
+    }
+
     public function materials(): BelongsToMany
     {
         return $this->belongsToMany(Material::class, 'bimble_class_material')

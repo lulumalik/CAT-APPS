@@ -2,11 +2,17 @@
   <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
     <PageHeroHeader
       :title="t('users.title')"
-      :subtitle="t('users.subtitle')"
+      :subtitle="t('users.subtitleSlim')"
       theme="purple"
       :icon="Users"
     >
       <template #actions>
+        <router-link
+          to="/batches"
+          class="px-4 py-2 rounded-full border border-[#9DB359]/40 bg-[#9DB359]/10 text-[#5a6b2e] text-sm font-semibold hover:bg-[#9DB359]/20"
+        >
+          {{ t('nav.batches') }}
+        </router-link>
         <div class="relative">
           <input v-model="searchQuery" @input="handleSearch" type="text" :placeholder="t('users.searchPlaceholder')" class="rounded-full border border-gray-200 bg-white px-4 py-2 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -14,13 +20,24 @@
         <select
           v-model="roleFilter"
           class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors"
-          @change="handleRoleChange"
+          @change="handleFilterChange"
         >
           <option value="">{{ t('users.allRoles') }}</option>
           <option value="admin">{{ t('users.roleAdmin') }}</option>
           <option value="user">{{ t('users.roleUser') }}</option>
           <option value="mentor">{{ t('users.roleMentor') }}</option>
           <option value="parent">{{ t('users.roleParent') }}</option>
+        </select>
+        <select
+          v-model="sortFilter"
+          class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors"
+          @change="handleFilterChange"
+        >
+          <option value="created_at:desc">{{ t('users.sortNewest') }}</option>
+          <option value="name:asc">{{ t('users.sortNameAsc') }}</option>
+          <option value="name:desc">{{ t('users.sortNameDesc') }}</option>
+          <option value="username:asc">{{ t('users.sortUsernameAsc') }}</option>
+          <option value="username:desc">{{ t('users.sortUsernameDesc') }}</option>
         </select>
         <!-- <label class="px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer text-sm font-medium">
           Import Excel/CSV
@@ -47,7 +64,7 @@
               <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableName') }}</th>
               <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableEmail') }}</th>
               <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableRole') }}</th>
-              <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableExpires') }}</th>
+              <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableBatch') }}</th>
               <th scope="col" class="px-8 py-5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableActions') }}</th>
             </tr>
           </thead>
@@ -63,7 +80,10 @@
                   <div class="h-8 w-8 rounded-full bg-[#9DB359]/10 text-[#9DB359] flex items-center justify-center font-bold text-xs mr-3">
                     {{ user.name.charAt(0).toUpperCase() }}
                   </div>
-                  <div class="text-sm font-medium text-[#1A1A1A]">{{ user.name }}</div>
+                  <div>
+                    <div class="text-sm font-medium text-[#1A1A1A]">{{ user.name }}</div>
+                    <div v-if="user.username" class="text-xs text-gray-400">@{{ user.username }}</div>
+                  </div>
                 </div>
               </td>
               <td class="px-8 py-5 whitespace-nowrap">
@@ -80,35 +100,18 @@
                   {{ user.role }}
                 </span>
               </td>
-              <td class="px-8 py-5 whitespace-nowrap">
-                <div v-if="user.role !== 'user'" class="text-sm text-gray-400">—</div>
-                <div v-else-if="!user.app_expires_at" class="space-y-1.5">
-                  <p class="text-xs text-gray-500">{{ t('users.expiresNotSet') }}</p>
-                  <div class="flex flex-col items-stretch gap-2 max-w-[9.5rem]">
-                    <input
-                      v-model="expiresDraft[user.id]"
-                      type="date"
-                      class="w-full rounded-lg border border-gray-200 bg-gray-50 px-2 py-1.5 text-sm focus:bg-white focus:border-[#9DB359] focus:ring-0 transition-colors"
-                    />
-                    <button
-                      type="button"
-                      :disabled="!expiresDraft[user.id] || savingExpiresId === user.id"
-                      class="w-full px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-[#9DB359] hover:bg-[#8ca34b]"
-                      @click="saveExpires(user)"
-                    >
-                      {{ savingExpiresId === user.id ? '...' : t('users.expiresSave') }}
-                    </button>
-                  </div>
-                </div>
-                <div v-else class="space-y-1">
-                  <div class="text-sm text-gray-700">{{ formatExpiresAt(user.app_expires_at) }}</div>
+              <td class="px-8 py-5">
+                <div v-if="user.role === 'user' && (user.batches || []).length" class="flex flex-wrap gap-1">
                   <span
-                    class="px-2 py-0.5 inline-flex text-[11px] font-semibold rounded-full"
-                    :class="isUserExpired(user) ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'"
+                    v-for="b in user.batches"
+                    :key="b.id"
+                    class="px-2 py-0.5 text-[11px] font-semibold rounded-full bg-gray-50 text-gray-600 border border-gray-200"
                   >
-                    {{ isUserExpired(user) ? t('users.expiresExpired') : t('users.expiresActive') }}
+                    {{ b.name }}
                   </span>
                 </div>
+                <span v-else-if="user.role === 'user'" class="text-xs text-gray-400">{{ t('users.noBatch') }}</span>
+                <span v-else class="text-sm text-gray-400">—</span>
               </td>
               <td class="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
                 <router-link
@@ -167,7 +170,6 @@ import UserModal from '@/components/UserModal.vue'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
-import { formatAppExpiresAt, isAppExpired, dateInputToExpiresAt } from '@/utils/userMeta'
 
 const { confirm } = useModal()
 const toast = useToast()
@@ -186,8 +188,7 @@ const importFile = ref(null)
 
 const searchQuery = ref('')
 const roleFilter = ref('')
-const expiresDraft = ref({})
-const savingExpiresId = ref(null)
+const sortFilter = ref('created_at:desc')
 let searchTimeout = null
 
 const rangeFrom = computed(() => {
@@ -199,8 +200,10 @@ const rangeTo = computed(() => {
   return Math.min(currentPage.value * perPage, totalUsers.value)
 })
 
-const formatExpiresAt = (value) => formatAppExpiresAt(value) || '—'
-const isUserExpired = (user) => isAppExpired(user)
+const sortParams = computed(() => {
+  const [sort_by, sort_dir] = String(sortFilter.value || 'created_at:desc').split(':')
+  return { sort_by, sort_dir }
+})
 
 const handleSearch = () => {
   if (searchTimeout) clearTimeout(searchTimeout)
@@ -209,7 +212,7 @@ const handleSearch = () => {
   }, 300)
 }
 
-const handleRoleChange = () => {
+const handleFilterChange = () => {
   loadUsers(1)
 }
 
@@ -222,6 +225,7 @@ const loadUsers = async (page = 1) => {
         per_page: perPage,
         search: searchQuery.value || undefined,
         role: roleFilter.value || undefined,
+        ...sortParams.value,
       },
     })
     users.value = data.data || []
@@ -306,31 +310,6 @@ const formatApiError = (error) => {
     return Object.values(data.errors).flat().join(' ')
   }
   return t('users.toastSaveFailed')
-}
-
-const saveExpires = async (user) => {
-  const date = expiresDraft.value[user.id]
-  if (!date) return
-
-  savingExpiresId.value = user.id
-  try {
-    const { data } = await window.axios.put(`/api/users/${user.id}`, {
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      username: user.username,
-      program_category: user.program_category,
-      app_expires_at: dateInputToExpiresAt(date),
-    })
-    const idx = users.value.findIndex((u) => u.id === user.id)
-    if (idx !== -1) users.value[idx] = data
-    delete expiresDraft.value[user.id]
-    toast.success('Success', t('users.toastUpdated'))
-  } catch (e) {
-    toast.error('Error', formatApiError(e))
-  } finally {
-    savingExpiresId.value = null
-  }
 }
 
 const saveUser = async (formData) => {
