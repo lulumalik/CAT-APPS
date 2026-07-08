@@ -17,32 +17,6 @@
           <input v-model="searchQuery" @input="handleSearch" type="text" :placeholder="t('users.searchPlaceholder')" class="rounded-full border border-gray-200 bg-white px-4 py-2 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </div>
-        <select
-          v-model="roleFilter"
-          class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors"
-          @change="handleFilterChange"
-        >
-          <option value="">{{ t('users.allRoles') }}</option>
-          <option value="admin">{{ t('users.roleAdmin') }}</option>
-          <option value="user">{{ t('users.roleUser') }}</option>
-          <option value="mentor">{{ t('users.roleMentor') }}</option>
-          <option value="parent">{{ t('users.roleParent') }}</option>
-        </select>
-        <select
-          v-model="sortFilter"
-          class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors"
-          @change="handleFilterChange"
-        >
-          <option value="created_at:desc">{{ t('users.sortNewest') }}</option>
-          <option value="name:asc">{{ t('users.sortNameAsc') }}</option>
-          <option value="name:desc">{{ t('users.sortNameDesc') }}</option>
-          <option value="username:asc">{{ t('users.sortUsernameAsc') }}</option>
-          <option value="username:desc">{{ t('users.sortUsernameDesc') }}</option>
-        </select>
-        <!-- <label class="px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer text-sm font-medium">
-          Import Excel/CSV
-          <input type="file" accept=".xlsx,.csv,.txt" class="hidden" @change="onFilePicked" />
-        </label> -->
         <button class="px-6 py-2 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openAdd">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           {{ t('users.addUser') }}
@@ -50,32 +24,66 @@
       </template>
     </PageHeroHeader>
 
-    <!-- Loading Skeleton -->
     <div v-if="loading" class="space-y-4">
       <div v-for="n in 5" :key="n" class="h-16 w-full animate-pulse bg-white rounded-[2rem] shadow-sm"></div>
     </div>
 
-    <!-- User Table -->
     <div v-else class="bg-white shadow-xl shadow-black/5 rounded-[2rem] border border-gray-100 overflow-hidden">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-100">
           <thead class="bg-gray-50/50">
             <tr>
-              <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableName') }}</th>
-              <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableEmail') }}</th>
-              <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableRole') }}</th>
-              <th scope="col" class="px-8 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableBatch') }}</th>
-              <th scope="col" class="px-8 py-5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableActions') }}</th>
+              <th scope="col" class="px-6 py-4 text-left">
+                <button type="button" class="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-800" @click="toggleSort('name')">
+                  {{ t('users.tableName') }}
+                  <span class="inline-flex flex-col leading-none text-[9px] text-gray-400">
+                    <ChevronUp class="h-3 w-3" :class="sortBy === 'name' && sortDir === 'asc' ? 'text-[#9DB359]' : ''" />
+                    <ChevronDown class="h-3 w-3 -mt-1" :class="sortBy === 'name' && sortDir === 'desc' ? 'text-[#9DB359]' : ''" />
+                  </span>
+                </button>
+              </th>
+              <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableEmail') }}</th>
+              <th scope="col" class="px-6 py-4 text-left">
+                <div class="relative inline-block" data-role-filter>
+                  <button
+                    type="button"
+                    class="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider hover:text-gray-800"
+                    :class="roleFilter ? 'text-[#9DB359]' : 'text-gray-500'"
+                    @click.stop="roleMenuOpen = !roleMenuOpen"
+                  >
+                    {{ roleFilterLabel }}
+                    <ChevronDown class="h-3.5 w-3.5" />
+                  </button>
+                  <div
+                    v-if="roleMenuOpen"
+                    class="absolute left-0 z-20 mt-2 w-40 rounded-xl border border-gray-100 bg-white py-1 shadow-xl"
+                  >
+                    <button
+                      v-for="opt in roleOptions"
+                      :key="opt.value || 'all'"
+                      type="button"
+                      class="block w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
+                      :class="roleFilter === opt.value ? 'font-semibold text-[#9DB359]' : 'text-gray-700'"
+                      @click="selectRole(opt.value)"
+                    >
+                      {{ opt.label }}
+                    </button>
+                  </div>
+                </div>
+              </th>
+              <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableBatch') }}</th>
+              <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableExpires') }}</th>
+              <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ t('users.tableActions') }}</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-50">
             <tr v-if="users.length === 0">
-              <td colspan="5" class="px-8 py-12 text-center text-sm text-gray-500">
+              <td colspan="6" class="px-8 py-12 text-center text-sm text-gray-500">
                 {{ t('users.noUsers') }}
               </td>
             </tr>
             <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50/50 transition-colors">
-              <td class="px-8 py-5 whitespace-nowrap">
+              <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                   <div class="h-8 w-8 rounded-full bg-[#9DB359]/10 text-[#9DB359] flex items-center justify-center font-bold text-xs mr-3">
                     {{ user.name.charAt(0).toUpperCase() }}
@@ -86,10 +94,10 @@
                   </div>
                 </div>
               </td>
-              <td class="px-8 py-5 whitespace-nowrap">
+              <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-500">{{ user.email }}</div>
               </td>
-              <td class="px-8 py-5 whitespace-nowrap">
+              <td class="px-6 py-4 whitespace-nowrap">
                 <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full capitalize"
                       :class="{
                         'bg-purple-50 text-purple-700 border border-purple-100': user.role === 'admin',
@@ -97,10 +105,10 @@
                         'bg-amber-50 text-amber-700 border border-amber-100': user.role === 'parent',
                         'bg-green-50 text-green-700 border border-green-100': user.role === 'user'
                       }">
-                  {{ user.role }}
+                  {{ roleLabel(user.role) }}
                 </span>
               </td>
-              <td class="px-8 py-5">
+              <td class="px-6 py-4">
                 <div v-if="user.role === 'user' && (user.batches || []).length" class="flex flex-wrap gap-1">
                   <span
                     v-for="b in user.batches"
@@ -113,15 +121,44 @@
                 <span v-else-if="user.role === 'user'" class="text-xs text-gray-400">{{ t('users.noBatch') }}</span>
                 <span v-else class="text-sm text-gray-400">—</span>
               </td>
-              <td class="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
-                <router-link
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div v-if="user.role !== 'user'" class="text-sm text-gray-400">—</div>
+                <div v-else class="space-y-1.5 max-w-[10rem]">
+                  <input
+                    v-model="expiresDraft[user.id]"
+                    type="date"
+                    class="w-full rounded-lg border border-gray-200 bg-gray-50 px-2 py-1.5 text-sm focus:bg-white focus:border-[#9DB359] focus:ring-0"
+                  />
+                  <div class="flex items-center gap-2">
+                    <button
+                      type="button"
+                      :disabled="savingExpiresId === user.id"
+                      class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-white bg-[#9DB359] hover:bg-[#8ca34b] disabled:opacity-50"
+                      @click="saveExpires(user)"
+                    >
+                      {{ savingExpiresId === user.id ? '…' : t('users.expiresSave') }}
+                    </button>
+                    <span
+                      v-if="user.app_expires_at"
+                      class="px-1.5 py-0.5 text-[10px] font-semibold rounded-full"
+                      :class="isUserExpired(user) ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'"
+                    >
+                      {{ isUserExpired(user) ? t('users.expiresExpired') : t('users.expiresActive') }}
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button
                   v-if="user.role === 'user'"
-                  :to="`/dashboard/student/${user.id}`"
-                  class="text-[#1A1A1A] hover:text-[#9DB359] mr-4 transition-colors font-medium"
+                  type="button"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-full text-gray-600 hover:bg-[#9DB359]/15 hover:text-[#5a6b2e] mr-1 transition-colors"
+                  :title="t('users.studentDashboard')"
+                  @click="openDashboardPopup(user)"
                 >
-                  Dashboard Siswa
-                </router-link>
-                <button @click="edit(user)" class="text-[#9DB359] hover:text-[#8ca34b] mr-4 transition-colors">{{ t('common.edit') }}</button>
+                  <LayoutDashboard class="h-4 w-4" />
+                </button>
+                <button @click="edit(user)" class="text-[#9DB359] hover:text-[#8ca34b] mr-3 transition-colors">{{ t('common.edit') }}</button>
                 <button @click="remove(user)" class="text-red-500 hover:text-red-700 transition-colors">{{ t('common.delete') }}</button>
               </td>
             </tr>
@@ -130,7 +167,6 @@
       </div>
     </div>
 
-    <!-- Pagination -->
     <div v-if="!loading && lastPage > 0" class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
       <p class="text-sm text-gray-500">
         {{ t('users.showingUsers', { from: rangeFrom, to: rangeTo, total: totalUsers }) }}
@@ -158,18 +194,47 @@
       </div>
     </div>
 
-    <!-- Modal -->
     <UserModal v-if="showModal" :initial="editingUser" @close="closeModal" @submit="saveUser" />
+
+    <!-- Dashboard siswa popup -->
+    <div v-if="dashboardUser" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @click.self="dashboardUser = null">
+      <div class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
+        <div class="flex items-start gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#9DB359]/15 text-[#5a6b2e]">
+            <LayoutDashboard class="h-5 w-5" />
+          </div>
+          <div class="min-w-0 flex-1">
+            <h3 class="text-lg font-bold text-[#1A1A1A]">{{ t('users.studentDashboard') }}</h3>
+            <p class="mt-1 text-sm text-gray-600 truncate">{{ dashboardUser.name }}</p>
+            <p v-if="dashboardUser.username" class="text-xs text-gray-400">@{{ dashboardUser.username }}</p>
+          </div>
+        </div>
+        <p class="mt-4 text-sm text-gray-500">{{ t('users.studentDashboardHint') }}</p>
+        <div class="mt-5 flex justify-end gap-2">
+          <button type="button" class="rounded-full border border-gray-200 px-4 py-2 text-sm" @click="dashboardUser = null">
+            {{ t('common.cancel') }}
+          </button>
+          <router-link
+            :to="`/dashboard/student/${dashboardUser.id}`"
+            class="rounded-full bg-[#1A1A1A] px-4 py-2 text-sm font-semibold text-white"
+            @click="dashboardUser = null"
+          >
+            {{ t('users.openDashboard') }}
+          </router-link>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { Users } from 'lucide-vue-next'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { ChevronDown, ChevronUp, LayoutDashboard, Users } from 'lucide-vue-next'
 import UserModal from '@/components/UserModal.vue'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
+import { dateInputToExpiresAt, isAppExpired, toDateInputValue } from '@/utils/userMeta'
 
 const { confirm } = useModal()
 const toast = useToast()
@@ -184,12 +249,30 @@ const perPage = 10
 
 const showModal = ref(false)
 const editingUser = ref(null)
+const dashboardUser = ref(null)
 const importFile = ref(null)
 
 const searchQuery = ref('')
 const roleFilter = ref('')
-const sortFilter = ref('created_at:desc')
+const roleMenuOpen = ref(false)
+const sortBy = ref('created_at')
+const sortDir = ref('desc')
+const expiresDraft = ref({})
+const savingExpiresId = ref(null)
 let searchTimeout = null
+
+const roleOptions = computed(() => [
+  { value: '', label: t('users.filterByRole') },
+  { value: 'admin', label: t('users.roleAdmin') },
+  { value: 'user', label: t('users.roleUser') },
+  { value: 'mentor', label: t('users.roleMentor') },
+  { value: 'parent', label: t('users.roleParent') },
+])
+
+const roleFilterLabel = computed(() => {
+  const found = roleOptions.value.find((o) => o.value === roleFilter.value)
+  return found?.label || t('users.filterByRole')
+})
 
 const rangeFrom = computed(() => {
   if (totalUsers.value === 0) return 0
@@ -200,20 +283,45 @@ const rangeTo = computed(() => {
   return Math.min(currentPage.value * perPage, totalUsers.value)
 })
 
-const sortParams = computed(() => {
-  const [sort_by, sort_dir] = String(sortFilter.value || 'created_at:desc').split(':')
-  return { sort_by, sort_dir }
-})
+const isUserExpired = (user) => isAppExpired(user)
+
+const roleLabel = (role) => {
+  const map = {
+    admin: t('users.roleAdmin'),
+    user: t('users.roleUser'),
+    mentor: t('users.roleMentor'),
+    parent: t('users.roleParent'),
+  }
+  return map[role] || role
+}
 
 const handleSearch = () => {
   if (searchTimeout) clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => {
-    loadUsers(1)
-  }, 300)
+  searchTimeout = setTimeout(() => loadUsers(1), 300)
 }
 
-const handleFilterChange = () => {
+const selectRole = (value) => {
+  roleFilter.value = value
+  roleMenuOpen.value = false
   loadUsers(1)
+}
+
+const toggleSort = (column) => {
+  if (sortBy.value === column) {
+    sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortBy.value = column
+    sortDir.value = 'asc'
+  }
+  loadUsers(1)
+}
+
+const closeMenus = () => {
+  roleMenuOpen.value = false
+}
+
+const onDocClick = (e) => {
+  if (!e.target.closest('[data-role-filter]')) closeMenus()
 }
 
 const loadUsers = async (page = 1) => {
@@ -225,13 +333,19 @@ const loadUsers = async (page = 1) => {
         per_page: perPage,
         search: searchQuery.value || undefined,
         role: roleFilter.value || undefined,
-        ...sortParams.value,
+        sort_by: sortBy.value,
+        sort_dir: sortDir.value,
       },
     })
     users.value = data.data || []
     currentPage.value = data.current_page || 1
     lastPage.value = data.last_page || 1
     totalUsers.value = data.total || 0
+    const nextDraft = { ...expiresDraft.value }
+    for (const u of users.value) {
+      if (u.role === 'user') nextDraft[u.id] = toDateInputValue(u.app_expires_at)
+    }
+    expiresDraft.value = nextDraft
   } catch (e) {
     toast.error('Error', t('users.toastLoadFailed'))
   } finally {
@@ -252,6 +366,10 @@ const openAdd = () => {
 const edit = (user) => {
   editingUser.value = { ...user }
   showModal.value = true
+}
+
+const openDashboardPopup = (user) => {
+  dashboardUser.value = user
 }
 
 const remove = async (user) => {
@@ -281,27 +399,6 @@ const closeModal = () => {
   editingUser.value = null
 }
 
-const onFilePicked = async (event) => {
-  const file = event?.target?.files?.[0]
-  if (!file) return
-  importFile.value = file
-  const fd = new FormData()
-  fd.append('file', file)
-  try {
-    const { data } = await window.axios.post('/api/users/import', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-    await loadUsers()
-    const stats = data?.stats || {}
-    toast.success('Success', `Import selesai. Baru: ${stats.created || 0}, update: ${stats.updated || 0}, skip: ${stats.skipped || 0}`)
-  } catch (e) {
-    toast.error('Error', e?.response?.data?.message || 'Import user gagal')
-  } finally {
-    event.target.value = ''
-    importFile.value = null
-  }
-}
-
 const formatApiError = (error) => {
   const data = error?.response?.data
   if (!data) return t('users.toastSaveFailed')
@@ -312,16 +409,37 @@ const formatApiError = (error) => {
   return t('users.toastSaveFailed')
 }
 
+const saveExpires = async (user) => {
+  savingExpiresId.value = user.id
+  try {
+    const { data } = await window.axios.put(`/api/users/${user.id}`, {
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      username: user.username,
+      program_category: user.program_category,
+      app_expires_at: dateInputToExpiresAt(expiresDraft.value[user.id]),
+    })
+    const idx = users.value.findIndex((u) => u.id === user.id)
+    if (idx !== -1) users.value[idx] = { ...users.value[idx], ...data, batches: users.value[idx].batches }
+    toast.success('Success', t('users.toastUpdated'))
+  } catch (e) {
+    toast.error('Error', formatApiError(e))
+  } finally {
+    savingExpiresId.value = null
+  }
+}
+
 const saveUser = async (formData) => {
   try {
     if (editingUser.value) {
       const { data } = await window.axios.put(`/api/users/${editingUser.value.id}`, formData)
       const idx = users.value.findIndex(u => u.id === editingUser.value.id)
-      if (idx !== -1) users.value[idx] = data
+      if (idx !== -1) users.value[idx] = { ...users.value[idx], ...data }
+      if (data.role === 'user') expiresDraft.value[data.id] = toDateInputValue(data.app_expires_at)
       toast.success('Success', t('users.toastUpdated'))
     } else {
-      const { data } = await window.axios.post('/api/users', formData)
-      // Reload to show new user in correct order/page
+      await window.axios.post('/api/users', formData)
       loadUsers(currentPage.value)
       toast.success('Success', t('users.toastCreated'))
     }
@@ -333,8 +451,10 @@ const saveUser = async (formData) => {
 
 onMounted(() => {
   loadUsers()
+  document.addEventListener('click', onDocClick)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', onDocClick)
 })
 </script>
-
-<style scoped>
-</style>

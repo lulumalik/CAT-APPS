@@ -130,8 +130,14 @@
                 :key="b.id"
                 class="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-white"
               >
-                <input v-model="form.batch_ids" type="checkbox" :value="b.id" class="rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359]" />
-                <span class="truncate">{{ b.name }}</span>
+              <input
+                type="checkbox"
+                class="rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359]"
+                :value="b.id"
+                :checked="form.batch_ids.map(Number).includes(Number(b.id))"
+                @change="toggleCreateBatch(b.id, $event.target.checked)"
+              />
+              <span class="truncate">{{ b.name }}</span>
               </label>
               <p v-if="!batchOptions.length" class="px-2 py-1 text-xs text-gray-400">{{ t('batches.noBatchesYet') }}</p>
             </div>
@@ -157,15 +163,33 @@
         </div>
 
         <section class="mb-4 rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
-          <h4 class="font-semibold text-[#1A1A1A]">{{ t('batches.linkBatches') }}</h4>
-          <p class="mt-1 mb-3 text-xs text-gray-500">{{ t('batches.linkBatchesManageHint') }}</p>
+          <div class="mb-3 flex items-start justify-between gap-3">
+            <div>
+              <h4 class="font-semibold text-[#1A1A1A]">{{ t('batches.linkBatches') }}</h4>
+              <p class="mt-1 text-xs text-gray-500">{{ t('batches.linkBatchesManageHint') }}</p>
+            </div>
+            <button
+              v-if="manageBatchIds.length"
+              type="button"
+              class="shrink-0 text-xs font-medium text-gray-500 hover:text-gray-800"
+              @click="clearClassBatches"
+            >
+              {{ t('batches.clearBatches') }}
+            </button>
+          </div>
           <div class="mb-3 flex flex-wrap gap-2">
             <label
               v-for="b in batchOptions"
               :key="b.id"
-              class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs"
+              class="inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-xs transition-colors"
+              :class="isBatchChecked(b.id) ? 'border-[#9DB359] bg-[#9DB359]/10 text-[#5a6b2e]' : 'border-gray-200 bg-white text-gray-700'"
             >
-              <input v-model="manageBatchIds" type="checkbox" :value="b.id" class="rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359]" />
+              <input
+                type="checkbox"
+                class="rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359]"
+                :checked="isBatchChecked(b.id)"
+                @change="toggleClassBatch(b.id, $event.target.checked)"
+              />
               {{ b.name }}
             </label>
             <span v-if="!batchOptions.length" class="text-xs text-gray-400">{{ t('batches.noBatchesYet') }}</span>
@@ -403,6 +427,33 @@ async function loadBatches() {
   }
 }
 
+function isBatchChecked(id) {
+  return manageBatchIds.value.map(Number).includes(Number(id))
+}
+
+function toggleClassBatch(id, checked) {
+  const numId = Number(id)
+  if (checked) {
+    if (!isBatchChecked(numId)) manageBatchIds.value = [...manageBatchIds.value, numId]
+  } else {
+    manageBatchIds.value = manageBatchIds.value.filter((x) => Number(x) !== numId)
+  }
+}
+
+function clearClassBatches() {
+  manageBatchIds.value = []
+}
+
+function toggleCreateBatch(id, checked) {
+  const numId = Number(id)
+  const current = form.batch_ids.map(Number)
+  if (checked) {
+    if (!current.includes(numId)) form.batch_ids = [...form.batch_ids, numId]
+  } else {
+    form.batch_ids = form.batch_ids.filter((x) => Number(x) !== numId)
+  }
+}
+
 async function openManage(c) {
   showManage.value = true
   managedClass.value = null
@@ -414,7 +465,7 @@ async function openManage(c) {
       axios.get('/api/tests'),
     ])
     managedClass.value = detail.data
-    manageBatchIds.value = (detail.data.batches || []).map((b) => b.id)
+    manageBatchIds.value = (detail.data.batches || []).map((b) => Number(b.id))
     materialOptions.value = Array.isArray(mats.data) ? mats.data : (mats.data.data || [])
     testOptions.value = filterAssignableTests(Array.isArray(tests.data) ? tests.data : (tests.data?.data || []))
     if (forms.test_definition_id && !testOptions.value.some((t) => t.id === forms.test_definition_id)) {
@@ -436,7 +487,7 @@ async function reloadManagedClass() {
   if (!managedClass.value?.id) return
   const { data } = await axios.get(`/api/bimble-classes/${managedClass.value.id}`)
   managedClass.value = data
-  manageBatchIds.value = (data.batches || []).map((b) => b.id)
+  manageBatchIds.value = (data.batches || []).map((b) => Number(b.id))
 }
 
 async function saveClassBatches() {
@@ -447,7 +498,7 @@ async function saveClassBatches() {
       batch_ids: manageBatchIds.value,
     })
     managedClass.value = data.class
-    manageBatchIds.value = (data.class?.batches || []).map((b) => b.id)
+    manageBatchIds.value = (data.class?.batches || []).map((b) => Number(b.id))
     const attached = data.auto_assigned?.attached || 0
     errorMessage.value = attached
       ? `${attached} peserta dari batch otomatis di-assign ke kelas.`
@@ -463,7 +514,10 @@ async function saveClassBatches() {
 async function searchStudents() {
   try {
     const { data } = await axios.get('/api/students/search', {
-      params: { search: studentSearch.value || undefined },
+      params: {
+        search: studentSearch.value || undefined,
+        batch_eligible: 1,
+      },
     })
     studentOptions.value = Array.isArray(data) ? data : []
   } catch (error) {

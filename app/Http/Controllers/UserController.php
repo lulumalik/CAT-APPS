@@ -15,6 +15,13 @@ class UserController extends Controller
     public function searchableStudents(Request $request)
     {
         $q = User::query()->where('role', 'user');
+
+        // Kelas ujian (try_out) tidak masuk batch / kelas kursus.
+        $q->where(function ($inner) {
+            $inner->whereNull('program_category')
+                ->orWhere('program_category', '!=', User::PROGRAM_TRY_OUT);
+        });
+
         if ($request->filled('search')) {
             $s = $request->string('search')->toString();
             $q->where(function ($x) use ($s) {
@@ -36,6 +43,15 @@ class UserController extends Controller
 
         if ($request->boolean('without_batch') && Schema::hasTable('batch_user')) {
             $q->whereDoesntHave('batches');
+        }
+
+        // Batch/class picker: sembunyikan yang daftar online tapi belum lunas.
+        // Akun admin-created tanpa registration_progress tetap boleh.
+        if ($request->boolean('batch_eligible') && Schema::hasTable('registration_progress')) {
+            $q->where(function ($outer) {
+                $outer->whereDoesntHave('registrationProgress')
+                    ->orWhereHas('registrationProgress', fn ($p) => $p->where('payment_confirmed', true));
+            });
         }
 
         return response()->json(

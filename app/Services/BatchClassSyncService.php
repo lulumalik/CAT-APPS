@@ -110,6 +110,15 @@ class BatchClassSyncService
             return false;
         }
 
+        $progress = $user->relationLoaded('registrationProgress')
+            ? $user->registrationProgress
+            : $user->registrationProgress()->first();
+
+        // Ada progress daftar tapi belum lunas → skip. Tanpa progress (admin-created) OK.
+        if ($progress && ! $progress->payment_confirmed) {
+            return false;
+        }
+
         if ($user->role !== 'user') {
             return true;
         }

@@ -131,6 +131,11 @@ class BatchController extends Controller
             return response()->json(['message' => 'Peserta Kelas Ujian tidak dimasukkan ke batch kursus.'], 422);
         }
 
+        $progress = $student->registrationProgress;
+        if ($progress && ! $progress->payment_confirmed) {
+            return response()->json(['message' => 'Peserta belum lunas, belum bisa dimasukkan ke batch.'], 422);
+        }
+
         $batch->students()->syncWithoutDetaching([$student->id]);
         $sync = $this->sync->syncStudentToBatchClasses($batch, $student);
 

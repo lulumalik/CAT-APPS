@@ -119,9 +119,9 @@
       </div>
     </div>
 
-    <!-- Manage roster modal: assign students only -->
+    <!-- Manage roster modal: add (left) + roster (right) -->
     <div v-if="showManage && managedBatch" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @click.self="closeManage">
-      <div class="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl">
+      <div class="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl">
         <div class="mb-5 flex items-start justify-between gap-3">
           <div>
             <h3 class="text-xl font-bold text-[#1A1A1A]">{{ managedBatch.name }}</h3>
@@ -130,81 +130,89 @@
           <button type="button" class="rounded-full border border-gray-200 px-3 py-1.5 text-sm" @click="closeManage">{{ t('common.close') }}</button>
         </div>
 
-        <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
-          <h4 class="font-semibold text-[#1A1A1A]">{{ t('batches.rosterTitle') }}</h4>
-          <p class="mt-1 mb-3 text-xs text-gray-500">{{ t('batches.rosterHint') }}</p>
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+          <section class="flex-1 rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
+            <h4 class="font-semibold text-[#1A1A1A]">{{ t('batches.addStudent') }}</h4>
+            <p class="mt-1 mb-3 text-xs text-gray-500">{{ t('batches.rosterHint') }}</p>
 
-          <input
-            v-model="pickerSearch"
-            type="text"
-            :placeholder="t('batches.studentSearch')"
-            class="mb-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm"
-            @input="onPickerSearch"
-          />
-          <select v-model="selectedStudentId" class="mb-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
-            <option :value="null">{{ t('batches.pickStudent') }}</option>
-            <option v-for="s in studentOptions" :key="s.id" :value="s.id">
-              {{ s.name }}{{ s.username ? ` (@${s.username})` : '' }}
-            </option>
-          </select>
-          <button type="button" class="w-full rounded-xl bg-[#1A1A1A] py-2 text-sm font-medium text-white" @click="attachStudent">
-            {{ t('batches.addStudent') }}
-          </button>
+            <input
+              v-model="pickerSearch"
+              type="text"
+              :placeholder="t('batches.studentSearch')"
+              class="mb-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm"
+              @input="onPickerSearch"
+            />
+            <select v-model="selectedStudentId" class="mb-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
+              <option :value="null">{{ t('batches.pickStudent') }}</option>
+              <option v-for="s in studentOptions" :key="s.id" :value="s.id">
+                {{ s.name }}{{ s.username ? ` (@${s.username})` : '' }}
+              </option>
+            </select>
+            <p v-if="pickerSearch && !studentOptions.length" class="mb-2 text-[11px] text-amber-600">
+              {{ t('batches.noEligibleStudents') }}
+            </p>
+            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] py-2 text-sm font-medium text-white" @click="attachStudent">
+              {{ t('batches.addStudent') }}
+            </button>
+          </section>
 
-          <div class="mt-4 mb-2">
+          <section class="flex-1 rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
+            <h4 class="font-semibold text-[#1A1A1A]">{{ t('batches.rosterTitle') }}</h4>
+            <p class="mt-1 mb-3 text-xs text-gray-500">{{ t('batches.rosterListHint') }}</p>
+
             <input
               v-model="rosterSearch"
               type="text"
               :placeholder="t('batches.rosterSearch')"
-              class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm"
+              class="mb-3 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm"
               @input="onRosterSearch"
             />
-          </div>
 
-          <ul class="space-y-2 rounded-xl border border-gray-100 bg-white p-3">
-            <li v-if="rosterLoading" class="py-6 text-center text-xs text-gray-400">{{ t('common.refresh') }}…</li>
-            <li
-              v-for="s in rosterStudents"
-              :key="s.id"
-              class="flex items-center justify-between gap-3 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0"
-            >
-              <div class="min-w-0">
-                <p class="truncate text-sm font-medium text-[#1A1A1A]">{{ s.name }}</p>
-                <p class="truncate text-xs text-gray-400">{{ s.username ? `@${s.username}` : s.email }}</p>
+            <ul class="min-h-[12rem] space-y-2 rounded-xl border border-gray-100 bg-white p-3">
+              <li v-if="rosterLoading" class="py-6 text-center text-xs text-gray-400">{{ t('common.refresh') }}…</li>
+              <li
+                v-for="s in rosterStudents"
+                :key="s.id"
+                class="flex items-center justify-between gap-3 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0"
+              >
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-medium text-[#1A1A1A]">{{ s.name }}</p>
+                  <p class="truncate text-xs text-gray-400">{{ s.username ? `@${s.username}` : s.email }}</p>
+                </div>
+                <button type="button" class="shrink-0 text-xs text-red-500 hover:text-red-700" @click="detachStudent(s.id)">
+                  {{ t('common.delete') }}
+                </button>
+              </li>
+              <li v-if="!rosterLoading && !rosterStudents.length" class="py-4 text-center text-xs text-gray-400">
+                {{ t('batches.noStudents') }}
+              </li>
+            </ul>
+
+            <div v-if="rosterLastPage > 0" class="mt-3 flex items-center justify-between gap-2">
+              <p class="text-xs text-gray-500">
+                {{ t('batches.rosterPageInfo', { page: rosterPage, total: rosterLastPage, count: rosterTotal }) }}
+              </p>
+              <div class="flex gap-2">
+                <button
+                  type="button"
+                  class="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium disabled:opacity-50"
+                  :disabled="rosterPage <= 1 || rosterLoading"
+                  @click="loadRoster(rosterPage - 1)"
+                >
+                  {{ t('common.previous') }}
+                </button>
+                <button
+                  type="button"
+                  class="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium disabled:opacity-50"
+                  :disabled="rosterPage >= rosterLastPage || rosterLoading"
+                  @click="loadRoster(rosterPage + 1)"
+                >
+                  {{ t('common.next') }}
+                </button>
               </div>
-              <button type="button" class="shrink-0 text-xs text-red-500 hover:text-red-700" @click="detachStudent(s.id)">
-                {{ t('common.delete') }}
-              </button>
-            </li>
-            <li v-if="!rosterLoading && !rosterStudents.length" class="py-4 text-center text-xs text-gray-400">
-              {{ t('batches.noStudents') }}
-            </li>
-          </ul>
-
-          <div v-if="rosterLastPage > 0" class="mt-3 flex items-center justify-between gap-2">
-            <p class="text-xs text-gray-500">
-              {{ t('batches.rosterPageInfo', { page: rosterPage, total: rosterLastPage, count: rosterTotal }) }}
-            </p>
-            <div class="flex gap-2">
-              <button
-                type="button"
-                class="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium disabled:opacity-50"
-                :disabled="rosterPage <= 1 || rosterLoading"
-                @click="loadRoster(rosterPage - 1)"
-              >
-                {{ t('common.previous') }}
-              </button>
-              <button
-                type="button"
-                class="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium disabled:opacity-50"
-                :disabled="rosterPage >= rosterLastPage || rosterLoading"
-                @click="loadRoster(rosterPage + 1)"
-              >
-                {{ t('common.next') }}
-              </button>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
   </main>
@@ -394,6 +402,7 @@ async function searchStudents() {
       params: {
         search: pickerSearch.value || undefined,
         exclude_batch_id: managedBatch.value?.id || undefined,
+        batch_eligible: 1,
       },
     })
     studentOptions.value = Array.isArray(data) ? data : []
