@@ -29,6 +29,11 @@ class UserController extends Controller
             $q->whereHas('batches', fn ($b) => $b->where('batches.id', $batchId));
         }
 
+        if ($request->filled('exclude_batch_id') && Schema::hasTable('batch_user')) {
+            $excludeBatchId = (int) $request->input('exclude_batch_id');
+            $q->whereDoesntHave('batches', fn ($b) => $b->where('batches.id', $excludeBatchId));
+        }
+
         if ($request->boolean('without_batch') && Schema::hasTable('batch_user')) {
             $q->whereDoesntHave('batches');
         }

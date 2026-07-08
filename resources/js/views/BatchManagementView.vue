@@ -119,9 +119,9 @@
       </div>
     </div>
 
-    <!-- Manage roster modal -->
+    <!-- Manage roster modal: assign students only -->
     <div v-if="showManage && managedBatch" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" @click.self="closeManage">
-      <div class="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl">
+      <div class="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl">
         <div class="mb-5 flex items-start justify-between gap-3">
           <div>
             <h3 class="text-xl font-bold text-[#1A1A1A]">{{ managedBatch.name }}</h3>
@@ -130,102 +130,92 @@
           <button type="button" class="rounded-full border border-gray-200 px-3 py-1.5 text-sm" @click="closeManage">{{ t('common.close') }}</button>
         </div>
 
-        <div class="grid gap-4 lg:grid-cols-2">
-          <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
-            <h4 class="font-semibold text-[#1A1A1A]">{{ t('batches.rosterTitle') }}</h4>
-            <p class="mt-1 mb-3 text-xs text-gray-500">{{ t('batches.rosterHint') }}</p>
+        <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
+          <h4 class="font-semibold text-[#1A1A1A]">{{ t('batches.rosterTitle') }}</h4>
+          <p class="mt-1 mb-3 text-xs text-gray-500">{{ t('batches.rosterHint') }}</p>
+
+          <input
+            v-model="pickerSearch"
+            type="text"
+            :placeholder="t('batches.studentSearch')"
+            class="mb-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm"
+            @input="onPickerSearch"
+          />
+          <select v-model="selectedStudentId" class="mb-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
+            <option :value="null">{{ t('batches.pickStudent') }}</option>
+            <option v-for="s in studentOptions" :key="s.id" :value="s.id">
+              {{ s.name }}{{ s.username ? ` (@${s.username})` : '' }}
+            </option>
+          </select>
+          <button type="button" class="w-full rounded-xl bg-[#1A1A1A] py-2 text-sm font-medium text-white" @click="attachStudent">
+            {{ t('batches.addStudent') }}
+          </button>
+
+          <div class="mt-4 mb-2">
             <input
-              v-model="studentSearch"
+              v-model="rosterSearch"
               type="text"
-              :placeholder="t('batches.studentSearch')"
-              class="mb-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm"
-              @input="searchStudents"
+              :placeholder="t('batches.rosterSearch')"
+              class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm"
+              @input="onRosterSearch"
             />
-            <select v-model="selectedStudentId" class="mb-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
-              <option :value="null">{{ t('batches.pickStudent') }}</option>
-              <option v-for="s in studentOptions" :key="s.id" :value="s.id">
-                {{ s.name }}{{ s.username ? ` (@${s.username})` : '' }}
-              </option>
-            </select>
-            <div class="mb-2">
-              <label class="text-xs text-gray-500">{{ t('batches.setExpiresOptional') }}</label>
-              <input v-model="attachExpires" type="date" class="mt-1 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" />
+          </div>
+
+          <ul class="space-y-2 rounded-xl border border-gray-100 bg-white p-3">
+            <li v-if="rosterLoading" class="py-6 text-center text-xs text-gray-400">{{ t('common.refresh') }}…</li>
+            <li
+              v-for="s in rosterStudents"
+              :key="s.id"
+              class="flex items-center justify-between gap-3 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0"
+            >
+              <div class="min-w-0">
+                <p class="truncate text-sm font-medium text-[#1A1A1A]">{{ s.name }}</p>
+                <p class="truncate text-xs text-gray-400">{{ s.username ? `@${s.username}` : s.email }}</p>
+              </div>
+              <button type="button" class="shrink-0 text-xs text-red-500 hover:text-red-700" @click="detachStudent(s.id)">
+                {{ t('common.delete') }}
+              </button>
+            </li>
+            <li v-if="!rosterLoading && !rosterStudents.length" class="py-4 text-center text-xs text-gray-400">
+              {{ t('batches.noStudents') }}
+            </li>
+          </ul>
+
+          <div v-if="rosterLastPage > 0" class="mt-3 flex items-center justify-between gap-2">
+            <p class="text-xs text-gray-500">
+              {{ t('batches.rosterPageInfo', { page: rosterPage, total: rosterLastPage, count: rosterTotal }) }}
+            </p>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                class="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium disabled:opacity-50"
+                :disabled="rosterPage <= 1 || rosterLoading"
+                @click="loadRoster(rosterPage - 1)"
+              >
+                {{ t('common.previous') }}
+              </button>
+              <button
+                type="button"
+                class="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium disabled:opacity-50"
+                :disabled="rosterPage >= rosterLastPage || rosterLoading"
+                @click="loadRoster(rosterPage + 1)"
+              >
+                {{ t('common.next') }}
+              </button>
             </div>
-            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] py-2 text-sm font-medium text-white" @click="attachStudent">
-              {{ t('batches.addStudent') }}
-            </button>
-
-            <ul class="mt-4 max-h-80 space-y-2 overflow-y-auto rounded-xl border border-gray-100 bg-white p-3">
-              <li
-                v-for="s in managedBatch.students || []"
-                :key="s.id"
-                class="flex flex-col gap-2 border-b border-gray-50 pb-3 last:border-b-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-medium text-[#1A1A1A]">{{ s.name }}</p>
-                  <p class="truncate text-xs text-gray-400">{{ s.username ? `@${s.username}` : s.email }}</p>
-                  <p class="text-xs text-gray-500">{{ formatExpires(s.app_expires_at) }}</p>
-                </div>
-                <div class="flex shrink-0 items-center gap-2">
-                  <input
-                    v-model="expiresDraft[s.id]"
-                    type="date"
-                    class="w-32 rounded-lg border border-gray-200 px-2 py-1 text-xs"
-                  />
-                  <button
-                    type="button"
-                    class="rounded-lg bg-[#9DB359] px-2 py-1 text-xs font-semibold text-white disabled:opacity-50"
-                    :disabled="savingExpiresId === s.id"
-                    @click="saveExpires(s)"
-                  >
-                    {{ t('users.expiresSave') }}
-                  </button>
-                  <button type="button" class="text-xs text-red-500" @click="detachStudent(s.id)">{{ t('common.delete') }}</button>
-                </div>
-              </li>
-              <li v-if="!(managedBatch.students || []).length" class="text-xs text-gray-400">{{ t('batches.noStudents') }}</li>
-            </ul>
-          </section>
-
-          <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
-            <h4 class="font-semibold text-[#1A1A1A]">{{ t('batches.classesTitle') }}</h4>
-            <p class="mt-1 mb-3 text-xs text-gray-500">{{ t('batches.classesHint') }}</p>
-            <select v-model="selectedClassId" class="mb-2 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
-              <option :value="null">{{ t('batches.pickClass') }}</option>
-              <option v-for="c in availableClasses" :key="c.id" :value="c.id">{{ c.name }}</option>
-            </select>
-            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] py-2 text-sm font-medium text-white" @click="attachClass">
-              {{ t('batches.linkClass') }}
-            </button>
-
-            <ul class="mt-4 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
-              <li
-                v-for="c in managedBatch.bimble_classes || []"
-                :key="c.id"
-                class="flex items-center justify-between gap-2 border-b border-gray-50 pb-2 text-sm last:border-b-0 last:pb-0"
-              >
-                <span class="truncate font-medium">{{ c.name }}</span>
-                <div class="flex gap-2">
-                  <button type="button" class="text-xs text-[#9DB359]" @click="resyncClass(c.id)">{{ t('batches.resync') }}</button>
-                  <button type="button" class="text-xs text-red-500" @click="detachClass(c.id)">{{ t('common.delete') }}</button>
-                </div>
-              </li>
-              <li v-if="!(managedBatch.bimble_classes || []).length" class="text-xs text-gray-400">{{ t('batches.noClasses') }}</li>
-            </ul>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
     </div>
   </main>
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { Layers } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
 import { useModal, useToast } from '@/composables/useNotification'
-import { dateInputToExpiresAt, formatAppExpiresAt, toDateInputValue } from '@/utils/userMeta'
 
 const { t } = useI18n()
 const toast = useToast()
@@ -250,28 +240,24 @@ const form = reactive({
 
 const showManage = ref(false)
 const managedBatch = ref(null)
-const studentSearch = ref('')
+const pickerSearch = ref('')
 const studentOptions = ref([])
 const selectedStudentId = ref(null)
-const attachExpires = ref('')
-const classOptions = ref([])
-const selectedClassId = ref(null)
-const expiresDraft = ref({})
-const savingExpiresId = ref(null)
+let pickerTimeout = null
 
-const availableClasses = computed(() => {
-  const linked = new Set((managedBatch.value?.bimble_classes || []).map((c) => c.id))
-  return classOptions.value.filter((c) => !linked.has(c.id))
-})
+const rosterStudents = ref([])
+const rosterSearch = ref('')
+const rosterPage = ref(1)
+const rosterLastPage = ref(1)
+const rosterTotal = ref(0)
+const rosterLoading = ref(false)
+const rosterPerPage = 10
+let rosterTimeout = null
 
 function formatRange(batch) {
   if (batch.starts_on && batch.ends_on) return `${batch.starts_on} s/d ${batch.ends_on}`
   if (batch.starts_on) return `Mulai ${batch.starts_on}`
   return t('batches.periodUnset')
-}
-
-function formatExpires(value) {
-  return formatAppExpiresAt(value) || t('users.expiresNotSet')
 }
 
 function handleSearch() {
@@ -370,24 +356,19 @@ async function removeBatch(batch) {
 
 async function openManage(batch) {
   showManage.value = true
-  managedBatch.value = null
+  managedBatch.value = batch
   selectedStudentId.value = null
-  selectedClassId.value = null
-  attachExpires.value = ''
-  expiresDraft.value = {}
+  pickerSearch.value = ''
+  rosterSearch.value = ''
+  rosterPage.value = 1
+  rosterStudents.value = []
   try {
-    const [detail, classes] = await Promise.all([
-      window.axios.get(`/api/batches/${batch.id}`),
-      window.axios.get('/api/bimble-classes'),
-    ])
-    managedBatch.value = detail.data
-    classOptions.value = Array.isArray(classes.data) ? classes.data : []
-    for (const s of managedBatch.value.students || []) {
-      expiresDraft.value[s.id] = toDateInputValue(s.app_expires_at)
-    }
-    await searchStudents()
+    const { data } = await window.axios.get(`/api/batches/${batch.id}`)
+    managedBatch.value = data
+    await Promise.all([searchStudents(), loadRoster(1)])
   } catch (e) {
     showManage.value = false
+    managedBatch.value = null
     toast.error('Error', e?.response?.data?.message || t('batches.toastLoadFailed'))
   }
 }
@@ -397,17 +378,53 @@ function closeManage() {
   managedBatch.value = null
 }
 
+function onPickerSearch() {
+  if (pickerTimeout) clearTimeout(pickerTimeout)
+  pickerTimeout = setTimeout(() => searchStudents(), 300)
+}
+
+function onRosterSearch() {
+  if (rosterTimeout) clearTimeout(rosterTimeout)
+  rosterTimeout = setTimeout(() => loadRoster(1), 300)
+}
+
 async function searchStudents() {
   try {
     const { data } = await window.axios.get('/api/students/search', {
       params: {
-        search: studentSearch.value || undefined,
+        search: pickerSearch.value || undefined,
+        exclude_batch_id: managedBatch.value?.id || undefined,
       },
     })
-    const already = new Set((managedBatch.value?.students || []).map((s) => s.id))
-    studentOptions.value = (Array.isArray(data) ? data : []).filter((s) => !already.has(s.id))
+    studentOptions.value = Array.isArray(data) ? data : []
   } catch {
     studentOptions.value = []
+  }
+}
+
+async function loadRoster(page = 1) {
+  if (!managedBatch.value?.id) return
+  rosterLoading.value = true
+  try {
+    const { data } = await window.axios.get(`/api/batches/${managedBatch.value.id}/students`, {
+      params: {
+        page,
+        per_page: rosterPerPage,
+        search: rosterSearch.value || undefined,
+      },
+    })
+    rosterStudents.value = data.data || []
+    rosterPage.value = data.current_page || 1
+    rosterLastPage.value = data.last_page || 1
+    rosterTotal.value = data.total || 0
+    if (managedBatch.value) {
+      managedBatch.value.students_count = rosterTotal.value
+    }
+  } catch (e) {
+    rosterStudents.value = []
+    toast.error('Error', e?.response?.data?.message || t('batches.toastLoadFailed'))
+  } finally {
+    rosterLoading.value = false
   }
 }
 
@@ -416,18 +433,11 @@ async function attachStudent() {
   try {
     const { data } = await window.axios.post(`/api/batches/${managedBatch.value.id}/students`, {
       user_id: selectedStudentId.value,
-      app_expires_at: dateInputToExpiresAt(attachExpires.value) || undefined,
     })
-    managedBatch.value = data.batch
     selectedStudentId.value = null
-    attachExpires.value = ''
-    for (const s of managedBatch.value.students || []) {
-      expiresDraft.value[s.id] = toDateInputValue(s.app_expires_at)
-    }
     const attached = data.auto_assigned?.attached || 0
     toast.success('Success', t('batches.toastStudentAdded', { count: attached }))
-    await searchStudents()
-    await loadBatches()
+    await Promise.all([loadRoster(rosterPage.value), searchStudents(), loadBatches()])
   } catch (e) {
     toast.error('Error', e?.response?.data?.message || t('batches.toastSaveFailed'))
   }
@@ -436,65 +446,11 @@ async function attachStudent() {
 async function detachStudent(userId) {
   if (!managedBatch.value?.id) return
   try {
-    const { data } = await window.axios.delete(`/api/batches/${managedBatch.value.id}/students/${userId}`)
-    managedBatch.value = data.batch
-    await searchStudents()
-    await loadBatches()
-  } catch (e) {
-    toast.error('Error', e?.response?.data?.message || t('batches.toastSaveFailed'))
-  }
-}
-
-async function saveExpires(student) {
-  if (!managedBatch.value?.id) return
-  savingExpiresId.value = student.id
-  try {
-    await window.axios.patch(`/api/batches/${managedBatch.value.id}/students/${student.id}/expires`, {
-      app_expires_at: dateInputToExpiresAt(expiresDraft.value[student.id]),
-    })
-    const { data } = await window.axios.get(`/api/batches/${managedBatch.value.id}`)
-    managedBatch.value = data
-    toast.success('Success', t('users.toastUpdated'))
-  } catch (e) {
-    toast.error('Error', e?.response?.data?.message || t('users.toastSaveFailed'))
-  } finally {
-    savingExpiresId.value = null
-  }
-}
-
-async function attachClass() {
-  if (!managedBatch.value?.id || !selectedClassId.value) return
-  try {
-    const { data } = await window.axios.post(`/api/batches/${managedBatch.value.id}/classes`, {
-      bimble_class_id: selectedClassId.value,
-    })
-    managedBatch.value = data.batch
-    selectedClassId.value = null
-    const attached = data.auto_assigned?.attached || 0
-    toast.success('Success', t('batches.toastClassLinked', { count: attached }))
-    await loadBatches()
-  } catch (e) {
-    toast.error('Error', e?.response?.data?.message || t('batches.toastSaveFailed'))
-  }
-}
-
-async function detachClass(classId) {
-  if (!managedBatch.value?.id) return
-  try {
-    const { data } = await window.axios.delete(`/api/batches/${managedBatch.value.id}/classes/${classId}`)
-    managedBatch.value = data.batch
-    await loadBatches()
-  } catch (e) {
-    toast.error('Error', e?.response?.data?.message || t('batches.toastSaveFailed'))
-  }
-}
-
-async function resyncClass(classId) {
-  if (!managedBatch.value?.id) return
-  try {
-    const { data } = await window.axios.post(`/api/batches/${managedBatch.value.id}/classes/${classId}/sync`)
-    const attached = data.auto_assigned?.attached || 0
-    toast.success('Success', t('batches.toastSynced', { count: attached }))
+    await window.axios.delete(`/api/batches/${managedBatch.value.id}/students/${userId}`)
+    const nextPage = rosterStudents.value.length === 1 && rosterPage.value > 1
+      ? rosterPage.value - 1
+      : rosterPage.value
+    await Promise.all([loadRoster(nextPage), searchStudents(), loadBatches()])
   } catch (e) {
     toast.error('Error', e?.response?.data?.message || t('batches.toastSaveFailed'))
   }

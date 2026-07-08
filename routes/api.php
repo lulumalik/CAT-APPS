@@ -145,12 +145,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/batches/{batch}', [BatchController::class, 'show']);
     Route::put('/batches/{batch}', [BatchController::class, 'update']);
     Route::delete('/batches/{batch}', [BatchController::class, 'destroy']);
+    Route::get('/batches/{batch}/students', [BatchController::class, 'students']);
     Route::post('/batches/{batch}/students', [BatchController::class, 'attachStudent']);
     Route::delete('/batches/{batch}/students/{user}', [BatchController::class, 'detachStudent']);
-    Route::patch('/batches/{batch}/students/{user}/expires', [BatchController::class, 'updateStudentExpires']);
-    Route::post('/batches/{batch}/classes', [BatchController::class, 'attachClass']);
-    Route::delete('/batches/{batch}/classes/{bimbleClass}', [BatchController::class, 'detachClass']);
-    Route::post('/batches/{batch}/classes/{bimbleClass}/sync', [BatchController::class, 'syncClass']);
 });
 
 Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
