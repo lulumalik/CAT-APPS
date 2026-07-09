@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Batch;
 use App\Models\BimbleClass;
 use App\Models\Material;
 use App\Models\UserNotification;
@@ -30,7 +31,10 @@ class BimbleClassController extends Controller
             return response()->json([]);
         }
 
-        $classes = $user->bimbleClasses()->orderBy('bimble_classes.name')->get();
+        $classes = $user->bimbleClasses()
+            ->with(['batches:id,name,code,is_active,starts_on,ends_on'])
+            ->orderBy('bimble_classes.name')
+            ->get();
 
         return response()->json($classes);
     }
@@ -44,7 +48,7 @@ class BimbleClassController extends Controller
         $user = $request->user();
         $q = BimbleClass::withCount('students')
             ->with(['instructor:id,name,role'])
-            ->with(['batches:id,name,code,is_active']);
+            ->with(['batches:id,name,code,is_active,starts_on,ends_on']);
 
         if ($user->role === 'mentor') {
             $q->where(function ($inner) use ($user) {
@@ -72,7 +76,7 @@ class BimbleClassController extends Controller
             'materials',
             'testDefinitions',
             'instructor:id,name,role',
-            'batches:id,name,code,is_active',
+            'batches:id,name,code,is_active,starts_on,ends_on',
         ]);
 
         return response()->json($bimbleClass);
@@ -84,11 +88,9 @@ class BimbleClassController extends Controller
             'name' => 'required|string|max:255',
             'class_code' => 'nullable|string|max:32',
             'instructor_id' => ['nullable', Rule::exists('users', 'id')->where(fn ($query) => $query->whereIn('role', ['admin', 'mentor']))],
-            'academic_period_start' => 'nullable|date',
-            'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
             'program_type' => 'required|string|in:'.implode(',', BimbleClass::programTypes()),
-            'batch_ids' => 'nullable|array|max:1',
+            'batch_ids' => 'required|array|size:1',
             'batch_ids.*' => 'integer|exists:batches,id',
         ]);
         $batchIds = collect($data['batch_ids'] ?? [])->filter()->unique()->values()->take(1)->all();
@@ -113,7 +115,6 @@ class BimbleClassController extends Controller
             return response()->json(['message' => 'Pengajar harus user dengan role admin atau mentor.'], 422);
         }
         $data['instructor_name'] = $instructor?->name;
-        $data['academic_period'] = $this->composeAcademicPeriod($data['academic_period_start'] ?? null, $data['academic_period_end'] ?? null);
         $data['created_by'] = $request->user()->id;
 
         $class = BimbleClass::create($data);
@@ -121,11 +122,12 @@ class BimbleClassController extends Controller
         $autoAssigned = ['attached' => 0, 'skipped' => 0];
         if ($batchIds !== [] && Schema::hasTable('batch_bimble_class')) {
             $class->batches()->sync($batchIds);
+            $this->applyAcademicPeriodFromBatch($class, $batchIds);
             $autoAssigned = $this->batchSync->syncBatchesToClass($class, $batchIds);
         }
 
         return response()->json([
-            ...$class->load(['instructor:id,name,role', 'batches:id,name,code,is_active'])->toArray(),
+            ...$class->fresh()->load(['instructor:id,name,role', 'batches:id,name,code,is_active,starts_on,ends_on'])->toArray(),
             'auto_assigned' => $autoAssigned,
         ], 201);
     }
@@ -138,8 +140,6 @@ class BimbleClassController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'class_code' => 'sometimes|required|string|max:32',
             'instructor_id' => ['nullable', Rule::exists('users', 'id')->where(fn ($query) => $query->whereIn('role', ['admin', 'mentor']))],
-            'academic_period_start' => 'nullable|date',
-            'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
             'program_type' => 'sometimes|required|string|in:'.implode(',', BimbleClass::programTypes()),
             'batch_ids' => 'nullable|array|max:1',
@@ -166,12 +166,6 @@ class BimbleClassController extends Controller
             $data['instructor_name'] = $instructor?->name;
         }
 
-        if (array_key_exists('academic_period_start', $data) || array_key_exists('academic_period_end', $data)) {
-            $start = $data['academic_period_start'] ?? $bimbleClass->academic_period_start;
-            $end = $data['academic_period_end'] ?? $bimbleClass->academic_period_end;
-            $data['academic_period'] = $this->composeAcademicPeriod($start, $end);
-        }
-
         $syncBatches = array_key_exists('batch_ids', $data);
         $batchIds = collect($data['batch_ids'] ?? [])->filter()->unique()->values()->take(1)->all();
         unset($data['batch_ids']);
@@ -181,11 +175,12 @@ class BimbleClassController extends Controller
         $autoAssigned = null;
         if ($syncBatches && Schema::hasTable('batch_bimble_class')) {
             $bimbleClass->batches()->sync($batchIds);
+            $this->applyAcademicPeriodFromBatch($bimbleClass, $batchIds);
             $autoAssigned = $this->batchSync->syncBatchesToClass($bimbleClass, $batchIds);
         }
 
         return response()->json([
-            ...$bimbleClass->fresh()->load(['instructor:id,name,role', 'batches:id,name,code,is_active'])->toArray(),
+            ...$bimbleClass->fresh()->load(['instructor:id,name,role', 'batches:id,name,code,is_active,starts_on,ends_on'])->toArray(),
             'auto_assigned' => $autoAssigned,
         ]);
     }
@@ -205,6 +200,7 @@ class BimbleClassController extends Controller
 
         $batchIds = collect($data['batch_ids'])->filter()->unique()->values()->take(1)->all();
         $bimbleClass->batches()->sync($batchIds);
+        $this->applyAcademicPeriodFromBatch($bimbleClass, $batchIds);
         $autoAssigned = $this->batchSync->syncBatchesToClass($bimbleClass, $batchIds);
 
         return response()->json([
@@ -212,7 +208,7 @@ class BimbleClassController extends Controller
             'auto_assigned' => $autoAssigned,
             'class' => $bimbleClass->fresh()->load([
                 'students:id,name,email,program_category',
-                'batches:id,name,code,is_active',
+                'batches:id,name,code,is_active,starts_on,ends_on',
                 'materials',
                 'testDefinitions',
                 'instructor:id,name,role',
@@ -238,7 +234,7 @@ class BimbleClassController extends Controller
             ], 403);
         }
 
-        $bimbleClass->load('instructor:id,name,role');
+        $bimbleClass->load(['instructor:id,name,role', 'batches:id,name,code,is_active,starts_on,ends_on']);
         $ok = $user->role === 'admin'
             || ($user->role === 'mentor' && ((int) $bimbleClass->created_by === (int) $user->id || (int) $bimbleClass->instructor_id === (int) $user->id))
             || $bimbleClass->students()->where('users.id', $user->id)->exists();
@@ -444,6 +440,36 @@ class BimbleClassController extends Controller
         }
 
         return sprintf('%s - %s', $start, $end);
+    }
+
+    /**
+     * @param  array<int, int>  $batchIds
+     */
+    private function applyAcademicPeriodFromBatch(BimbleClass $class, array $batchIds): void
+    {
+        if ($batchIds === []) {
+            $class->update([
+                'academic_period_start' => null,
+                'academic_period_end' => null,
+                'academic_period' => null,
+            ]);
+
+            return;
+        }
+
+        $batch = Batch::query()->find($batchIds[0]);
+        if (! $batch) {
+            return;
+        }
+
+        $start = $batch->starts_on?->format('Y-m-d');
+        $end = $batch->ends_on?->format('Y-m-d');
+
+        $class->update([
+            'academic_period_start' => $start,
+            'academic_period_end' => $end,
+            'academic_period' => $this->composeAcademicPeriod($start, $end),
+        ]);
     }
 
     private function canBeInvitedToClass(User $user): bool

@@ -132,9 +132,11 @@ function cardTheme(index) {
 }
 
 function formatPeriod(c) {
-  const start = c?.academic_period_start
-  const end = c?.academic_period_end
+  const batch = c?.batches?.[0]
+  const start = c?.academic_period_start || batch?.starts_on
+  const end = c?.academic_period_end || batch?.ends_on
   if (start && end) return `${start} s/d ${end}`
+  if (start) return `Mulai ${start}`
   return c?.academic_period || 'Periode belum diatur'
 }
 

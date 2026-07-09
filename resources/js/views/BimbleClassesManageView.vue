@@ -105,7 +105,7 @@
               <option v-for="p in ONLINE_PROGRAMS" :key="p.value" :value="p.value">{{ programSignupOptionLabel(p) }}</option>
             </select>
           </div>
-          <div>
+          <div v-if="instructorOptions.length > 1">
             <label class="text-sm font-medium text-gray-700">{{ t('bimble.instructor') }}</label>
             <select v-model="form.instructor_id" class="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm">
               <option :value="null">Pilih pengajar</option>
@@ -115,29 +115,24 @@
             </select>
           </div>
           <div>
-            <label class="text-sm font-medium text-gray-700">{{ t('bimble.period') }}</label>
-            <div class="mt-1 grid grid-cols-2 gap-2">
-              <input v-model="form.academic_period_start" type="date" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" />
-              <input v-model="form.academic_period_end" type="date" class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm" />
-            </div>
-          </div>
-          <div>
             <label class="text-sm font-medium text-gray-700">{{ t('batches.linkBatches') }}</label>
             <p class="mt-0.5 text-[11px] text-gray-500">{{ t('batches.linkBatchesHint') }}</p>
             <div class="mt-2 max-h-36 space-y-1.5 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-2">
               <label
                 v-for="b in batchOptions"
                 :key="b.id"
-                class="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-white"
+                class="flex cursor-pointer items-start gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-white"
               >
-              <input
-                type="checkbox"
-                class="rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359]"
-                :value="b.id"
-                :checked="form.batch_ids.map(Number).includes(Number(b.id))"
-                @change="toggleCreateBatch(b.id, $event.target.checked)"
-              />
-              <span class="truncate">{{ b.name }}</span>
+                <input
+                  type="checkbox"
+                  class="mt-0.5 rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359]"
+                  :checked="form.batch_ids.map(Number).includes(Number(b.id))"
+                  @change="toggleCreateBatch(b.id, $event.target.checked)"
+                />
+                <span class="min-w-0">
+                  <span class="block truncate font-medium">{{ b.name }}</span>
+                  <span class="block text-[11px] text-gray-500">{{ formatBatchRange(b) }}</span>
+                </span>
               </label>
               <p v-if="!batchOptions.length" class="px-2 py-1 text-xs text-gray-400">{{ t('batches.noBatchesYet') }}</p>
             </div>
@@ -198,7 +193,7 @@
                 :checked="isBatchChecked(b.id)"
                 @change="toggleClassBatch(b.id, $event.target.checked)"
               />
-              {{ b.name }}
+              <span>{{ b.name }}<span v-if="formatBatchRange(b)" class="text-[10px] opacity-75"> · {{ formatBatchRange(b) }}</span></span>
             </label>
             <span v-if="!batchOptions.length" class="text-xs text-gray-400">{{ t('batches.noBatchesYet') }}</span>
           </div>
@@ -365,8 +360,6 @@ const form = reactive({
   name: '',
   program_type: 'regular',
   instructor_id: null,
-  academic_period_start: '',
-  academic_period_end: '',
   batch_ids: [],
 })
 
@@ -415,21 +408,21 @@ async function load() {
 }
 
 async function createClass() {
+  if (!form.batch_ids.length) {
+    errorMessage.value = t('bimble.selectBatchRequired')
+    return
+  }
   creating.value = true
   try {
     const { data } = await axios.post('/api/bimble-classes', {
       name: form.name,
       program_type: form.program_type,
       instructor_id: form.instructor_id || null,
-      academic_period_start: form.academic_period_start || null,
-      academic_period_end: form.academic_period_end || null,
       batch_ids: form.batch_ids || [],
     })
     showCreate.value = false
     form.name = ''
     form.instructor_id = null
-    form.academic_period_start = ''
-    form.academic_period_end = ''
     form.batch_ids = []
     await load()
     const attached = data?.auto_assigned?.attached || 0
@@ -593,14 +586,23 @@ async function detachTest(testId) {
   }
 }
 
+function formatBatchRange(batch) {
+  if (!batch) return ''
+  if (batch.starts_on && batch.ends_on) return `${batch.starts_on} s/d ${batch.ends_on}`
+  if (batch.starts_on) return `Mulai ${batch.starts_on}`
+  return t('batches.periodUnset')
+}
+
 function formatPeriod(c) {
-  const start = c?.academic_period_start
-  const end = c?.academic_period_end
+  const batch = c?.batches?.[0]
+  const start = c?.academic_period_start || batch?.starts_on
+  const end = c?.academic_period_end || batch?.ends_on
   if (start && end) {
     return `${start} s/d ${end}`
   }
+  if (start) return `Mulai ${start}`
 
-  return c?.academic_period || 'Belum diatur'
+  return c?.academic_period || t('batches.periodUnset')
 }
 
 onMounted(async () => {

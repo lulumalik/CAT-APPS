@@ -398,9 +398,13 @@ const totalMaterials = computed(() => {
 const formattedPeriod = computed(() => {
   const cls = workspace.value?.class
   if (!cls) return '—'
-  if (cls.academic_period_start && cls.academic_period_end) {
-    return `${cls.academic_period_start} s/d ${cls.academic_period_end}`
+  const batch = cls.batches?.[0]
+  const start = cls.academic_period_start || batch?.starts_on
+  const end = cls.academic_period_end || batch?.ends_on
+  if (start && end) {
+    return `${start} s/d ${end}`
   }
+  if (start) return `Mulai ${start}`
   return cls.academic_period || '—'
 })
 
