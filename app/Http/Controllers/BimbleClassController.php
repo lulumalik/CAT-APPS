@@ -88,10 +88,10 @@ class BimbleClassController extends Controller
             'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
             'program_type' => 'required|string|in:'.implode(',', BimbleClass::programTypes()),
-            'batch_ids' => 'nullable|array',
+            'batch_ids' => 'nullable|array|max:1',
             'batch_ids.*' => 'integer|exists:batches,id',
         ]);
-        $batchIds = collect($data['batch_ids'] ?? [])->filter()->unique()->values()->all();
+        $batchIds = collect($data['batch_ids'] ?? [])->filter()->unique()->values()->take(1)->all();
         unset($data['batch_ids']);
         $data['program_type'] = BimbleClass::normalizeProgramType($data['program_type']);
 
@@ -142,7 +142,7 @@ class BimbleClassController extends Controller
             'academic_period_end' => 'nullable|date|after_or_equal:academic_period_start',
             'participant_count' => 'nullable|integer|min:0',
             'program_type' => 'sometimes|required|string|in:'.implode(',', BimbleClass::programTypes()),
-            'batch_ids' => 'nullable|array',
+            'batch_ids' => 'nullable|array|max:1',
             'batch_ids.*' => 'integer|exists:batches,id',
         ]);
         if (array_key_exists('program_type', $data)) {
@@ -173,7 +173,7 @@ class BimbleClassController extends Controller
         }
 
         $syncBatches = array_key_exists('batch_ids', $data);
-        $batchIds = collect($data['batch_ids'] ?? [])->filter()->unique()->values()->all();
+        $batchIds = collect($data['batch_ids'] ?? [])->filter()->unique()->values()->take(1)->all();
         unset($data['batch_ids']);
 
         $bimbleClass->update($data);
@@ -199,11 +199,11 @@ class BimbleClassController extends Controller
         }
 
         $data = $request->validate([
-            'batch_ids' => 'required|array',
+            'batch_ids' => 'required|array|max:1',
             'batch_ids.*' => 'integer|exists:batches,id',
         ]);
 
-        $batchIds = collect($data['batch_ids'])->filter()->unique()->values()->all();
+        $batchIds = collect($data['batch_ids'])->filter()->unique()->values()->take(1)->all();
         $bimbleClass->batches()->sync($batchIds);
         $autoAssigned = $this->batchSync->syncBatchesToClass($bimbleClass, $batchIds);
 

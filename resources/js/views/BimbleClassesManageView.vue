@@ -212,82 +212,86 @@
           </button>
         </section>
 
-        <div class="grid gap-4 lg:grid-cols-3">
+        <div class="space-y-4">
           <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
-            <h4 class="font-semibold text-[#1A1A1A]">1) Tambah Peserta</h4>
-            <p class="mt-1 mb-3 text-xs text-gray-500">Cari siswa lalu tambahkan ke kelas. Preferensi: manage lewat Batch.</p>
-            <input v-model="studentSearch" @input="searchStudents" placeholder="Cari nama/email" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2" />
-            <select v-model="forms.student_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
-              <option :value="null">Pilih siswa</option>
-              <option v-for="s in studentOptions" :key="s.id" :value="s.id">{{ s.name }} ({{ s.email }})</option>
-            </select>
-            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachStudent">Tambahkan Peserta</button>
-            <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
-              <li v-for="s in managedClass.students || []" :key="s.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
-                <span class="truncate">{{ s.name }}</span>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50"
-                  title="Hapus"
-                  @click="detachStudent(s.id)"
-                >
-                  <Trash2 class="h-3.5 w-3.5" />
-                </button>
-              </li>
-              <li v-if="!(managedClass.students || []).length" class="text-xs text-gray-400">Belum ada peserta.</li>
-            </ul>
+            <h4 class="font-semibold text-[#1A1A1A]">{{ t('bimble.manage.stepParticipants') }}</h4>
+            <p class="mt-1 text-xs text-gray-500">{{ t('bimble.manage.participantsHint') }}</p>
+            <router-link
+              v-if="linkedBatchId"
+              :to="{ name: 'batch-detail', params: { id: linkedBatchId } }"
+              class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[#5a6b2e] hover:underline"
+              @click="closeManage"
+            >
+              {{ t('bimble.manage.openBatchRoster') }}
+              <span aria-hidden="true">&rarr;</span>
+            </router-link>
+            <p v-else class="mt-3 text-xs text-amber-600">{{ t('bimble.manage.selectBatchFirst') }}</p>
           </section>
 
           <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
-            <h4 class="font-semibold text-[#1A1A1A]">2) Assign Materi</h4>
-            <p class="mt-1 mb-3 text-xs text-gray-500">Pilih materi lalu tentukan sesi pembelajaran.</p>
-            <select v-model="forms.material_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
-              <option :value="null">Pilih materi</option>
-              <option v-for="m in materialOptions" :key="m.id" :value="m.id">{{ m.title }}</option>
-            </select>
-            <input v-model.number="forms.session_number" type="number" min="1" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2" placeholder="Sesi" />
-            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachMaterial">Assign Materi</button>
-            <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
-              <li v-for="m in managedClass.materials || []" :key="m.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
-                <span class="truncate">{{ m.title }}</span>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50"
-                  title="Hapus"
-                  @click="detachMaterial(m.id)"
-                >
-                  <Trash2 class="h-3.5 w-3.5" />
-                </button>
-              </li>
-              <li v-if="!(managedClass.materials || []).length" class="text-xs text-gray-400">Belum ada materi.</li>
-            </ul>
-          </section>
-
-          <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
-            <h4 class="font-semibold text-[#1A1A1A]">3) Assign Quiz</h4>
-            <p class="mt-1 mb-3 text-xs text-gray-500">Pilih tes yang akan ditautkan ke kelas.</p>
-            <select v-model="forms.test_definition_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
-              <option :value="null">{{ testOptions.length ? 'Pilih tes' : 'Tidak ada quiz aktif' }}</option>
-              <option v-for="x in testOptions" :key="x.id" :value="x.id">{{ x.name }}</option>
-            </select>
-            <div class="mb-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
-              Jenis: <span class="font-semibold">Quiz</span>
+            <h4 class="font-semibold text-[#1A1A1A]">{{ t('bimble.manage.stepMaterials') }}</h4>
+            <div class="mt-3 flex flex-col gap-4 lg:flex-row lg:items-stretch">
+              <div class="flex-1 rounded-xl border border-gray-100 bg-white p-4">
+                <p class="mb-3 text-xs text-gray-500">{{ t('bimble.manage.materialsHint') }}</p>
+                <select v-model="forms.material_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
+                  <option :value="null">Pilih materi</option>
+                  <option v-for="m in materialOptions" :key="m.id" :value="m.id">{{ m.title }}</option>
+                </select>
+                <input v-model.number="forms.session_number" type="number" min="1" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2" placeholder="Sesi" />
+                <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachMaterial">Assign Materi</button>
+              </div>
+              <div class="flex-1 rounded-xl border border-gray-100 bg-white p-4">
+                <p class="mb-3 text-xs font-medium text-gray-600">{{ t('bimble.manage.materialsList') }}</p>
+                <ul class="min-h-[8rem] space-y-2">
+                  <li v-for="m in managedClass.materials || []" :key="m.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
+                    <span class="truncate">{{ m.title }}</span>
+                    <button
+                      type="button"
+                      class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50"
+                      title="Hapus"
+                      @click="detachMaterial(m.id)"
+                    >
+                      <Trash2 class="h-3.5 w-3.5" />
+                    </button>
+                  </li>
+                  <li v-if="!(managedClass.materials || []).length" class="text-xs text-gray-400">{{ t('bimble.noMaterials') }}</li>
+                </ul>
+              </div>
             </div>
-            <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachTest">Assign Quiz</button>
-            <ul class="mt-3 space-y-2 rounded-xl border border-gray-100 bg-white p-3">
-              <li v-for="x in managedClass.test_definitions || []" :key="x.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
-                <span class="truncate">{{ x.name }}</span>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50"
-                  title="Hapus"
-                  @click="detachTest(x.id)"
-                >
-                  <Trash2 class="h-3.5 w-3.5" />
-                </button>
-              </li>
-              <li v-if="!(managedClass.test_definitions || []).length" class="text-xs text-gray-400">Belum ada quiz.</li>
-            </ul>
+          </section>
+
+          <section class="rounded-2xl border border-gray-100 bg-gray-50/40 p-5">
+            <h4 class="font-semibold text-[#1A1A1A]">{{ t('bimble.manage.stepQuizzes') }}</h4>
+            <div class="mt-3 flex flex-col gap-4 lg:flex-row lg:items-stretch">
+              <div class="flex-1 rounded-xl border border-gray-100 bg-white p-4">
+                <p class="mb-3 text-xs text-gray-500">{{ t('bimble.manage.quizzesHint') }}</p>
+                <select v-model="forms.test_definition_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm mb-2">
+                  <option :value="null">{{ testOptions.length ? 'Pilih tes' : 'Tidak ada quiz aktif' }}</option>
+                  <option v-for="x in testOptions" :key="x.id" :value="x.id">{{ x.name }}</option>
+                </select>
+                <div class="mb-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700">
+                  Jenis: <span class="font-semibold">Quiz</span>
+                </div>
+                <button type="button" class="w-full rounded-xl bg-[#1A1A1A] text-white py-2 text-sm font-medium" @click="attachTest">Assign Quiz</button>
+              </div>
+              <div class="flex-1 rounded-xl border border-gray-100 bg-white p-4">
+                <p class="mb-3 text-xs font-medium text-gray-600">{{ t('bimble.manage.quizzesList') }}</p>
+                <ul class="min-h-[8rem] space-y-2">
+                  <li v-for="x in managedClass.test_definitions || []" :key="x.id" class="text-xs flex justify-between items-center gap-2 border-b border-gray-50 pb-2 last:border-b-0 last:pb-0">
+                    <span class="truncate">{{ x.name }}</span>
+                    <button
+                      type="button"
+                      class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50"
+                      title="Hapus"
+                      @click="detachTest(x.id)"
+                    >
+                      <Trash2 class="h-3.5 w-3.5" />
+                    </button>
+                  </li>
+                  <li v-if="!(managedClass.test_definitions || []).length" class="text-xs text-gray-400">{{ t('bimble.noQuizzes') }}</li>
+                </ul>
+              </div>
+            </div>
           </section>
         </div>
       </div>
@@ -296,7 +300,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { BookOpen, Calculator, CalendarRange, Globe, GraduationCap, Layers, Trash2, UserRound, Users, X } from 'lucide-vue-next'
@@ -352,10 +356,8 @@ const showManage = ref(false)
 const managedClass = ref(null)
 const materialOptions = ref([])
 const testOptions = ref([])
-const studentOptions = ref([])
 const instructorOptions = ref([])
 const batchOptions = ref([])
-const studentSearch = ref('')
 const manageBatchIds = ref([])
 const savingBatches = ref(false)
 
@@ -369,11 +371,17 @@ const form = reactive({
 })
 
 const forms = reactive({
-  student_id: null,
   material_id: null,
   test_definition_id: null,
   kind: 'quiz',
   session_number: 1,
+})
+
+const linkedBatchId = computed(() => {
+  const fromManage = manageBatchIds.value[0]
+  if (fromManage) return Number(fromManage)
+  const fromClass = managedClass.value?.batches?.[0]?.id
+  return fromClass ? Number(fromClass) : null
 })
 
 function formatProgram(programType) {
@@ -462,11 +470,7 @@ function isBatchChecked(id) {
 
 function toggleClassBatch(id, checked) {
   const numId = Number(id)
-  if (checked) {
-    if (!isBatchChecked(numId)) manageBatchIds.value = [...manageBatchIds.value, numId]
-  } else {
-    manageBatchIds.value = manageBatchIds.value.filter((x) => Number(x) !== numId)
-  }
+  manageBatchIds.value = checked ? [numId] : []
 }
 
 function clearClassBatches() {
@@ -475,12 +479,7 @@ function clearClassBatches() {
 
 function toggleCreateBatch(id, checked) {
   const numId = Number(id)
-  const current = form.batch_ids.map(Number)
-  if (checked) {
-    if (!current.includes(numId)) form.batch_ids = [...form.batch_ids, numId]
-  } else {
-    form.batch_ids = form.batch_ids.filter((x) => Number(x) !== numId)
-  }
+  form.batch_ids = checked ? [numId] : []
 }
 
 async function openManage(c) {
@@ -494,13 +493,12 @@ async function openManage(c) {
       axios.get('/api/tests'),
     ])
     managedClass.value = detail.data
-    manageBatchIds.value = (detail.data.batches || []).map((b) => Number(b.id))
+    manageBatchIds.value = (detail.data.batches || []).slice(0, 1).map((b) => Number(b.id))
     materialOptions.value = Array.isArray(mats.data) ? mats.data : (mats.data.data || [])
     testOptions.value = filterAssignableTests(Array.isArray(tests.data) ? tests.data : (tests.data?.data || []))
     if (forms.test_definition_id && !testOptions.value.some((t) => t.id === forms.test_definition_id)) {
       forms.test_definition_id = null
     }
-    await searchStudents()
   } catch (error) {
     errorMessage.value = error?.response?.data?.message || 'Gagal membuka panel kelola kelas.'
     showManage.value = false
@@ -516,7 +514,7 @@ async function reloadManagedClass() {
   if (!managedClass.value?.id) return
   const { data } = await axios.get(`/api/bimble-classes/${managedClass.value.id}`)
   managedClass.value = data
-  manageBatchIds.value = (data.batches || []).map((b) => Number(b.id))
+  manageBatchIds.value = (data.batches || []).slice(0, 1).map((b) => Number(b.id))
 }
 
 async function saveClassBatches() {
@@ -527,7 +525,7 @@ async function saveClassBatches() {
       batch_ids: manageBatchIds.value,
     })
     managedClass.value = data.class
-    manageBatchIds.value = (data.class?.batches || []).map((b) => Number(b.id))
+    manageBatchIds.value = (data.class?.batches || []).slice(0, 1).map((b) => Number(b.id))
     const attached = data.auto_assigned?.attached || 0
     errorMessage.value = attached
       ? `${attached} peserta dari batch otomatis di-assign ke kelas.`
@@ -537,41 +535,6 @@ async function saveClassBatches() {
     errorMessage.value = error?.response?.data?.message || 'Gagal menyimpan batch kelas.'
   } finally {
     savingBatches.value = false
-  }
-}
-
-async function searchStudents() {
-  try {
-    const { data } = await axios.get('/api/students/search', {
-      params: {
-        search: studentSearch.value || undefined,
-        batch_eligible: 1,
-      },
-    })
-    studentOptions.value = Array.isArray(data) ? data : []
-  } catch (error) {
-    studentOptions.value = []
-  }
-}
-
-async function attachStudent() {
-  if (!managedClass.value?.id || !forms.student_id) return
-  try {
-    await axios.post(`/api/bimble-classes/${managedClass.value.id}/students`, { user_id: forms.student_id })
-    forms.student_id = null
-    await reloadManagedClass()
-  } catch (error) {
-    errorMessage.value = error?.response?.data?.message || 'Gagal menambahkan peserta.'
-  }
-}
-
-async function detachStudent(userId) {
-  if (!managedClass.value?.id) return
-  try {
-    await axios.delete(`/api/bimble-classes/${managedClass.value.id}/students/${userId}`)
-    await reloadManagedClass()
-  } catch (error) {
-    errorMessage.value = error?.response?.data?.message || 'Gagal menghapus peserta.'
   }
 }
 

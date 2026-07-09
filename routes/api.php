@@ -142,12 +142,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/guardians/{guardian}', [GuardianController::class, 'destroy']);
 
     Route::post('/batches', [BatchController::class, 'store']);
-    Route::get('/batches/{batch}', [BatchController::class, 'show']);
     Route::put('/batches/{batch}', [BatchController::class, 'update']);
     Route::delete('/batches/{batch}', [BatchController::class, 'destroy']);
-    Route::get('/batches/{batch}/students', [BatchController::class, 'students']);
-    Route::post('/batches/{batch}/students', [BatchController::class, 'attachStudent']);
-    Route::delete('/batches/{batch}/students/{user}', [BatchController::class, 'detachStudent']);
 });
 
 Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
@@ -167,6 +163,10 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::delete('/student-reports/{report}', [StudentReportController::class, 'destroy']);
 
     Route::get('/batches', [BatchController::class, 'index']);
+    Route::get('/batches/{batch}', [BatchController::class, 'show']);
+    Route::get('/batches/{batch}/students', [BatchController::class, 'students']);
+    Route::post('/batches/{batch}/students', [BatchController::class, 'attachStudent']);
+    Route::delete('/batches/{batch}/students/{user}', [BatchController::class, 'detachStudent']);
 
     Route::get('/students/search', [UserController::class, 'searchableStudents']);
 

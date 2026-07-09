@@ -9,6 +9,7 @@ import QuestionBankView from '@/views/QuestionBankView.vue';
 import TestsView from '@/views/TestsView.vue';
 import UserManagementView from '@/views/UserManagementView.vue';
 import BatchManagementView from '@/views/BatchManagementView.vue';
+import BatchDetailView from '@/views/BatchDetailView.vue';
 import RankingsView from '@/views/RankingsView.vue';
 import TestRunnerView from '@/views/TestRunnerView.vue';
 import MaterialsManageView from '@/views/MaterialsManageView.vue';
@@ -50,6 +51,7 @@ const routes = [
   { path: '/ujian', name: 'student-exams', component: StudentExamsView, meta: { requiresAuth: true } },
   { path: '/users', name: 'users', component: UserManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/batches', name: 'batches', component: BatchManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/batches/:id', name: 'batch-detail', component: BatchDetailView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/materials', name: 'materials', component: MaterialsManageView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/blog', name: 'blog', component: BlogView },
   { path: '/blog/:slug', name: 'blog-detail', component: BlogDetailView },
@@ -100,7 +102,7 @@ router.beforeEach(async (to, from, next) => {
   
   // Check if route requires admin role
   if (to.meta.requiresAdmin && store.role !== 'admin') {
-    next({ name: 'dashboard' });
+    next({ name: store.role === 'mentor' ? 'bimble-classes' : 'dashboard' });
     return;
   }
 
