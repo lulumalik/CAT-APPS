@@ -286,6 +286,18 @@
             </div>
           </section>
         </div>
+
+        <div class="mt-6 flex justify-end border-t border-gray-100 pt-5">
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100 disabled:opacity-50"
+            :disabled="deletingClass"
+            @click="removeClass"
+          >
+            <Trash2 class="h-4 w-4" />
+            {{ deletingClass ? '…' : t('bimble.manage.deleteClass') }}
+          </button>
+        </div>
       </div>
     </div>
   </main>
@@ -298,12 +310,13 @@ import axios from 'axios'
 import { BookOpen, Calculator, CalendarRange, Globe, GraduationCap, Layers, Trash2, UserRound, Users, X } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
-import { useToast } from '@/composables/useNotification'
+import { useToast, useModal } from '@/composables/useNotification'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
 import { programCategoryLabel } from '@/utils/userMeta'
 
 const { t } = useI18n()
 const toast = useToast()
+const { confirm } = useModal()
 const router = useRouter()
 
 const cardThemes = [
@@ -354,6 +367,7 @@ const instructorOptions = ref([])
 const batchOptions = ref([])
 const manageBatchIds = ref([])
 const savingBatches = ref(false)
+const deletingClass = ref(false)
 
 const form = reactive({
   name: '',
@@ -504,6 +518,30 @@ async function openManage(c) {
 function closeManage() {
   showManage.value = false
   managedClass.value = null
+}
+
+async function removeClass() {
+  if (!managedClass.value?.id) return
+  const ok = await confirm({
+    title: t('bimble.manage.deleteClassTitle'),
+    message: t('bimble.manage.deleteClassMessage', { name: managedClass.value.name }),
+    confirmText: t('bimble.manage.deleteClassConfirm'),
+    cancelText: t('common.cancel'),
+    type: 'danger',
+  })
+  if (!ok) return
+
+  deletingClass.value = true
+  try {
+    await axios.delete(`/api/bimble-classes/${managedClass.value.id}`)
+    toast.success('Success', t('bimble.manage.deleteClassSuccess'))
+    closeManage()
+    await load()
+  } catch (error) {
+    errorMessage.value = error?.response?.data?.message || t('bimble.manage.deleteClassFailed')
+  } finally {
+    deletingClass.value = false
+  }
 }
 
 async function reloadManagedClass() {

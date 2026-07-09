@@ -22,9 +22,9 @@
             </div>
 
             <!-- Actions -->
-            <div class="px-8 pb-8 flex gap-3" :class="type === 'confirm' ? 'flex-row' : 'flex-col'">
+            <div class="px-8 pb-8 flex gap-3" :class="hasCancelAction ? 'flex-row' : 'flex-col'">
               <button
-                v-if="type === 'confirm'"
+                v-if="hasCancelAction"
                 @click="handleCancel"
                 class="flex-1 px-6 py-3 rounded-full border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 transition-colors cursor-pointer"
               >
@@ -32,9 +32,10 @@
               </button>
               <button
                 @click="handleConfirm"
-                class="flex-1 px-6 py-3 rounded-full font-medium text-white transition-all transform hover:scale-[1.02] cursor-pointer shadow-lg"
+                class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium text-white transition-all transform hover:scale-[1.02] cursor-pointer shadow-lg"
                 :class="confirmButtonClass"
               >
+                <Trash2 v-if="type === 'danger'" class="h-4 w-4" />
                 {{ confirmText }}
               </button>
             </div>
@@ -47,7 +48,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { CircleAlert, CircleCheckBig, CircleHelp, CircleX, Info } from 'lucide-vue-next'
+import { CircleAlert, CircleCheckBig, CircleHelp, CircleX, Info, Trash2 } from 'lucide-vue-next'
 
 const props = defineProps({
   show: {
@@ -82,6 +83,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['confirm', 'cancel', 'close'])
+
+const hasCancelAction = computed(() => ['confirm', 'danger', 'warning'].includes(props.type))
 
 const iconComponent = computed(() => {
   switch (props.type) {
