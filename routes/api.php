@@ -144,6 +144,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/batches', [BatchController::class, 'store']);
     Route::put('/batches/{batch}', [BatchController::class, 'update']);
     Route::delete('/batches/{batch}', [BatchController::class, 'destroy']);
+    Route::delete('/batches/{batch}/students/{user}', [BatchController::class, 'detachStudent']);
 });
 
 Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
@@ -166,7 +167,6 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::get('/batches/{batch}', [BatchController::class, 'show']);
     Route::get('/batches/{batch}/students', [BatchController::class, 'students']);
     Route::post('/batches/{batch}/students', [BatchController::class, 'attachStudent']);
-    Route::delete('/batches/{batch}/students/{user}', [BatchController::class, 'detachStudent']);
 
     Route::get('/students/search', [UserController::class, 'searchableStudents']);
 

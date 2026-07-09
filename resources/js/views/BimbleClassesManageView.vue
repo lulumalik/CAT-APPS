@@ -17,14 +17,11 @@
       </template>
     </PageHeroHeader>
 
-    <div v-if="loading" class="py-16 text-center text-gray-500">{{ t('common.refresh') }}…</div>
-    <div
-      v-else-if="errorMessage"
-      class="rounded-2xl border border-red-100 bg-red-50 p-6 text-sm text-red-700"
-    >
+    <div v-if="errorMessage" class="mb-6 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-700">
       {{ errorMessage }}
     </div>
 
+    <div v-if="loading" class="py-16 text-center text-gray-500">{{ t('common.refresh') }}…</div>
     <div v-else-if="!classes.length" class="rounded-2xl border border-gray-100 bg-white p-10 text-center text-gray-500 text-sm">
       Belum ada kelas. Buat kelas baru untuk memulai.
     </div>
@@ -301,10 +298,12 @@ import axios from 'axios'
 import { BookOpen, Calculator, CalendarRange, Globe, GraduationCap, Layers, Trash2, UserRound, Users, X } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useI18n } from '@/composables/useI18n'
+import { useToast } from '@/composables/useNotification'
 import { ONLINE_PROGRAMS, programSignupOptionLabel } from '@/constants/onlinePrograms'
 import { programCategoryLabel } from '@/utils/userMeta'
 
 const { t } = useI18n()
+const toast = useToast()
 const router = useRouter()
 
 const cardThemes = [
@@ -409,10 +408,11 @@ async function load() {
 
 async function createClass() {
   if (!form.batch_ids.length) {
-    errorMessage.value = t('bimble.selectBatchRequired')
+    toast.error('Error', t('bimble.selectBatchRequired'))
     return
   }
   creating.value = true
+  errorMessage.value = ''
   try {
     const { data } = await axios.post('/api/bimble-classes', {
       name: form.name,
@@ -426,9 +426,12 @@ async function createClass() {
     form.batch_ids = []
     await load()
     const attached = data?.auto_assigned?.attached || 0
-    errorMessage.value = attached
-      ? `Kelas dibuat. ${attached} peserta dari batch otomatis di-assign.`
-      : ''
+    toast.success(
+      'Success',
+      attached
+        ? t('bimble.classCreatedWithStudents', { count: attached })
+        : t('bimble.classCreated'),
+    )
   } catch (error) {
     errorMessage.value = error?.response?.data?.message || 'Gagal membuat kelas baru.'
   } finally {
@@ -520,9 +523,9 @@ async function saveClassBatches() {
     managedClass.value = data.class
     manageBatchIds.value = (data.class?.batches || []).slice(0, 1).map((b) => Number(b.id))
     const attached = data.auto_assigned?.attached || 0
-    errorMessage.value = attached
-      ? `${attached} peserta dari batch otomatis di-assign ke kelas.`
-      : ''
+    if (attached) {
+      toast.success('Success', t('bimble.batchStudentsAssigned', { count: attached }))
+    }
     await load()
   } catch (error) {
     errorMessage.value = error?.response?.data?.message || 'Gagal menyimpan batch kelas.'

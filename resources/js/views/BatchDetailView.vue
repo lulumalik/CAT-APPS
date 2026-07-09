@@ -82,6 +82,7 @@
                 <LayoutDashboard class="h-3.5 w-3.5" />
               </router-link>
               <button
+                v-if="isAdmin"
                 type="button"
                 class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:bg-red-50 hover:text-red-700"
                 :title="t('common.delete')"
