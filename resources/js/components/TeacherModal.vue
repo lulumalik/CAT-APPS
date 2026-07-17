@@ -220,7 +220,6 @@ onBeforeUnmount(() => {
   line-height: 1.2;
   letter-spacing: 0.02em;
   color: #1e2430;
-  text-transform: uppercase;
 }
 
 .teacher-cv-role {

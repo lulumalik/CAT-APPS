@@ -5,7 +5,8 @@
       <div
         class="home-top-nav page-shell rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-5 lg:px-6 py-2 md:py-0">
         <div class="hidden md:flex h-16 min-h-16 items-center justify-between gap-3 lg:gap-4">
-          <div class="flex min-w-0 flex-1 items-center gap-0.5 lg:gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div
+            class="flex min-w-0 flex-1 items-center gap-0.5 lg:gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <button v-for="item in quickNavItems" :key="item.id" type="button"
               class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase tracking-wide px-2 lg:px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap"
               @click="scrollToSection(item.id)">
@@ -110,8 +111,11 @@
                   Pertama.</b></p>
             </div>
           </div>
-
           <div class="relative mx-auto w-full max-w-md">
+            <div class="flex items-end gap-4 w-[220px] mb-8">
+              <img src="../../assets/logo.png" alt="Logo" class="w-full h-full object-cover" />
+              <img src="../../assets/pppolri.png" alt="Logo" class="w-full h-full object-cover" />
+            </div>
             <div class="grid grid-cols-2 gap-3 rounded-3xl border border-white/25 bg-white/10 p-3 shadow-2xl">
               <div class="overflow-hidden rounded-2xl bg-[#333]">
                 <img :src="taruna" alt="Taruna" class="h-[300px] w-full object-cover object-top" />
@@ -131,7 +135,8 @@
         <div class="relative z-10 mt-14 grid grid-cols-3 md:grid-cols-2 md:grid-cols-3 gap-3">
           <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
             <div class="flex items-center justify-center gap-2">
-              <div class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
+              <div
+                class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
                 <NotebookPen class="w-3 h-3 md:h-5 md:w-5" />
               </div>
               <p class="text-xl md:text-3xl font-black text-white">99%</p>
@@ -140,7 +145,8 @@
           </article>
           <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
             <div class="flex items-center justify-center gap-2">
-              <div class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
+              <div
+                class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
                 <Crown class="w-3 h-3 md:h-5 md:w-5" />
               </div>
               <p class="text-xl md:text-3xl font-black text-white">20+</p>
@@ -149,7 +155,8 @@
           </article>
           <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
             <div class="flex items-center justify-center gap-2">
-              <div class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
+              <div
+                class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
                 <GraduationCap class="w-3 h-3 md:h-5 md:w-5" />
               </div>
               <p class="text-xl md:text-3xl font-black text-white">100%</p>
@@ -165,13 +172,16 @@
         class="page-shell rounded-2xl bg-gradient-to-r from-[#1a1a1a] via-[#2d2d2d] to-[#3d3d3d] px-5 md:px-8 py-5 md:py-6 shadow-lg shadow-primary/25 overflow-hidden relative">
         <div class="relative z-10 flex justify-center">
           <div class="text-left">
-            <p class="gold-shimmer-text text-2xl md:text-4xl lg:text-5xl text-center md:text-left font-black uppercase tracking-wide text-[gold]/90 leading-none">
+            <p
+              class="gold-shimmer-text text-2xl md:text-4xl lg:text-5xl text-center md:text-left font-black uppercase tracking-wide text-[gold]/90 leading-none">
               Dibina dan dimonitor oleh
             </p>
-            <p class="gold-shimmer-text mt-2 text-center text-2xl md:text-4xl lg:text-5xl font-semibold uppercase tracking-wide text-[gold] leading-tight">
+            <p
+              class="gold-shimmer-text mt-2 text-center text-2xl md:text-4xl lg:text-5xl font-semibold uppercase tracking-wide text-[gold] leading-tight">
               para jenderal
             </p>
-            <p class="gold-shimmer-text mt-2 text-2xl md:text-4xl lg:text-5xl text-center md:text-center font-black uppercase tracking-wide text-[gold]/90 leading-none">
+            <p
+              class="gold-shimmer-text mt-2 text-2xl md:text-4xl lg:text-5xl text-center md:text-center font-black uppercase tracking-wide text-[gold]/90 leading-none">
               purnawirawan polri
             </p>
           </div>
@@ -273,7 +283,7 @@
       </div>
     </section>
 
-    
+
     <section id="gallery" class="px-5 md:px-10 pb-8 mt-10 relative z-10">
       <div class="page-shell fade-up delay-2">
         <div
@@ -338,11 +348,7 @@
           </div>
           <hr class="border-white/60 mt-4 w-44 border-b-2" />
           <div class="grid md:grid-cols-2 gap-6 md:gap-8 relative z-30 mt-10">
-            <CourseCreditCard
-              v-for="program in onlinePrograms"
-              :key="program.value"
-              :program="program"
-            />
+            <CourseCreditCard v-for="program in onlinePrograms" :key="program.value" :program="program" />
           </div>
         </div>
       </div>
@@ -430,12 +436,12 @@
           role="dialog" aria-modal="true" aria-labelledby="leader-detail-modal-title"
           @click.self="closeLeaderDetailModal">
           <article
-            class="w-full max-w-2xl rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 p-6 shadow-xl">
-            <div class="absolute inset-0 mobile-card-gradient rounded-[2rem]"></div>
-            <div class="relative min-h-[390px]">
+            class="leader-profile-card w-full max-w-2xl rounded-3xl relative overflow-hidden p-6 shadow-xl">
+            <div class="absolute inset-0 leader-profile-card__bg rounded-[2rem]"></div>
+            <div class="relative min-h-[390px] text-[#e8d5a3]">
               <div class="flex items-center justify-end">
                 <button type="button"
-                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black bg-white/12 text-black hover:bg-white/20 transition-colors"
+                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#c9a84c]/70 bg-black/30 text-[#e8d5a3] hover:bg-[#c9a84c]/15 transition-colors"
                   aria-label="Tutup detail pimpinan" @click="closeLeaderDetailModal">
                   <XIcon class="h-4 w-4" />
                 </button>
@@ -445,28 +451,28 @@
                 @leave-cancelled="onLeaderInfoAfterEnter">
                 <div :key="`leader-mobile-info-${activeLeaderIndex}`" class="mt-4">
                   <p id="leader-detail-modal-title"
-                    class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center">
+                    class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center text-[#c9a84c]">
                     Profil {{ leaders[activeLeaderIndex].jabatan }}
                   </p>
-                  <h3 class="mt-2 text-2xl font-extrabold leading-tight tracking-tight relative z-20 text-center">
+                  <h3 class="mt-2 text-2xl font-extrabold leading-tight tracking-tight relative z-20 text-center text-white">
                     {{ leaders[activeLeaderIndex].name }}
                   </h3>
-                  <p class="mt-2 text-md font-bold relative z-20 text-center">{{ leaders[activeLeaderIndex].batch }}
+                  <p class="mt-2 text-md font-bold relative z-20 text-center text-[#d4af37]">{{ leaders[activeLeaderIndex].batch }}
                   </p>
 
-                  <div class="mt-5 rounded-xl backdrop-blur-[1px] text-center relative z-20">
-                    <p class="text-md font-bold uppercase tracking-[0.14em] border-b border-gray-400 pb-2">Posisi Saat
+                  <div class="mt-5 rounded-xl text-center relative z-20">
+                    <p class="text-md font-bold uppercase tracking-[0.14em] border-b border-[#c9a84c]/55 pb-2 text-[#c9a84c]">Posisi Saat
                       Ini
                     </p>
-                    <p class="mt-1 text-sm font-semibold leading-relaxed">
+                    <p class="mt-1 text-sm font-semibold leading-relaxed text-[#f0e6c8]">
                       {{ leaders[activeLeaderIndex].position }}
                     </p>
                   </div>
 
-                  <div class="mt-5 rounded-xl backdrop-blur-[1px] relative z-20">
-                    <p class="text-md font-bold uppercase tracking-[0.14em] text-center border-b border-gray-400 pb-2">
+                  <div class="mt-5 rounded-xl relative z-20">
+                    <p class="text-md font-bold uppercase tracking-[0.14em] text-center border-b border-[#c9a84c]/55 pb-2 text-[#c9a84c]">
                       Jabatan Terakhir</p>
-                    <ul class="mt-3 space-y-2.5 text-sm font-semibold leading-relaxed">
+                    <ul class="mt-3 space-y-2.5 text-sm font-semibold leading-relaxed text-[#f0e6c8]">
                       <li v-for="line in leaders[activeLeaderIndex].highlights" :key="line" class="text-center">
                         <span>{{ line }}</span>
                       </li>
@@ -524,13 +530,13 @@
     </Teleport>
     <Teleport to="body">
       <Transition name="member-slide-fade">
-        <div v-if="isGalleryOpen" class="fixed inset-0 z-[130] flex flex-col bg-black/92 backdrop-blur-sm"
-          role="dialog" aria-modal="true" aria-label="Galeri Kegiatan" @click.self="closeGallery">
+        <div v-if="isGalleryOpen" class="fixed inset-0 z-[130] flex flex-col bg-black/92 backdrop-blur-sm" role="dialog"
+          aria-modal="true" aria-label="Galeri Kegiatan" @click.self="closeGallery">
           <div class="flex items-center justify-between gap-3 px-4 md:px-8 py-4">
             <p class="text-sm md:text-base font-bold text-white">
               Galeri Kegiatan
               <span class="ml-2 text-white/60 font-semibold">{{ activeGalleryIndex + 1 }} / {{ galleryImages.length
-                }}</span>
+              }}</span>
             </p>
             <div class="flex items-center gap-2">
               <button type="button" @click="toggleGallerySlideshow"
@@ -612,7 +618,7 @@
                     <h4 class="text-xl font-extrabold leading-tight text-text md:text-2xl">{{ activeMemberModal.name }}
                     </h4>
                     <p class="text-sm font-semibold uppercase tracking-wide text-primary">{{ activeMemberModal.jabatan
-                      }}
+                    }}
                     </p>
                     <div class="mt-3 space-y-1.5 text-sm text-gray-700">
                       <p><span class="font-semibold text-text">Tempat, Tanggal Lahir:</span> {{
@@ -716,7 +722,7 @@ const haitiUrl = new URL('../../assets/bpk_haiti.jpg', import.meta.url).href
 const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
 const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).href
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
-const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
+const natashaUrl = new URL('../../assets/anggota/natasha.jpeg', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
 const natashateacherUrl = new URL('../../assets/pengajar/natashateacher.jpg', import.meta.url).href
 const djatmikoUrl = new URL('../../assets/pengajar/Iketutadipurnama.jpg', import.meta.url).href
@@ -1624,7 +1630,6 @@ onUnmounted(() => {
   font-size: clamp(2.5rem, 4vw, 4rem);
   font-weight: 700;
   line-height: 0.92;
-  text-transform: uppercase;
   letter-spacing: 0.02em;
 }
 
@@ -1832,6 +1837,43 @@ onUnmounted(() => {
   background-blend-mode: soft-light, overlay, multiply, normal;
   animation: homeMainGradientFlow 5s ease-in-out infinite;
   will-change: background-position;
+}
+
+.leader-profile-card {
+  border: 1px solid #c9a84c;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(201, 168, 76, 0.15);
+}
+
+.leader-profile-card__bg {
+  background-color: #141414;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(201, 168, 76, 0.035) 2px,
+      rgba(201, 168, 76, 0.035) 4px
+    ),
+    radial-gradient(ellipse 70% 55% at 0% 0%, rgba(201, 168, 76, 0.22), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 100% 100%, rgba(201, 168, 76, 0.1), transparent 50%),
+    linear-gradient(155deg, #1f1f1f 0%, #121212 48%, #0a0a0a 100%);
+}
+
+.leader-profile-card__bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8rem;
+  height: 5rem;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 7px,
+    rgba(201, 168, 76, 0.2) 7px,
+    rgba(201, 168, 76, 0.2) 8px
+  );
+  pointer-events: none;
 }
 
 .mobile-card-gradient {
@@ -2183,17 +2225,15 @@ onUnmounted(() => {
 }
 
 .gold-shimmer-text {
-  background-image: linear-gradient(
-    105deg,
-    #8b6914 0%,
-    #c9a227 20%,
-    #ffd700 38%,
-    #fff8dc 48%,
-    #ffe566 52%,
-    #ffd700 62%,
-    #c79b0c 80%,
-    #cf980c 100%
-  );
+  background-image: linear-gradient(105deg,
+      #8b6914 0%,
+      #c9a227 20%,
+      #ffd700 38%,
+      #fff8dc 48%,
+      #ffe566 52%,
+      #ffd700 62%,
+      #c79b0c 80%,
+      #cf980c 100%);
   background-size: 280% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -2203,6 +2243,7 @@ onUnmounted(() => {
 }
 
 @keyframes goldTextShimmer {
+
   0%,
   100% {
     background-position: 0% center;

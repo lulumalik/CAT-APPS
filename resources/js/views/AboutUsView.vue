@@ -16,9 +16,14 @@
             Kembali ke Beranda
           </router-link>
           <div class="flex flex-col items-center justify-center gap-4 w-full">
-            <div class=" mt-8 md:mt-0">
-              <div class="w-64 h-64 flex items-center justify-center rounded-full bg-[#333]">
-                <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi" class="mx-auto mb-4 w-56" />
+            <div class=" mt-8 md:mt-0 flex items-center justify-center gap-4">
+              <div class="flex items-center justify-center">
+                <div class="pr-8">
+                  <img :src="brandLogoUrl" alt="Logo Pratistha Cendekia Prestasi" class="mx-auto mb-4 w-56" />
+                </div>
+                <div class="border-l-2 border-white pl-8">
+                  <img :src="pppolriUrl" alt="Logo" class="w-56 h-full object-cover" />
+                </div>
               </div>
             </div>
             <div>
@@ -27,7 +32,12 @@
                 Pratistha Cendekia Prestasi dibawah naungan <br /> PT. Pratistha Training Center Indonesia
               </h1>
               <p class="mt-5 text-md md:text-xl pb-4 font-bold text-white leading-relaxed text-center">
-                Simbol Keunggulan &amp; Integritas merepresentasikan visi bimbingan belajar Akademi Polisi yang presisi, tangguh, dan berorientasi pada prestasi tertinggi. Kami hadir untuk mendampingi setiap calon taruna melalui pembinaan akademik yang terstruktur, latihan soal CAT yang terukur, serta evaluasi berkala yang memetakan perkembangan belajar secara nyata. Dengan kurikulum yang dirancang sesuai standar seleksi, pengajar berpengalaman, dan teknologi pembelajaran yang adaptif, kami berkomitmen membentuk generasi penerus yang berkarakter, disiplin, dan siap bersaing meraih kursi terbaik di institusi kepolisian.
+                Simbol Keunggulan &amp; Integritas merepresentasikan visi bimbingan belajar Akademi Polisi yang presisi,
+                tangguh, dan berorientasi pada prestasi tertinggi. Kami hadir untuk mendampingi setiap calon taruna
+                melalui pembinaan akademik yang terstruktur, latihan soal CAT yang terukur, serta evaluasi berkala yang
+                memetakan perkembangan belajar secara nyata. Dengan kurikulum yang dirancang sesuai standar seleksi,
+                pengajar berpengalaman, dan teknologi pembelajaran yang adaptif, kami berkomitmen membentuk generasi
+                penerus yang berkarakter, disiplin, dan siap bersaing meraih kursi terbaik di institusi kepolisian.
               </p>
             </div>
           </div>
@@ -71,11 +81,9 @@
 
           <div class="mt-8 md:mt-16">
             <div class="grid grid-cols-2 gap-4 md:gap-12 max-w-5xl mx-auto">
-              <article v-for="(leader, index) in heroLeaders" :key="leader.name"
-                @click="openLeaderDetailModal(index)"
+              <article v-for="(leader, index) in heroLeaders" :key="leader.name" @click="openLeaderDetailModal(index)"
                 class="group cursor-pointer rounded-2xl border border-border shadow-xl bg-background overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[#123B8F]/25 focus:outline-none focus:ring-2 focus:ring-primary/40"
-                role="button" tabindex="0"
-                @keydown.enter.prevent="openLeaderDetailModal(index)"
+                role="button" tabindex="0" @keydown.enter.prevent="openLeaderDetailModal(index)"
                 @keydown.space.prevent="openLeaderDetailModal(index)">
                 <div class="relative">
                   <img :src="leader.image" :alt="leader.name"
@@ -235,14 +243,10 @@
                 <p class="text-sm md:text-xl font-bold text-center">{{ contact.label }}</p>
               </div>
               <div class="mt-2 flex flex-col items-center gap-1">
-                <a
-                  v-for="(link, index) in contact.links"
-                  :key="index"
-                  :href="link.href"
+                <a v-for="(link, index) in contact.links" :key="index" :href="link.href"
                   :target="link.external ? '_blank' : undefined"
                   :rel="link.external ? 'noopener noreferrer' : undefined"
-                  class="text-sm font-semibold text-text break-all text-center hover:text-primary hover:underline transition-colors"
-                >
+                  class="text-sm font-semibold text-text break-all text-center hover:text-primary hover:underline transition-colors">
                   {{ link.text }}
                 </a>
                 <span v-if="!contact.links?.length" class="text-sm font-semibold text-text">-</span>
@@ -292,37 +296,37 @@
             role="dialog" aria-modal="true" aria-labelledby="leader-detail-modal-title"
             @click.self="closeLeaderDetailModal">
             <article
-              class="w-full max-w-2xl rounded-3xl relative bg-gradient-to-br from-primary to-secondary overflow-hidden border border-blue-100/20 p-6 shadow-xl">
-              <div class="absolute inset-0 mobile-card-gradient rounded-[2rem]"></div>
-              <div class="relative min-h-[390px]">
+              class="leader-profile-card w-full max-w-2xl rounded-3xl relative overflow-hidden p-6 shadow-xl">
+              <div class="absolute inset-0 leader-profile-card__bg rounded-[2rem]"></div>
+              <div class="relative min-h-[390px] text-[#e8d5a3]">
                 <div class="flex items-center justify-end">
                   <button type="button"
-                    class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 bg-white/12 text-white hover:bg-white/20 transition-colors"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#c9a84c]/70 bg-black/30 text-[#e8d5a3] hover:bg-[#c9a84c]/15 transition-colors"
                     aria-label="Tutup detail pimpinan" @click="closeLeaderDetailModal">
                     <XIcon class="h-4 w-4" />
                   </button>
                 </div>
                 <div class="mt-4">
                   <p id="leader-detail-modal-title"
-                    class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center">
+                    class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center text-[#c9a84c]">
                     Profil {{ activeLeaderDetail.role }}
                   </p>
-                  <h3 class="mt-2 text-2xl font-extrabold leading-tight tracking-tight relative z-20 text-center">
+                  <h3 class="mt-2 text-2xl font-extrabold leading-tight tracking-tight relative z-20 text-center text-white">
                     {{ activeLeaderDetail.name }}
                   </h3>
-                  <p class="mt-2 text-md font-bold relative z-20 text-center">{{ activeLeaderDetail.batch }}</p>
+                  <p class="mt-2 text-md font-bold relative z-20 text-center text-[#d4af37]">{{ activeLeaderDetail.batch }}</p>
 
-                  <div class="mt-5 rounded-xl backdrop-blur-[1px] text-center relative z-20">
-                    <p class="text-lg font-bold uppercase tracking-[0.14em]">Posisi Saat Ini</p>
-                    <p class="mt-1 text-base font-semibold leading-relaxed">
+                  <div class="mt-5 rounded-xl text-center relative z-20">
+                    <p class="text-lg font-bold uppercase tracking-[0.14em] text-[#c9a84c]">Posisi Saat Ini</p>
+                    <p class="mt-1 text-base font-semibold leading-relaxed text-[#f0e6c8]">
                       {{ activeLeaderDetail.position }}
                     </p>
                   </div>
 
-                  <div class="mt-5 rounded-xl backdrop-blur-[1px] relative z-20">
-                    <p class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-gray-300 pb-2">
+                  <div class="mt-5 rounded-xl relative z-20">
+                    <p class="text-lg font-bold uppercase tracking-[0.14em] text-center border-b border-[#c9a84c]/55 pb-2 text-[#c9a84c]">
                       Jabatan Terakhir</p>
-                    <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed">
+                    <ul class="mt-3 space-y-2.5 text-lg font-semibold leading-relaxed text-[#f0e6c8]">
                       <li v-for="line in activeLeaderDetail.highlights" :key="line" class="text-center">
                         <span>{{ line }}</span>
                       </li>
@@ -421,6 +425,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const accesoriseUrl = new URL('../../assets/accessorise.png', import.meta.url).href
 const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
+const pppolriUrl = new URL('../../assets/pppolri.png', import.meta.url).href
 const backgroundAboutUrl = new URL('../../assets/about.png', import.meta.url).href
 const wallpaper1Url = new URL('../../assets/wallpaper/1.webp', import.meta.url).href
 const wallpaper2Url = new URL('../../assets/wallpaper/2.jpeg', import.meta.url).href
@@ -435,9 +440,9 @@ const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
 const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
 const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).href
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
-const natashaUrl = new URL('../../assets/anggota/natasha.png', import.meta.url).href
+const natashaUrl = new URL('../../assets/anggota/natasha.jpeg', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
-const azharUrl = new URL('../../assets/anggota/azhar.jpg', import.meta.url).href
+const azharUrl = new URL('../../assets/anggota/azhar.jpeg', import.meta.url).href
 const skKemenkumhamUrl = new URL('../../assets/legal/sk-kemenkumham.png', import.meta.url).href
 const npwpUrl = new URL('../../assets/legal/npwp.png', import.meta.url).href
 const nibUrl = new URL('../../assets/legal/nib.png', import.meta.url).href
@@ -454,7 +459,7 @@ const heroLeaders = [
       'Kabaharkam Polri (2013–2014)',
       'Wakapolri (2014–2015)',
       'Kapolri (2015–2016)',
-      'Komisaris Utama PT Waskita Karya (Persero) Tbk (WSKT)',
+      // 'Komisaris Utama PT Waskita Karya (Persero) Tbk (WSKT)',
     ],
     image: haitiUrl,
     featured: true,
@@ -1027,7 +1032,6 @@ onBeforeUnmount(() => {
   line-height: 1.1;
   letter-spacing: 0.02em;
   color: #1e2430;
-  text-transform: uppercase;
 }
 
 .about-member-cv-role {
@@ -1124,6 +1128,43 @@ onBeforeUnmount(() => {
 .member-history-dot {
   position: relative;
   z-index: 1;
+}
+
+.leader-profile-card {
+  border: 1px solid #c9a84c;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(201, 168, 76, 0.15);
+}
+
+.leader-profile-card__bg {
+  background-color: #141414;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(201, 168, 76, 0.035) 2px,
+      rgba(201, 168, 76, 0.035) 4px
+    ),
+    radial-gradient(ellipse 70% 55% at 0% 0%, rgba(201, 168, 76, 0.22), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 100% 100%, rgba(201, 168, 76, 0.1), transparent 50%),
+    linear-gradient(155deg, #1f1f1f 0%, #121212 48%, #0a0a0a 100%);
+}
+
+.leader-profile-card__bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8rem;
+  height: 5rem;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 7px,
+    rgba(201, 168, 76, 0.2) 7px,
+    rgba(201, 168, 76, 0.2) 8px
+  );
+  pointer-events: none;
 }
 
 .mobile-card-gradient {
