@@ -26,8 +26,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'program_category',
+        'exam_category_id',
+        'exam_track_id',
         'in_quarantine',
         'app_expires_at',
+        'google_id',
+        'avatar_url',
+        'email_verified_at',
     ];
 
     protected static function booted(): void
@@ -178,6 +183,11 @@ class User extends Authenticatable implements MustVerifyEmail
             return true;
         }
 
+        // Program simulasi ujian (kelas ujian): cukup verifikasi email.
+        if (self::isExamOnlyProgram($this->program_category)) {
+            return $this->hasVerifiedEmail();
+        }
+
         if (self::usesSimplifiedOnboarding($this->program_category)) {
             if (! $this->hasVerifiedEmail()) {
                 return false;
@@ -299,6 +309,27 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(RegistrationProgress::class);
     }
 
+    public function examCategory()
+    {
+        return $this->belongsTo(ExamCategory::class);
+    }
+
+    public function examTrack()
+    {
+        return $this->belongsTo(ExamTrack::class);
+    }
+
+    /** Whether the student has picked an exam interest (category + track). */
+    public function hasChosenExamInterest(): bool
+    {
+        return $this->exam_track_id !== null;
+    }
+
+    public function isGoogleAccount(): bool
+    {
+        return ! blank($this->google_id);
+    }
+
     public function bimbleClasses()
     {
         return $this->belongsToMany(BimbleClass::class, 'bimble_class_user')
@@ -320,23 +351,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function notifications()
     {
         return $this->hasMany(UserNotification::class);
-    }
-
-    /** Guardian links where this user is the student. */
-    public function guardianLinks()
-    {
-        return $this->hasMany(StudentGuardian::class, 'student_user_id');
-    }
-
-    /** Guardian links where this user is the parent/guardian account. */
-    public function childLinks()
-    {
-        return $this->hasMany(StudentGuardian::class, 'guardian_user_id');
-    }
-
-    public function isParent(): bool
-    {
-        return $this->role === 'parent';
     }
 
     public function sendEmailVerificationNotification(): void

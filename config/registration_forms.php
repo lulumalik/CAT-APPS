@@ -3,7 +3,7 @@
 return [
 
     'institution' => [
-        'name' => 'Lembaga Kursus Pratistha Cendekia Prestasi',
+        'name' => 'CATLab',
         'city' => 'Bandung',
         'director_title' => 'DIREKTUR LEMBAGA KURSUS PRATISTHA CENDEKIA PRESTASI',
     ],

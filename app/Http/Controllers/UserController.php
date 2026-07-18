@@ -86,7 +86,7 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $query = User::query()->with(['batches:id,name,code']);
+        $query = User::query()->with(['batches:id,name,code', 'examTrack:id,name,slug,exam_category_id', 'examTrack.category:id,name']);
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -98,7 +98,7 @@ class UserController extends Controller
 
         if ($request->filled('role')) {
             $role = $request->string('role')->toString();
-            if (in_array($role, ['admin', 'user', 'mentor', 'parent'], true)) {
+            if (in_array($role, ['admin', 'user', 'mentor'], true)) {
                 $query->where('role', $role);
             }
         }
@@ -135,8 +135,9 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,user,mentor,parent',
+            'role' => 'required|in:admin,user,mentor',
             'program_category' => 'nullable|in:'.implode(',', User::programCategories()),
+            'exam_track_id' => 'nullable|exists:exam_tracks,id',
             'in_quarantine' => 'nullable|boolean',
         ];
 
@@ -165,6 +166,12 @@ class UserController extends Controller
             $payload['username'] = User::normalizeUsername($validated['username']);
         }
 
+        if (! empty($validated['exam_track_id'])) {
+            $track = \App\Models\ExamTrack::find($validated['exam_track_id']);
+            $payload['exam_track_id'] = $track?->id;
+            $payload['exam_category_id'] = $track?->exam_category_id;
+        }
+
         if ($hasAppExpires) {
             $payload['app_expires_at'] = $validated['app_expires_at']
                 ?? ($validated['role'] === 'user'
@@ -187,9 +194,10 @@ class UserController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'role' => 'required|in:admin,user,mentor,parent',
+            'role' => 'required|in:admin,user,mentor',
             'password' => 'nullable|string|min:8',
             'program_category' => 'nullable|in:'.implode(',', User::programCategories()),
+            'exam_track_id' => 'nullable|exists:exam_tracks,id',
             'in_quarantine' => 'nullable|boolean',
         ];
 
@@ -216,6 +224,17 @@ class UserController extends Controller
 
         if (array_key_exists('program_category', $validated) && $validated['program_category'] !== null) {
             $user->program_category = User::normalizeProgramCategory($validated['program_category']);
+        }
+
+        if (array_key_exists('exam_track_id', $validated)) {
+            if ($validated['exam_track_id']) {
+                $track = \App\Models\ExamTrack::find($validated['exam_track_id']);
+                $user->exam_track_id = $track?->id;
+                $user->exam_category_id = $track?->exam_category_id;
+            } else {
+                $user->exam_track_id = null;
+                $user->exam_category_id = null;
+            }
         }
 
         if (array_key_exists('in_quarantine', $validated) && $validated['in_quarantine'] !== null) {

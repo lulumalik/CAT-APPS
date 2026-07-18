@@ -12,17 +12,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Google OAuth (login/daftar dengan Google — email otomatis terverifikasi)
+Route::get('/auth/google/redirect', [\App\Http\Controllers\SocialAuthController::class, 'redirectToGoogle'])
+    ->name('auth.google.redirect');
+Route::get('/auth/google/callback', [\App\Http\Controllers\SocialAuthController::class, 'handleGoogleCallback'])
+    ->name('auth.google.callback');
+
 Route::get('/sitemap.xml', function () {
     $urls = [
         [
             'loc' => url('/'),
             'changefreq' => 'weekly',
             'priority' => '1.0',
-        ],
-        [
-            'loc' => url('/rankings'),
-            'changefreq' => 'weekly',
-            'priority' => '0.6',
         ],
         [
             'loc' => url('/blog'),

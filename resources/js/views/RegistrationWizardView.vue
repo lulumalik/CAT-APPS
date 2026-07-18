@@ -483,13 +483,12 @@ const steps = computed(() => [
   { key: 'administration', label: t('registration.steps.admin'), statusKey: 'administration_status' },
   { key: 'psychology', label: t('registration.steps.psychology'), statusKey: 'psychology_status' },
   { key: 'health', label: t('registration.steps.health'), statusKey: 'health_status' },
-  { key: 'physical', label: t('registration.steps.physical'), statusKey: 'physical_status' },
 ])
 
 const activeStep = computed(() => {
   if (!progress.value) return 'administration'
   const cs = progress.value.current_step
-  if (cs === 'completed') return 'physical'
+  if (cs === 'completed' || cs === 'physical') return 'health'
   return cs
 })
 

@@ -14,7 +14,7 @@ class TestDefinition extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name','description','category','duration','schedule_at','start_time','end_time','is_active','is_free_tryout','question_ids','created_by'
+        'name','description','category','exam_track_id','duration','schedule_at','start_time','end_time','is_active','is_free_tryout','question_ids','created_by'
     ];
 
     protected $casts = [
@@ -181,6 +181,11 @@ class TestDefinition extends Model
     public function submissions()
     {
         return $this->hasMany(TestSubmission::class);
+    }
+
+    public function examTrack()
+    {
+        return $this->belongsTo(ExamTrack::class);
     }
 
     public function freeTryoutSubmissions()

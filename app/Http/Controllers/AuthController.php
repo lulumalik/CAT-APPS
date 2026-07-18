@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use App\Models\ExamTrack;
 use App\Models\RegistrationProgress;
 use App\Models\User;
 use App\Notifications\RegistrationProgressStatusNotification;
@@ -15,6 +16,18 @@ class AuthController extends Controller
 {
     private function serializeUser(User $user): array
     {
+        $examTrack = null;
+        if ($user->exam_track_id) {
+            $user->loadMissing('examTrack.category');
+            $examTrack = $user->examTrack ? [
+                'id' => $user->examTrack->id,
+                'name' => $user->examTrack->name,
+                'slug' => $user->examTrack->slug,
+                'category_id' => $user->examTrack->exam_category_id,
+                'category_name' => $user->examTrack->category?->name,
+            ] : null;
+        }
+
         return [
             'id' => $user->id,
             'name' => $user->name,
@@ -23,6 +36,11 @@ class AuthController extends Controller
             'email_verified_at' => $user->email_verified_at,
             'role' => $user->role,
             'program_category' => $user->program_category,
+            'exam_category_id' => $user->exam_category_id,
+            'exam_track_id' => $user->exam_track_id,
+            'exam_track' => $examTrack,
+            'avatar_url' => $user->avatar_url,
+            'is_google_account' => $user->isGoogleAccount(),
             'in_quarantine' => (bool) $user->in_quarantine,
             'app_expires_at' => $user->app_expires_at?->toIso8601String(),
             'app_expired' => $user->isAppExpired(),
@@ -40,11 +58,12 @@ class AuthController extends Controller
             'username' => 'required|string|min:3|max:32|regex:/^[a-zA-Z0-9_]+$/|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'program_category' => 'required|in:'.implode(',', User::programCategories()),
+            'program_category' => 'nullable|in:'.implode(',', User::programCategories()),
         ], [
             'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
         ]);
-        $programCategory = User::normalizeProgramCategory($data['program_category']);
+        // Bisnis baru: pendaftar mandiri masuk program simulasi ujian (kelas ujian).
+        $programCategory = User::normalizeProgramCategory($data['program_category'] ?? User::PROGRAM_TRY_OUT);
 
         $payload = [
             'name' => $data['name'],
@@ -123,10 +142,38 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt([
+        $credentials = [
             'username' => User::normalizeUsername((string) $request->input('username')),
             'password' => $request->input('password'),
-        ])) {
+        ];
+
+        // Akun email biasa wajib verifikasi email dulu; akun Google dianggap terverifikasi.
+        if (Auth::validate($credentials)) {
+            $candidate = User::where('username', $credentials['username'])->first();
+            if (
+                $candidate
+                && $candidate->role === 'user'
+                && ! $candidate->isGoogleAccount()
+                && ! $candidate->hasVerifiedEmail()
+            ) {
+                try {
+                    $candidate->sendEmailVerificationNotification();
+                } catch (Throwable $e) {
+                    Log::warning('Failed to resend verification email on login.', [
+                        'user_id' => $candidate->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+
+                return response()->json([
+                    'success' => false,
+                    'email_verification_required' => true,
+                    'message' => 'Email Anda belum diverifikasi. Kami telah mengirim ulang tautan verifikasi ke email Anda.',
+                ], 403);
+            }
+        }
+
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
             $user = Auth::user();
@@ -175,5 +222,36 @@ class AuthController extends Controller
             'success' => false,
             'user' => null
         ], 401);
+    }
+
+    /**
+     * Simpan minat ujian peserta (kategori + track spesifik).
+     */
+    public function setInterest(Request $request)
+    {
+        $data = $request->validate([
+            'exam_track_id' => 'required|exists:exam_tracks,id',
+        ]);
+
+        $track = ExamTrack::with('category')->findOrFail($data['exam_track_id']);
+
+        if (! $track->is_active || ! $track->category?->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kategori ujian ini sedang tidak tersedia.',
+            ], 422);
+        }
+
+        $user = $request->user();
+        $user->forceFill([
+            'exam_category_id' => $track->exam_category_id,
+            'exam_track_id' => $track->id,
+        ])->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Minat ujian disimpan: {$track->category->name} — {$track->name}.",
+            'user' => $this->serializeUser($user->fresh()),
+        ]);
     }
 }

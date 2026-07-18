@@ -34,8 +34,8 @@
     </div>
 
     <!-- Materials List -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div v-for="material in materials" :key="material.id" class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 relative group hover:shadow-2xl hover:shadow-black/5 transition-all duration-300">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div v-for="material in materials" :key="material.id" class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-5 md:p-6 relative group hover:shadow-2xl hover:shadow-black/5 transition-all duration-300">
         <div class="flex justify-between items-start mb-4">
           <span :class="material.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'" class="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
             {{ material.status === 'published' ? 'Published' : 'Draft' }}

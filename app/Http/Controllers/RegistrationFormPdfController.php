@@ -26,11 +26,6 @@ class RegistrationFormPdfController extends Controller
         return $this->streamTemplatePdf();
     }
 
-    public function adminDownloadTemplate(Request $request, int $userId)
-    {
-        return $this->streamTemplatePdf();
-    }
-
     public function downloadAll(Request $request)
     {
         $user = $request->user();
@@ -46,26 +41,6 @@ class RegistrationFormPdfController extends Controller
         }
 
         $user = $request->user();
-        $progress = $this->resolveProgress($user->id);
-
-        return $this->streamPdf($user, $progress, $slug);
-    }
-
-    public function adminDownloadAll(Request $request, int $userId)
-    {
-        $user = \App\Models\User::findOrFail($userId);
-        $progress = $this->resolveProgress($user->id);
-
-        return $this->streamPdf($user, $progress, null);
-    }
-
-    public function adminDownloadPage(Request $request, int $userId, string $slug)
-    {
-        if ($this->forms->findPageBySlug($slug) === null) {
-            abort(404);
-        }
-
-        $user = \App\Models\User::findOrFail($userId);
         $progress = $this->resolveProgress($user->id);
 
         return $this->streamPdf($user, $progress, $slug);

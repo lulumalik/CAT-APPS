@@ -11,15 +11,13 @@
           <div class="flex items-center gap-2 shrink-0">
             <button
               type="button"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-100 transition-colors disabled:opacity-50"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-full text-gray-600 bg-gray-50 hover:bg-gray-100 border border-gray-100 transition-colors disabled:opacity-50"
               :disabled="refreshing"
               :title="t('modals.testAssign.refreshHint')"
+              :aria-label="t('modals.testAssign.refresh')"
               @click="$emit('refresh')"
             >
-              <svg class="w-4 h-4" :class="{ 'animate-spin': refreshing }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-              </svg>
-              {{ refreshing ? t('modals.testAssign.refreshing') : t('modals.testAssign.refresh') }}
+              <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': refreshing }" />
             </button>
             <button class="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600" @click="$emit('close')">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,10 +51,10 @@
         <template v-if="activeTab === 'browse'">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testAssign.categoryLabel') }}</label>
-              <select v-model="category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-2.5 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
-                <option value="">{{ t('modals.testAssign.categoryAll') }}</option>
-                <option v-for="c in categoryOptions" :key="c" :value="c">{{ c }}</option>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Track Ujian</label>
+              <select v-model="trackFilter" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-2.5 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+                <option value="">Semua track</option>
+                <option v-for="c in trackOptions" :key="c" :value="c">{{ c }}</option>
               </select>
             </div>
             <div>
@@ -139,6 +137,7 @@
 
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { RefreshCw } from 'lucide-vue-next'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
@@ -151,7 +150,7 @@ const { t } = useI18n()
 
 const selected = ref([])
 const active = ref(true)
-const category = ref('')
+const trackFilter = ref('')
 const difficulty = ref('')
 const activeTab = ref('browse')
 
@@ -166,7 +165,7 @@ const uniqueQuestions = computed(() => {
   return items
 })
 
-const categoryOptions = computed(() => {
+const trackOptions = computed(() => {
   const set = new Set(uniqueQuestions.value.map(q => q.category).filter(Boolean))
   return Array.from(set).sort()
 })
@@ -176,32 +175,24 @@ const selectedQuestions = computed(() =>
 )
 
 const filtered = computed(() => {
-  const allowAll = !category.value
-  const allow = allowAll ? null : mapCategories(category.value)
+  const preferredTrackId = props.test?.exam_track_id
 
   return uniqueQuestions.value.filter(q => {
-    if (!allowAll && allow && !allow.includes(q.category)) return false
+    // Default: prefer soal dari track yang sama dengan paket ujian.
+    if (!trackFilter.value && preferredTrackId && q.exam_track_id && Number(q.exam_track_id) !== Number(preferredTrackId)) {
+      return false
+    }
+    if (trackFilter.value && q.category !== trackFilter.value) return false
     if (difficulty.value && q.difficulty !== difficulty.value) return false
     return true
   })
 })
 
-function mapCategories(cat) {
-  const m = {
-    'Kewarganegaraan': ['Kewarganegaraan', 'Citizenship', 'Law', 'Hukum'],
-    'Math': ['Math', 'Mathematics', 'Matematika'],
-    'English': ['English', 'Bahasa Inggris'],
-    'Interpersonal Skill': ['Interpersonal Skill', 'Interpersonal'],
-  }
-  if (!cat) return null
-  return m[cat] || [cat]
-}
-
 watch(() => props.test, (t) => {
   const ids = Array.isArray(t?.questionIds) ? t.questionIds : (Array.isArray(t?.question_ids) ? t.question_ids : [])
   selected.value = Array.from(new Set(ids))
   active.value = ids.length === 0 ? true : !!(t?.isActive ?? t?.is_active ?? true)
-  category.value = ''
+  trackFilter.value = ''
   difficulty.value = ''
   activeTab.value = 'browse'
 }, { immediate: true })

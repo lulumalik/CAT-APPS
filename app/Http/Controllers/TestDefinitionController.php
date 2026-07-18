@@ -74,7 +74,8 @@ class TestDefinitionController extends Controller
         $data = $request->validate([
             'name' => 'required|string',
             'description' => 'nullable|string',
-            'category' => 'required|string',
+            'category' => 'nullable|string',
+            'exam_track_id' => 'required|exists:exam_tracks,id',
             'duration' => 'required|integer|min:1',
             'schedule_at' => 'required|date',
             'start_time' => 'required|date',
@@ -84,6 +85,8 @@ class TestDefinitionController extends Controller
             'question_ids' => 'nullable|array',
         ]);
 
+        $track = \App\Models\ExamTrack::find($data['exam_track_id']);
+        $data['category'] = $track?->name ?: ($data['category'] ?? 'Umum');
         $data['created_by'] = optional($request->user())->id;
         $this->enforceQuestionDefaults($data);
         $this->enforceSingleFreeTryout($data, null, $request->user());
@@ -102,7 +105,8 @@ class TestDefinitionController extends Controller
         $data = $request->validate([
             'name' => 'sometimes|required|string',
             'description' => 'nullable|string',
-            'category' => 'sometimes|required|string',
+            'category' => 'nullable|string',
+            'exam_track_id' => 'sometimes|required|exists:exam_tracks,id',
             'duration' => 'sometimes|required|integer|min:1',
             'schedule_at' => 'sometimes|required|date',
             'start_time' => 'sometimes|required|date',
@@ -111,6 +115,13 @@ class TestDefinitionController extends Controller
             'is_free_tryout' => 'nullable|boolean',
             'question_ids' => 'nullable|array',
         ]);
+
+        if (! empty($data['exam_track_id'])) {
+            $track = \App\Models\ExamTrack::find($data['exam_track_id']);
+            if ($track) {
+                $data['category'] = $track->name;
+            }
+        }
 
         $effectiveStartTime = $data['start_time'] ?? $test->start_time;
         $effectiveEndTime = $data['end_time'] ?? $test->end_time;
@@ -156,6 +167,7 @@ class TestDefinitionController extends Controller
             'name',
             'description',
             'category',
+            'exam_track_id',
             'duration',
             'schedule_at',
             'start_time',

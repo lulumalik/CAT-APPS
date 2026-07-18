@@ -19,6 +19,9 @@ class QuestionController extends Controller
         if ($cat = $request->string('category')->toString()) {
             $q->where('category', $cat);
         }
+        if ($trackId = $request->integer('exam_track_id')) {
+            $q->where('exam_track_id', $trackId);
+        }
         if ($dif = $request->string('difficulty')->toString()) {
             $q->where('difficulty', $dif);
         }
@@ -47,7 +50,8 @@ class QuestionController extends Controller
     {
         $rules = [
             'question' => 'required|string',
-            'category' => 'required|string',
+            'category' => 'nullable|string',
+            'exam_track_id' => 'required|exists:exam_tracks,id',
             'difficulty' => 'required|string',
             'type' => 'required|in:multiple_choice,essay',
             'image' => 'nullable|image|max:2048',
@@ -59,6 +63,7 @@ class QuestionController extends Controller
         }
 
         $data = $request->validate($rules);
+        $data = $this->fillCategoryFromTrack($data);
 
         if ($request->hasFile('image')) {
             $disk = config('filesystems.upload_disk', 'public');
@@ -85,7 +90,8 @@ class QuestionController extends Controller
 
         $rules = [
             'question' => 'required|string',
-            'category' => 'required|string',
+            'category' => 'nullable|string',
+            'exam_track_id' => 'required|exists:exam_tracks,id',
             'difficulty' => 'required|string',
             'type' => 'required|in:multiple_choice,essay',
             'image' => 'nullable|image|max:2048',
@@ -97,6 +103,7 @@ class QuestionController extends Controller
         }
 
         $data = $request->validate($rules);
+        $data = $this->fillCategoryFromTrack($data);
 
         if ($request->hasFile('image')) {
             $disk = config('filesystems.upload_disk', 'public');
@@ -122,6 +129,17 @@ class QuestionController extends Controller
         $question->delete();
 
         return response()->noContent();
+    }
+
+    /** Kolom category (label lama) mengikuti nama track jika tidak diisi manual. */
+    private function fillCategoryFromTrack(array $data): array
+    {
+        if (empty($data['category']) && ! empty($data['exam_track_id'])) {
+            $track = \App\Models\ExamTrack::find($data['exam_track_id']);
+            $data['category'] = $track?->name ?? 'Umum';
+        }
+
+        return $data;
     }
 
     private function authorizeOwnedByMentor(Request $request, Question $question): void

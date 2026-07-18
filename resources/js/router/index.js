@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeDemoView from '@/views/HomeDemoView.vue';  
-import AboutUsView from '@/views/AboutUsView.vue';
-import SelayangPandangView from '@/views/SelayangPandangView.vue';
+import HomeDemoView from '@/views/HomeDemoView.vue';
 import LoginView from '@/views/LoginView.vue';
 import SignupView from '@/views/SignupView.vue';
 import DashboardView from '@/views/DashboardView.vue';
@@ -10,14 +8,12 @@ import TestsView from '@/views/TestsView.vue';
 import UserManagementView from '@/views/UserManagementView.vue';
 import BatchManagementView from '@/views/BatchManagementView.vue';
 import BatchDetailView from '@/views/BatchDetailView.vue';
-import RankingsView from '@/views/RankingsView.vue';
 import TestRunnerView from '@/views/TestRunnerView.vue';
 import MaterialsManageView from '@/views/MaterialsManageView.vue';
 import BlogView from '@/views/BlogView.vue';
 import BlogDetailView from '@/views/BlogDetailView.vue';
 import FreeTryoutView from '@/views/FreeTryoutView.vue';
 import RegistrationWizardView from '@/views/RegistrationWizardView.vue';
-import AdminRegistrationView from '@/views/AdminRegistrationView.vue';
 import BimbleClassesManageView from '@/views/BimbleClassesManageView.vue';
 import BimbleClassRoomView from '@/views/BimbleClassRoomView.vue';
 import MyBimbleClassesView from '@/views/MyBimbleClassesView.vue';
@@ -26,19 +22,19 @@ import ActivityHistoryView from '@/views/ActivityHistoryView.vue';
 import EmailVerifiedView from '@/views/EmailVerifiedView.vue';
 import NotificationsView from '@/views/NotificationsView.vue';
 import CertificateManagementView from '@/views/CertificateManagementView.vue';
-import ParentJoinView from '@/views/ParentJoinView.vue';
-import ChildDetailView from '@/views/ChildDetailView.vue';
-import GuardianManageView from '@/views/GuardianManageView.vue';
 import StudentReportsManageView from '@/views/StudentReportsManageView.vue';
 import TestSubmissionsView from '@/views/TestSubmissionsView.vue';
 import StudentExamsView from '@/views/StudentExamsView.vue';
+import ExamReviewView from '@/views/ExamReviewView.vue';
+import InterestSelectView from '@/views/InterestSelectView.vue';
+import ExamCategoryManageView from '@/views/ExamCategoryManageView.vue';
 import { useAppStore } from '@/stores/app';
 import { normalizeProgramCategory } from '@/utils/userMeta';
 
 const routes = [
   { path: '/', name: 'home-demo', component: HomeDemoView },
-  { path: '/about-us', name: 'about-us', component: AboutUsView },
-  { path: '/selayang-pandang', name: 'selayang-pandang', component: SelayangPandangView },
+  { path: '/about-us', redirect: '/' },
+  { path: '/selayang-pandang', redirect: '/' },
   { path: '/login', name: 'login', component: LoginView },
   { path: '/signup', name: 'signup', component: SignupView },
   { path: '/dashboard', name: 'dashboard', component: DashboardView, meta: { requiresAuth: true } },
@@ -49,6 +45,8 @@ const routes = [
   { path: '/exams', name: 'exams', component: TestsView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/exams/:id/submissions', name: 'exam-submissions', component: TestSubmissionsView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/ujian', name: 'student-exams', component: StudentExamsView, meta: { requiresAuth: true } },
+  { path: '/ujian/:id/tinjau/:submissionId?', name: 'exam-review', component: ExamReviewView, meta: { requiresAuth: true } },
+  { path: '/pilih-minat', name: 'interest-select', component: InterestSelectView, meta: { requiresAuth: true } },
   { path: '/users', name: 'users', component: UserManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/batches', name: 'batches', component: BatchManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/batches/:id', name: 'batch-detail', component: BatchDetailView, meta: { requiresAuth: true, requiresStaff: true } },
@@ -56,10 +54,7 @@ const routes = [
   { path: '/blog', name: 'blog', component: BlogView },
   { path: '/blog/:slug', name: 'blog-detail', component: BlogDetailView },
   { path: '/free-tryout', name: 'free-tryout', component: FreeTryoutView },
-  { path: '/rankings', name: 'rankings', component: RankingsView, meta: { requiresAuth: true, requiresStaff: true } },
-  { path: '/parent/join/:token', name: 'parent-join', component: ParentJoinView },
-  { path: '/child/:id', name: 'child-detail', component: ChildDetailView, meta: { requiresAuth: true } },
-  { path: '/admin/guardians', name: 'admin-guardians', component: GuardianManageView, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/exam-categories', name: 'admin-exam-categories', component: ExamCategoryManageView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/student-reports', name: 'admin-student-reports', component: StudentReportsManageView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/quick-test/:id', name: 'quick-test', component: TestRunnerView, meta: { requiresAuth: true } },
   { path: '/quick-exam/:id', name: 'quick-exam', component: TestRunnerView, meta: { requiresAuth: true } },
@@ -68,7 +63,6 @@ const routes = [
   { path: '/activity-history', name: 'activity-history', component: ActivityHistoryView, meta: { requiresAuth: true } },
   { path: '/email/verified', name: 'email-verified', component: EmailVerifiedView },
   { path: '/notifications', name: 'notifications', component: NotificationsView, meta: { requiresAuth: true } },
-  { path: '/admin/registration', name: 'admin-registration', component: AdminRegistrationView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/certificates', name: 'admin-certificates', component: CertificateManagementView, meta: { requiresAuth: true, requiresAdmin: true } },
   { path: '/bimble-classes', name: 'bimble-classes', component: BimbleClassesManageView, meta: { requiresAuth: true, requiresStaff: true } },
   { path: '/my-classes', name: 'my-classes', component: MyBimbleClassesView, meta: { requiresAuth: true } },
@@ -119,12 +113,12 @@ router.beforeEach(async (to, from, next) => {
     const allowedForExpiredStudent = [
       'home-demo',
       'home',
-      'about-us',
-      'selayang-pandang',
       'profile',
       'activity-history',
       'email-verified',
       'blog-detail',
+      'free-tryout',
+      'interest-select',
     ]
 
     const allowedForStudent = expired
@@ -132,8 +126,6 @@ router.beforeEach(async (to, from, next) => {
       : [
         'home-demo',
         'home',
-        'about-us',
-        'selayang-pandang',
         'profile',
         'activity-history',
         'email-verified',
@@ -144,13 +136,23 @@ router.beforeEach(async (to, from, next) => {
         'quick-test',
         'quick-exam',
         'student-exams',
+        'exam-review',
         'blog-detail',
         'free-tryout',
         'notifications',
+        'interest-select',
       ]
 
     if (!allowedForStudent.includes(String(to.name))) {
       next({ name: expired ? 'profile' : 'dashboard' })
+      return
+    }
+
+    // Peserta baru wajib memilih minat ujian dulu sebelum masuk dashboard/ujian.
+    const needsInterest = !expired && !store.user?.exam_track_id
+    const interestGatedPages = ['dashboard', 'student-exams', 'quick-exam', 'quick-test', 'my-classes', 'bimble-class-room']
+    if (needsInterest && interestGatedPages.includes(String(to.name))) {
+      next({ name: 'interest-select' })
       return
     }
 
@@ -162,25 +164,6 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  // Parents can only access their dashboard, children detail, and public info pages.
-  if (store.role === 'parent') {
-    const allowedForParent = [
-      'home-demo',
-      'home',
-      'about-us',
-      'selayang-pandang',
-      'dashboard',
-      'child-detail',
-      'notifications',
-      'blog-detail',
-      'email-verified',
-    ];
-    if (!allowedForParent.includes(String(to.name))) {
-      next({ name: 'dashboard' });
-      return;
-    }
-  }
-  
   // If user is authenticated and trying to access login page, redirect to dashboard
   if ((to.name === 'login' || to.name === 'signup') && store.isAuthenticated) {
     next({ name: 'dashboard' });

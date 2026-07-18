@@ -216,35 +216,7 @@
         </div>
       </section>
 
-      <!-- 5. Hasil Jasmani -->
-      <section :class="pdfMode ? 'pdf-progress-section' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm'">
-        <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Hasil Jasmani</h3>
-        <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan tiap komponen jasmani per tanggal</p>
-        <div v-if="!physicalCharts.length" :class="pdfMode ? 'pdf-muted py-6 text-center' : 'text-sm text-gray-400 py-6 text-center'">
-          Belum ada hasil jasmani.
-        </div>
-        <div v-else class="space-y-5">
-          <div
-            v-for="chart in physicalCharts"
-            :key="chart.id"
-            :class="pdfMode ? 'pdf-card' : 'rounded-xl border border-gray-100 p-4'"
-          >
-            <h4 :class="pdfMode ? 'font-semibold text-sm mb-3' : 'font-semibold text-sm text-[#1A1A1A] mb-3'">
-              {{ chart.label }}
-              <span v-if="chart.unit" class="text-gray-500 font-normal">({{ chart.unit }})</span>
-            </h4>
-            <ProgressChart
-              type="line"
-              :data="chart.data"
-              :color="chart.color"
-              value-mode="value"
-              :empty-text="`Belum ada data ${chart.label}.`"
-            />
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. Nilai Ujian -->
+      <!-- 5. Nilai Ujian -->
       <section :class="pdfMode ? 'pdf-progress-section flex flex-col min-h-[220px]' : 'bg-white border border-gray-100 rounded-2xl p-5 shadow-sm flex flex-col min-h-[220px]'">
         <h3 :class="pdfMode ? 'pdf-subsection-title' : 'font-bold text-base mb-1'">Nilai Ujian</h3>
         <p :class="pdfMode ? 'pdf-muted mb-3' : 'text-xs text-gray-500 mb-3'">Perkembangan nilai ujian yang sudah dikerjakan peserta (skala 1–100)</p>
@@ -324,7 +296,7 @@ const dailyRangeLabel = computed(() => {
   return `${start}-${end}`
 })
 
-const physicalPalette = ['#2F6BFF', '#9DB359', '#E8833A', '#8B5CF6', '#EC4899', '#14B8A6']
+const chartPalette = ['#2F6BFF', '#9DB359', '#E8833A', '#8B5CF6', '#EC4899', '#14B8A6']
 
 const academicSubjectCharts = computed(() =>
   (progress.value.academic_subject_timeline || [])
@@ -337,34 +309,11 @@ const academicSubjectCharts = computed(() =>
       return {
         id: series.id || `academic-${idx}`,
         label: series.label || 'Mata Pelajaran',
-        color: physicalPalette[idx % physicalPalette.length],
+        color: chartPalette[idx % chartPalette.length],
         data: points.map((p) => ({
           date: p.date,
           value: Number(p.value),
           label: p.quiz_name || p.label || undefined,
-        })),
-      }
-    })
-    .filter(Boolean),
-)
-
-const physicalCharts = computed(() =>
-  (progress.value.physical_timeline || [])
-    .map((series, idx) => {
-      const points = (series.points || [])
-        .filter((p) => p.date && p.value != null)
-        .sort((a, b) => String(a.date).localeCompare(String(b.date)))
-      if (!points.length) return null
-
-      return {
-        id: series.id || `physical-${idx}`,
-        label: series.label || 'Komponen',
-        unit: series.unit || null,
-        color: physicalPalette[idx % physicalPalette.length],
-        data: points.map((p) => ({
-          date: p.date,
-          value: Number(p.value),
-          unit: series.unit || null,
         })),
       }
     })

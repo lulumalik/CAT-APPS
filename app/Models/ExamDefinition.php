@@ -12,7 +12,7 @@ class ExamDefinition extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'category', 'duration', 'schedule_at', 'start_time', 'end_time', 'is_active', 'question_ids', 'created_by',
+        'name', 'description', 'category', 'exam_track_id', 'duration', 'schedule_at', 'start_time', 'end_time', 'is_active', 'question_ids', 'created_by',
     ];
 
     protected $casts = [
@@ -97,5 +97,10 @@ class ExamDefinition extends Model
     public function submissions()
     {
         return $this->hasMany(ExamSubmission::class);
+    }
+
+    public function examTrack()
+    {
+        return $this->belongsTo(ExamTrack::class);
     }
 }

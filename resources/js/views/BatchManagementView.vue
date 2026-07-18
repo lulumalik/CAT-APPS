@@ -40,7 +40,7 @@
       {{ t('batches.empty') }}
     </div>
 
-    <div v-else class="grid gap-4 md:grid-cols-2">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <article
         v-for="batch in batches"
         :key="batch.id"

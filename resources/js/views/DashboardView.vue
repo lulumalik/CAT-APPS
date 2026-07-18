@@ -1,361 +1,425 @@
 <template>
-  <main class="max-w-7xl mx-auto px-4 md:px-12 py-8">
+  <main
+    :class="[
+      isAdmin && !isAdminViewingStudent
+        ? 'adm-dash-page'
+        : 'max-w-7xl mx-auto px-4 md:px-12 py-8',
+    ]"
+  >
     <router-link
       v-if="isAdminViewingStudent"
       to="/users"
-      class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-[#1A1A1A] mb-4"
+      class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-[#1A1A1A] mb-4 px-4 md:px-0"
     >
       <ArrowLeft class="h-4 w-4" />
       Kembali ke Manajemen User
     </router-link>
 
-    <PageHeroHeader
-      :title="isAdminViewingStudent ? 'Dashboard Siswa' : 'Dashboard'"
-      theme="blue"
-      :icon="LayoutDashboard"
-    >
-      <template #subtitle>
-        <template v-if="isAdminViewingStudent">
-          <span>{{ viewedStudent?.name || 'Memuat...' }}</span>
-          <span v-if="viewedStudent?.username" class="text-gray-400"> · @{{ viewedStudent.username }}</span>
-          <span class="inline-block ml-1 text-xs rounded-full px-2 py-1" :class="displayProgramBadge.className">{{ displayProgramBadge.label }}</span>
+    <!-- Admin mobile hero (mockup) -->
+    <header v-if="isAdmin && !isAdminViewingStudent" class="adm-dash__hero">
+      <div class="adm-dash__hero-text">
+        <h1 class="adm-dash__title">Dashboard</h1>
+        <p class="adm-dash__greet">Halo, {{ user?.name || 'Admin' }} 👋</p>
+        <span class="adm-dash__badge">Admin</span>
+      </div>
+      <img :src="clipboardUrl" alt="" class="adm-dash__hero-art" />
+    </header>
+
+    <div v-if="!(isAdmin && !isAdminViewingStudent)" class="px-4 md:px-0">
+      <PageHeroHeader
+        :title="isAdminViewingStudent ? 'Dashboard Siswa' : 'Dashboard'"
+        theme="blue"
+        :icon="LayoutDashboard"
+      >
+        <template #subtitle>
+          <template v-if="isAdminViewingStudent">
+            <span>{{ viewedStudent?.name || 'Memuat...' }}</span>
+            <span v-if="viewedStudent?.username" class="text-gray-400"> · @{{ viewedStudent.username }}</span>
+            <span class="inline-block ml-1 text-xs rounded-full px-2 py-1" :class="displayProgramBadge.className">{{ displayProgramBadge.label }}</span>
+          </template>
+          <template v-else>
+            <span>{{ user?.name }}</span>
+            <span class="capitalize"> · {{ user?.role }}</span>
+            <span class="inline-block ml-1 text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span>
+          </template>
         </template>
-        <template v-else>
+        <template #actions>
+          <button
+            type="button"
+            class="pdf-hide px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm"
+            @click="loadOverview"
+          >
+            Refresh
+          </button>
+        </template>
+      </PageHeroHeader>
+    </div>
+
+    <div v-else class="hidden md:block px-4 md:px-0 mb-2">
+      <PageHeroHeader title="Dashboard" theme="blue" :icon="LayoutDashboard">
+        <template #subtitle>
           <span>{{ user?.name }}</span>
           <span class="capitalize"> · {{ user?.role }}</span>
           <span class="inline-block ml-1 text-xs rounded-full px-2 py-1" :class="programBadge.className">{{ programBadge.label }}</span>
         </template>
-      </template>
-      <template #actions>
-        <button
-          type="button"
-          class="pdf-hide px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm"
-          @click="loadOverview"
-        >
-          Refresh
-        </button>
-      </template>
-    </PageHeroHeader>
-
-    <div v-if="loading" class="py-20 text-center text-gray-500">Memuat data dashboard...</div>
-    <div v-else-if="errorMessage" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-red-700 text-sm">
-      {{ errorMessage }}
+        <template #actions>
+          <button
+            type="button"
+            class="pdf-hide px-4 py-2 rounded-full border border-gray-200 bg-white hover:bg-gray-50 text-sm"
+            @click="loadOverview"
+          >
+            Refresh
+          </button>
+        </template>
+      </PageHeroHeader>
     </div>
 
-    <template v-else>
-      <section
-        v-if="isExpiredForStudent"
-        class="rounded-[2rem] border border-red-200 bg-red-50 p-8 text-red-900"
+    <div :class="isAdmin && !isAdminViewingStudent ? 'adm-dash__sheet' : ''">
+      <button
+        v-if="isAdmin && !isAdminViewingStudent"
+        type="button"
+        class="adm-dash__refresh"
+        :disabled="loading"
+        @click="loadOverview"
       >
-        <h2 class="text-xl font-bold flex items-center gap-2">
-          <LockKeyhole class="h-5 w-5" />
-          Masa aktif aplikasi berakhir
-        </h2>
-        <p class="text-sm mt-2">
-          Akses dashboard dan kelas telah ditutup. Anda masih dapat melihat profil dan riwayat aktivitas.
-        </p>
-        <div class="mt-5 flex flex-wrap gap-3">
-          <router-link to="/profile" class="inline-flex rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
-            Buka Profil
-          </router-link>
-          <router-link to="/activity-history" class="inline-flex rounded-full border border-red-300 bg-white px-5 py-2.5 text-sm font-semibold text-red-900">
-            Riwayat Aktivitas
-          </router-link>
-        </div>
-      </section>
+        <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': loading }" />
+        Refresh
+      </button>
 
-      <section
-        v-else-if="isLockedForStudent"
-        class="rounded-[2rem] border border-amber-200 bg-amber-50 p-8 text-amber-900"
-      >
-        <h2 class="text-xl font-bold flex items-center gap-2">
-          <LockKeyhole class="h-5 w-5" />
-          Dashboard terkunci
-        </h2>
-        <p class="text-sm mt-2">
-          <template v-if="usesSimplifiedOnboarding(user) && !user?.email_verified_at">
-            Verifikasi email Anda terlebih dahulu melalui tautan yang dikirim ke inbox.
-          </template>
-          <template v-else-if="usesSimplifiedOnboarding(user)">
-            Lakukan pembayaran lalu hubungi admin melalui halaman profil. Dashboard akan terbuka setelah admin mengonfirmasi pembayaran.
-          </template>
-          <template v-else>
-            Fitur dashboard dan kelas akan terbuka setelah pendaftaran selesai: administrasi, psikologi, kesehatan, lalu fisik.
-          </template>
-        </p>
-        <router-link
-          :to="usesSimplifiedOnboarding(user) && user?.email_verified_at ? '/profile' : '/registration'"
-          class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white"
+      <div v-if="loading" class="py-20 text-center text-gray-500">Memuat data dashboard...</div>
+      <div v-else-if="errorMessage" class="rounded-2xl border border-red-100 bg-red-50 p-6 text-red-700 text-sm mx-4 md:mx-0">
+        {{ errorMessage }}
+      </div>
+
+      <template v-else>
+        <section
+          v-if="isExpiredForStudent"
+          class="rounded-[2rem] border border-red-200 bg-red-50 p-8 text-red-900 mx-4 md:mx-0"
         >
-          {{ usesSimplifiedOnboarding(user) ? (user?.email_verified_at ? 'Buka Profil' : 'Verifikasi Email') : 'Lanjutkan Pendaftaran' }}
-        </router-link>
-      </section>
+          <h2 class="text-xl font-bold flex items-center gap-2">
+            <LockKeyhole class="h-5 w-5" />
+            Masa aktif aplikasi berakhir
+          </h2>
+          <p class="text-sm mt-2">
+            Akses dashboard dan kelas telah ditutup. Anda masih dapat melihat profil dan riwayat aktivitas.
+          </p>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <router-link to="/profile" class="inline-flex rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
+              Buka Profil
+            </router-link>
+            <router-link to="/activity-history" class="inline-flex rounded-full border border-red-300 bg-white px-5 py-2.5 text-sm font-semibold text-red-900">
+              Riwayat Aktivitas
+            </router-link>
+          </div>
+        </section>
 
-      <!-- ADMIN -->
-      <template v-else-if="isAdmin && !isAdminViewingStudent">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5"><div class="text-xs text-gray-500">Total Soal</div><div class="text-3xl font-bold">{{ overview.stats?.questions ?? 0 }}</div></div>
-          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5"><div class="text-xs text-gray-500">Peserta Terdaftar</div><div class="text-3xl font-bold">{{ overview.stats?.registered_users ?? 0 }}</div></div>
-          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5"><div class="text-xs text-gray-500">Peserta Diterima</div><div class="text-3xl font-bold">{{ overview.stats?.accepted_users ?? 0 }}</div></div>
-          <div class="bg-white border border-gray-100 rounded-2xl shadow-xl shadow-black/5 p-5"><div class="text-xs text-gray-500">Kelas Dibuat</div><div class="text-3xl font-bold">{{ overview.stats?.classes_count ?? 0 }}</div></div>
-        </div>
+        <section
+          v-else-if="isLockedForStudent"
+          class="rounded-[2rem] border border-amber-200 bg-amber-50 p-8 text-amber-900 mx-4 md:mx-0"
+        >
+          <h2 class="text-xl font-bold flex items-center gap-2">
+            <LockKeyhole class="h-5 w-5" />
+            Dashboard terkunci
+          </h2>
+          <p class="text-sm mt-2">
+            <template v-if="usesSimplifiedOnboarding(user) && !user?.email_verified_at">
+              Verifikasi email Anda terlebih dahulu melalui tautan yang dikirim ke inbox.
+            </template>
+            <template v-else-if="usesSimplifiedOnboarding(user)">
+              Lakukan pembayaran lalu hubungi admin melalui halaman profil. Dashboard akan terbuka setelah admin mengonfirmasi pembayaran.
+            </template>
+            <template v-else>
+              Fitur dashboard dan kelas akan terbuka setelah pendaftaran selesai.
+            </template>
+          </p>
+          <router-link
+            :to="usesSimplifiedOnboarding(user) && user?.email_verified_at ? '/profile' : '/registration'"
+            class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white"
+          >
+            {{ usesSimplifiedOnboarding(user) ? (user?.email_verified_at ? 'Buka Profil' : 'Verifikasi Email') : 'Lanjutkan Pendaftaran' }}
+          </router-link>
+        </section>
 
-        <div class="mt-8 space-y-6">
-          <section class="bg-white border border-gray-100 rounded-2xl p-5">
-            <div class="flex items-center justify-between gap-3 mb-4">
-              <h2 class="font-bold text-lg">Daftar Kelas</h2>
-              <router-link to="/bimble-classes" class="text-sm font-semibold text-[#5a6b2e] hover:underline">
-                Lihat semua
-              </router-link>
+        <!-- ADMIN -->
+        <template v-else-if="isAdmin && !isAdminViewingStudent">
+          <div class="adm-stats">
+            <div class="adm-stat adm-stat--blue">
+              <div class="adm-stat__icon"><FileText class="h-4 w-4" /></div>
+              <div class="adm-stat__value">{{ overview.stats?.questions ?? 0 }}</div>
+              <div class="adm-stat__label">Total Soal</div>
+              <div class="adm-stat__hint">{{ (overview.stats?.questions ?? 0) > 0 ? 'Semua soal tersedia' : 'Belum ada soal' }}</div>
             </div>
-            <div v-if="!overview.classes?.length" class="text-sm text-gray-500">Belum ada kelas.</div>
-            <div v-else class="grid gap-4 md:grid-cols-2">
-              <router-link
-                v-for="(c, idx) in overview.classes"
-                :key="c.id"
-                :to="{ name: 'bimble-class-room', params: { id: c.id } }"
-                class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden block hover:shadow-xl transition-shadow"
-                :class="cardTheme(idx).topBorder"
-              >
-                <div class="p-5 flex flex-col gap-3">
-                  <div class="flex items-start gap-3">
-                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
-                      <component :is="cardTheme(idx).icon" class="h-5 w-5" :class="cardTheme(idx).iconColor" />
+            <div class="adm-stat adm-stat--green">
+              <div class="adm-stat__icon"><Users class="h-4 w-4" /></div>
+              <div class="adm-stat__value">{{ overview.stats?.registered_users ?? 0 }}</div>
+              <div class="adm-stat__label">Peserta Terdaftar</div>
+              <div class="adm-stat__hint">{{ (overview.stats?.registered_users ?? 0) > 0 ? 'Peserta terdaftar' : 'Belum ada peserta' }}</div>
+            </div>
+            <div class="adm-stat adm-stat--orange">
+              <div class="adm-stat__icon"><UserCheck class="h-4 w-4" /></div>
+              <div class="adm-stat__value">{{ overview.stats?.accepted_users ?? 0 }}</div>
+              <div class="adm-stat__label">Peserta Diterima</div>
+              <div class="adm-stat__hint">{{ (overview.stats?.accepted_users ?? 0) > 0 ? 'Peserta aktif' : 'Belum ada peserta' }}</div>
+            </div>
+            <div class="adm-stat adm-stat--purple">
+              <div class="adm-stat__icon"><GraduationCap class="h-4 w-4" /></div>
+              <div class="adm-stat__value">{{ overview.stats?.classes_count ?? 0 }}</div>
+              <div class="adm-stat__label">Kelas Dibuat</div>
+              <div class="adm-stat__hint">{{ (overview.stats?.classes_count ?? 0) > 0 ? 'Kelas tersedia' : 'Belum ada kelas' }}</div>
+            </div>
+          </div>
+
+          <div class="adm-list-stack">
+            <section class="adm-list-card">
+              <div class="adm-list-card__row">
+                <div class="adm-list-card__icon adm-list-card__icon--blue">
+                  <BookOpen class="h-5 w-5" />
+                </div>
+                <div class="adm-list-card__body">
+                  <h2 class="adm-list-card__title">Daftar Kelas</h2>
+                  <p v-if="!overview.classes?.length" class="adm-list-card__sub">Belum ada kelas.</p>
+                  <p v-else class="adm-list-card__sub">{{ overview.classes.length }} kelas tersedia</p>
+                </div>
+                <router-link to="/bimble-classes" class="adm-list-card__link">
+                  Lihat semua
+                  <ChevronRight class="h-4 w-4" />
+                </router-link>
+              </div>
+              <div v-if="overview.classes?.length" class="adm-list-card__items hidden md:grid md:grid-cols-2 md:gap-4 md:mt-4">
+                <router-link
+                  v-for="(c, idx) in overview.classes"
+                  :key="c.id"
+                  :to="{ name: 'bimble-class-room', params: { id: c.id } }"
+                  class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden block hover:shadow-xl transition-shadow"
+                  :class="cardTheme(idx).topBorder"
+                >
+                  <div class="p-5 flex flex-col gap-3">
+                    <div class="flex items-start gap-3">
+                      <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
+                        <component :is="cardTheme(idx).icon" class="h-5 w-5" :class="cardTheme(idx).iconColor" />
+                      </div>
+                      <div class="min-w-0">
+                        <div class="font-bold text-lg text-[#1A1A1A] leading-tight">{{ c.name }}</div>
+                        <span class="inline-block mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+                          {{ c.class_code }}
+                        </span>
+                      </div>
                     </div>
-                    <div class="min-w-0">
-                      <div class="font-bold text-lg text-[#1A1A1A] leading-tight">{{ c.name }}</div>
-                      <span class="inline-block mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
-                        {{ c.class_code }}
-                      </span>
+                    <p class="text-sm text-gray-600">{{ formatProgram(c.program_type) }}</p>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                      <Users class="h-3.5 w-3.5" />
+                      {{ c.students_count ?? 0 }} peserta
                     </div>
                   </div>
-                  <p class="text-sm text-gray-600">{{ formatProgram(c.program_type) }}</p>
-                  <div class="flex items-center gap-2 text-xs text-gray-500">
-                    <Users class="h-3.5 w-3.5" />
-                    {{ c.students_count ?? 0 }} peserta
+                </router-link>
+              </div>
+            </section>
+
+            <section class="adm-list-card">
+              <div class="adm-list-card__row">
+                <div class="adm-list-card__icon adm-list-card__icon--purple">
+                  <Clock3 class="h-5 w-5" />
+                </div>
+                <div class="adm-list-card__body">
+                  <h2 class="adm-list-card__title">Recent History</h2>
+                  <p class="adm-list-card__sub-strong">Aktivitas Kelas</p>
+                  <p v-if="!overview.recent_activities?.length" class="adm-list-card__sub">Belum ada aktivitas.</p>
+                  <p v-else class="adm-list-card__sub">{{ overview.recent_activities.length }} aktivitas terbaru</p>
+                </div>
+                <router-link to="/bimble-classes" class="adm-list-card__link">
+                  Lihat semua
+                  <ChevronRight class="h-4 w-4" />
+                </router-link>
+              </div>
+              <div v-if="overview.recent_activities?.length" class="hidden md:block md:mt-4 md:space-y-3">
+                <div v-for="a in overview.recent_activities" :key="a.id" class="rounded-xl border border-gray-100 p-3">
+                  <div class="font-semibold">{{ a.title }}</div>
+                  <div class="text-xs text-gray-500">{{ a.bimble_class?.name }} · {{ a.creator?.name }} · {{ formatDate(a.happened_at || a.created_at) }}</div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <router-link to="/exams" class="adm-welcome">
+            <span class="adm-welcome__icon" aria-hidden="true">
+              <Trophy class="h-6 w-6" />
+            </span>
+            <div class="adm-welcome__text">
+              <div class="adm-welcome__title">Selamat datang di CATLab!</div>
+              <div class="adm-welcome__desc">Kelola tryout dan kelas dengan mudah dan efisien.</div>
+            </div>
+            <span class="adm-welcome__cta" aria-hidden="true">
+              <ChevronRight class="h-5 w-5" />
+            </span>
+          </router-link>
+        </template>
+
+        <!-- MENTOR -->
+        <template v-else-if="isMentor">
+          <div class="space-y-6 px-4 md:px-0">
+            <section class="bg-white border border-gray-100 rounded-2xl p-5">
+              <div class="flex items-center justify-between gap-3 mb-4">
+                <h2 class="font-bold text-lg">Kelas yang Diusung</h2>
+                <router-link to="/bimble-classes" class="text-sm font-semibold text-[#5a6b2e] hover:underline">
+                  Lihat semua
+                </router-link>
+              </div>
+              <div v-if="!overview.classes?.length" class="text-sm text-gray-500">Belum ada kelas mentor.</div>
+              <div v-else class="grid grid-cols-2 gap-3 md:gap-4">
+                <router-link
+                  v-for="(c, idx) in overview.classes"
+                  :key="c.id"
+                  :to="{ name: 'bimble-class-room', params: { id: c.id } }"
+                  class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden block hover:shadow-xl transition-shadow"
+                  :class="cardTheme(idx).topBorder"
+                >
+                  <div class="p-5 flex flex-col gap-3">
+                    <div class="flex items-start gap-3">
+                      <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
+                        <component :is="cardTheme(idx).icon" class="h-5 w-5" :class="cardTheme(idx).iconColor" />
+                      </div>
+                      <div class="min-w-0">
+                        <div class="font-bold text-lg text-[#1A1A1A] leading-tight">{{ c.name }}</div>
+                        <span class="inline-block mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+                          {{ c.class_code }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                      <Users class="h-3.5 w-3.5" />
+                      {{ c.students_count ?? 0 }} peserta
+                    </div>
+                    <p class="text-xs text-gray-600">
+                      Aktivitas terakhir:
+                      <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
+                    </p>
+                  </div>
+                </router-link>
+              </div>
+            </section>
+
+            <section class="bg-white border border-gray-100 rounded-2xl p-5">
+              <h2 class="font-bold text-lg mb-4">Test Akan Berlangsung</h2>
+              <div v-if="!overview.upcoming_tests?.length" class="text-sm text-gray-500">Belum ada test terjadwal.</div>
+              <div v-else class="space-y-3">
+                <div v-for="t in overview.upcoming_tests" :key="t.id" class="rounded-xl border border-gray-100 p-3">
+                  <div class="font-semibold">{{ t.name }}</div>
+                  <div class="text-xs text-gray-500">{{ t.category }} · {{ formatDate(t.start_time) }}</div>
+                  <div class="text-xs text-gray-600 mt-1">
+                    Kelas: {{ (t.classes || []).map((x) => x.name).join(', ') || '-' }}
                   </div>
                 </div>
-              </router-link>
-            </div>
-          </section>
-          <section class="bg-white border border-gray-100 rounded-2xl p-5">
-            <h2 class="font-bold text-lg mb-4">Recent History Aktivitas Kelas</h2>
+              </div>
+            </section>
+          </div>
+
+          <section class="bg-white border border-gray-100 rounded-2xl p-5 mt-6 mx-4 md:mx-0">
+            <h2 class="font-bold text-lg mb-4">Aktivitas Kelas Terbaru</h2>
             <div v-if="!overview.recent_activities?.length" class="text-sm text-gray-500">Belum ada aktivitas.</div>
             <div v-else class="space-y-3">
               <div v-for="a in overview.recent_activities" :key="a.id" class="rounded-xl border border-gray-100 p-3">
                 <div class="font-semibold">{{ a.title }}</div>
-                <div class="text-xs text-gray-500">{{ a.bimble_class?.name }} · {{ a.creator?.name }} · {{ formatDate(a.happened_at || a.created_at) }}</div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </template>
-
-      <!-- MENTOR -->
-      <template v-else-if="isMentor">
-        <div class="space-y-6">
-          <section class="bg-white border border-gray-100 rounded-2xl p-5">
-            <div class="flex items-center justify-between gap-3 mb-4">
-              <h2 class="font-bold text-lg">Kelas yang Diusung</h2>
-              <router-link to="/bimble-classes" class="text-sm font-semibold text-[#5a6b2e] hover:underline">
-                Lihat semua
-              </router-link>
-            </div>
-            <div v-if="!overview.classes?.length" class="text-sm text-gray-500">Belum ada kelas mentor.</div>
-            <div v-else class="grid gap-4 md:grid-cols-2">
-              <router-link
-                v-for="(c, idx) in overview.classes"
-                :key="c.id"
-                :to="{ name: 'bimble-class-room', params: { id: c.id } }"
-                class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden block hover:shadow-xl transition-shadow"
-                :class="cardTheme(idx).topBorder"
-              >
-                <div class="p-5 flex flex-col gap-3">
-                  <div class="flex items-start gap-3">
-                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
-                      <component :is="cardTheme(idx).icon" class="h-5 w-5" :class="cardTheme(idx).iconColor" />
-                    </div>
-                    <div class="min-w-0">
-                      <div class="font-bold text-lg text-[#1A1A1A] leading-tight">{{ c.name }}</div>
-                      <span class="inline-block mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
-                        {{ c.class_code }}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2 text-xs text-gray-500">
-                    <Users class="h-3.5 w-3.5" />
-                    {{ c.students_count ?? 0 }} peserta
-                  </div>
-                  <p class="text-xs text-gray-600">
-                    Aktivitas terakhir:
-                    <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
-                  </p>
-                </div>
-              </router-link>
-            </div>
-          </section>
-
-          <section class="bg-white border border-gray-100 rounded-2xl p-5">
-            <h2 class="font-bold text-lg mb-4">Test Akan Berlangsung</h2>
-            <div v-if="!overview.upcoming_tests?.length" class="text-sm text-gray-500">Belum ada test terjadwal.</div>
-            <div v-else class="space-y-3">
-              <div v-for="t in overview.upcoming_tests" :key="t.id" class="rounded-xl border border-gray-100 p-3">
-                <div class="font-semibold">{{ t.name }}</div>
-                <div class="text-xs text-gray-500">{{ t.category }} · {{ formatDate(t.start_time) }}</div>
-                <div class="text-xs text-gray-600 mt-1">
-                  Kelas: {{ (t.classes || []).map((x) => x.name).join(', ') || '-' }}
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <section class="bg-white border border-gray-100 rounded-2xl p-5 mt-6">
-          <h2 class="font-bold text-lg mb-4">Aktivitas Kelas Terbaru</h2>
-          <div v-if="!overview.recent_activities?.length" class="text-sm text-gray-500">Belum ada aktivitas.</div>
-          <div v-else class="space-y-3">
-            <div v-for="a in overview.recent_activities" :key="a.id" class="rounded-xl border border-gray-100 p-3">
-              <div class="font-semibold">{{ a.title }}</div>
-              <div class="text-xs text-gray-500">{{ a.bimble_class?.name }} · {{ formatDate(a.happened_at || a.created_at) }}</div>
-            </div>
-          </div>
-        </section>
-      </template>
-
-      <!-- PARENT -->
-      <template v-else-if="isParent">
-        <div v-if="!overview.children?.length" class="rounded-[2rem] border border-gray-100 bg-white p-8 text-center">
-          <p class="text-gray-600 font-medium">Belum ada peserta yang terhubung.</p>
-          <p class="text-sm text-gray-500 mt-1">Hubungi tim kami untuk menghubungkan akun Anda dengan ananda.</p>
-        </div>
-        <template v-else>
-          <h2 class="font-bold text-lg mb-4">Ananda Anda</h2>
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <router-link v-for="c in overview.children" :key="c.link_id" :to="`/child/${c.student.id}`"
-              class="block rounded-2xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
-              <div class="font-semibold text-[#1A1A1A]">{{ c.student.name }}</div>
-              <div class="text-xs text-gray-500 mt-0.5">{{ c.relationship }} · {{ formatProgram(c.student.program_category) }}</div>
-              <div class="mt-3 text-xs text-gray-600">
-                Laporan terbaru:
-                <span class="font-medium">{{ c.latest_report?.title || 'Belum ada laporan' }}</span>
-              </div>
-              <span class="inline-block mt-3 text-xs font-semibold text-[#9DB359]">Lihat perkembangan →</span>
-            </router-link>
-          </div>
-
-          <section class="bg-white border border-gray-100 rounded-2xl p-5 mt-6">
-            <h2 class="font-bold text-lg mb-4">Laporan Terbaru</h2>
-            <div v-if="!overview.recent_reports?.length" class="text-sm text-gray-500">Belum ada laporan.</div>
-            <div v-else class="space-y-3">
-              <div v-for="r in overview.recent_reports" :key="r.id" class="rounded-xl border border-gray-100 p-3">
-                <div class="flex items-center justify-between gap-2">
-                  <div class="font-semibold text-sm">{{ r.title }}</div>
-                  <span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full"
-                    :class="r.type === 'weekly_summary' ? 'bg-[#9DB359]/15 text-[#6f8235]' : 'bg-gray-100 text-gray-500'">
-                    {{ r.type === 'weekly_summary' ? 'Mingguan' : 'Harian' }}
-                  </span>
-                </div>
-                <div class="text-xs text-gray-500 mt-0.5">{{ r.student }} · {{ formatDate(r.report_date) }}</div>
+                <div class="text-xs text-gray-500">{{ a.bimble_class?.name }} · {{ formatDate(a.happened_at || a.created_at) }}</div>
               </div>
             </div>
           </section>
         </template>
-      </template>
 
-      <!-- STUDENT/USER (or admin viewing student) -->
-      <div
-        v-else-if="showStudentDashboard"
-        class="dashboard-pdf-export"
-      >
-        <div class="pdf-header">
-          <h2 class="text-xl font-bold text-[#1A1A1A]">Laporan Dashboard</h2>
-          <p class="text-sm text-gray-600 mt-1">
-            {{ pdfReportName }}
-            <span class="text-gray-400">·</span>
-            {{ displayProgramBadge.label }}
-          </p>
-        </div>
-
-        <div class="pdf-grid-2">
-          <section v-if="isExamOnlyStudent" class="pdf-section lg:col-span-2">
-            <h2 class="pdf-section-title">Program Kelas Ujian</h2>
-            <p class="text-sm text-gray-600">
-              Anda terdaftar di program Kelas Ujian — hanya menu ujian yang tersedia, tanpa kelas kursus online.
+        <!-- STUDENT/USER (or admin viewing student) -->
+        <div
+          v-else-if="showStudentDashboard"
+          class="dashboard-pdf-export px-4 md:px-0"
+        >
+          <div class="pdf-header">
+            <h2 class="text-xl font-bold text-[#1A1A1A]">Laporan Dashboard</h2>
+            <p class="text-sm text-gray-600 mt-1">
+              {{ pdfReportName }}
+              <span class="text-gray-400">·</span>
+              {{ displayProgramBadge.label }}
             </p>
-            <router-link to="/ujian" class="inline-flex mt-4 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
-              Buka Daftar Ujian
-            </router-link>
-          </section>
+          </div>
 
-          <section v-else class="pdf-section lg:col-span-2">
-            <h2 class="pdf-section-title">Kelas Saya</h2>
-            <div v-if="!overview.classes?.length" class="pdf-muted">Belum ada kelas yang ditambahkan.</div>
-            <div v-else class="grid gap-4 md:grid-cols-2">
-              <router-link
-                v-for="(c, idx) in overview.classes"
-                :key="c.id"
-                :to="{ name: 'bimble-class-room', params: { id: c.id } }"
-                class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden block hover:shadow-xl transition-shadow"
-                :class="cardTheme(idx).topBorder"
-              >
-                <div class="p-5 flex flex-col gap-3">
-                  <div class="flex items-start gap-3">
-                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
-                      <component :is="cardTheme(idx).icon" class="h-5 w-5" :class="cardTheme(idx).iconColor" />
-                    </div>
-                    <div class="min-w-0">
-                      <div class="font-bold text-lg text-[#1A1A1A] leading-tight">{{ c.name }}</div>
-                      <span class="inline-block mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
-                        {{ c.class_code }}
-                      </span>
-                    </div>
-                  </div>
-                  <p class="text-sm text-gray-600">{{ formatProgram(c.program_type) }}</p>
-                  <p class="text-xs text-gray-600">
-                    Aktivitas terakhir:
-                    <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
-                  </p>
-                </div>
+          <div class="pdf-grid-2">
+            <section v-if="isExamOnlyStudent" class="pdf-section lg:col-span-2">
+              <h2 class="pdf-section-title">Program Kelas Ujian</h2>
+              <p class="text-sm text-gray-600">
+                Anda terdaftar di program Kelas Ujian — hanya menu ujian yang tersedia, tanpa kelas kursus online.
+              </p>
+              <router-link to="/ujian" class="inline-flex mt-4 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
+                Buka Daftar Ujian
               </router-link>
-            </div>
-          </section>
+            </section>
 
-          <section class="pdf-section">
-            <h2 class="pdf-section-title">Riwayat Aktivitas</h2>
-            <div v-if="!overview.class_activities?.length" class="pdf-muted">Belum ada aktivitas.</div>
-            <div v-else>
-              <div v-for="a in overview.class_activities" :key="a.id" class="pdf-card">
-                <div class="flex items-start justify-between gap-2">
-                  <div class="font-semibold text-sm">{{ a.title }}</div>
-                  <span
-                    v-if="activityTypeLabel(a.activity_type)"
-                    class="shrink-0 text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full"
-                    :class="activityTypeClass(a.activity_type)"
-                  >
-                    {{ activityTypeLabel(a.activity_type) }}
-                  </span>
-                </div>
-                <div class="pdf-muted">
-                  <template v-if="a.activity_type === 'class'">
-                    {{ a.bimble_class?.name }} · {{ a.creator?.name }} ·
-                  </template>
-                  {{ formatDate(a.happened_at || a.created_at) }}
-                </div>
-                <div v-if="a.description" class="pdf-text-sm mt-1">{{ a.description }}</div>
+            <section v-else class="pdf-section lg:col-span-2">
+              <h2 class="pdf-section-title">Kelas Saya</h2>
+              <div v-if="!overview.classes?.length" class="pdf-muted">Belum ada kelas yang ditambahkan.</div>
+              <div v-else class="grid grid-cols-2 gap-3 md:gap-4">
+                <router-link
+                  v-for="(c, idx) in overview.classes"
+                  :key="c.id"
+                  :to="{ name: 'bimble-class-room', params: { id: c.id } }"
+                  class="rounded-[1.75rem] border border-gray-100 bg-white shadow-lg shadow-black/5 overflow-hidden block hover:shadow-xl transition-shadow"
+                  :class="cardTheme(idx).topBorder"
+                >
+                  <div class="p-5 flex flex-col gap-3">
+                    <div class="flex items-start gap-3">
+                      <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" :class="cardTheme(idx).iconWrap">
+                        <component :is="cardTheme(idx).icon" class="h-5 w-5" :class="cardTheme(idx).iconColor" />
+                      </div>
+                      <div class="min-w-0">
+                        <div class="font-bold text-lg text-[#1A1A1A] leading-tight">{{ c.name }}</div>
+                        <span class="inline-block mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
+                          {{ c.class_code }}
+                        </span>
+                      </div>
+                    </div>
+                    <p class="text-sm text-gray-600">{{ formatProgram(c.program_type) }}</p>
+                    <p class="text-xs text-gray-600">
+                      Aktivitas terakhir:
+                      <span class="font-medium">{{ c.latest_activity?.title || 'Belum ada aktivitas' }}</span>
+                    </p>
+                  </div>
+                </router-link>
               </div>
-            </div>
-          </section>
-        </div>
+            </section>
 
-        <div class="mt-8">
-          <h2 class="pdf-section-title">Perkembangan Saya</h2>
-          <StudentProgressPanel
-            v-if="activeStudentId"
-            :student-id="activeStudentId"
-          />
+            <section class="pdf-section">
+              <h2 class="pdf-section-title">Riwayat Aktivitas</h2>
+              <div v-if="!overview.class_activities?.length" class="pdf-muted">Belum ada aktivitas.</div>
+              <div v-else>
+                <div v-for="a in overview.class_activities" :key="a.id" class="pdf-card">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="font-semibold text-sm">{{ a.title }}</div>
+                    <span
+                      v-if="activityTypeLabel(a.activity_type)"
+                      class="shrink-0 text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full"
+                      :class="activityTypeClass(a.activity_type)"
+                    >
+                      {{ activityTypeLabel(a.activity_type) }}
+                    </span>
+                  </div>
+                  <div class="pdf-muted">
+                    <template v-if="a.activity_type === 'class'">
+                      {{ a.bimble_class?.name }} · {{ a.creator?.name }} ·
+                    </template>
+                    {{ formatDate(a.happened_at || a.created_at) }}
+                  </div>
+                  <div v-if="a.description" class="pdf-text-sm mt-1">{{ a.description }}</div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="mt-8">
+            <h2 class="pdf-section-title">Perkembangan Saya</h2>
+            <StudentProgressPanel
+              v-if="activeStudentId"
+              :student-id="activeStudentId"
+            />
+          </div>
         </div>
-      </div>
-    </template>
+      </template>
+    </div>
   </main>
 </template>
 
@@ -363,7 +427,22 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { ArrowLeft, Calculator, Globe, GraduationCap, LayoutDashboard, LockKeyhole, Users } from 'lucide-vue-next'
+import {
+  ArrowLeft,
+  BookOpen,
+  Calculator,
+  ChevronRight,
+  Clock3,
+  FileText,
+  Globe,
+  GraduationCap,
+  LayoutDashboard,
+  LockKeyhole,
+  RefreshCw,
+  Trophy,
+  UserCheck,
+  Users,
+} from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useAppStore } from '@/stores/app'
 import { getProgramBadge, programCategoryLabel, registrationCompleted, isAppExpired, usesSimplifiedOnboarding, isExamOnlyProgram } from '@/utils/userMeta'
@@ -378,6 +457,8 @@ const errorMessage = ref('')
 const overview = ref({})
 const viewedStudent = ref(null)
 
+const clipboardUrl = new URL('../../assets/properties/paper.png', import.meta.url).href
+
 const viewingStudentId = computed(() => {
   if (route.name !== 'student-dashboard') return null
   const id = Number(route.params.id)
@@ -386,7 +467,6 @@ const viewingStudentId = computed(() => {
 
 const isAdmin = computed(() => user.value?.role === 'admin')
 const isMentor = computed(() => user.value?.role === 'mentor')
-const isParent = computed(() => user.value?.role === 'parent')
 const isStudent = computed(() => user.value?.role === 'user')
 const isAdminViewingStudent = computed(() => isAdmin.value && !!viewingStudentId.value)
 const isExpiredForStudent = computed(() => isStudent.value && !isAdminViewingStudent.value && isAppExpired(user.value))

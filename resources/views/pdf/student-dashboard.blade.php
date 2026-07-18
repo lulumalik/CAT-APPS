@@ -354,16 +354,6 @@
     </div>
 
     <div class="section">
-        <h2>Hasil Jasmani</h2>
-        <p class="muted" style="margin:0 0 8px;">Perkembangan tiap komponen jasmani per tanggal</p>
-        {!! PdfChartRenderer::splitSeriesCharts(
-            $progress['physical_timeline'] ?? [],
-            'value',
-            'Belum ada hasil jasmani.'
-        ) !!}
-    </div>
-
-    <div class="section">
         <h2>Nilai Ujian</h2>
             <p class="muted" style="margin:0 0 8px;">Perkembangan nilai ujian yang sudah dikerjakan peserta (skala 1–100)</p>
         {!! PdfChartRenderer::lineChart(

@@ -1,2014 +1,649 @@
 <template>
-  <main class="auth-right-pane min-h-screen text-text rounded-3xl">
-    <span class="auth-visual-stripe fixed top-0 left-0 w-full h-full" style="z-index: -10;" />
-    <div class="fixed top-4 inset-x-0 z-40 px-4 md:px-10">
-      <div
-        class="home-top-nav page-shell rounded-3xl md:rounded-full bg-white/95 backdrop-blur border border-border shadow-xl shadow-[#123B8F]/10 px-4 md:px-5 lg:px-6 py-2 md:py-0">
-        <div class="hidden md:flex h-16 min-h-16 items-center justify-between gap-3 lg:gap-4">
-          <div
-            class="flex min-w-0 flex-1 items-center gap-0.5 lg:gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <button v-for="item in quickNavItems" :key="item.id" type="button"
-              class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase tracking-wide px-2 lg:px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap"
-              @click="scrollToSection(item.id)">
-              {{ item.label }}
-            </button>
-          </div>
-          <div class="flex shrink-0 items-center gap-1.5 lg:gap-2">
-            <!-- <router-link to="/selayang-pandang"
-              class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase tracking-wide px-2 lg:px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
-              Selayang Pandang
-            </router-link>
-            <router-link to="/about-us"
-              class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase tracking-wide px-2 lg:px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors whitespace-nowrap">
-              Tentang Kami
-            </router-link> -->
-            <router-link :to="authNavLink.to"
-              class="shrink-0 text-[10px] lg:text-[11px] xl:text-xs bg-primary text-white font-bold uppercase tracking-wide px-3 lg:px-4 py-2 rounded-md cursor-pointer hover:bg-primary/80 hover:text-white transition-colors whitespace-nowrap">
-              {{ authNavLink.label }}
-            </router-link>
-          </div>
+  <div ref="viewportRef" class="cs-viewport">
+    <!-- Slide dots -->
+    <nav class="cs-dots" aria-label="Navigasi slide">
+      <a v-for="slide in slides" :key="slide.id" :href="`#${slide.id}`" class="cs-dots__dot"
+        :class="{ 'is-active': activeSlide === slide.id, 'is-light': activeOnDark }" :aria-label="slide.label" />
+    </nav>
+
+    <!-- ===================== SLIDE 1 : HERO ===================== -->
+    <section id="beranda" ref="slideRefs" class="cs-slide cs-slide--hero">
+      <div class="cs-hero__dark" aria-hidden="true">
+        <div class="cs-hero__dots-pattern" />
+      </div>
+
+      <!-- Nav -->
+      <header class="cs-nav">
+        <router-link to="/" class="cs-brand" aria-label="CATLab beranda">
+          <span class="cs-brand__mark">
+            <CheckSquare class="h-5 w-5" />
+          </span>
+          <span class="cs-brand__text">
+            <span class="cs-brand__title"><span class="cs-brand__cat">CAT</span><span
+                class="cs-brand__sim">Lab</span></span>
+            <span class="cs-brand__sub">Computer Assisted Test</span>
+          </span>
+        </router-link>
+
+        <nav class="cs-nav__links" aria-label="Navigasi utama">
+          <a href="#beranda" class="cs-nav__link">Beranda</a>
+          <a href="#fitur" class="cs-nav__link">Fitur</a>
+          <a href="#simulasi" class="cs-nav__link">Simulasi</a>
+          <a href="#tentang" class="cs-nav__link">Tentang</a>
+          <a href="#kontak" class="cs-nav__link">Kontak</a>
+        </nav>
+
+        <div class="cs-nav__actions">
+          <router-link to="/login" class="cs-nav__avatar" aria-label="Masuk">
+            <User class="h-4 w-4" />
+          </router-link>
+          <button type="button" class="cs-nav__burger" aria-label="Menu" @click="mobileOpen = !mobileOpen">
+            <Menu class="h-5 w-5" />
+          </button>
+        </div>
+      </header>
+
+      <Transition name="cs-fade">
+        <div v-if="mobileOpen" class="cs-nav__mobile">
+          <a v-for="slide in slides" :key="slide.id" :href="`#${slide.id}`" class="cs-nav__link"
+            @click="mobileOpen = false">
+            {{ slide.label }}
+          </a>
+          <router-link to="/login" class="cs-nav__link" @click="mobileOpen = false">Masuk</router-link>
+          <router-link to="/signup" class="cs-nav__link" @click="mobileOpen = false">Daftar</router-link>
+        </div>
+      </Transition>
+
+      <!-- Vertical brand text (left edge) -->
+      <p class="cs-hero__vertical" aria-hidden="true">
+        <span class="cs-hero__vertical-dot" /> CATLab
+      </p>
+
+      <!-- Copy -->
+      <div class="cs-hero__copy">
+        <p class="cs-hero__eyebrow">Latihan &bull; Simulasi &bull; Sukses</p>
+
+        <h1 class="cs-hero__title">
+          Berlatih hari ini,<br />
+          Tingkatkan hasil<br />
+          <span class="cs-hero__title-blue">ujianmu.</span>
+        </h1>
+
+        <p class="cs-hero__lead">
+          Platform simulasi ujian berbasis CAT untuk membantu kamu mempersiapkan
+          JLPT/N4, TOEFL, SNMPTN, SBMPTN, JFT, dan ujian lainnya — lebih efektif,
+          terukur, dan gratis.
+        </p>
+
+        <div class="cs-hero__actions">
+          <router-link to="/free-tryout" class="cs-cta">
+            <Play class="h-4 w-4" fill="currentColor" />
+            Mulai Simulasi Sekarang
+          </router-link>
         </div>
 
-        <div class="md:hidden">
-          <div class="h-12 relative flex items-center justify-center gap-2">
-            <router-link to="/about-us"
-              class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors">
-              Tentang Kami
-            </router-link>
-            <button type="button"
-              class="absolute right-0 inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-text hover:bg-gray-300 transition-colors"
-              aria-label="Toggle menu" @click="isMobileMenuOpen = !isMobileMenuOpen">
-              <span class="text-xl leading-none">{{ isMobileMenuOpen ? 'x' : '=' }}</span>
-            </button>
-          </div>
-
-          <div v-if="isMobileMenuOpen" class="pb-3 pt-2 border-t border-border">
-            <div class="grid gap-1 text-center">
-              <router-link to="/selayang-pandang"
-                class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors"
-                @click="isMobileMenuOpen = false">
-                Selayang Pandang
-              </router-link>
-              <button v-for="item in quickNavItems" :key="`mobile-${item.id}`" type="button"
-                class="text-xs font-bold uppercase tracking-wide px-3 py-2 rounded-md cursor-pointer hover:bg-gray-300 hover:text-primary transition-colors"
-                @click="scrollToSection(item.id)">
-                {{ item.label }}
-              </button>
-              <router-link :to="authNavLink.to"
-                class="mt-2 px-4 py-2 rounded-md bg-primary text-white text-center text-xs font-bold uppercase tracking-wide hover:bg-secondary transition-colors"
-                @click="isMobileMenuOpen = false">
-                {{ isAuthenticated ? 'Masuk' : 'Masuk Ke Platform' }}
-              </router-link>
+        <div class="cs-hero__features">
+          <div v-for="feature in heroFeatures" :key="feature.title" class="cs-hero__feature">
+            <span class="cs-hero__feature-icon" :style="{ background: feature.bg, color: feature.color }">
+              <component :is="feature.icon" class="h-5 w-5" />
+            </span>
+            <div>
+              <p class="cs-hero__feature-title">{{ feature.title }}</p>
+              <p class="cs-hero__feature-text">{{ feature.text }}</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <section id="hero" class="relative overflow-hidden rounded-none px-4 md:px-10 pt-24 md:pt-28 pb-8">
-      <div
-        class="page-shell relative overflow-hidden rounded-[2rem] border border-white/20 bg-gradient-to-r from-[#333333] via-[#636363] to-[#595959] px-5 py-8 md:px-10 md:py-12 shadow-2xl shadow-primary/30">
-        <div
-          class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.18),transparent_48%),radial-gradient(circle_at_85%_80%,rgba(255,255,255,0.2),transparent_52%)]" />
-        <div class="relative z-10 grid gap-8 lg:grid-cols-[1.25fr_0.95fr] items-center">
-          <div>
-            <div
-              class="inline-flex items-center gap-2 rounded-full border border-yellow-300/70 bg-yellow-300/10 px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-yellow-200">
-              Program Persiapan Taruna Akademi POLRI
+      <!-- Big circle on the split line -->
+      <div class="cs-circle">
+        <div class="cs-circle__ring" />
+        <div class="cs-circle__orbit" aria-hidden="true">
+          <span
+            v-for="i in 5"
+            :key="i"
+            class="cs-circle__ring-dot-wrap"
+            :style="{ '--i': i - 1 }"
+          >
+            <span class="cs-circle__ring-dot" />
+          </span>
+        </div>
+
+        <div class="cs-circle__disc">
+          <div class="cs-circle__half-light">
+            <span class="cs-float cs-float--clipboard">
+              <ClipboardList class="h-6 w-6" />
+            </span>
+            <span class="cs-float cs-float--clock">
+              <Clock class="h-6 w-6" />
+            </span>
+            <span class="cs-float cs-float--cap">
+              <GraduationCap class="h-7 w-7" />
+            </span>
+
+            <div class="cs-monitor">
+              <div class="cs-monitor__screen">
+                <p class="cs-monitor__q">Soal 12 dari 40</p>
+                <div class="cs-monitor__progress"><span style="width: 32%" /></div>
+                <ul class="cs-monitor__options">
+                  <li class="is-active"><span>A</span></li>
+                  <li><span>B</span></li>
+                  <li><span>C</span></li>
+                  <li><span>D</span></li>
+                </ul>
+              </div>
+              <div class="cs-monitor__stand" />
+              <div class="cs-monitor__base" />
             </div>
-            <h1 class="mt-5 text-3xl md:text-5xl font-black leading-[1.1] tracking-tight text-white">
-              Persiapan AKPOL yang Intensif, Eksklusif, dan Terarah.
-            </h1>
-            <p class="mt-4 max-w-2xl text-sm md:text-base text-blue-100 font-semibold leading-relaxed">
-              ​Bingung memulai persiapan AKPOL dari mana? Serahkan pada ahlinya. Pratistha Cendekia Prestasi menyediakan
-              ekosistem belajar profesional dengan fasilitas premium untuk memastikan setiap calon peserta tampil
-              maksimal di seluruh tahapan seleksi.
-            </p>
-            <p class="mt-3 max-w-2xl text-xs md:text-sm text-blue-50 font-semibold">
-              Alamat kantor Jl. Sukamaju no. 142, Cipadung Kulon, Kec. Panyileukan, Kota Bandung - Jabar 40614
-            </p>
-
-            <div class="mt-6 flex flex-wrap items-center gap-3">
-              <router-link to="/free-tryout"
-                class="cta-tryout-animated px-7 py-3 rounded-full text-white text-sm md:text-base font-bold transition-all">
-                Konsultasi Sekarang
-              </router-link>
-              <router-link type="button"
-                class="px-7 py-3 rounded-full cursor-pointer border-2 border-blue-100 text-white text-sm md:text-base font-bold bg-white/10 hover:bg-white/20 transition-all"
-                to="/signup">
-                Daftar Peserta Kursus
-              </router-link>
-            </div>
-
-            <div
-              class="mt-6 rounded-2xl border border-red-200/40 bg-orange-500/70 pr-4 pt-4 pb-4 pl-36 md:pl-40 backdrop-blur-sm relative">
-              <img src="../../assets/promo.png" alt="Promo Early Bird"
-                class=" absolute top-0 md:-top-8 -left-8 z-10 object-cover w-44" />
-              <p class="text-[11px] md:text-sm font-extrabold uppercase tracking-[0.16em] text-white">Promo Early Bird
-              </p>
-              <p class="mt-1 text-sm md:text-base font-bold text-white">Dapatkan promo spesial untuk <b
-                  class="text-[gold]">10 Pendaftar
-                  Pertama.</b></p>
+            <div class="cs-books">
+              <span /><span /><span />
             </div>
           </div>
-          <div class="relative mx-auto w-full max-w-md">
-            <div class="flex items-end gap-4 w-[220px] mb-8">
-              <img src="../../assets/logo.png" alt="Logo" class="w-full h-full object-cover" />
-              <img src="../../assets/pppolri.png" alt="Logo" class="w-full h-full object-cover" />
-            </div>
-            <div class="grid grid-cols-2 gap-3 rounded-3xl border border-white/25 bg-white/10 p-3 shadow-2xl">
-              <div class="overflow-hidden rounded-2xl bg-[#333]">
-                <img :src="taruna" alt="Taruna" class="h-[300px] w-full object-cover object-top" />
+          <div class="cs-circle__half-dark">
+            <div class="cs-hero__dots-pattern cs-hero__dots-pattern--circle" />
+            <div class="cs-score-card">
+              <p class="cs-score-card__value">86<span>/100</span></p>
+              <div class="cs-score-card__bars">
+                <span style="height: 40%" /><span style="height: 65%" /><span style="height: 50%" /><span
+                  style="height: 85%" />
               </div>
-              <div class="overflow-hidden rounded-2xl bg-[#333]">
-                <img :src="taruni" alt="Taruni" class="h-[300px] w-full object-cover object-top" />
-              </div>
-            </div>
-            <div
-              class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[92%] rounded-2xl border border-white/25 bg-[#333]/90 px-4 py-3 text-center shadow-xl">
-              <p class="text-3xl font-black text-white">Garansi</p>
-              <p class="text-sm font-semibold text-blue-100">100% membentuk calon-calon polisi terbaik</p>
             </div>
           </div>
         </div>
 
-        <div class="relative z-10 mt-14 grid grid-cols-3 md:grid-cols-2 md:grid-cols-3 gap-3">
-          <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
-            <div class="flex items-center justify-center gap-2">
-              <div
-                class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
-                <NotebookPen class="w-3 h-3 md:h-5 md:w-5" />
-              </div>
-              <p class="text-xl md:text-3xl font-black text-white">99%</p>
-            </div>
-            <p class="mt-1 text-xs md:text-sm font-semibold text-blue-100">Materi Prediktif</p>
-          </article>
-          <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
-            <div class="flex items-center justify-center gap-2">
-              <div
-                class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
-                <Crown class="w-3 h-3 md:h-5 md:w-5" />
-              </div>
-              <p class="text-xl md:text-3xl font-black text-white">20+</p>
-            </div>
-            <p class="mt-1 text-xs md:text-sm font-semibold text-blue-100">Tahun Pengalaman</p>
-          </article>
-          <article class="rounded-2xl border border-white/25 bg-white/10 p-4 text-center">
-            <div class="flex items-center justify-center gap-2">
-              <div
-                class="inline-flex h-5 w-5 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/20 text-white">
-                <GraduationCap class="w-3 h-3 md:h-5 md:w-5" />
-              </div>
-              <p class="text-xl md:text-3xl font-black text-white">100%</p>
-            </div>
-            <p class="mt-1 text-xs md:text-sm font-semibold text-blue-100">Pengajar Profesional</p>
-          </article>
-        </div>
+        <button type="button" class="cs-circle__play" aria-label="Lihat fitur" @click="goToSlide('fitur')">
+          <Play class="h-5 w-5" fill="currentColor" />
+        </button>
+        <svg class="cs-circle__wire" viewBox="0 0 120 40" fill="none" aria-hidden="true">
+          <path d="M4 4 C 30 44, 60 -10, 116 24" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
       </div>
-    </section>
 
-    <div class="px-4 md:px-10 pb-6">
-      <div
-        class="page-shell rounded-2xl bg-gradient-to-r from-[#1a1a1a] via-[#2d2d2d] to-[#3d3d3d] px-5 md:px-8 py-5 md:py-6 shadow-lg shadow-primary/25 overflow-hidden relative">
-        <div class="relative z-10 flex justify-center">
-          <div class="text-left">
-            <p
-              class="gold-shimmer-text text-2xl md:text-4xl lg:text-5xl text-center md:text-left font-black uppercase tracking-wide text-[gold]/90 leading-none">
-              Dibina dan dimonitor oleh
-            </p>
-            <p
-              class="gold-shimmer-text mt-2 text-center text-2xl md:text-4xl lg:text-5xl font-semibold uppercase tracking-wide text-[gold] leading-tight">
-              para jenderal
-            </p>
-            <p
-              class="gold-shimmer-text mt-2 text-2xl md:text-4xl lg:text-5xl text-center md:text-center font-black uppercase tracking-wide text-[gold]/90 leading-none">
-              purnawirawan polri
-            </p>
-          </div>
-        </div>
+      <!-- Vertical timeline (right, on dark) -->
+      <ol class="cs-timeline">
+        <li v-for="(step, index) in timelineSteps" :key="step" :class="{ 'is-first': index === 0 }">
+          <span class="cs-timeline__num">0{{ index + 1 }}</span>
+          <span class="cs-timeline__label">{{ step }}</span>
+        </li>
+      </ol>
+
+      <!-- Floating badges on dark -->
+      <div class="cs-badge cs-badge--chart">
+        <BarChart3 class="h-4 w-4" />
       </div>
-    </div>
-
-    <section id="leaders">
-      <div class="page-shell px-4 md:px-0">
-        <div class="overflow-visible">
-          <div class="leaders-demo-layout">
-            <div class="leaders-demo-content order-2 xl:order-1">
-              <p class="leaders-demo-eyebrow">Profil</p>
-              <h3 class="leaders-demo-name">{{ leaders[activeLeaderIndex].name }}</h3>
-              <p class="leaders-demo-batch">{{ leaders[activeLeaderIndex].batch }}</p>
-
-              <p class="leaders-demo-heading mt-8">Posisi Saat Ini</p>
-              <p class="leaders-demo-position">{{ leaders[activeLeaderIndex].position }}</p>
-
-              <p class="leaders-demo-heading mt-8">Jabatan Terakhir</p>
-              <ul class="leaders-demo-list">
-                <li v-for="line in leaders[activeLeaderIndex].highlights" :key="line">{{ line }}</li>
-              </ul>
-            </div>
-
-            <div class="leaders-demo-visual rounded-md relative order-1 xl:order-2 top-6 mb-24 xl:mb-0 xl:top-0">
-              <Transition :name="leaderTransitionName" mode="out-in">
-                <div class="relative xl:right-48 xl:top-10 pb-16 xl:pb-0">
-                  <img :key="`leader-main-image-${activeLeaderIndex}`" :src="leaders[activeLeaderIndex].image"
-                    :alt="leaders[activeLeaderIndex].name" class="leaders-demo-image rounded-md" />
-                </div>
-              </Transition>
-              <div ref="leaderCarouselRef"
-                class="leader-vertical-carousel absolute left-1/2 -translate-x-1/2 -bottom-12 mt-4 z-20 grid grid-flow-col auto-cols-[6.8rem] grid-rows-1 gap-3 w-[calc(100%-1rem)] max-w-xl overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth xl:left-auto xl:translate-x-0 xl:-right-16 xl:top-32 xl:bottom-auto xl:grid-flow-row xl:auto-cols-auto xl:grid-cols-2 xl:w-[16rem] xl:max-h-none xl:gap-2.5 xl:overflow-visible xl:snap-none"
-                @scroll.passive="onLeaderScroll">
-                <article v-for="(leader, index) in leaders" :key="leader.name"
-                  :ref="(el) => setLeaderSlideRef(el, index)"
-                  class="shrink-0 snap-center cursor-pointer overflow-hidden w-10/12 xl:w-full mx-auto rounded-md border border-border bg-[#1c1d2f] p-1 xl:p-1.5 shadow transition-all duration-300 aspect-[3/4]"
-                  :class="activeLeaderIndex === index
-                    ? 'scale-[1.01] border-3 border-white shadow-lg shadow-white/20'
-                    : 'xl:opacity-70 hover:opacity-100'" @click="goToLeader(index)">
-                  <img :src="leader.image" :alt="leader.name"
-                    class="h-24 md:h-28 xl:h-full w-full rounded-md object-cover" />
-                </article>
-              </div>
-              <div class="xl:hidden absolute -bottom-24 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
-                <button type="button"
-                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-[#1c1d2f]/85 text-white shadow transition disabled:opacity-45 disabled:cursor-not-allowed"
-                  :disabled="activeLeaderIndex <= 0" @click="stepLeader(-1)" aria-label="Leader sebelumnya">
-                  <ChevronLeft class="h-4 w-4" />
-                </button>
-                <button type="button"
-                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-[#1c1d2f]/85 text-white shadow transition disabled:opacity-45 disabled:cursor-not-allowed"
-                  :disabled="activeLeaderIndex >= leaders.length - 1" @click="stepLeader(1)"
-                  aria-label="Leader berikutnya">
-                  <ChevronRight class="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="cs-badge cs-badge--clock">
+        <Clock class="h-4 w-4" />
       </div>
     </section>
 
-    <section id="programs">
-      <div class="page-shell fade-up delay-2 relative px-4 md:px-8 py-8">
-        <div class="flex flex-col lg:flex-row gap-8 lg:items-center">
-          <div class="px-1 md:px-8 gap-8 relative z-10 mt-10">
-            <div class="text-2xl md:text-4xl font-bold tracking-tight text-white md:w-full">
-              Mengapa Harus Pilih Pratistha Cendekia Prestasi ?
-            </div>
-            <hr class="border-white/60 my-4 w-44 border-b-2" />
-            <div v-for="feature in keyFeatures" :key="feature.title" class="relative mt-4 md:mt-2 w-full">
-              <div
-                class="absolute inset-0 top-3 -left-3 rounded-2xl bg-white/30 backdrop-blur-sm -z-10 pointer-events-none">
-              </div>
-              <button type="button"
-                class="service-gradient-animated rounded-2xl shadow-xl relative z-10 p-5 md:p-6 text-left cursor-pointer transition-all translate-y-2 hover:-translate-y-2 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
-                @click="openFeatureModal(feature)">
-                <div class="flex items-center gap-2">
-                  <div class="inline-flex rounded-lg bg-[gold] p-2 text-primary relative z-20">
-                    <component :is="feature.icon" class="h-5 w-5" />
-                  </div>
-                  <h3 class="font-bold text-md relative text-xl z-20">{{ feature.title }}</h3>
-                </div>
-                <p class="text-gray-600 text-xs md:text-sm mt-2 text-lg leading-relaxed relative z-20 font-semibold">{{
-                  feature.desc }}</p>
-                <span class="mt-2 inline-flex underline items-center text-sm font-semibold text-primary relative z-20">
-                  Lihat detail
-                </span>
-              </button>
-            </div>
-          </div>
-          <div class="hidden xl:block absolute md:w-10/12 xl:relative">
-            <img src="../../assets/group.png" alt="group"
-              class="w-full absolute -top-[300px] -right-12 object-cover h-[700px]" />
-          </div>
-        </div>
+    <!-- ===================== SLIDE 2 : FITUR ===================== -->
+    <section id="fitur" ref="slideRefs" class="cs-slide cs-slide--light">
+      <div class="cs-features__wash" aria-hidden="true" />
+      <div class="cs-feature-float cs-feature-float--quiz" aria-hidden="true">
+        <span class="cs-feature-float__bar" />
+        <span v-for="option in ['A', 'B', 'C']" :key="option" class="cs-feature-float__option">{{ option }}</span>
+        <span class="cs-feature-float__check">
+          <Check class="h-4 w-4" />
+        </span>
       </div>
-    </section>
-
-
-    <section id="gallery" class="px-5 md:px-10 pb-8 mt-10 relative z-10">
-      <div class="page-shell fade-up delay-2">
-        <div
-          class="relative overflow-hidden rounded-[2rem] border border-white/20 bg-gradient-to-r from-[#333333] via-[#4a4a4a] to-[#595959] px-5 py-8 md:px-10 md:py-12 shadow-2xl shadow-primary/30">
-          <div
-            class="pointer-events-none absolute -top-10 -left-10 h-40 w-40 rounded-full bg-yellow-300/20 blur-2xl floating-orb" />
-          <div
-            class="pointer-events-none absolute bottom-0 right-1/3 h-32 w-32 rounded-full bg-secondary/30 blur-2xl floating-orb" />
-          <div class="relative z-10 grid gap-8 lg:grid-cols-[1.45fr_0.9fr] items-center">
-            <div class="gallery-mosaic">
-              <button v-for="(img, i) in galleryPreview" :key="`gallery-tile-${i}`" type="button"
-                class="gallery-tile group" :class="`gallery-tile-${i}`" @click="openGallery(i)"
-                :aria-label="`Buka dokumentasi kegiatan ${i + 1}`">
-                <img :src="img" :alt="`Dokumentasi kegiatan ${i + 1}`" class="gallery-tile-img" loading="lazy" />
-                <span class="gallery-tile-overlay">
-                  <Maximize2 class="h-5 w-5 text-white" />
-                </span>
-                <span v-if="i === 0"
-                  class="absolute left-3 bottom-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-yellow-400 text-[#333] shadow-lg shadow-black/30 transition-transform group-hover:scale-110">
-                  <Play class="h-5 w-5 fill-current" />
-                </span>
-              </button>
-              <button type="button" class="gallery-tile gallery-tile-more group" @click="openGallery(0)"
-                aria-label="Lihat semua dokumentasi kegiatan">
-                <img :src="galleryMoreImage" alt="Lihat semua dokumentasi" class="gallery-tile-img opacity-50"
-                  loading="lazy" />
-                <span class="gallery-more-overlay">
-                  <span class="text-2xl md:text-3xl font-black leading-none">+{{ galleryMoreCount }}</span>
-                  <span class="mt-1 text-[10px] md:text-xs font-bold uppercase tracking-[0.16em]">Lihat Semua</span>
-                </span>
-              </button>
-            </div>
-
-            <div class="text-center lg:text-left">
-              <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-yellow-200">Galeri Kegiatan</p>
-              <h2 class="mt-3 text-4xl md:text-5xl font-black leading-[0.95] text-white">
-                Momen<br />Pembinaan
-              </h2>
-              <div class="mt-5 flex items-start justify-center lg:justify-start gap-3">
-                <Quote class="h-7 w-7 shrink-0 text-yellow-300/80" />
-                <p class="text-sm md:text-base font-semibold text-blue-100 leading-relaxed max-w-md">
-                  Dokumentasi nyata proses belajar, pembinaan jasmani, dan kebersamaan calon taruna Pratistha Cendekia
-                  Prestasi.
-                </p>
-              </div>
-              <button type="button" @click="openGallery(0)"
-                class="mt-7 inline-flex items-center gap-2.5 rounded-2xl border-2 border-yellow-300/80 bg-yellow-300/10 px-6 py-3 text-sm md:text-base font-bold text-white transition-all hover:bg-yellow-300/20 hover:-translate-y-0.5">
-                <Images class="h-5 w-5" />
-                Jelajahi {{ galleryImages.length }} Foto
-              </button>
-            </div>
-          </div>
-        </div>
+      <div class="cs-feature-float cs-feature-float--chart" aria-hidden="true">
+        <PieChart class="cs-feature-float__pie" />
+        <BarChart3 class="cs-feature-float__bars" />
+        <span class="cs-feature-float__mini">
+          <TrendingUp class="h-5 w-5" />
+        </span>
       </div>
-    </section>
 
-    <section id="choices" class="px-5 md:px-10 pb-8 relative mt-10">
-      <div class="page-shell fade-up delay-2 relative">
-        <div>
-          <div class="text-2xl md:text-4xl font-bold tracking-tight text-white text-left">
-            Pilihan Kelas Kursus
-          </div>
-          <hr class="border-white/60 mt-4 w-44 border-b-2" />
-          <div class="grid md:grid-cols-2 gap-6 md:gap-8 relative z-30 mt-10">
-            <CourseCreditCard v-for="program in onlinePrograms" :key="program.value" :program="program" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="comparison" class="px-5 md:px-10 pb-8 mt-10 relative z-10">
-      <div class="page-shell fade-up delay-2 relative">
-        <div class="rounded-[2rem] bg-white border border-blue-100/60 shadow-xl shadow-primary/6 p-8 md:p-10">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Tabel Perbandingan Fasilitas Kelas Kursus</h2>
-          <p class="text-gray-600 mb-6">Bandingkan fasilitas dan durasi akses setiap kelas untuk menentukan program
-            paling sesuai.</p>
-
-          <div class="overflow-x-auto rounded-2xl border border-border relative z-20">
-            <table class="min-w-[980px] w-full border-collapse">
-              <thead>
-                <tr class="bg-gray-500">
-                  <th class="text-left px-4 py-3 font-bold text-white border-b border-border min-w-[290px]">Fasilitas
-                    Program</th>
-                  <th v-for="col in classComparisonColumns" :key="col.key"
-                    class="px-4 py-3 border-b border-border text-center">
-                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
-                      :class="col.badgeClass">
-                      {{ col.label }}
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in classComparisonRows" :key="row.label" class="odd:bg-white even:bg-gray-400/40">
-                  <th class="text-left px-4 py-3 text-sm md:text-base font-semibold text-text border-b border-border">{{
-                    row.label }}</th>
-                  <td v-for="col in classComparisonColumns" :key="`${row.label}-${col.key}`"
-                    class="px-4 py-3 border-b border-border text-center"
-                    :class="isBiayaRow(row) ? 'cursor-pointer hover:bg-primary/5 transition-colors' : ''"
-                    @click="handleComparisonCellClick(row)">
-                    <template v-if="typeof row.values[col.key] === 'boolean'">
-                      <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border"
-                        :class="row.values[col.key] ? 'bg-green-500 text-white border-border' : 'bg-red-500 text-white border-border'">
-                        <Check v-if="row.values[col.key]" class="h-4 w-4" />
-                        <XIcon v-else class="h-4 w-4" />
-                      </span>
-                    </template>
-                    <template v-else>
-                      <span class="text-sm md:text-base font-bold text-text">{{ row.values[col.key] }}</span>
-                    </template>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p class="text-xs text-gray-500 mt-3">
-            Catatan: rincian fasilitas dapat menyesuaikan kebijakan program dan periode pembinaan.
+      <div class="cs-slide__inner cs-slide__inner--features">
+        <div class="cs-section__head">
+          <p class="cs-section__eyebrow">Fitur</p>
+          <h2 class="cs-section__title">
+            Semua yang kamu butuhkan buat
+            <span class="cs-section__title-blue">berlatih</span>
+          </h2>
+          <p class="cs-section__desc">
+            Dirancang supaya latihan CAT terasa seperti ujian sungguhan — cepat, jujur, dan mudah dipantau.
           </p>
         </div>
-      </div>
-    </section>
 
-    <section class="px-5 md:px-10 pb-14 relative z-10">
-      <div class="page-shell rounded-[2rem] bg-black text-white p-8 md:p-10 shadow-2xl shadow-[#000] fade-up delay-3">
-        <h2 class="text-2xl md:text-3xl font-bold mb-3">Bagaimana Siap naik level untuk persiapan Akademi Kepolisian?
-        </h2>
-        <p class="text-white/80">
-          Bergabung sebagai peserta, lengkapi pendaftaran secara bertahap, lalu ikuti program kelas kursus online dengan
-          standar pembelajaran profesional.
-        </p>
-        <div class="mt-6 flex flex-wrap gap-3">
-          <router-link to="/free-tryout"
-            class="px-6 py-3 rounded-full bg-yellow-500 text-white font-semibold cta-tryout-animated transition-all">Coba
-            Tryout Gratis</router-link>
-        </div>
-      </div>
-    </section>
-
-    <a href="https://wa.me/628138964488" target="_blank" rel="noopener noreferrer"
-      class="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-white shadow-xl shadow-[#2F6BFF]/30 transition hover:scale-105 hover:bg-primary"
-      aria-label="Chat WhatsApp" title="Chat WhatsApp">
-      <MessageCircle class="h-7 w-7" />
-    </a>
-
-    <Teleport to="body">
-      <Transition name="member-slide-fade">
-        <div v-if="isLeaderDetailModalOpen"
-          class="fixed inset-0 z-[119] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
-          role="dialog" aria-modal="true" aria-labelledby="leader-detail-modal-title"
-          @click.self="closeLeaderDetailModal">
-          <article
-            class="leader-profile-card w-full max-w-2xl rounded-3xl relative overflow-hidden p-6 shadow-xl">
-            <div class="absolute inset-0 leader-profile-card__bg rounded-[2rem]"></div>
-            <div class="relative min-h-[390px] text-[#e8d5a3]">
-              <div class="flex items-center justify-end">
-                <button type="button"
-                  class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#c9a84c]/70 bg-black/30 text-[#e8d5a3] hover:bg-[#c9a84c]/15 transition-colors"
-                  aria-label="Tutup detail pimpinan" @click="closeLeaderDetailModal">
-                  <XIcon class="h-4 w-4" />
-                </button>
+        <div class="cs-feature-grid">
+          <article v-for="feature in mainFeatures" :key="feature.title" class="cs-feature-card">
+            <div class="cs-feature-card__body">
+              <span class="cs-feature-card__icon">
+                <component :is="feature.icon" class="cs-feature-card__icon-svg" />
+              </span>
+              <div class="cs-feature-card__copy">
+                <h3 class="cs-feature-card__title">{{ feature.title }}</h3>
+                <p class="cs-feature-card__text">{{ feature.text }}</p>
               </div>
-              <Transition :name="leaderTransitionName" mode="out-in" @before-leave="onLeaderInfoBeforeLeave"
-                @after-enter="onLeaderInfoAfterEnter" @enter-cancelled="onLeaderInfoAfterEnter"
-                @leave-cancelled="onLeaderInfoAfterEnter">
-                <div :key="`leader-mobile-info-${activeLeaderIndex}`" class="mt-4">
-                  <p id="leader-detail-modal-title"
-                    class="text-[14px] font-bold uppercase tracking-[0.18em] relative z-20 text-center text-[#c9a84c]">
-                    Profil {{ leaders[activeLeaderIndex].jabatan }}
-                  </p>
-                  <h3 class="mt-2 text-2xl font-extrabold leading-tight tracking-tight relative z-20 text-center text-white">
-                    {{ leaders[activeLeaderIndex].name }}
-                  </h3>
-                  <p class="mt-2 text-md font-bold relative z-20 text-center text-[#d4af37]">{{ leaders[activeLeaderIndex].batch }}
-                  </p>
-
-                  <div class="mt-5 rounded-xl text-center relative z-20">
-                    <p class="text-md font-bold uppercase tracking-[0.14em] border-b border-[#c9a84c]/55 pb-2 text-[#c9a84c]">Posisi Saat
-                      Ini
-                    </p>
-                    <p class="mt-1 text-sm font-semibold leading-relaxed text-[#f0e6c8]">
-                      {{ leaders[activeLeaderIndex].position }}
-                    </p>
-                  </div>
-
-                  <div class="mt-5 rounded-xl relative z-20">
-                    <p class="text-md font-bold uppercase tracking-[0.14em] text-center border-b border-[#c9a84c]/55 pb-2 text-[#c9a84c]">
-                      Jabatan Terakhir</p>
-                    <ul class="mt-3 space-y-2.5 text-sm font-semibold leading-relaxed text-[#f0e6c8]">
-                      <li v-for="line in leaders[activeLeaderIndex].highlights" :key="line" class="text-center">
-                        <span>{{ line }}</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </Transition>
+            </div>
+            <div class="cs-feature-card__visual" :class="`is-${feature.visual}`" aria-hidden="true">
+              <component :is="feature.visualIcon" class="cs-feature-card__visual-icon" />
+              <div v-if="feature.visual === 'result'" class="cs-feature-card__chart">
+                <span style="height: 36%" /><span style="height: 58%" /><span style="height: 46%" /><span
+                  style="height: 80%" />
+              </div>
+              <span v-if="feature.visual === 'result'" class="cs-feature-card__score">76%</span>
+              <span v-if="feature.visual === 'gift'" class="cs-feature-card__check">
+                <Check class="h-4 w-4" />
+              </span>
             </div>
           </article>
         </div>
-      </Transition>
-    </Teleport>
-    <Teleport to="body">
-      <Transition name="member-slide-fade">
-        <div v-if="activeFeatureModal"
-          class="fixed inset-0 z-[120] flex items-center justify-center bg-black/50 p-4 backdrop-blur-[2px]"
-          role="dialog" aria-modal="true" aria-labelledby="feature-modal-title" @click.self="closeFeatureModal">
-          <div
-            class="w-full max-w-2xl overflow-hidden rounded-3xl border border-border bg-white shadow-2xl shadow-black/20">
-            <div
-              class="flex items-start justify-between gap-4 border-b border-border bg-gradient-to-r from-sky to-white px-5 py-4">
-              <div class="flex items-center gap-3">
-                <div class="inline-flex rounded-lg bg-sky p-2 text-primary">
-                  <component :is="activeFeatureModal.icon" class="h-5 w-5" />
-                </div>
-                <div>
-                  <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Detail Keunggulan</p>
-                  <h3 id="feature-modal-title" class="text-lg md:text-xl font-bold text-text">{{
-                    activeFeatureModal.title }}
-                  </h3>
-                </div>
-              </div>
-              <button type="button"
-                class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-gray-500 hover:bg-background hover:text-text transition-colors"
-                aria-label="Tutup" @click="closeFeatureModal">
-                <XIcon class="h-4 w-4" />
-              </button>
-            </div>
 
-            <div class="px-5 py-5 md:px-6 md:py-6">
-              <p class="text-sm text-gray-700 leading-relaxed">
-                {{ activeFeatureModal.longDesc }}
-              </p>
-              <ul class="mt-4 space-y-2.5">
-                <li v-for="point in activeFeatureModal.points" :key="point"
-                  class="flex items-start gap-2.5 text-sm text-gray-700">
-                  <span class="mt-1.5 h-2 w-2 rounded-full bg-secondary shrink-0" />
-                  <span>{{ point }}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+        <div class="cs-slide__hint">
+          <a href="#simulasi" class="cs-scroll-hint" aria-label="Slide berikutnya">
+            <ChevronDown class="h-5 w-5" />
+          </a>
         </div>
-      </Transition>
-    </Teleport>
-    <Teleport to="body">
-      <Transition name="member-slide-fade">
-        <div v-if="isGalleryOpen" class="fixed inset-0 z-[130] flex flex-col bg-black/92 backdrop-blur-sm" role="dialog"
-          aria-modal="true" aria-label="Galeri Kegiatan" @click.self="closeGallery">
-          <div class="flex items-center justify-between gap-3 px-4 md:px-8 py-4">
-            <p class="text-sm md:text-base font-bold text-white">
-              Galeri Kegiatan
-              <span class="ml-2 text-white/60 font-semibold">{{ activeGalleryIndex + 1 }} / {{ galleryImages.length
-              }}</span>
-            </p>
-            <div class="flex items-center gap-2">
-              <button type="button" @click="toggleGallerySlideshow"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition hover:bg-white/20"
-                :aria-label="isGallerySlideshow ? 'Hentikan slideshow' : 'Mulai slideshow'">
-                <Pause v-if="isGallerySlideshow" class="h-4 w-4" />
-                <Play v-else class="h-4 w-4" />
-              </button>
-              <button type="button" @click="closeGallery"
-                class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition hover:bg-white/20"
-                aria-label="Tutup galeri">
-                <XIcon class="h-5 w-5" />
-              </button>
-            </div>
-          </div>
+      </div>
+    </section>
 
-          <div class="relative flex-1 flex items-center justify-center px-4 md:px-20 overflow-hidden">
-            <button type="button" @click="prevGalleryImage"
-              class="absolute left-2 md:left-6 z-10 inline-flex h-11 w-11 md:h-14 md:w-14 items-center justify-center rounded-full border border-white/30 bg-black/50 text-white transition hover:bg-black/70 hover:scale-105"
-              aria-label="Foto sebelumnya">
-              <ChevronLeft class="h-6 w-6" />
-            </button>
-            <Transition :name="galleryTransitionName" mode="out-in">
-              <img :key="`gallery-main-${activeGalleryIndex}`" :src="galleryImages[activeGalleryIndex]"
-                :alt="`Dokumentasi kegiatan ${activeGalleryIndex + 1}`"
-                class="max-h-[68vh] max-w-full rounded-2xl object-contain shadow-2xl shadow-black/60" />
-            </Transition>
-            <button type="button" @click="nextGalleryImage"
-              class="absolute right-2 md:right-6 z-10 inline-flex h-11 w-11 md:h-14 md:w-14 items-center justify-center rounded-full border border-white/30 bg-black/50 text-white transition hover:bg-black/70 hover:scale-105"
-              aria-label="Foto berikutnya">
-              <ChevronRight class="h-6 w-6" />
-            </button>
-          </div>
+    <!-- ===================== SLIDE 3 : SIMULASI ===================== -->
+    <section id="simulasi" ref="slideRefs" class="cs-slide cs-slide--tint">
+      <div class="cs-simulation__wash" aria-hidden="true" />
+      <div class="cs-sim-float cs-sim-float--language" aria-hidden="true">
+        <Languages class="cs-sim-float__main-icon" />
+        <span>あ</span><span>A</span>
+      </div>
+      <div class="cs-sim-float cs-sim-float--score" aria-hidden="true">
+        <Trophy class="cs-sim-float__main-icon" />
+        <strong>86</strong>
+        <small>SKOR</small>
+      </div>
 
-          <div class="px-4 md:px-8 py-4">
-            <div class="flex gap-2 overflow-x-auto pb-1 gallery-thumb-strip">
-              <button v-for="(img, i) in galleryImages" :key="`gallery-thumb-${i}`" type="button"
-                @click="goToGalleryImage(i)"
-                class="relative shrink-0 h-14 w-20 md:h-16 md:w-24 overflow-hidden rounded-lg border-2 transition"
-                :class="activeGalleryIndex === i ? 'border-yellow-300 opacity-100 scale-105' : 'border-transparent opacity-55 hover:opacity-90'"
-                :aria-label="`Lihat foto ${i + 1}`">
-                <img :src="img" :alt="`Thumbnail ${i + 1}`" class="h-full w-full object-cover" loading="lazy" />
-              </button>
-            </div>
-          </div>
+      <div class="cs-slide__inner cs-slide__inner--simulation">
+        <div class="cs-section__head">
+          <p class="cs-section__eyebrow">Simulasi</p>
+          <h2 class="cs-section__title">
+            Pilih target ujianmu,
+            <span class="cs-section__title-blue">mulai berlatih sekarang</span>
+          </h2>
+          <p class="cs-section__desc">
+            Bingung mau coba ujian apa dulu? Ini beberapa jalur yang bisa kamu latih lewat free tryout kami.
+          </p>
         </div>
-      </Transition>
-    </Teleport>
 
-    <TeacherModal :is-open="isTeacherModalOpen" :teachers="teachers" :cv-template-url="cvTemplateUrl"
-      @close="closeTeacherModal" />
-    <Teleport to="body">
-      <Transition name="member-slide-fade">
-        <div v-if="activeMemberModal"
-          class="fixed inset-0 z-[125] flex items-center justify-center bg-black/55 p-4 backdrop-blur-[2px]"
-          role="dialog" aria-modal="true" aria-labelledby="member-modal-title" @click.self="closeMemberModal">
-          <div
-            class="w-full max-w-3xl overflow-hidden rounded-3xl relative border border-border bg-white shadow-2xl shadow-black/20">
-            <button type="button" @click="closeMemberModal"
-              class="absolute right-3 top-3 z-40 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/65 text-white shadow-lg transition hover:bg-black/80 focus:outline-none focus:ring-2 focus:ring-white/90"
-              aria-label="Tutup detail anggota">
-              <XIcon class="h-5 w-5" />
-            </button>
-            <div class="overflow-y-auto h-[700px] bg-cover bg-center absolute z-30 px-5 py-5 md:px-6 md:py-6">
-              <div class="rounded-2xl p-4 md:p-6">
-                <div class="grid gap-4 md:grid-cols-[220px_1fr] md:items-center">
-                  <div class="relative mx-auto w-40 md:w-52">
-                    <div class="h-40 w-40 overflow-hidden rounded-full border-4 border-white shadow-lg md:h-52 md:w-52">
-                      <img :src="activeMemberModal.image" :alt="activeMemberModal.name"
-                        class="h-full w-full object-cover object-top" />
-                    </div>
-                    <div class="absolute bottom-0 right-0 z-30 flex items-center justify-center">
-                      <span class="block loader" />
-                    </div>
-                  </div>
-
-                  <div class="space-y-2 text-left">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">Data Diri</p>
-                    <h4 class="text-xl font-extrabold leading-tight text-text md:text-2xl">{{ activeMemberModal.name }}
-                    </h4>
-                    <p class="text-sm font-semibold uppercase tracking-wide text-primary">{{ activeMemberModal.jabatan
-                    }}
-                    </p>
-                    <div class="mt-3 space-y-1.5 text-sm text-gray-700">
-                      <p><span class="font-semibold text-text">Tempat, Tanggal Lahir:</span> {{
-                        activeMemberModal.profile.birthPlaceDate }}</p>
-                    </div>
-                    <p v-if="activeMemberModal.profile.summary" class="mt-3 text-sm text-gray-700 leading-relaxed">
-                      {{ activeMemberModal.profile.summary }}
-                    </p>
-                  </div>
-                </div>
-
-                <div v-if="activeMemberModal.profile.personal?.length" class="mt-6 rounded-xl">
-                  <p
-                    class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white px-4 py-1 rounded-full mb-2 inline-block">
-                    Data Pribadi</p>
-                  <ul class="member-history-list mt-3 text-sm text-gray-700">
-                    <li v-for="item in activeMemberModal.profile.personal" :key="item"
-                      class="member-history-item flex items-start gap-2">
-                      <span class="member-history-dot mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary" />
-                      <span>{{ item }}</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="mt-8 grid gap-4 grid-cols-1 md:grid-cols-2">
-                  <div class="rounded-xl">
-                    <p
-                      class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white px-4 py-1 rounded-full mb-2">
-                      Riwayat Pendidikan Formal</p>
-                    <ul class="member-history-list mt-3 text-sm text-gray-700">
-                      <li v-for="item in activeMemberModal.profile.education" :key="item"
-                        class="member-history-item flex items-start gap-2">
-                        <span class="member-history-dot mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary" />
-                        <span>{{ item }}</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div v-if="activeMemberModal.profile.organization?.length" class="rounded-xl">
-                    <p
-                      class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white px-4 py-1 rounded-full mb-2">
-                      {{ activeMemberModal.profile.organizationHeading || 'Riwayat Organisasi' }}</p>
-                    <ul class="member-history-list mt-3 text-sm text-gray-700">
-                      <li v-for="item in activeMemberModal.profile.organization" :key="item"
-                        class="member-history-item flex items-start gap-2">
-                        <span class="member-history-dot mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary" />
-                        <span>{{ item }}</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div class="rounded-xl md:col-span-2 mt-4">
-                    <p
-                      class="text-[11px] font-bold uppercase tracking-[0.14em] text-white bg-gradient-to-r from-primary to-white/30 px-4 py-1 rounded-full mb-2">
-                      Riwayat Pekerjaan</p>
-                    <ul class="member-history-list mt-3 text-sm text-gray-700">
-                      <li v-for="item in activeMemberModal.profile.work" :key="item"
-                        class="member-history-item flex items-start gap-2">
-                        <span class="member-history-dot mt-1.5 h-2 w-2 shrink-0 rounded-full bg-secondary" />
-                        <span class="w-8/12">{{ item }}</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+        <div class="cs-exam-grid">
+          <article v-for="exam in exams" :key="exam.name" class="cs-exam-card">
+            <div class="cs-exam-card__top">
+              <span class="cs-exam-card__icon" :style="{ background: exam.softColor, color: exam.color }">
+                <component :is="exam.icon" class="h-5 w-5" />
+              </span>
+              <span class="cs-exam-card__tag">{{ exam.tag }}</span>
             </div>
+            <h3 class="cs-exam-card__name">{{ exam.name }}</h3>
+            <p class="cs-exam-card__blurb">{{ exam.blurb }}</p>
+
+            <div class="cs-exam-card__visual" :style="{ '--exam-color': exam.color, '--exam-soft': exam.softColor }"
+              aria-hidden="true">
+              <component :is="exam.visualIcon" class="cs-exam-card__visual-icon" />
+              <div class="cs-exam-card__sheet">
+                <span /><span /><span />
+              </div>
+              <span class="cs-exam-card__code">{{ exam.code }}</span>
+            </div>
+
+            <router-link to="/free-tryout" class="cs-exam-card__action">
+              Mulai latihan
+              <ArrowUpRight class="h-4 w-4" />
+            </router-link>
+          </article>
+        </div>
+
+        <div class="cs-slide__hint">
+          <a href="#tentang" class="cs-scroll-hint" aria-label="Slide berikutnya">
+            <ChevronDown class="h-5 w-5" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 4 : TENTANG ===================== -->
+    <section id="tentang" ref="slideRefs" class="cs-slide cs-slide--light">
+      <div class="cs-slide__inner">
+        <div class="cs-section__head">
+          <p class="cs-section__eyebrow">Tentang</p>
+          <h2 class="cs-section__title">Kenapa CATLab?</h2>
+          <p class="cs-section__desc">
+            Latihan terbaik adalah latihan yang mendekati kondisi ujian sesungguhnya. Gratis, tanpa
+            tekanan, dan terus berkembang dari masukan penggunanya.
+          </p>
+        </div>
+
+        <ol class="cs-steps">
+          <li v-for="(step, index) in steps" :key="step.title" class="cs-step">
+            <span class="cs-step__num">0{{ index + 1 }}</span>
             <div>
-              <img :src="cvTemplateUrl" alt="CV Template" class="selayang-card-breathe w-full relative z-10 h-screen" />
+              <h3 class="cs-step__title">{{ step.title }}</h3>
+              <p class="cs-step__text">{{ step.text }}</p>
             </div>
+          </li>
+        </ol>
+
+        <div class="cs-about__stats">
+          <div v-for="stat in aboutStats" :key="stat.label" class="cs-about__stat">
+            <p class="cs-about__stat-value">{{ stat.value }}</p>
+            <p class="cs-about__stat-label">{{ stat.label }}</p>
           </div>
         </div>
-      </Transition>
-    </Teleport>
-  </main>
+
+        <div class="cs-slide__hint">
+          <a href="#kontak" class="cs-scroll-hint" aria-label="Slide berikutnya">
+            <ChevronDown class="h-5 w-5" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SLIDE 5 : KONTAK ===================== -->
+    <section id="kontak" ref="slideRefs" class="cs-slide cs-slide--dark">
+      <div class="cs-slide__inner cs-slide__inner--center">
+        <p class="cs-section__eyebrow cs-section__eyebrow--light">Bantu kami berkembang</p>
+        <h2 class="cs-feedback__title">Coba dulu, lalu kasih kabar</h2>
+        <p class="cs-feedback__text">
+          Setelah tryout, ceritakan soal mana yang membantu, mana yang kurang, atau ujian apa yang
+          ingin kamu lihat berikutnya. Feedback kamu sangat berarti — gratis, tanpa ikatan berbayar.
+        </p>
+        <div class="cs-feedback__actions">
+          <router-link to="/free-tryout" class="cs-cta">
+            <Play class="h-4 w-4" fill="currentColor" />
+            Kerjakan free tryout
+          </router-link>
+          <a :href="feedbackMailto" class="cs-feedback__secondary">
+            <Mail class="h-4 w-4" />
+            Kirim feedback
+          </a>
+        </div>
+
+        <footer class="cs-footer">
+          <div class="cs-brand cs-footer__brand">
+            <span class="cs-brand__mark cs-brand__mark--sm">
+              <CheckSquare class="h-4 w-4" />
+            </span>
+            <span class="cs-brand__title cs-brand__title--sm cs-brand__title--light">CAT<span
+                class="cs-brand__sim">Lab</span></span>
+          </div>
+          <p class="cs-footer__note">Simulasi Computer Assisted Test untuk latihan kemampuan ujian.</p>
+          <div class="cs-footer__links">
+            <router-link to="/free-tryout">Free Tryout</router-link>
+            <router-link to="/login">Masuk</router-link>
+            <router-link to="/signup">Daftar</router-link>
+            <a :href="feedbackMailto">Feedback</a>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useAppStore } from '@/stores/app'
-import { storeToRefs } from 'pinia'
-import { BookOpenText, Brain, Check, ChevronLeft, ChevronRight, Crown, Dumbbell, Images, LineChart, Maximize2, MessageCircle, NotebookPen, Pause, Play, Quote, ShieldCheck, UserCheck, Warehouse, GraduationCap, X as XIcon } from 'lucide-vue-next'
-import { ONLINE_PROGRAMS } from '@/constants/onlinePrograms'
-import TeacherModal from '@/components/TeacherModal.vue'
-import CourseCreditCard from '@/components/CourseCreditCard.vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BarChart3,
+  BookOpen,
+  BriefcaseBusiness,
+  Check,
+  CheckSquare,
+  ChevronDown,
+  CircleCheckBig,
+  ClipboardList,
+  Cloud,
+  Clock,
+  FileText,
+  Gift,
+  GraduationCap,
+  Languages,
+  LockKeyhole,
+  Mail,
+  Menu,
+  PieChart,
+  Play,
+  School,
+  Smartphone,
+  Timer,
+  TrendingUp,
+  Trophy,
+  User,
+} from 'lucide-vue-next'
 
-const route = useRoute()
-const router = useRouter()
-const store = useAppStore()
-const { isAuthenticated } = storeToRefs(store)
+const mobileOpen = ref(false)
+const viewportRef = ref(null)
+const activeSlide = ref('beranda')
 
-const authNavLink = computed(() => (
-  isAuthenticated.value
-    ? { to: '/dashboard', label: 'Dashboard' }
-    : { to: '/login', label: 'Login' }
-))
-const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
-const tubagusUrl = new URL('../../assets/bpk_tubagus.jpg', import.meta.url).href
-const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
-const haitiUrl = new URL('../../assets/bpk_haiti.jpg', import.meta.url).href
-const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
-const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).href
-const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
-const natashaUrl = new URL('../../assets/anggota/natasha.jpeg', import.meta.url).href
-const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
-const natashateacherUrl = new URL('../../assets/pengajar/natashateacher.jpg', import.meta.url).href
-const djatmikoUrl = new URL('../../assets/pengajar/Iketutadipurnama.jpg', import.meta.url).href
-const iketaUrl = new URL('../../assets/pengajar/Iketutadipurnama.jpg', import.meta.url).href
-const yunusSufianUrl = new URL('../../assets/pengajar/YunusSufian.png', import.meta.url).href
-const defaultTeacherUrl = new URL('../../assets/anggota/default.png', import.meta.url).href
-const cvTemplateUrl = new URL('../../assets/cv.png', import.meta.url).href
-const selayangCard = new URL('../../assets/selayangcard.png', import.meta.url).href
-const brandLogoUrl = new URL('../../assets/logo.png', import.meta.url).href
-const bannerUrl = new URL('../../assets/Banner.png', import.meta.url).href
-const taruna = new URL('../../assets/anggota/taruna.png', import.meta.url).href
-const taruna2 = new URL('../../assets/anggota/taruna2.png', import.meta.url).href
-const taruni = new URL('../../assets/anggota/taruni.png', import.meta.url).href
-const HERO_VIDEO_ID = 't2k3uwS2zyA'
-const heroVideoEmbedUrl = `https://www.youtube.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&controls=0&loop=1&playlist=${HERO_VIDEO_ID}&modestbranding=1&rel=0&playsinline=1`
-const wallpaperModules = import.meta.glob('../../assets/wallpaper/*.{jpg,jpeg,png,webp}', {
-  eager: true,
-  import: 'default',
-})
-const wallpaperSlides = Object.entries(wallpaperModules)
-  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
-  .map(([, src]) => src)
-const galleryModules = import.meta.glob('../../assets/galery/*.{jpg,jpeg,png,webp}', {
-  eager: true,
-  import: 'default',
-})
-const galleryImages = Object.entries(galleryModules)
-  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB, undefined, { numeric: true }))
-  .map(([, src]) => src)
-const GALLERY_PREVIEW_COUNT = 6
-const galleryPreview = computed(() => galleryImages.slice(0, GALLERY_PREVIEW_COUNT))
-const galleryMoreCount = computed(() => Math.max(galleryImages.length - GALLERY_PREVIEW_COUNT, 0))
-const galleryMoreImage = computed(() => galleryImages[GALLERY_PREVIEW_COUNT] || galleryImages[0])
-const isGalleryOpen = ref(false)
-const activeGalleryIndex = ref(0)
-const isGallerySlideshow = ref(false)
-let gallerySlideshowTimer = null
-const galleryTransitionName = computed(() => {
-  const variants = ['leader-swap-slide', 'leader-swap-pop', 'leader-swap-tilt']
-  return variants[activeGalleryIndex.value % variants.length]
-})
-const activeWallpaperIndex = ref(0)
-const isMobileMenuOpen = ref(false)
-const isLeaderDetailModalOpen = ref(false)
-const isSelayangModalOpen = ref(false)
-const activeFeatureModal = ref(null)
-const isTeacherModalOpen = ref(false)
-const activeMemberModal = ref(null)
-const leaderCarouselRef = ref(null)
-const leaderSlideRefs = ref([])
-const activeLeaderIndex = ref(0)
-const isLeaderInfoSwitching = ref(false)
-const isLeaderAutoScrolling = ref(false)
-const leaderTransitionName = computed(() => {
-  const variants = ['leader-swap-slide', 'leader-swap-pop', 'leader-swap-tilt']
-  return variants[activeLeaderIndex.value % variants.length]
-})
-let wallpaperInterval
-let leaderAutoScrollTimer
-
-let fadeObserver
-const quickNavItems = [
-  { id: 'leaders', label: 'Dewan Pimpinan' },
-  { id: 'programs', label: 'Program Layanan' },
-  // { id: 'services', label: 'Layanan Pembinaan' },
-  { id: 'choices', label: 'Pilihan Kursus' },
-  { id: 'comparison', label: 'Perbandingan Kelas' },
-  { id: 'gallery', label: 'Galeri Kegiatan' },
-  { id: 'selayang-pandang', label: 'Selayang Pandang' },
-  { id: 'about-us', label: 'Tentang Kami' },
+const slides = [
+  { id: 'beranda', label: 'Beranda' },
+  { id: 'fitur', label: 'Fitur' },
+  { id: 'simulasi', label: 'Simulasi' },
+  { id: 'tentang', label: 'Tentang' },
+  { id: 'kontak', label: 'Kontak' },
 ]
 
-const leaders = [
-  {
-    name: 'Jenderal Pol (P) Tan Sri Drs. Badrodin Haiti',
-    batch: '',
-    position: 'Pembina Pratistha Cendekia Prestasi',
-    jabatan: 'Pembina',
-    highlights: [
-      'Kabaharkam Polri (2013–2014)',
-      'Wakapolri (2014–2015)',
-      'Kapolri (2015–2016)'
-    ],
-    image: haitiUrl,
-  },
-  {
-    name: 'Komjen Pol (P) Drs. H. Nana S. Permana',
-    batch: 'Batalion Dharma Angkatan 1968',
-    position: 'Ketua Pembina Yayasan Pendidikan Tribakti Langlang Buana',
-    jabatan: 'Penasehat',
-    highlights: [
-      'Wakapolri tahun 1998 - 2000',
-      'Pembina strategis pendidikan dan pembinaan kepolisian',
-    ],
-    image: nanaUrl,
-  },
-  {
-    name: 'Irjen Pol (P) Dr. H Tubagus Anis Angkawijaya, Drs., M.Si',
-    batch: 'Bataliyon Anindhita Tahun 1981',
-    position: 'Komisaris Pratistha Cendekia Prestasi',
-    jabatan: 'Komisaris',
-    highlights: [
-      'Kapolda Jabar tahun 2012 - 2013',
-      'Kapolda Sultra tahun 2012',
-      'Ketua Persatuan Purnawirawan Daerah Jabar',
-      'Wakil Ketua Pembina Yayasan Pendidikan Tribakti Langlang Buana',
-    ],
-    image: tubagusUrl,
-  },
-  {
-    name: 'Brigjen Pol (P) Drs. H. Awang Anwarudin, MH',
-    batch: 'Bataliyon Pratistha Angkatan 1982',
-    position: 'Direktur Utama Pratistha Cendekia Prestasi',
-    jabatan: 'Direktur Utama',
-    highlights: [
-      'Wakapolda Jawa Tengah tahun 2016 - 2017',
-      'Pengarah operasional program kursus',
-    ],
-    image: awangUrl,
-  },
-]
+const activeOnDark = computed(() => activeSlide.value === 'kontak')
 
-function leaderCardStyle(index) {
-  const premiumTexture = [
-    'radial-gradient(ellipse at 20% 16%, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.08) 28%, transparent 55%)',
-    'radial-gradient(ellipse at 85% 85%, rgba(0,0,0,0.45) 0%, transparent 50%)',
-    'linear-gradient(145deg, rgba(255,255,255,0.18) 0%, transparent 34%)',
-    'linear-gradient(235deg, rgba(255,255,255,0.08) 0%, transparent 28%)',
-    'linear-gradient(328deg, rgba(0,0,0,0.15) 0%, transparent 42%)',
-  ]
-
-  const baseGradient =
-    index === 0
-      ? 'linear-gradient(112deg, #9a0000 0%, #d12a2a 34%, #7a0000 57%, #b01616 78%, #4d0000 100%)'
-      : 'linear-gradient(112deg, #00acb2 0%, #33ced2 34%, #008d92 57%, #1abec2 78%, #00666a 100%)'
-
-  const shadowColor = index === 0 ? 'rgba(120, 0, 0, 0.4)' : 'rgba(0, 120, 125, 0.38)'
-
-  return {
-    backgroundImage: [...premiumTexture, baseGradient].join(', '),
-    boxShadow: `0 14px 36px ${shadowColor}, 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.3)`,
-  }
-}
-
-const setLeaderSlideRef = (element, index) => {
-  if (!element) return
-  leaderSlideRefs.value[index] = element
-}
-
-const goToLeader = (index, behavior = 'smooth') => {
-  const container = leaderCarouselRef.value
-  const target = leaderSlideRefs.value[index]
-  if (!container || !target) return
-
-  isLeaderAutoScrolling.value = true
-  if (leaderAutoScrollTimer) {
-    clearTimeout(leaderAutoScrollTimer)
-  }
-
-  const isDesktop = window.innerWidth >= 1280
-  const hasScrollableArea =
-    container.scrollHeight > container.clientHeight || container.scrollWidth > container.clientWidth
-
-  if (hasScrollableArea) {
-    if (isDesktop) {
-      const targetTop = target.offsetTop - (container.clientHeight / 2) + (target.clientHeight / 2)
-      const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight)
-      const boundedTop = Math.min(Math.max(targetTop, 0), maxScrollTop)
-      container.scrollTo({
-        top: boundedTop,
-        behavior,
-      })
-    } else {
-      const targetLeft = target.offsetLeft - (container.clientWidth / 2) + (target.clientWidth / 2)
-      const maxScrollLeft = Math.max(0, container.scrollWidth - container.clientWidth)
-      const boundedLeft = Math.min(Math.max(targetLeft, 0), maxScrollLeft)
-      container.scrollTo({
-        left: boundedLeft,
-        behavior,
-      })
-    }
-  }
-
-  activeLeaderIndex.value = index
-  leaderAutoScrollTimer = setTimeout(() => {
-    isLeaderAutoScrolling.value = false
-  }, behavior === 'auto' ? 0 : 260)
-}
-
-const stepLeader = (direction) => {
-  const nextIndex = Math.min(
-    Math.max(activeLeaderIndex.value + direction, 0),
-    leaders.length - 1,
+const feedbackMailto = computed(() => {
+  const subject = encodeURIComponent('Feedback CATLab')
+  const body = encodeURIComponent(
+    'Halo tim CATLab,\n\nSaya baru coba free tryout. Feedback saya:\n- \n\nJenis ujian yang saya harapkan berikutnya:\n- \n',
   )
-  goToLeader(nextIndex)
-}
+  return `mailto:halo@catlab.id?subject=${subject}&body=${body}`
+})
 
-const getNearestLeaderIndex = () => {
-  const container = leaderCarouselRef.value
-  if (!container || !leaderSlideRefs.value.length) return activeLeaderIndex.value
+const heroFeatures = [
+  { icon: FileText, title: 'Bank Soal', text: 'Ribuan soal siap untuk latihan', bg: '#eaf1fd', color: '#2563eb' },
+  { icon: TrendingUp, title: 'Analisis Hasil', text: 'Pantau progres dan tingkatkan kemampuan', bg: '#e5f7f0', color: '#0d9488' },
+  { icon: Clock, title: 'Ujian Realistis', text: 'Simulasi mirip ujian sebenarnya', bg: '#f1ecfd', color: '#7c3aed' },
+  { icon: Gift, title: 'Gratis & Fleksibel', text: 'Coba kapan saja tanpa biaya', bg: '#fff4e5', color: '#ea580c' },
+]
 
-  const isDesktop = window.innerWidth >= 1280
-  if (isDesktop) {
-    const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight)
-    if (container.scrollTop <= 2) return 0
-    if (Math.abs(container.scrollTop - maxScrollTop) <= 2) return leaders.length - 1
-  } else {
-    const maxScrollLeft = Math.max(0, container.scrollWidth - container.clientWidth)
-    if (container.scrollLeft <= 2) return 0
-    if (Math.abs(container.scrollLeft - maxScrollLeft) <= 2) return leaders.length - 1
-  }
+const timelineSteps = ['Berlatih', 'Simulasi', 'Evaluasi']
 
-  const containerCenter = isDesktop
-    ? container.scrollTop + container.clientHeight / 2
-    : container.scrollLeft + container.clientWidth / 2
-  let closestIndex = 0
-  let smallestDistance = Number.POSITIVE_INFINITY
-
-  leaderSlideRefs.value.forEach((slide, index) => {
-    if (!slide) return
-    const slideCenter = isDesktop
-      ? slide.offsetTop + slide.clientHeight / 2
-      : slide.offsetLeft + slide.clientWidth / 2
-    const distance = Math.abs(slideCenter - containerCenter)
-    if (distance < smallestDistance) {
-      smallestDistance = distance
-      closestIndex = index
-    }
-  })
-
-  return closestIndex
-}
-
-const onLeaderScroll = () => {
-  if (isLeaderAutoScrolling.value) return
-  activeLeaderIndex.value = getNearestLeaderIndex()
-}
-
-const onLeaderResize = () => {
-  if (window.innerWidth < 1280) return
-  goToLeader(activeLeaderIndex.value, 'auto')
-}
-
-const onLeaderInfoBeforeLeave = () => {
-  isLeaderInfoSwitching.value = true
-}
-
-const onLeaderInfoAfterEnter = () => {
-  isLeaderInfoSwitching.value = false
-}
-
-const members = [
+const mainFeatures = [
   {
-    name: 'Gilang Nurfahradz Syahni Fasya, S.T',
-    image: gilangUrl,
-    jabatan: 'Direktur',
-    profile: {
-      birthPlaceDate: 'Bandung, 04 Agustus 1991',
-      education: ['Kimia Industri – SMK Negeri 7 Bandung (2009)', 'S1 Teknologi Pangan – Universitas Pasundan (2009) '],
-      organization: ['Ketua Bidang Regenerasi Ikatan Mahasiswa AMS JABAR (2009-2011)', 'Ketua Badan Eksekutif Mahasiswa Fakultas Teknik UNPAS (2012-2013)', 'Founder Badan Legislatif (DPM) Universitas Pasundan (2013) ', 'Ketua Bidang Organisasi IKA TP UNPAS (2018 - sekarang) '],
-      work: ['R&D Specialist Chocolate PT. Mercolade Indonesia (2013-2015)', 'Konsultan Manufacture Kosmetik PT. Prapta Rekayasa Buana (2016) ', 'Co. Founder PT. Magnolium Mandiri Indonesia (2015)', 'Head Factory PT. Magnolium Mandiri Indonesa dan  PT. Nusantara Agro Horeca (2015-2021) ']
-    },
+    icon: FileText,
+    visualIcon: ClipboardList,
+    visual: 'questions',
+    title: 'Bank Soal',
+    text: 'Ribuan soal siap untuk latihan',
   },
   {
-    name: 'AKBP (P) Wahyu Suhardini, SIP',
-    image: wahyuUrl,
-    jabatan: 'Sekretaris',
-    profile: {
-      birthPlaceDate: 'Purwokerto, 3 Oktober 1961',
-      summary:
-        'Wahyu Suhardini, SIP menjabat sebagai Sekretaris Pratistha Cendekia Prestasi. Saat ini juga menjabat sebagai Waka Biro SDM PP Polri Daerah Jawa Barat.',
-      personal: [
-        'NIK: 3273204310610001',
-        'Alamat: Perumahan Alam Melati Residence Kav. B No.9 RT 02 RW 24 Antapani Tengah Bandung',
-        'Telepon: 081361100057',
-        'Email: suhardiniwahyu@gmail.com',
-        'Tinggi / Berat Badan: 164 cm / 61 kg',
-      ],
-      education: ['1973: SD', '1976: SMP', '1979/1980: SMA', '2009: S1'],
-      organizationHeading: 'Pendidikan Non Formal',
-      organization: [
-        'Seba Milsuk ANK V Th 1982',
-        'Secapa Polri REG ANK XIX Th 1992',
-        'Dikjur Bimmas Th 1985',
-        'TOT Pengadaan Barang dan Jasa LKPP',
-      ],
-      work: [
-        '1982–1987: BA Rumwattik Siwi Polda Metro Jaya',
-        '1987–1992: BA Subbag Watpers Res Lospalos Tim Tim',
-        '1992–1997: Kasubbag Minpers Res Lospalos Tim Tim',
-        '1997–2001: Kataud Denma Polda Jabar',
-        '2001–2003: Kasat Yanum Denma Polda Jabar',
-        '2003–2004: Kasat Yanma Denma Polda Jabar',
-        '2004–2011: Kasubbag Kapor Bekum Rolog Polda Jabar',
-        '2011–2018: Kasubbag Fasjas Bag Info Sarpras',
-        '2006–2019: PPK dan Pokja Pengadaan Barang Jasa',
-        '2018–2019: Kasubbag LP Bag Ada Birolog',
-        '2024–sekarang: Waka Biro SDM PP Polri Daerah Jawa Barat',
-      ],
-    },
+    icon: TrendingUp,
+    visualIcon: PieChart,
+    visual: 'result',
+    title: 'Analisis Hasil',
+    text: 'Pantau progres dan tingkatkan kemampuan',
   },
   {
-    name: 'KBP (P) Dra.Rina Regina',
-    image: rinaUrl,
-    jabatan: 'Bendahara',
-    profile: {
-      birthPlaceDate: 'Bandung, 31 Oktober 1975',
-      education: ['Sarjana Pendidikan Ikip Bdg', 'Sepamilksukwan Polri 1984', 'Selapa Polri 1997'],
-      organization: ['Pengurus Keuangan Yayasan', 'Tim Pengawasan Anggaran Program'],
-      work: ['Kasetum Polda Jabar', 'Kabag Binamitra Polwiltabes Bdg', 'Gadik SPN Cisarua', 'Kasubdit Kerma Dit Binmas Polda Jbr'],
-    },
+    icon: Clock,
+    visualIcon: Timer,
+    visual: 'timer',
+    title: 'Ujian Realistis',
+    text: 'Simulasi mirip ujian sebenarnya',
   },
   {
-    name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H. M.T.C.P',
-    image: natashaUrl,
-    jabatan: 'Bidang Internal',
-    profile: {
-      birthPlaceDate: 'Palembang, 15 Juni 1964',
-      education: [
-        'IKIP N Jakarta, Fakultas Bahasa Inggris, 1987',
-        'SEPAMILSUKWAN VI, 1989',
-        'UNLA Bandung, Fakultas Hukum, 2007',
-        'Selapa Polri angkatan 39, 2008',
-        'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, 2009.',
-        'Management Development Course (IPS, Problem Solving), Akpol, London, 1989, 1999',
-        'Taining on Police Reform, Japan, Singapore, 2002, 2009',
-        'Training Drugs and treatment, Australia, Thayland, 2003, 2004',
-        'Law Enforcement Management Program, Vietnam, 2012',
-      ],
-      organization: [
-        'Dosen Muda, Akpol Smrg, IKIP Jkt, 1989-1996.',
-        'Kasubbag Min Ops Pengawasan Orang Asing Dit IPP Polda Jabar, 1996-1999.',
-        'Kasubbag Was Jas Pam (Satpam), Biro Bina Mitra Polda Jabar, 2008-2011.',
-        'Kasubdit Bhabinkamtibmas Polda Jabar, 2019-2022',
-        'Pelatih Interpersonal Skill, Service Excellent dan Tanggap darurat sejak 1990 s/d 2022 di Sekolah Gada Pratama, Gada Madya, Gada Utama',
-        'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015',
-      ],
-      work: ['Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada Madya', 'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama', 'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015']
-    },
-  },
-  {
-    name: 'Kompol (P) Tutik',
-    image: tutikUrl,
-    jabatan: 'Bidang Eksternal',
-    profile: {
-      birthPlaceDate: 'Cirebon, 9 September 1971',
-      education: ['S1 Ilmu Sosial', 'Pelatihan Public Relations'],
-      organization: ['Pengurus Hubungan Eksternal', 'Tim Kemitraan Strategis'],
-      work: ['Koordinator Bidang Eksternal', 'Pengembang Jejaring Kolaborasi Program'],
-    },
+    icon: Gift,
+    visualIcon: Gift,
+    visual: 'gift',
+    title: 'Gratis & Fleksibel',
+    text: 'Coba kapan saja tanpa biaya',
   },
 ]
 
-const teachers = [
+const exams = [
   {
-    id: 'iketutadipurnama',
-    name: 'Dr. I ketut Adi Purnama, S.H., M.H., C.M.C.',
-    role: 'Kewarganegaraan dan Undang-Undang Kepolisian',
-    image: iketaUrl,
-    birthPlaceDate: 'Denpasar, 27 November 1966',
-    education: ['S1 UNWIR Fak. HK', 'S2 UNPAD HK. Bisnis', 'S3 UNPAR DIH'],
-    teaching: ['Hukum Acara Pidana', 'Sistem Peradilan Pidana Indonesia', 'Keamanan Hukum Pidana'],
+    tag: 'Bahasa Jepang',
+    name: 'JLPT / N4',
+    code: '日本語',
+    icon: Languages,
+    visualIcon: BookOpen,
+    color: '#2563eb',
+    softColor: '#eaf1fd',
+    blurb: 'Coba pola soal reading & grammar khas JLPT sebelum ujian resmi.',
   },
   {
-    id: 'djatmiko',
-    name: 'Djatmiko, M.Pd',
-    role: 'Pengajar Matematika',
-    image: defaultTeacherUrl,
-    birthPlaceDate: 'Bandung, 31 Mei 1968',
-    education: ['S2 Pendidikan Matematika IKIP Siliwangi'],
-    teaching: ['Mengajar di SMAN 23 Bandung'],
+    tag: 'Bahasa Inggris',
+    name: 'TOEFL',
+    code: 'EN',
+    icon: BookOpen,
+    visualIcon: Languages,
+    color: '#0d9488',
+    softColor: '#e5f7f0',
+    blurb: 'Latihan tempo soal bahasa Inggris agar terbiasa dengan tekanan waktu.',
   },
   {
-    id: 'teacher-3',
-    name: 'AKBP (P) Dra.Natasha Yunita Pospos, S.H., M.T.C.P',
-    role: 'Pengajar Bahasa Inggris & Interpersonal Skill',
-    image: natashateacherUrl,
-    birthPlaceDate: 'Palembang, 15 Juni 1964',
-    education: [
-      'IKIP N Jakarta, Fakultas Bahasa Inggris, 1987',
-      'SEPAMILSUKWAN VI, 1989',
-      'UNLA Bandung, Fakultas Hukum, 2007',
-      'Selapa Polri angkatan 39, 2008',
-      'Kuliah Jarak Jauh, jurusan Community Policing, Singapore, 2009.',
-      'Management Development Course (IPS, Problem Solving), Akpol, London, 1989, 1999',
-      'Taining on Police Reform, Japan, Singapore, 2002, 2009',
-      'Training Drugs and treatment, Australia, Thayland, 2003, 2004',
-      'Law Enforcement Management Program, Vietnam, 2012',
-    ],
-    teaching: [
-      'Pengajar Bahasa Inggris',
-      'Pengajar Interpersonal Skill',
-      'Pelatih Interpersonal Skill dan Service Excellent sejak 1990 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Pratama, Gada Madya',
-      'Pelatih Service Excellent dan Manajemen Tanggap Darurat sejak 2008 s/d 2022 di Badan Usaha Jasa Pengamanan untuk Sekolah Gada Utama',
-      'Auditor Sistem Manajemen Pengamanan dan Sistem Manajemen Pengamanan Hotel sejak 2008 s/d 2015',
-    ],
+    tag: 'Seleksi Kampus',
+    name: 'SNMPTN / SBMPTN',
+    code: 'PTN',
+    icon: School,
+    visualIcon: GraduationCap,
+    color: '#7c3aed',
+    softColor: '#f1ecfd',
+    blurb: 'Simulasi CAT untuk mengukur kesiapan masuk perguruan tinggi.',
   },
   {
-    id: 'teacher-4',
-    name: 'YUNUS SUFIAN, S.H',
-    role: 'BRIPTU - BIDPROPAM POLDA JABAR',
-    image: yunusSufianUrl,
-    birthPlaceDate: '-',
-    address: '-',
-    education: [
-      'Pangkat: BRIPTU',
-      'Kesatuan: BIDPROPAM POLDA JABAR',
-      'Juara 2 10km Jalan Cepat Porda 2022',
-      'Juara 3 20km Jalan Cepat Porda 2022',
-      'Juara 1 5km Bandung Neighbor Fun Race 2022',
-    ],
-    teaching: [
-      'Lisensi Level 1 Kepelatihan Fisik Nasional',
-      'Pelatih Komunitas RIOT BANDUNG 2022 - sekarang',
-      'Pelatih Komunitas TEMAN SPORTY 2022 - 2024',
-      'Pelatih BINJAS PADJAJARANBDG 2024 - sekarang',
-    ],
+    tag: 'Persiapan Kerja',
+    name: 'JFT & lainnya',
+    code: 'JFT',
+    icon: BriefcaseBusiness,
+    visualIcon: BriefcaseBusiness,
+    color: '#ea580c',
+    softColor: '#fff1e8',
+    blurb: 'Mulai dari free tryout, lalu usulkan jenis ujian yang kamu butuhkan.',
   },
 ]
 
-const services = [
-  { icon: Brain, title: 'Tes Psikologi', desc: 'Pemetaan karakter, kestabilan emosi, dan kesiapan menghadapi seleksi.' },
-  { icon: BookOpenText, title: 'Tes Akademik', desc: 'Latihan soal akademik terstruktur dengan simulasi CBT berkala.' },
-  { icon: Dumbbell, title: 'Tes Fisik', desc: 'Panduan pembinaan fisik sesuai standar seleksi kepolisian.' },
-  { icon: Check, title: 'Tes Kesehatan', desc: 'Pendampingan pemeriksaan kesehatan untuk memenuhi standar seleksi kepolisian.' },
-  { icon: ShieldCheck, title: 'Mental & Ideologi', desc: 'Penguatan mental, disiplin, wawasan kebangsaan, dan integritas.' },
-  { icon: NotebookPen, title: 'Materi Pembelajaran', desc: 'Modul belajar, bank soal, dan pembahasan eksklusif per kelas.' },
+const steps = [
+  { title: 'Pilih free tryout', text: 'Masuk ke halaman tryout gratis, pilih paket yang sedang dibuka, isi data singkat.' },
+  { title: 'Kerjakan seperti ujian asli', text: 'Timer jalan, soal muncul berurutan — rasakan ritme CAT yang sesungguhnya.' },
+  { title: 'Lihat hasil & kirim feedback', text: 'Cek skormu, lalu ceritakan ke kami apa yang bisa lebih baik.' },
 ]
 
-/** Ringkasan hero: selaras dengan penyelenggara & layanan di halaman ini. */
-const heroSelayangPandang = {
-  eyebrow: 'Selayang Pandang',
-  title: 'Lembaga Kursus Persiapan Seleksi Akademi Kepolisian',
-  description:
-    'Pratistha Cendekia Prestasi adalah lembaga kursus yang menyelenggarakan program persiapan calon peserta AKADEMI KEPOLISIAN, dengan fasilitas belajar eksklusif dan pembelajaran profesional.',
-  bannerAlt: 'Banner Pratistha Cendekia Prestasi — persiapan seleksi Akademi Kepolisian',
-}
-
-const marketing5w1hCards = [
-  {
-    key: 'what',
-    label: 'What',
-    title: 'Program Karantina Intensif',
-    description: 'Program khusus persiapan seleksi akademi dengan kurikulum akademik, psikologi, kesehatan, jasmani, dan mental dalam satu alur pembinaan.',
-  },
-  {
-    key: 'why',
-    label: 'Why',
-    title: 'Peluang Lolos Lebih Besar',
-    description: 'Pendekatan berbasis evaluasi dan pendampingan harian membantu peserta belajar terarah, disiplin, dan siap menghadapi standar seleksi terbaru.',
-  },
-  {
-    key: 'who',
-    label: 'Who',
-    title: 'Untuk Calon Taruna Serius',
-    description: 'Dirancang untuk siswa kelas akhir SMA/sederajat, gap year, serta orang tua yang ingin anaknya dibina oleh tim profesional dan berpengalaman.',
-  },
-  {
-    key: 'where',
-    label: 'Where',
-    title: 'Lokasi Strategis Bandung',
-    description: 'Pembinaan dilakukan di pusat program Bandung dengan akses konsultasi online agar peserta dari berbagai daerah tetap bisa terlayani.',
-  },
-  {
-    key: 'when',
-    label: 'When',
-    title: 'Mulai dari Sekarang',
-    description: 'Pendaftaran dibuka setiap periode. Semakin awal bergabung, semakin panjang waktu persiapan dan semakin matang kesiapan peserta.',
-  },
-  {
-    key: 'how',
-    label: 'How',
-    title: 'Metode 5 Langkah Terukur',
-    description: 'Assessment awal, mapping kemampuan, kelas terjadwal, simulasi berkala, dan review progres ke peserta serta orang tua secara periodik.',
-  },
+const aboutStats = [
+  { value: 'Gratis', label: 'Tanpa biaya tersembunyi' },
+  { value: '5+', label: 'Jenis ujian simulasi' },
+  { value: '100%', label: 'Berbasis masukan pengguna' },
 ]
 
-
-const keyFeatures = [
-  {
-    icon: UserCheck,
-    modal: 'teachers',
-    title: 'Pengajar dari Ahli & Praktisi',
-    desc: 'Tim pembina berpengalaman dari unsur purnawirawan, mentor akademik, dan pelatih kesiapan seleksi.',
-    longDesc: 'Pendampingan peserta dilakukan oleh tim lintas bidang agar persiapan berjalan terarah, disiplin, dan sesuai kebutuhan seleksi terkini.',
-    points: [
-      'Sesi pembinaan dipandu mentor akademik dan pelatih berpengalaman.',
-      'Peserta mendapat arahan belajar mingguan yang terukur.',
-      'Evaluasi dilakukan berkala untuk menentukan fokus latihan berikutnya.',
-    ],
-  },
-  {
-    icon: BookOpenText,
-    title: 'Materi Terbaru dan Eksklusif',
-    desc: 'Materi disusun berkala, menyesuaikan pola seleksi terbaru, dan hanya dapat diakses peserta terdaftar.',
-    longDesc: 'Konten pembelajaran diperbarui secara periodik agar tetap relevan dengan standar seleksi, disertai pembahasan yang mudah dipahami.',
-    points: [
-      'Bank soal latihan ditata berdasarkan tingkat kesulitan.',
-      'Ringkasan materi disiapkan untuk mempercepat pengulangan.',
-      'Pembahasan contoh soal membantu peserta memahami pola jawaban.',
-    ],
-  },
-  {
-    icon: LineChart,
-    title: 'Laporan ke Orang Tua Secara Online',
-    desc: 'Perkembangan hasil latihan, nilai tes, dan progres pendaftaran peserta dapat dipantau secara digital.',
-    longDesc: 'Informasi perkembangan peserta ditampilkan dalam laporan ringkas agar orang tua bisa memantau progres belajar secara berkala.',
-    points: [
-      'Rekap latihan dan capaian nilai ditampilkan per periode.',
-      'Perubahan progres dapat dipantau tanpa harus datang ke lokasi.',
-      'Komunikasi pendampingan menjadi lebih cepat dan transparan.',
-    ],
-  },
-  {
-    icon: Warehouse,
-    title: 'Tempat Belajar Eksklusif',
-    desc: 'Ruang belajar terarah dengan sistem kelas, jadwal, dan evaluasi untuk menjaga fokus pembinaan.',
-    longDesc: 'Lingkungan belajar dirancang kondusif untuk menjaga ritme latihan, meningkatkan fokus, dan membangun konsistensi peserta.',
-    points: [
-      'Jadwal pembinaan disusun dengan alur yang jelas.',
-      'Sistem kelas membantu peserta belajar sesuai target program.',
-      'Monitoring rutin menjaga kedisiplinan selama masa kursus.',
-    ],
-  },
-]
-
-function openFeatureModal(feature) {
-  if (feature.modal === 'teachers') {
-    isTeacherModalOpen.value = true
-    return
-  }
-  activeFeatureModal.value = feature
+function goToSlide(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 }
 
-function openSelayangModal() {
-  router.push('/selayang-pandang')
-}
+let observer = null
 
-function openLeaderDetailModal() {
-  isLeaderDetailModalOpen.value = true
-}
-
-function closeLeaderDetailModal() {
-  isLeaderDetailModalOpen.value = false
-}
-
-function closeSelayangModal() {
-  isSelayangModalOpen.value = false
-}
-
-function closeFeatureModal() {
-  activeFeatureModal.value = null
-}
-
-function closeTeacherModal() {
-  isTeacherModalOpen.value = false
-}
-
-function openGallery(index = 0) {
-  if (!galleryImages.length) return
-  activeGalleryIndex.value = index
-  isGalleryOpen.value = true
-  document.body.style.overflow = 'hidden'
-}
-
-function closeGallery() {
-  isGalleryOpen.value = false
-  stopGallerySlideshow()
-  document.body.style.overflow = ''
-}
-
-function nextGalleryImage() {
-  if (!galleryImages.length) return
-  activeGalleryIndex.value = (activeGalleryIndex.value + 1) % galleryImages.length
-}
-
-function prevGalleryImage() {
-  if (!galleryImages.length) return
-  activeGalleryIndex.value = (activeGalleryIndex.value - 1 + galleryImages.length) % galleryImages.length
-}
-
-function goToGalleryImage(index) {
-  activeGalleryIndex.value = index
-}
-
-function stopGallerySlideshow() {
-  isGallerySlideshow.value = false
-  if (gallerySlideshowTimer) {
-    clearInterval(gallerySlideshowTimer)
-    gallerySlideshowTimer = null
-  }
-}
-
-function toggleGallerySlideshow() {
-  if (isGallerySlideshow.value) {
-    stopGallerySlideshow()
-    return
-  }
-  isGallerySlideshow.value = true
-  gallerySlideshowTimer = setInterval(nextGalleryImage, 2600)
-}
-
-function onGalleryKeydown(event) {
-  if (!isGalleryOpen.value) return
-  if (event.key === 'Escape') closeGallery()
-  else if (event.key === 'ArrowRight') nextGalleryImage()
-  else if (event.key === 'ArrowLeft') prevGalleryImage()
-}
-
-function openMemberModal(member) {
-  activeMemberModal.value = member
-}
-
-function closeMemberModal() {
-  activeMemberModal.value = null
-}
-
-const onlinePrograms = ONLINE_PROGRAMS
-
-const classComparisonColumns = [
-  { key: 'karantina', label: 'Kelas Karantina', badgeClass: 'bg-primary text-white' },
-  { key: 'reguler', label: 'Kelas Reguler', badgeClass: 'bg-secondary text-white' },
-  { key: 'online', label: 'Kelas Online', badgeClass: 'bg-sky text-primary' },
-  { key: 'ujian', label: 'Kelas Ujian', badgeClass: 'bg-cream text-text' },
-]
-
-const classComparisonRows = [
-  { label: 'Masa kursus', values: { karantina: '3 bulan', reguler: '3 bulan', online: '3 bulan', ujian: '3 bulan' } },
-  { label: 'Konsultasi', values: { karantina: true, reguler: true, online: true, ujian: true } },
-  { label: 'Penginapan siswa (1 kamar 2 orang)', values: { karantina: true, reguler: false, online: false, ujian: false } },
-  { label: 'Makan (3 kali sehari)', values: { karantina: true, reguler: false, online: false, ujian: false } },
-  { label: 'Seragam siswa (baju olahraga, batik, PDH)', values: { karantina: true, reguler: true, online: false, ujian: false } },
-  { label: 'Psikotes', values: { karantina: true, reguler: true, online: false, ujian: false } },
-  { label: 'Medical check up', values: { karantina: true, reguler: true, online: false, ujian: false } },
-  { label: 'Program jasmani', values: { karantina: true, reguler: true, online: false, ujian: false } },
-  { label: 'Program akademik', values: { karantina: true, reguler: true, online: true, ujian: false } },
-  { label: 'Program renang', values: { karantina: true, reguler: true, online: false, ujian: false } },
-  { label: 'Program ujian', values: { karantina: true, reguler: true, online: true, ujian: true } },
-  { label: 'Materi online', values: { karantina: true, reguler: true, online: true, ujian: false } },
-  { label: 'Transportasi selama program', values: { karantina: true, reguler: false, online: false, ujian: false } },
-  { label: 'Tas dan topi', values: { karantina: true, reguler: true, online: false, ujian: false } },
-  { label: 'Perlengkapan makan', values: { karantina: true, reguler: false, online: false, ujian: false } },
-  { label: 'Masa akses aplikasi', values: { karantina: '1 tahun', reguler: '1 tahun', online: '6 bulan', ujian: '3 bulan' } },
-  { label: 'Biaya kursus', values: { karantina: 'Hubungi kami', reguler: 'Hubungi kami', online: 'Rp. 6.500.000', ujian: 'Rp. 500.000' } },
-]
-
-function isBiayaRow(row) {
-  return row.label === 'Biaya kursus'
-}
-
-function handleComparisonCellClick(row) {
-  if (!isBiayaRow(row)) return
-  router.push('/about-us')
-}
-
-const programBadge = (program) => {
-  const mode = program.mode
-  if (mode === 'Premium') {
-    return { label: mode, isVip: true, className: 'bg-sky text-primary border-border' }
-  }
-  if (mode === 'Reguler') {
-    return { label: mode, isVip: false, className: 'bg-mint text-primary border-border' }
-  }
-  if (mode === 'Full Online') {
-    return { label: mode, isVip: false, className: 'bg-cream text-text border-border' }
-  }
-  return { label: mode, isVip: false, className: 'bg-background text-text border-border' }
-}
-
-const scrollToHash = () => {
-  const id = String(route.hash || '').replace('#', '')
-  if (!id) return
-  const target = document.getElementById(id)
-  if (target) {
-    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80)
-  }
-}
-
-const scrollToSection = (id) => {
-  isMobileMenuOpen.value = false
-  const target = document.getElementById(id)
-  if (target) {
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
-  if (id == 'selayang-pandang' || id == 'about-us') {
-    router.push(`/${id}`)
-  }
-}
-
-const setupScrollFadeAnimations = async () => {
-  await nextTick()
-  const fadeTargets = document.querySelectorAll('.fade-up')
-  if (!fadeTargets.length) return
-
-  // Keep content visible by default; activate fade behavior only when observer is ready.
-  fadeTargets.forEach((el) => el.classList.add('fade-ready'))
-
-  if (typeof IntersectionObserver === 'undefined') {
-    fadeTargets.forEach((el) => el.classList.add('in-view'))
-    return
-  }
-
-  fadeObserver = new IntersectionObserver(
+onMounted(() => {
+  observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry) => {
-        entry.target.classList.toggle('in-view', entry.isIntersecting)
-      })
+      for (const entry of entries) {
+        if (entry.isIntersecting) activeSlide.value = entry.target.id
+      }
     },
-    {
-      threshold: 0.01,
-      rootMargin: '0px 0px -4% 0px',
-    },
+    { root: viewportRef.value, threshold: 0.55 },
   )
-
-  fadeTargets.forEach((el) => fadeObserver.observe(el))
-}
-
-watch(() => route.hash, scrollToHash)
-onMounted(async () => {
-  scrollToHash()
-  setupScrollFadeAnimations()
-  await nextTick()
-  goToLeader(activeLeaderIndex.value, 'auto')
-  window.addEventListener('resize', onLeaderResize)
-  window.addEventListener('keydown', onGalleryKeydown)
-  if (wallpaperSlides.length > 1) {
-    wallpaperInterval = setInterval(() => {
-      activeWallpaperIndex.value = (activeWallpaperIndex.value + 1) % wallpaperSlides.length
-    }, 3200)
-  }
+  viewportRef.value?.querySelectorAll('.cs-slide').forEach((el) => observer.observe(el))
 })
 
-onUnmounted(() => {
-  window.removeEventListener('resize', onLeaderResize)
-  window.removeEventListener('keydown', onGalleryKeydown)
-  stopGallerySlideshow()
-  document.body.style.overflow = ''
-  if (leaderAutoScrollTimer) {
-    clearTimeout(leaderAutoScrollTimer)
-  }
-  if (wallpaperInterval) {
-    clearInterval(wallpaperInterval)
-  }
-  if (fadeObserver) {
-    fadeObserver.disconnect()
-  }
+onBeforeUnmount(() => {
+  observer?.disconnect()
 })
 </script>
 
-<style src="../../css/animate.css"></style>
-
 <style scoped>
-.fade-up {
-  opacity: 1;
-  transform: translateY(0) scale(1);
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.cs-viewport {
+  --ink: #0f172a;
+  --ink-deep: #0b1220;
+  --blue: #2563eb;
+  --blue-dark: #1d4ed8;
+  --blue-soft: #eaf1fd;
+  --paper: #ffffff;
+  --paper-tint: #f8fafc;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --dark-w: clamp(18rem, 34vw, 34rem);
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
-.page-shell {
-  width: min(100%, 78.75rem);
-  margin-inline: auto;
+.cs-viewport::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
-.home-top-nav {
-  max-width: 78.75rem;
-}
-
-.gallery-mosaic {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 6.5rem;
-  gap: 0.6rem;
-}
-
-.gallery-tile {
+/* ---------- Slides ---------- */
+.cs-slide {
   position: relative;
+  height: 100vh;
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
   overflow: hidden;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: #1c1d2f;
-  cursor: pointer;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.gallery-tile:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+.cs-slide--light {
+  background: var(--paper);
 }
 
-.gallery-tile-img {
-  width: 100%;
+.cs-slide--tint {
+  background: var(--paper-tint);
+}
+
+.cs-slide--dark {
+  background: linear-gradient(160deg, var(--ink) 0%, var(--ink-deep) 100%);
+  color: #fff;
+}
+
+.cs-slide__inner {
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.gallery-tile:hover .gallery-tile-img {
-  transform: scale(1.08);
-}
-
-.gallery-tile-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 55%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.gallery-tile:hover .gallery-tile-overlay {
-  opacity: 1;
-}
-
-.gallery-more-overlay {
-  position: absolute;
-  inset: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 3rem clamp(1.25rem, 4vw, 3.5rem);
+}
+
+.cs-slide__inner--center {
+  align-items: center;
+  text-align: center;
+}
+
+.cs-slide__hint {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.cs-scroll-hint {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  background: rgba(18, 59, 143, 0.55);
-  backdrop-filter: blur(1px);
-  transition: background 0.3s ease;
-}
-
-.gallery-tile-more:hover .gallery-more-overlay {
-  background: rgba(18, 59, 143, 0.72);
-}
-
-.gallery-tile-0 {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-.gallery-tile-1 {
-  grid-column: span 2;
-  grid-row: span 1;
-}
-
-.gallery-tile-4 {
-  grid-column: span 2;
-  grid-row: span 1;
-}
-
-.gallery-thumb-strip {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
-}
-
-.gallery-thumb-strip::-webkit-scrollbar {
-  height: 6px;
-}
-
-.gallery-thumb-strip::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.35);
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  animation: cs-bob 2.2s ease-in-out infinite;
 }
 
-@media (max-width: 640px) {
-  .gallery-mosaic {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 6rem;
-  }
-
-  .gallery-tile-1,
-  .gallery-tile-4 {
-    grid-column: span 1;
-  }
+.cs-scroll-hint:hover {
+  color: var(--blue);
+  border-color: var(--blue);
 }
 
-.leaders-demo-frame {
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background-color: #1c1d2f;
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.25);
-}
-
-.leaders-demo-layout {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr;
-  min-height: 620px;
-}
-
-.leaders-demo-content {
-  padding-left: 3rem;
-  padding-top: 3rem;
-  padding-right: 12rem;
-  padding-bottom: 3rem;
-  color: #f2f4fb;
-  height: 500px;
-}
-
-.leaders-demo-eyebrow {
-  font-size: 2rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.leaders-demo-name {
-  margin-top: 0.4rem;
-  font-size: clamp(2.5rem, 4vw, 4rem);
-  font-weight: 700;
-  line-height: 0.92;
-  letter-spacing: 0.02em;
-}
-
-.leaders-demo-label {
-  font-size: 1.35rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  opacity: 0.9;
-}
-
-.leaders-demo-batch {
-  font-size: 1.05rem;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  font-weight: 600;
-  opacity: 0.95;
-}
-
-.leaders-demo-heading {
-  font-size: 1.35rem;
-  font-weight: 700;
-  line-height: 0.95;
-}
-
-.leaders-demo-position {
-  margin-top: 0.3rem;
-  font-size: clamp(2.2rem, 3.6vw, 3.6rem);
-  font-weight: 700;
-  line-height: 0.9;
-  text-transform: uppercase;
-}
-
-.leaders-demo-list {
-  margin-top: 0.7rem;
-  padding-left: 1rem;
-  list-style: disc;
-  font-size: 1rem;
-  line-height: 1.5;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  color: rgba(241, 245, 255, 0.92);
-}
-
-.leaders-demo-visual {
-  background: #f2f2f5;
-  padding: 1.25rem;
-}
-
-.leaders-demo-image {
-  width: 100%;
-  height: 500px;
-  object-fit: cover;
-  border-radius: 0.25rem;
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
-}
-
-@media (max-width: 1024px) {
-  .leaders-demo-layout {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-
-  .leaders-demo-content {
-    padding: 1.8rem 1.3rem;
-    height: 100%;
-  }
-
-  .leaders-demo-visual {
-    padding: 1rem;
-  }
-
-  .leaders-demo-image {
-    height: 550px;
-    width: 50%;
-    margin: 0px auto;
-  }
-
-  .leaders-demo-name {
-    font-size: 2rem;
-  }
-
-  .leaders-demo-eyebrow {
-    font-size: 1.5rem;
-    border-bottom: 1px solid #f2f4fb;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .leaders-demo-heading {
-    font-size: 1rem;
-    border-bottom: 1px solid #f2f4fb;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-}
-
-@media (max-width: 450px) {
-  .leaders-demo-image {
-    height: 450px;
-    width: 100%;
-  }
-}
-
-.selayang-card-container {
-  min-height: 100%;
-}
-
-.selayang-card-bg {
-  object-position: center 32%;
-}
-
-.selayang-card-breathe {
-  animation: selayangCardBreathe 3s ease-in-out infinite;
-  transform-origin: center;
-  will-change: transform;
-}
-
-.cta-tryout-animated {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  isolation: isolate;
-  background-image: linear-gradient(120deg, #ffbb00 0%, #e0c200 45%, #dcc600 100%);
-  background-size: 220% 220%;
-  box-shadow: 0 12px 30px -14px rgba(168, 168, 168, 0.8);
-  animation: ctaTryoutBgFlow 4.8s ease-in-out infinite, ctaTryoutPulse 1.9s ease-in-out infinite;
-  will-change: transform, background-position, box-shadow;
-}
-
-.cta-tryout-animated::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  transform: translateX(-130%);
-  background: linear-gradient(105deg, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0) 75%);
-  animation: ctaTryoutShine 2.3s linear infinite;
-  pointer-events: none;
-}
-
-.cta-tryout-animated:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 18px 36px -16px rgba(122, 122, 122, 0.92);
-}
-
-.cta-tryout-animated:active {
-  transform: translateY(0) scale(0.99);
-}
-
-.cta-selayang-animated {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  isolation: isolate;
-  background-image: linear-gradient(125deg, #47fff6 0%, #01dbc8 46%, #14b8a6 100%);
-  background-size: 230% 230%;
-  box-shadow: 0 12px 30px -14px rgba(15, 118, 110, 0.82);
-  animation: ctaSelayangBgFlow 5.8s ease-in-out infinite, ctaSelayangPulse 2.1s ease-in-out infinite;
-  will-change: transform, background-position, box-shadow;
-}
-
-.cta-selayang-animated::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  transform: translateX(-130%);
-  background: linear-gradient(105deg, rgba(255, 255, 255, 0) 24%, rgba(255, 255, 255, 0.42) 50%, rgba(255, 255, 255, 0) 76%);
-  animation: ctaSelayangShine 2.8s linear infinite;
-  pointer-events: none;
-}
-
-.cta-selayang-animated:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 18px 36px -16px rgba(15, 118, 110, 0.95);
-}
-
-.cta-selayang-animated:active {
-  transform: translateY(0) scale(0.99);
-}
-
-.home-main-gradient-animated {
-  background-color: #262626;
-  background-image:
-    conic-gradient(from 22deg at 13% 12%,
-      rgba(255, 255, 255, 0.38) 0deg 48deg,
-      rgba(230, 230, 230, 0.32) 48deg 108deg,
-      rgba(185, 185, 185, 0.28) 108deg 192deg,
-      rgba(130, 130, 130, 0.24) 192deg 278deg,
-      rgba(85, 85, 85, 0.22) 278deg 360deg),
-    conic-gradient(from 210deg at 78% 26%,
-      rgba(242, 242, 242, 0.28) 0deg 58deg,
-      rgba(196, 196, 196, 0.26) 58deg 146deg,
-      rgba(148, 148, 148, 0.24) 146deg 235deg,
-      rgba(98, 98, 98, 0.22) 235deg 320deg,
-      rgba(58, 58, 58, 0.2) 320deg 360deg),
-    conic-gradient(from 318deg at 52% 82%,
-      rgba(255, 255, 255, 0.2) 0deg 70deg,
-      rgba(210, 210, 210, 0.22) 70deg 150deg,
-      rgba(134, 134, 134, 0.24) 150deg 238deg,
-      rgba(60, 60, 60, 0.28) 238deg 360deg),
-    linear-gradient(160deg, #878787 0%, #bababa 26%, #9b9b9b 48%, #525252 72%, #0f0f0f 100%);
-  background-size: 190% 190%, 190% 190%, 220% 220%, 135% 135%;
-  background-blend-mode: soft-light, overlay, multiply, normal;
-  animation: homeMainGradientFlow 5s ease-in-out infinite;
-  will-change: background-position;
-}
-
-.leader-profile-card {
-  border: 1px solid #c9a84c;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(201, 168, 76, 0.15);
-}
-
-.leader-profile-card__bg {
-  background-color: #141414;
-  background-image:
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 2px,
-      rgba(201, 168, 76, 0.035) 2px,
-      rgba(201, 168, 76, 0.035) 4px
-    ),
-    radial-gradient(ellipse 70% 55% at 0% 0%, rgba(201, 168, 76, 0.22), transparent 55%),
-    radial-gradient(ellipse 55% 45% at 100% 100%, rgba(201, 168, 76, 0.1), transparent 50%),
-    linear-gradient(155deg, #1f1f1f 0%, #121212 48%, #0a0a0a 100%);
-}
-
-.leader-profile-card__bg::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 8rem;
-  height: 5rem;
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent,
-    transparent 7px,
-    rgba(201, 168, 76, 0.2) 7px,
-    rgba(201, 168, 76, 0.2) 8px
-  );
-  pointer-events: none;
-}
-
-.mobile-card-gradient {
-  background-color: #b8e3bc;
-  background-image:
-    conic-gradient(from 24deg at 14% 14%,
-      rgba(196, 239, 199, 0.7) 0deg 56deg,
-      rgba(167, 231, 202, 0.52) 56deg 132deg,
-      rgba(114, 199, 214, 0.36) 132deg 222deg,
-      rgba(58, 126, 225, 0.34) 222deg 318deg,
-      rgba(196, 239, 199, 0.56) 318deg 360deg),
-    conic-gradient(from 210deg at 82% 26%,
-      rgba(173, 235, 206, 0.5) 0deg 70deg,
-      rgba(128, 216, 212, 0.38) 70deg 170deg,
-      rgba(63, 147, 228, 0.36) 170deg 285deg,
-      rgba(151, 226, 209, 0.48) 285deg 360deg),
-    linear-gradient(150deg, #e6e6e6 0%, #cccccc 42%, #ededed 100%);
-  background-size: 170% 170%, 185% 185%, 125% 125%;
-  background-blend-mode: overlay, soft-light, normal;
-  animation: mobileCardGradientFlow 9s ease-in-out infinite;
-  will-change: background-position;
-}
-
-.fade-up.fade-ready {
-  opacity: 0;
-  transform: translateY(20px) scale(0.985);
-  transition: opacity 0.55s ease, transform 0.55s ease;
-}
-
-.fade-up.fade-ready.in-view {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.fade-up-tight.fade-ready {
-  transform: translateY(10px) scale(0.992);
-  transition: opacity 0.38s ease, transform 0.38s ease;
-}
-
-.leader-vertical-carousel {
-  scrollbar-width: none;
-}
-
-.leader-vertical-carousel::-webkit-scrollbar {
-  display: none;
-}
-
-.leader-swap-slide-enter-active,
-.leader-swap-slide-leave-active {
-  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.42s ease;
-}
-
-.leader-swap-slide-enter-from {
-  opacity: 0;
-  transform: translateY(34px) scale(0.985);
-}
-
-.leader-swap-slide-leave-to {
-  opacity: 0;
-  transform: translateY(-26px) scale(1.01);
-}
-
-.leader-swap-pop-enter-active,
-.leader-swap-pop-leave-active {
-  transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.38s ease, opacity 0.38s ease;
-}
-
-.leader-swap-pop-enter-from {
-  opacity: 0;
-  transform: scale(0.9) translateX(14px);
-  filter: blur(4px);
-}
-
-.leader-swap-pop-leave-to {
-  opacity: 0;
-  transform: scale(1.08) translateX(-10px);
-  filter: blur(3px);
-}
-
-.leader-swap-tilt-enter-active,
-.leader-swap-tilt-leave-active {
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
-  transform-origin: center;
-}
-
-.leader-swap-tilt-enter-from {
-  opacity: 0;
-  transform: perspective(900px) rotateX(-8deg) translateY(20px) scale(0.96);
-}
-
-.leader-swap-tilt-leave-to {
-  opacity: 0;
-  transform: perspective(900px) rotateX(7deg) translateY(-16px) scale(1.02);
-}
-
-.member-slide-fade-enter-active,
-.member-slide-fade-leave-active {
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-
-.member-slide-fade-enter-from,
-.member-slide-fade-leave-to {
-  opacity: 0;
-  transform: translateY(8px);
-}
-
-.member-history-list {
-  display: grid;
-  gap: 0.55rem;
-}
-
-.member-history-item {
-  position: relative;
-}
-
-.member-history-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 0.21rem;
-  top: 1.1rem;
-  bottom: -0.65rem;
-  width: 2px;
-  background: rgba(47, 107, 255, 0.42);
-}
-
-.member-history-dot {
-  position: relative;
-  z-index: 1;
-}
-
-.floating-orb {
-  animation: floatOrb 7s ease-in-out infinite;
-}
-
-@keyframes floatOrb {
+@keyframes cs-bob {
 
   0%,
   100% {
@@ -2016,249 +651,1646 @@ onUnmounted(() => {
   }
 
   50% {
-    transform: translateY(18px);
+    transform: translateY(5px);
   }
 }
 
-@keyframes ctaTryoutBgFlow {
-  0% {
-    background-position: 0% 50%;
-  }
+/* ---------- Dots nav ---------- */
+.cs-dots {
+  position: fixed;
+  right: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  z-index: 50;
+}
 
-  50% {
-    background-position: 100% 50%;
-  }
+.cs-dots__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: rgba(100, 116, 139, 0.35);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
 
-  100% {
-    background-position: 0% 50%;
+.cs-dots__dot.is-light {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.cs-dots__dot.is-active {
+  background: var(--blue);
+  transform: scale(1.35);
+}
+
+/* ---------- Hero ---------- */
+.cs-slide--hero {
+  background: var(--paper);
+}
+
+.cs-hero__dark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--dark-w);
+  background: linear-gradient(170deg, #16213a 0%, var(--ink-deep) 100%);
+}
+
+.cs-hero__dots-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 16px 16px;
+  mask-image: radial-gradient(ellipse at 80% 85%, black 0%, transparent 55%);
+}
+
+.cs-hero__dots-pattern--circle {
+  mask-image: radial-gradient(ellipse at 70% 30%, black 0%, transparent 70%);
+}
+
+.cs-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+}
+
+.cs-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cs-brand__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(150deg, var(--blue), var(--blue-dark));
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.cs-brand__mark--sm {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+}
+
+.cs-brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.cs-brand__title {
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.cs-brand__title--sm {
+  font-size: 0.9rem;
+}
+
+.cs-brand__title--light {
+  color: #fff;
+}
+
+.cs-brand__cat {
+  color: var(--ink);
+}
+
+.cs-brand__title--light .cs-brand__cat {
+  color: #fff;
+}
+
+.cs-brand__sim {
+  color: var(--blue);
+}
+
+.cs-brand__sub {
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.cs-nav__links {
+  display: none;
+  align-items: center;
+  gap: 1.9rem;
+  margin-right: calc(var(--dark-w) * 0.55);
+}
+
+.cs-nav__link {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.cs-nav__link:hover {
+  color: var(--blue);
+}
+
+.cs-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cs-nav__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 0.65rem;
+  background: var(--blue);
+  color: #fff;
+  transition: background 0.2s ease;
+}
+
+.cs-nav__avatar:hover {
+  background: var(--blue-dark);
+}
+
+.cs-nav__burger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 0.65rem;
+  border: none;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.cs-nav__mobile {
+  position: absolute;
+  top: 4.6rem;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem clamp(1.25rem, 4vw, 3rem) 1.5rem;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.cs-nav__mobile .cs-nav__link {
+  padding: 0.6rem 0;
+}
+
+.cs-fade-enter-active,
+.cs-fade-leave-active {
+  transition: opacity 0.18s ease;
+}
+
+.cs-fade-enter-from,
+.cs-fade-leave-to {
+  opacity: 0;
+}
+
+.cs-hero__vertical {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  z-index: 10;
+  margin: 0;
+  transform: rotate(180deg) translateY(50%);
+  writing-mode: vertical-rl;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  color: var(--blue);
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cs-hero__vertical-dot {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: var(--blue);
+}
+
+.cs-hero__copy {
+  position: absolute;
+  z-index: 10;
+  left: clamp(1.5rem, 6vw, 6rem);
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 26rem;
+}
+
+.cs-hero__eyebrow {
+  margin: 0 0 1rem;
+  color: var(--blue);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.cs-hero__title {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.cs-hero__title-blue {
+  color: var(--blue);
+}
+
+.cs-hero__lead {
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.cs-hero__actions {
+  margin-top: 1.75rem;
+}
+
+.cs-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 0.7rem;
+  background: var(--blue);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.28);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.cs-cta:hover {
+  background: var(--blue-dark);
+  transform: translateY(-1px);
+}
+
+.cs-cta--dark {
+  background: var(--ink);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.22);
+}
+
+.cs-cta--dark:hover {
+  background: var(--ink-deep);
+}
+
+.cs-hero__features {
+  display: flex;
+  gap: 1.15rem;
+  margin-top: 2.25rem;
+  flex-wrap: wrap;
+}
+
+.cs-hero__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  max-width: 9.5rem;
+}
+
+.cs-hero__feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.cs-hero__feature-title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.cs-hero__feature-text {
+  margin: 0.15rem 0 0;
+  font-size: 0.66rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ---------- Circle ---------- */
+.cs-circle {
+  position: absolute;
+  z-index: 15;
+  top: 50%;
+  right: var(--dark-w);
+  transform: translate(50%, -50%);
+  width: min(30rem, 58vh);
+  aspect-ratio: 1;
+}
+
+.cs-circle__ring {
+  position: absolute;
+  inset: -2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+}
+
+.cs-circle__orbit {
+  position: absolute;
+  inset: -2rem;
+  border-radius: 999px;
+  pointer-events: none;
+  animation: cs-orbit-spin 20s linear infinite;
+}
+
+.cs-circle__ring-dot-wrap {
+  position: absolute;
+  inset: 0;
+  transform: rotate(calc(var(--i) * 72deg));
+}
+
+.cs-circle__ring-dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: var(--blue);
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.22);
+  transform: translate(-50%, -50%);
+}
+
+@keyframes cs-orbit-spin {
+  to {
+    transform: rotate(-360deg);
   }
 }
 
-@keyframes ctaTryoutPulse {
+.cs-circle__disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.25);
+}
+
+.cs-circle__half-light {
+  position: relative;
+  background: linear-gradient(150deg, #cfe0fa 0%, #7ba0e8 55%, #3b62c4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cs-circle__half-dark {
+  position: relative;
+  background: linear-gradient(160deg, #1c2c4a 0%, #10192e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cs-float {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.7rem;
+  padding: 0.45rem;
+  backdrop-filter: blur(3px);
+  animation: cs-drift 6s ease-in-out infinite;
+}
+
+.cs-float--clipboard {
+  top: 20%;
+  left: 32%;
+}
+
+.cs-float--clock {
+  top: 10%;
+  right: 10%;
+  animation-delay: 1.2s;
+}
+
+.cs-float--cap {
+  top: 30%;
+  left: 60%;
+  animation-delay: 2.1s;
+}
+
+@keyframes cs-drift {
 
   0%,
   100% {
-    transform: translateY(0) scale(1);
-    box-shadow: 0 12px 30px -14px rgba(189, 189, 189, 0.8);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translateY(-1px) scale(1.025);
-    box-shadow: 0 16px 34px -14px rgba(129, 129, 129, 0.95);
+    transform: translateY(-6px);
   }
 }
 
-@keyframes ctaTryoutShine {
-  0% {
-    transform: translateX(-130%);
+.cs-monitor {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 22%;
+}
+
+.cs-monitor__screen {
+  width: clamp(7.5rem, 11vw, 9.5rem);
+  border-radius: 0.6rem;
+  background: #fff;
+  padding: 0.6rem 0.65rem;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.3);
+}
+
+.cs-monitor__q {
+  margin: 0 0 0.35rem;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.cs-monitor__progress {
+  height: 0.22rem;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+  margin-bottom: 0.45rem;
+}
+
+.cs-monitor__progress span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--blue);
+}
+
+.cs-monitor__options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.cs-monitor__options li span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.5rem;
+  font-weight: 800;
+}
+
+.cs-monitor__options li.is-active span {
+  background: var(--blue);
+  color: #fff;
+}
+
+.cs-monitor__stand {
+  width: 0.5rem;
+  height: 0.8rem;
+  background: #dbe3f0;
+}
+
+.cs-monitor__base {
+  width: 2.4rem;
+  height: 0.3rem;
+  border-radius: 999px;
+  background: #dbe3f0;
+}
+
+.cs-books {
+  position: absolute;
+  bottom: 16%;
+  left: 5%;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2px;
+}
+
+.cs-books span {
+  height: 1rem;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.cs-books span:nth-child(1) {
+  width: 12.6rem;
+}
+
+.cs-books span:nth-child(2) {
+  width: 12.2rem;
+  background: rgba(255, 224, 130, 0.85);
+}
+
+.cs-books span:nth-child(3) {
+  width: 11.8rem;
+  background: rgba(129, 199, 245, 0.9);
+}
+
+.cs-score-card {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.8rem;
+  padding: 0.85rem 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.cs-score-card__label {
+  margin: 0;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 700;
+}
+
+.cs-score-card__value {
+  margin: 0.2rem 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.cs-score-card__value span {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+}
+
+.cs-score-card__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.3rem;
+  height: 2.2rem;
+}
+
+.cs-score-card__bars span {
+  width: 0.5rem;
+  border-radius: 3px 3px 0 0;
+  background: var(--blue);
+  opacity: 0.85;
+}
+
+.cs-circle__play {
+  position: absolute;
+  bottom: -1.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.25);
+  cursor: pointer;
+  z-index: 3;
+  transition: transform 0.2s ease;
+}
+
+.cs-circle__play:hover {
+  transform: translateX(-50%) scale(1.06);
+}
+
+.cs-circle__wire {
+  position: absolute;
+  bottom: -4.2rem;
+  left: 34%;
+  width: 7rem;
+  height: 2.5rem;
+}
+
+/* ---------- Timeline ---------- */
+.cs-timeline {
+  position: absolute;
+  z-index: 20;
+  right: clamp(1.75rem, 3.6vw, 3.75rem);
+  top: 50%;
+  transform: translateY(-50%);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cs-timeline li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 5.5rem;
+  padding-bottom: 4rem;
+}
+
+.cs-timeline li:last-child {
+  padding-bottom: 0;
+}
+
+.cs-timeline li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 3.25rem;
+  bottom: 0.7rem;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.cs-timeline__num {
+  font-size: 1.2rem;
+  line-height: 1;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.cs-timeline li.is-first .cs-timeline__num {
+  color: var(--blue);
+}
+
+.cs-timeline__label {
+  font-size: 0.82rem;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 700;
+}
+
+.cs-timeline li.is-first .cs-timeline__label {
+  color: #93c5fd;
+}
+
+/* ---------- Badges ---------- */
+.cs-badge {
+  position: absolute;
+  z-index: 20;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+.cs-badge--chart {
+  bottom: 35%;
+  right: 25%;
+}
+
+.cs-badge--clock {
+  bottom: 60%;
+  right: 20%;
+}
+
+/* ---------- Sections (slides 2-5) ---------- */
+.cs-slide--light {
+  background:
+    radial-gradient(circle at 8% 8%, rgba(37, 99, 235, 0.07), transparent 24%),
+    radial-gradient(circle at 88% 85%, rgba(37, 99, 235, 0.05), transparent 28%),
+    #fbfcff;
+}
+
+.cs-slide__inner--features {
+  position: relative;
+  z-index: 2;
+  max-width: 68rem;
+  padding-top: 2.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.cs-features__wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.85), transparent 28%),
+    linear-gradient(300deg, rgba(255, 255, 255, 0.8), transparent 30%);
+}
+
+.cs-feature-float {
+  position: absolute;
+  z-index: 1;
+  display: none;
+  color: #80a9ec;
+  border: 1px solid rgba(148, 176, 224, 0.3);
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: 0 18px 36px rgba(37, 99, 235, 0.08);
+  backdrop-filter: blur(3px);
+  opacity: 0.72;
+}
+
+.cs-feature-float--quiz {
+  top: 12%;
+  left: 4%;
+  width: 7.5rem;
+  height: 8.5rem;
+  padding: 1rem;
+  border-radius: 0.85rem;
+  transform: rotate(5deg);
+}
+
+.cs-feature-float__bar {
+  display: block;
+  width: 75%;
+  height: 0.45rem;
+  margin-bottom: 0.85rem;
+  border-radius: 999px;
+  background: #dbe8fb;
+}
+
+.cs-feature-float__option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-bottom: 0.45rem;
+  border-radius: 999px;
+  background: #edf4ff;
+  color: #729ce0;
+  font-size: 0.55rem;
+  font-weight: 800;
+}
+
+.cs-feature-float__check {
+  position: absolute;
+  right: -0.7rem;
+  bottom: -0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+}
+
+.cs-feature-float--chart {
+  top: 12%;
+  right: 4%;
+  width: 7.8rem;
+  height: 8.4rem;
+  border-radius: 0.85rem;
+  transform: rotate(-4deg);
+}
+
+.cs-feature-float__pie {
+  position: absolute;
+  top: 0.8rem;
+  left: 1rem;
+  width: 2.7rem;
+  height: 2.7rem;
+  color: #79a3e8;
+}
+
+.cs-feature-float__bars {
+  position: absolute;
+  right: 0.8rem;
+  bottom: 0.8rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  color: #8ab0eb;
+}
+
+.cs-feature-float__mini {
+  position: absolute;
+  left: -1.1rem;
+  bottom: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 2rem;
+  border-radius: 0.45rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.12);
+}
+
+.cs-section__head {
+  max-width: 38rem;
+  margin: 0 auto 2.25rem;
+  text-align: center;
+}
+
+.cs-section__eyebrow {
+  margin: 0 0 0.65rem;
+  color: var(--blue);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.cs-section__eyebrow--light {
+  color: #93c5fd;
+}
+
+.cs-section__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.cs-section__title-blue {
+  display: block;
+  color: var(--blue);
+}
+
+.cs-section__desc {
+  margin: 0.85rem 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.cs-section__cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.cs-feature-grid {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: 1fr;
+}
+
+.cs-feature-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 0;
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.9rem;
+  border: 1px solid #e6ebf4;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cs-feature-card:hover {
+  transform: none;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+}
+
+.cs-feature-card__body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.cs-feature-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex-shrink: 0;
+  border-radius: 0.65rem;
+  background: var(--blue-soft);
+  color: var(--blue);
+  margin-bottom: 0;
+}
+
+.cs-feature-card__icon-svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.cs-feature-card__copy {
+  min-width: 0;
+}
+
+.cs-feature-card__title {
+  margin: 0 0 0.2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.cs-feature-card__text {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cs-feature-card__visual {
+  display: none;
+}
+
+.cs-feature-card__visual-icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  stroke-width: 1.25;
+  filter: drop-shadow(0 8px 10px rgba(37, 99, 235, 0.12));
+}
+
+.cs-feature-card__visual.is-timer .cs-feature-card__visual-icon {
+  color: #4384e8;
+}
+
+.cs-feature-card__visual.is-result {
+  justify-content: flex-start;
+  padding-left: 1.2rem;
+}
+
+.cs-feature-card__visual.is-result .cs-feature-card__visual-icon {
+  width: 3.8rem;
+  height: 3.8rem;
+}
+
+.cs-feature-card__score {
+  position: absolute;
+  left: 2rem;
+  top: 2.75rem;
+  color: var(--blue);
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.cs-feature-card__chart {
+  position: absolute;
+  right: 1rem;
+  bottom: 1.1rem;
+  height: 3.4rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.32rem;
+}
+
+.cs-feature-card__chart span {
+  width: 0.55rem;
+  border-radius: 0.2rem 0.2rem 0 0;
+  background: linear-gradient(#73a4ec, #2563eb);
+}
+
+.cs-feature-card__visual.is-gift {
+  color: #5f91df;
+}
+
+.cs-feature-card__check {
+  position: absolute;
+  right: 1.3rem;
+  bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--blue);
+  box-shadow: 0 7px 14px rgba(37, 99, 235, 0.26);
+}
+
+.cs-trust-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.cs-trust-pills span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid #edf0f5;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #7a879b;
+  font-size: 0.68rem;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.035);
+}
+
+.cs-trust-pills svg {
+  color: #4384e8;
+}
+
+.cs-slide__inner--simulation {
+  position: relative;
+  z-index: 2;
+  max-width: 68rem;
+  padding-top: 2.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.cs-simulation__wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 8% 75%, rgba(124, 58, 237, 0.07), transparent 24%),
+    radial-gradient(circle at 92% 15%, rgba(37, 99, 235, 0.08), transparent 25%),
+    linear-gradient(180deg, #f9fbff, #f4f7fd);
+  pointer-events: none;
+}
+
+.cs-sim-float {
+  position: absolute;
+  z-index: 1;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #7da5e8;
+  border: 1px solid rgba(148, 176, 224, 0.3);
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 18px 36px rgba(37, 99, 235, 0.08);
+  backdrop-filter: blur(3px);
+  opacity: 0.72;
+}
+
+.cs-sim-float--language {
+  top: 12%;
+  left: 4%;
+  width: 7.4rem;
+  height: 7.4rem;
+  border-radius: 1.2rem;
+  transform: rotate(-5deg);
+}
+
+.cs-sim-float--language span {
+  position: absolute;
+  font-weight: 800;
+}
+
+.cs-sim-float--language span:nth-of-type(1) {
+  right: 1rem;
+  top: 0.8rem;
+  color: #7c3aed;
+}
+
+.cs-sim-float--language span:nth-of-type(2) {
+  left: 1rem;
+  bottom: 0.8rem;
+  color: #0d9488;
+}
+
+.cs-sim-float--score {
+  top: 12%;
+  right: 4%;
+  width: 7.2rem;
+  height: 8rem;
+  border-radius: 1.2rem;
+  flex-direction: column;
+  transform: rotate(4deg);
+}
+
+.cs-sim-float__main-icon {
+  width: 3rem;
+  height: 3rem;
+  stroke-width: 1.35;
+}
+
+.cs-sim-float--score strong {
+  margin-top: 0.25rem;
+  color: #2563eb;
+  font-size: 1.2rem;
+}
+
+.cs-sim-float--score small {
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  font-weight: 800;
+}
+
+.cs-exam-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.cs-exam-card {
+  position: relative;
+  min-height: 18.5rem;
+  padding: 1.15rem 1.15rem 9.4rem;
+  border-radius: 1.1rem;
+  background: #fff;
+  border: 1px solid #e6ebf4;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.055);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cs-exam-card:hover {
+  border-color: #b8cdf3;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.085);
+}
+
+.cs-exam-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cs-exam-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.65rem;
+}
+
+.cs-exam-card__tag {
+  display: inline-block;
+  color: #8591a4;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.cs-exam-card__name {
+  margin: 0.55rem 0 0;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.cs-exam-card__blurb {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.cs-exam-card__visual {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 2.7rem;
+  height: 6.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, var(--exam-soft), rgba(255, 255, 255, 0.5));
+  color: var(--exam-color);
+}
+
+.cs-exam-card__visual-icon {
+  position: relative;
+  z-index: 2;
+  width: 3.8rem;
+  height: 3.8rem;
+  stroke-width: 1.25;
+  filter: drop-shadow(0 7px 10px rgba(15, 23, 42, 0.1));
+}
+
+.cs-exam-card__sheet {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  width: 2.8rem;
+  height: 3.5rem;
+  padding: 0.65rem 0.5rem;
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.8);
+  transform: rotate(-8deg);
+  box-shadow: 0 7px 14px rgba(15, 23, 42, 0.08);
+}
+
+.cs-exam-card__sheet span {
+  display: block;
+  height: 0.22rem;
+  margin-bottom: 0.38rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--exam-color) 38%, white);
+}
+
+.cs-exam-card__code {
+  position: absolute;
+  right: 0.8rem;
+  top: 0.6rem;
+  color: var(--exam-color);
+  font-size: 0.75rem;
+  font-weight: 800;
+  opacity: 0.6;
+}
+
+.cs-exam-card__action {
+  position: absolute;
+  left: 1.15rem;
+  right: 1.15rem;
+  bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #4b5d78;
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.cs-exam-card__action:hover {
+  color: var(--blue);
+}
+
+.cs-simulation__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.2rem;
+}
+
+.cs-simulation__footer span,
+.cs-simulation__footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.48rem 0.85rem;
+  border-radius: 999px;
+  color: #7a879b;
+  font-size: 0.68rem;
+  text-decoration: none;
+}
+
+.cs-simulation__footer span {
+  border: 1px solid #e7ebf2;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.cs-simulation__footer svg {
+  color: #4384e8;
+}
+
+.cs-simulation__footer a {
+  color: var(--blue);
+  font-weight: 800;
+}
+
+.cs-steps {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+  max-width: 40rem;
+  width: 100%;
+}
+
+.cs-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.cs-step__num {
+  color: var(--blue);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.cs-step__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.cs-step__text {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.83rem;
+  line-height: 1.55;
+}
+
+.cs-about__stats {
+  margin: 2rem auto 0;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 40rem;
+  width: 100%;
+  text-align: center;
+}
+
+.cs-about__stat-value {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.cs-about__stat-label {
+  margin: 0.3rem 0 0;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+/* ---------- Kontak slide ---------- */
+.cs-feedback__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+  font-weight: 800;
+  color: #fff;
+}
+
+.cs-feedback__text {
+  margin: 1rem auto 0;
+  max-width: 34rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.7;
+}
+
+.cs-feedback__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-top: 1.75rem;
+}
+
+.cs-feedback__secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.cs-feedback__secondary:hover {
+  border-color: var(--blue);
+  background: rgba(37, 99, 235, 0.16);
+}
+
+.cs-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem 2rem;
+  margin-top: 3.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  width: 100%;
+}
+
+.cs-footer__brand {
+  gap: 0.5rem;
+}
+
+.cs-footer__note {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+}
+
+.cs-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+}
+
+.cs-footer__links a {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  font-size: 0.78rem;
+}
+
+.cs-footer__links a:hover {
+  color: #93c5fd;
+}
+
+/* ---------- Responsive ---------- */
+@media (min-width: 768px) {
+  .cs-feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
 
-  100% {
-    transform: translateX(130%);
+  .cs-feature-card {
+    display: block;
+    min-height: 17rem;
+    padding: 1.15rem 1.15rem 0;
+    border-radius: 1.1rem;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.055);
+  }
+
+  .cs-feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+  }
+
+  .cs-feature-card__body {
+    display: block;
+  }
+
+  .cs-feature-card__icon {
+    width: 2.1rem;
+    height: 2.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .cs-feature-card__icon-svg {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .cs-feature-card__title {
+    margin: 0 0 0.45rem;
+    font-size: 1rem;
+  }
+
+  .cs-feature-card__text {
+    font-size: 0.83rem;
+    line-height: 1.6;
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    overflow: visible;
+  }
+
+  .cs-feature-card__visual {
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0;
+    height: 7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem 1rem 0 0;
+    background: linear-gradient(180deg, rgba(234, 241, 253, 0.25), rgba(234, 241, 253, 0.8));
+    color: #78a3e8;
+  }
+
+  .cs-exam-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@keyframes ctaSelayangBgFlow {
-  0% {
-    background-position: 0% 50%;
+@media (min-width: 1024px) {
+  .cs-nav__links {
+    display: flex;
   }
 
-  50% {
-    background-position: 100% 50%;
+  .cs-hero__vertical {
+    display: inline-flex;
   }
 
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes ctaSelayangPulse {
-
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-    box-shadow: 0 12px 30px -14px rgba(15, 118, 110, 0.82);
+  .cs-timeline {
+    display: flex;
   }
 
-  50% {
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 16px 34px -14px rgba(15, 118, 110, 0.95);
-  }
-}
-
-@keyframes ctaSelayangShine {
-  0% {
-    transform: translateX(-130%);
+  .cs-badge {
+    display: inline-flex;
   }
 
-  100% {
-    transform: translateX(130%);
+  .cs-feature-float {
+    display: block;
+  }
+
+  .cs-sim-float {
+    display: flex;
+  }
+
+  .cs-feature-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .cs-exam-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-.hero-banner-fade {
-  animation: heroFadeIn 1.2s ease-out both;
-}
-
-.program-gradient-animated {
-  background-size: 220% 220%;
-  animation: programGradientFlow 9s ease-in-out infinite;
-}
-
-.feature-gradient-animated {
-  background-image:
-    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0) 42%),
-    radial-gradient(circle at 82% 86%, rgba(110, 66, 8, 0.32) 0%, rgba(110, 66, 8, 0) 46%),
-    linear-gradient(105deg, #bf953f 0%, #fcf6ba 30%, #b38728 50%, #fbf5b7 70%, #aa771c 100%);
-  background-size: 240% 240%;
-  animation: featureGradientFlow 5.8s linear infinite;
-  will-change: background-position;
-}
-
-.service-gradient-animated {
-  background-image:
-    radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 38%),
-    linear-gradient(138deg, #a8a8a8 0%, #a5a5a5 28%, #dcdcdc 54%, #bdbdbd 74%, #c4c4c4 100%);
-  background-size: 230% 230%;
-  animation: serviceGradientFlow 6.2s linear infinite;
-  will-change: background-position;
-}
-
-@keyframes programGradientFlow {
-  0% {
-    background-position: 0% 50%;
+/* Mobile: hero becomes stacked, snap relaxed */
+@media (max-width: 1023px) {
+  .cs-viewport {
+    scroll-snap-type: y proximity;
   }
 
-  50% {
-    background-position: 100% 50%;
+  .cs-slide {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible;
   }
 
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes serviceGradientFlow {
-  0% {
-    background-position: 100% 10%;
+  .cs-slide--hero {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 3rem;
   }
 
-  50% {
-    background-position: 0% 90%;
+  .cs-hero__dark {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: clamp(16rem, 42vh, 24rem);
   }
 
-  100% {
-    background-position: 100% 10%;
-  }
-}
-
-@keyframes homeMainGradientFlow {
-  0% {
-    background-position: 0% 0%, 100% 0%, 50% 100%, 0% 0%;
+  .cs-nav {
+    position: relative;
+    background: var(--paper);
   }
 
-  35% {
-    background-position: 42% 24%, 70% 30%, 34% 78%, 30% 22%;
+  .cs-nav__burger {
+    color: var(--ink);
+    border: 1px solid var(--line);
   }
 
-  70% {
-    background-position: 18% 58%, 94% 46%, 62% 56%, 78% 74%;
+  .cs-hero__copy {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    padding: 1.5rem clamp(1.25rem, 5vw, 2.5rem) 0;
+    max-width: 32rem;
   }
 
-  100% {
-    background-position: 0% 0%, 100% 0%, 50% 100%, 0% 0%;
-  }
-}
-
-@keyframes mobileCardGradientFlow {
-  0% {
-    background-position: 0% 0%, 100% 0%, 50% 50%;
-  }
-
-  50% {
-    background-position: 100% 100%, 0% 100%, 55% 45%;
+  .cs-circle {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    margin: 3.5rem auto 0;
+    width: min(20rem, 78vw);
   }
 
-  100% {
-    background-position: 0% 0%, 100% 0%, 50% 50%;
-  }
-}
-
-@keyframes featureGradientFlow {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes heroFadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(1.04);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes selayangCardBreathe {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.035);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-.gold-shimmer-text {
-  background-image: linear-gradient(105deg,
-      #8b6914 0%,
-      #c9a227 20%,
-      #ffd700 38%,
-      #fff8dc 48%,
-      #ffe566 52%,
-      #ffd700 62%,
-      #c79b0c 80%,
-      #cf980c 100%);
-  background-size: 280% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation: goldTextShimmer 2.6s ease-in-out infinite;
-}
-
-@keyframes goldTextShimmer {
-
-  0%,
-  100% {
-    background-position: 0% center;
-  }
-
-  50% {
-    background-position: 100% center;
-  }
-}
-
-@media (max-width: 768px) {
-  .selayang-card-bg {
-    object-position: center 20%;
-    transform: scale(1.06);
-    transform-origin: center;
+  .cs-circle__wire {
+    display: none;
   }
 }
 </style>

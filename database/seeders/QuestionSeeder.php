@@ -2,204 +2,121 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\ExamTrack;
 use App\Models\Question;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class QuestionSeeder extends Seeder
 {
+    /**
+     * 10 soal pilihan ganda per track ujian (JLPT, JFT-Basic, IELTS, TOEFL, SNMPTN, SBMPTN).
+     * Format: q = pertanyaan, o = 4 opsi (A-D), c = kunci, d = tingkat kesulitan.
+     */
     public function run(): void
     {
-        $admin = User::where('email','admin@example.com')->first();
+        $admin = User::where('email', 'admin@example.com')->first();
 
         $banks = [
-            'Mathematics' => [
-                'Easy' => [
-                    ['q'=>'2 + 3 = ?','o'=>['4','5','6','7'],'c'=>'B'],
-                    ['q'=>'10 − 4 = ?','o'=>['5','6','7','8'],'c'=>'B'],
-                    ['q'=>'5 × 3 = ?','o'=>['15','10','20','25'],'c'=>'A'],
-                    ['q'=>'24 ÷ 6 = ?','o'=>['3','4','6','8'],'c'=>'B'],
-                    ['q'=>'Bilangan genap dari 1–10?','o'=>['1,3,5,7','2,4,6,8','3,6,9,12','2,5,7,9'],'c'=>'B'],
-                ],
-                'Medium' => [
-                    ['q'=>'12 × 7 = ?','o'=>['72','84','96','78'],'c'=>'B'],
-                    ['q'=>'(15 − 3) × 2 = ?','o'=>['20','24','26','30'],'c'=>'B'],
-                    ['q'=>'60% dari 250 = ?','o'=>['125','150','180','200'],'c'=>'B'],
-                    ['q'=>'Akar kuadrat dari 225 = ?','o'=>['14','15','16','17'],'c'=>'B'],
-                    ['q'=>'Nilai x: 3x + 9 = 24','o'=>['4','5','6','7'],'c'=>'C'],
-                ],
-                'Hard' => [
-                    ['q'=>'Turunan d/dx (x^3 − 5x^2 + 7) = ?','o'=>['3x^2 − 10x','3x^2 − 10x + 7','x^3 − 10x','3x − 10'],'c'=>'A'],
-                    ['q'=>'Limit x→∞ (3x^2 + x)/(x^2 − 1) = ?','o'=>['3','1','0','∞'],'c'=>'A'],
-                    ['q'=>'Luas segitiga sisi 13,14,15 (Heron) = ?','o'=>['84','90','91','92'],'c'=>'C'],
-                    ['q'=>'Integral ∫(2x) dx dari 0 ke 5 = ?','o'=>['25','50','10','5'],'c'=>'A'],
-                    ['q'=>'Jumlah sudut dalam segi-12 = ?','o'=>['180°','1440°','1620°','1080°'],'c'=>'D'],
-                ],
+            'jlpt' => [
+                ['q' => 'わたしは まいあさ コーヒー（　）のみます。', 'o' => ['を', 'が', 'に', 'へ'], 'c' => 'A', 'd' => 'Easy'],
+                ['q' => '「食べます」の じしょけい（bentuk kamus）は どれですか。', 'o' => ['たべた', 'たべる', 'たべて', 'たべない'], 'c' => 'B', 'd' => 'Easy'],
+                ['q' => 'きのう ともだち（　）えいがを みました。', 'o' => ['を', 'が', 'と', 'の'], 'c' => 'C', 'd' => 'Easy'],
+                ['q' => '漢字「学生」の よみかたは どれですか。', 'o' => ['がっこう', 'せんせい', 'がくせん', 'がくせい'], 'c' => 'D', 'd' => 'Easy'],
+                ['q' => 'でんしゃ（　）かいしゃへ いきます。', 'o' => ['で', 'に', 'を', 'が'], 'c' => 'A', 'd' => 'Medium'],
+                ['q' => 'そらが くらいですね。あめが（　）そうです。', 'o' => ['ふる', 'ふり', 'ふって', 'ふった'], 'c' => 'B', 'd' => 'Medium'],
+                ['q' => 'Arti kata 「おいしい」 adalah ...', 'o' => ['mahal', 'dingin', 'enak', 'lambat'], 'c' => 'C', 'd' => 'Easy'],
+                ['q' => 'にほんへ いった（　）が あります。', 'o' => ['もの', 'とき', 'ところ', 'こと'], 'c' => 'D', 'd' => 'Medium'],
+                ['q' => 'やすみのひは そうじを したり、せんたくを（　）します。', 'o' => ['したり', 'して', 'する', 'した'], 'c' => 'A', 'd' => 'Medium'],
+                ['q' => 'しゅくだいを わすれたので、せんせいに（　）。', 'o' => ['しかりました', 'しかられました', 'しかっています', 'しかります'], 'c' => 'B', 'd' => 'Hard'],
             ],
-            'Physics' => [
-                'Easy' => [
-                    ['q'=>'Satuan SI untuk gaya?','o'=>['Joule','Newton','Watt','Pascal'],'c'=>'B'],
-                    ['q'=>'Kecepatan adalah?','o'=>['Perubahan energi','Perubahan posisi terhadap waktu','Gaya per massa','Tekanan per luas'],'c'=>'B'],
-                    ['q'=>'cahaya bergerak paling cepat di?','o'=>['Udara','Air','Ruang hampa','Kaca'],'c'=>'C'],
-                    ['q'=>'Alat ukur arus listrik?','o'=>['Voltmeter','Ammeter','Ohmmeter','Thermometer'],'c'=>'B'],
-                    ['q'=>'Gravitasi bumi ~?','o'=>['9.8 m/s²','1 m/s²','5 m/s²','3.7 m/s²'],'c'=>'A'],
-                ],
-                'Medium' => [
-                    ['q'=>'Hukum II Newton: F = ?','o'=>['m/a','m×a','a/m','m−a'],'c'=>'B'],
-                    ['q'=>'Energi kinetik = ?','o'=>['mgh','½mv²','qV','IVt'],'c'=>'B'],
-                    ['q'=>'Frekuensi 50 Hz, periode = ?','o'=>['0.02 s','0.1 s','0.5 s','2 s'],'c'=>'A'],
-                    ['q'=>'Muatan elektron = ?','o'=>['+1.6×10^-19 C','−1.6×10^-19 C','0','+1.6×10^19 C'],'c'=>'B'],
-                    ['q'=>'Hukum Ohm: V = ?','o'=>['IR','I/R','R/I','VI'],'c'=>'A'],
-                ],
-                'Hard' => [
-                    ['q'=>'Momentum sudut L untuk partikel: L = ?','o'=>['r×p','p×v','m×a','q×E'],'c'=>'A'],
-                    ['q'=>'Medan magnet sekitar kawat lurus: B ∝ ?','o'=>['I/r','1/Ir','r/I','I×r'],'c'=>'A'],
-                    ['q'=>'Energi foton: E = ?','o'=>['hc/λ','hλ/c','λ/hc','h/λ'],'c'=>'A'],
-                    ['q'=>'Relativitas: p = ?','o'=>['mv','γmv','m/v','v/γ'],'c'=>'B'],
-                    ['q'=>'Induksi Faraday: ε = ?','o'=>['dΦ/dt','−dΦ/dt','Φ/dt','IΦ'],'c'=>'B'],
-                ],
+            'jft' => [
+                ['q' => 'Salam yang diucapkan saat tiba di tempat kerja pada pagi hari adalah ...', 'o' => ['おはようございます', 'こんばんは', 'おやすみなさい', 'さようなら'], 'c' => 'A', 'd' => 'Easy'],
+                ['q' => 'スーパーで「いらっしゃいませ」と いわれました。なんと いいますか。', 'o' => ['なにも いわなくても いい', 'ありがとう', 'すみません', 'おねがいします'], 'c' => 'A', 'd' => 'Easy'],
+                ['q' => 'びょういんへ いくとき、なにを もっていきますか。', 'o' => ['パスポートだけ', 'ほけんしょう', 'ざっし', 'おべんとう'], 'c' => 'B', 'd' => 'Easy'],
+                ['q' => '「もえるごみ」は どれですか。', 'o' => ['びん', 'かん', 'なまごみ', 'でんち'], 'c' => 'C', 'd' => 'Easy'],
+                ['q' => 'でんしゃの なかで してはいけない ことは どれですか。', 'o' => ['ほんを よむ', 'ねる', 'おんがくを きく（イヤホンで）', 'おおきい こえで でんわを する'], 'c' => 'D', 'd' => 'Easy'],
+                ['q' => 'しごとを やすむとき、かいしゃに なんと れんらくしますか。', 'o' => ['「きょうは やすみます。すみません。」', 'なにも いわない', '「あした きます」だけ いう', 'ともだちに いってもらう'], 'c' => 'A', 'd' => 'Medium'],
+                ['q' => '「この くすりは しょくご に のんでください」の いみは？', 'o' => ['ごはんの まえに のむ', 'ごはんの あとに のむ', 'ねる まえに のむ', 'あさだけ のむ'], 'c' => 'B', 'd' => 'Medium'],
+                ['q' => 'じしんが おきたとき、まず なにを しますか。', 'o' => ['エレベーターに のる', 'そとへ はしる', 'つくえの したに はいる', 'でんわを かける'], 'c' => 'C', 'd' => 'Medium'],
+                ['q' => 'ATMで おかねを おろす。「おろす」の いみは？', 'o' => ['menabung', 'meminjam', 'transfer', 'menarik uang'], 'c' => 'D', 'd' => 'Medium'],
+                ['q' => 'せんぱいに しりょうを もらいました。なんと いいますか。', 'o' => ['ありがとうございます', 'どういたしまして', 'おまたせしました', 'しつれいします'], 'c' => 'A', 'd' => 'Hard'],
             ],
-            'Chemistry' => [
-                'Easy' => [
-                    ['q'=>'Rumus kimia air?','o'=>['H2O','CO2','O2','NaCl'],'c'=>'A'],
-                    ['q'=>'pH netral pada 25°C?','o'=>['6','7','8','14'],'c'=>'B'],
-                    ['q'=>'Gas mulia pertama?','o'=>['Helium','Neon','Argon','Krypton'],'c'=>'A'],
-                    ['q'=>'Ikatan NaCl adalah?','o'=>['Ionik','Kovalen','Metalik','Hidrogen'],'c'=>'A'],
-                    ['q'=>'Unit konsentrasi larutan?','o'=>['m/s','mol/L','kg/m³','J/mol'],'c'=>'B'],
-                ],
-                'Medium' => [
-                    ['q'=>'Bilangan oksidasi O dalam H2O?','o'=>['−1','−2','+1','0'],'c'=>'B'],
-                    ['q'=>'Volume 1 mol gas ideal (STP) ~?','o'=>['22.4 L','24 L','1 L','2.24 L'],'c'=>'A'],
-                    ['q'=>'Rumus etana?','o'=>['CH4','C2H6','C2H4','C3H8'],'c'=>'B'],
-                    ['q'=>'Tipe ikatan dalam H2?','o'=>['Ionik','Kovalen tunggal','Metalik','Hidrogen'],'c'=>'B'],
-                    ['q'=>'Asam kuat di bawah ini?','o'=>['CH3COOH','HCl','NH3','H2O'],'c'=>'B'],
-                ],
-                'Hard' => [
-                    ['q'=>'Konstanta Avogadro ~?','o'=>['6.02×10^23','6.02×10^22','6.02×10^24','6.02×10^21'],'c'=>'A'],
-                    ['q'=>'pKa kecil artinya?','o'=>['Asam lebih lemah','Asam lebih kuat','Basa lebih kuat','Netral'],'c'=>'B'],
-                    ['q'=>'Hukum Le Chatelier berlaku untuk?','o'=>['Kesetimbangan','Larutan jenuh','Koloid','Elektrolit lemah'],'c'=>'A'],
-                    ['q'=>'Rumus glukosa?','o'=>['C6H12O6','C12H22O11','C6H6','CH3OH'],'c'=>'A'],
-                    ['q'=>'Hybridisasi CH4?','o'=>['sp','sp2','sp3','sp3d'],'c'=>'C'],
-                ],
+            'ielts' => [
+                ['q' => 'Choose the correct sentence.', 'o' => ['She have been living here for two years.', 'She has been living here for two years.', 'She living here for two years.', 'She is live here for two years.'], 'c' => 'B', 'd' => 'Easy'],
+                ['q' => 'The graph ______ a sharp increase in urban population between 2000 and 2010.', 'o' => ['tells', 'says', 'shows', 'speaks'], 'c' => 'C', 'd' => 'Easy'],
+                ['q' => 'Which word is closest in meaning to "significant"?', 'o' => ['minor', 'temporary', 'accidental', 'considerable'], 'c' => 'D', 'd' => 'Easy'],
+                ['q' => 'If the government ______ more in public transport, traffic congestion would decrease.', 'o' => ['invested', 'invests', 'will invest', 'is investing'], 'c' => 'A', 'd' => 'Medium'],
+                ['q' => 'Choose the best linking word: "The experiment failed. ______, the researchers learned a great deal."', 'o' => ['Therefore', 'Nevertheless', 'Because', 'Similarly'], 'c' => 'B', 'd' => 'Medium'],
+                ['q' => 'The number of students enrolling in online courses ______ steadily since 2015.', 'o' => ['is rising', 'rose', 'has risen', 'rises'], 'c' => 'C', 'd' => 'Medium'],
+                ['q' => 'Which is an example of a formal (academic) expression?', 'o' => ['a lot of problems', 'kids these days', 'stuff like that', 'a considerable number of issues'], 'c' => 'D', 'd' => 'Medium'],
+                ['q' => '"The proliferation of smartphones has transformed communication." The word "proliferation" means ...', 'o' => ['rapid increase', 'sudden decline', 'strict regulation', 'complete absence'], 'c' => 'A', 'd' => 'Hard'],
+                ['q' => 'Choose the correct passive form: "Researchers conducted the survey in 2020."', 'o' => ['The survey conducted in 2020.', 'The survey was conducted in 2020.', 'The survey is conducting in 2020.', 'The survey has conducted in 2020.'], 'c' => 'B', 'd' => 'Medium'],
+                ['q' => '"Hardly ______ the lecture when the fire alarm rang."', 'o' => ['the professor had begun', 'the professor began', 'had the professor begun', 'did the professor begun'], 'c' => 'C', 'd' => 'Hard'],
             ],
-            'Geography' => [
-                'Easy' => [
-                    ['q'=>'Ibu kota Jepang?','o'=>['Osaka','Kyoto','Tokyo','Nagoya'],'c'=>'C'],
-                    ['q'=>'Benua terbesar?','o'=>['Afrika','Asia','Eropa','Amerika'],'c'=>'B'],
-                    ['q'=>'Samudra terdalam?','o'=>['Atlantik','Pasifik','Hindia','Arktik'],'c'=>'B'],
-                    ['q'=>'Gunung tertinggi di dunia?','o'=>['K2','Everest','Kilimanjaro','Elbrus'],'c'=>'B'],
-                    ['q'=>'Ibu kota Australia?','o'=>['Sydney','Melbourne','Canberra','Perth'],'c'=>'C'],
-                ],
-                'Medium' => [
-                    ['q'=>'Sungai terpanjang?','o'=>['Nil','Amazon','Yangtze','Mississippi'],'c'=>'B'],
-                    ['q'=>'Gurun terbesar?','o'=>['Sahara','Gobi','Arab','Kalahari'],'c'=>'A'],
-                    ['q'=>'Danau terbesar?','o'=>['Superior','Victoria','Kaspia','Baikal'],'c'=>'C'],
-                    ['q'=>'Iklim Indonesia didominasi oleh?','o'=>['Tropis','Subtropis','Gurun','Temperate'],'c'=>'A'],
-                    ['q'=>'Negara beribu kota Ankara?','o'=>['Iran','Turki','Yunani','Mesir'],'c'=>'B'],
-                ],
-                'Hard' => [
-                    ['q'=>'Letak Palung Mariana?','o'=>['Atlantik','Pasifik barat','Hindia','Arktik'],'c'=>'B'],
-                    ['q'=>'Puncak Andes tertinggi?','o'=>['Aconcagua','Ojos del Salado','Huascarán','Chimborazo'],'c'=>'A'],
-                    ['q'=>'Delta terbesar?','o'=>['Nil','Gangga-Brahmaputra','Mekong','Mississippi'],'c'=>'B'],
-                    ['q'=>'Cincin Api Pasifik terkait?','o'=>['Subduksi','Erosi','Delta','Karst'],'c'=>'A'],
-                    ['q'=>'Arus Gulf Stream mengalir ke?','o'=>['Laut Utara','Laut Tengah','Pasifik','Hindia'],'c'=>'A'],
-                ],
+            'toefl' => [
+                ['q' => 'The committee ______ its final decision next Monday.', 'o' => ['will announce', 'announce', 'announcing', 'announced yesterday'], 'c' => 'A', 'd' => 'Easy'],
+                ['q' => 'Choose the correct word: "Neither the students nor the teacher ______ in the classroom."', 'o' => ['are', 'was', 'were', 'have been'], 'c' => 'B', 'd' => 'Medium'],
+                ['q' => '"Photosynthesis, ______ occurs in green plants, converts sunlight into energy."', 'o' => ['it', 'that', 'which', 'who'], 'c' => 'C', 'd' => 'Easy'],
+                ['q' => 'Identify the synonym of "abundant".', 'o' => ['scarce', 'moderate', 'expensive', 'plentiful'], 'c' => 'D', 'd' => 'Easy'],
+                ['q' => '______ the invention of the printing press, books were copied by hand.', 'o' => ['Before', 'Since', 'While', 'Whether'], 'c' => 'A', 'd' => 'Easy'],
+                ['q' => 'The professor insisted that every student ______ the assignment on time.', 'o' => ['submits', 'submit', 'submitted', 'is submitting'], 'c' => 'B', 'd' => 'Hard'],
+                ['q' => 'Choose the correct comparative: "This method is ______ than the previous one."', 'o' => ['most efficient', 'efficient', 'far more efficient', 'the more efficient'], 'c' => 'C', 'd' => 'Medium'],
+                ['q' => '"The data ______ that global temperatures have risen significantly."', 'o' => ['indicating', 'is indicate', 'indicates of', 'indicate'], 'c' => 'D', 'd' => 'Medium'],
+                ['q' => 'Not until the 20th century ______ the right to vote in many countries.', 'o' => ['did women gain', 'women gained', 'women did gain', 'gained women'], 'c' => 'A', 'd' => 'Hard'],
+                ['q' => '"Despite ______ hard, he failed the examination." Choose the correct option.', 'o' => ['he studied', 'studying', 'to study', 'he was studying'], 'c' => 'B', 'd' => 'Medium'],
             ],
-            'History' => [
-                'Easy' => [
-                    ['q'=>'WWII berakhir tahun?','o'=>['1945','1939','1918','1950'],'c'=>'A'],
-                    ['q'=>'Proklamasi RI tahun?','o'=>['1950','1945','1965','1930'],'c'=>'B'],
-                    ['q'=>'Tokoh teori relativitas?','o'=>['Newton','Einstein','Galileo','Planck'],'c'=>'B'],
-                    ['q'=>'Kerajaan Majapahit berdiri di?','o'=>['Sumatra','Jawa Timur','Kalimantan','Bali'],'c'=>'B'],
-                    ['q'=>'Runtuhnya Romawi Barat?','o'=>['476 M','1453 M','1066 M','800 M'],'c'=>'A'],
-                ],
-                'Medium' => [
-                    ['q'=>'Perang Dunia I berakhir?','o'=>['1918','1939','1945','1925'],'c'=>'A'],
-                    ['q'=>'Revolusi Prancis dimulai?','o'=>['1776','1789','1804','1815'],'c'=>'B'],
-                    ['q'=>'Tokoh kemerdekaan India?','o'=>['Nehru','Gandhi','Patel','Bose'],'c'=>'B'],
-                    ['q'=>'Perang Dingin berakhir sekitar?','o'=>['1989–1991','1970–1972','1960–1965','2001–2003'],'c'=>'A'],
-                    ['q'=>'Konferensi Asia Afrika di Bandung tahun?','o'=>['1950','1955','1960','1965'],'c'=>'B'],
-                ],
-                'Hard' => [
-                    ['q'=>'Dynasti Ming berkuasa?','o'=>['1368–1644','618–907','206–220','960–1279'],'c'=>'A'],
-                    ['q'=>'Perang Seratus Tahun terjadi antara?','o'=>['Prancis–Inggris','Prancis–Spanyol','Inggris–Belanda','Jerman–Italia'],'c'=>'A'],
-                    ['q'=>'Deklarasi Magna Carta tahun?','o'=>['1066','1215','1492','1648'],'c'=>'B'],
-                    ['q'=>'Perang Peloponnesia antara?','o'=>['Sparta–Athena','Roma–Kartago','Persia–Yunani','Macedonia–Yunani'],'c'=>'A'],
-                    ['q'=>'Kerajaan Sriwijaya berpusat di?','o'=>['Palembang','Medan','Jakarta','Makassar'],'c'=>'A'],
-                ],
+            'snmptn' => [
+                ['q' => 'Semua siswa berprestasi rajin belajar. Andi adalah siswa berprestasi. Kesimpulan yang tepat adalah ...', 'o' => ['Andi rajin belajar', 'Andi tidak rajin belajar', 'Semua yang rajin belajar berprestasi', 'Andi belum tentu rajin belajar'], 'c' => 'A', 'd' => 'Easy'],
+                ['q' => 'Deret: 2, 6, 12, 20, 30, ... Bilangan berikutnya adalah ...', 'o' => ['40', '42', '44', '46'], 'c' => 'B', 'd' => 'Medium'],
+                ['q' => 'Jika harga sebuah buku naik 20% menjadi Rp36.000, harga awalnya adalah ...', 'o' => ['Rp28.000', 'Rp28.800', 'Rp30.000', 'Rp32.000'], 'c' => 'C', 'd' => 'Medium'],
+                ['q' => 'Sinonim kata "efisien" adalah ...', 'o' => ['boros', 'lambat', 'rumit', 'tepat guna'], 'c' => 'D', 'd' => 'Easy'],
+                ['q' => 'Rata-rata nilai 5 siswa adalah 80. Jika satu siswa bernilai 90 keluar, rata-rata 4 siswa sisanya adalah ...', 'o' => ['77,5', '78', '78,5', '79'], 'c' => 'A', 'd' => 'Medium'],
+                ['q' => 'KUDA : ISTAL = AYAM : ...', 'o' => ['sawah', 'kandang', 'sangkar', 'padang'], 'c' => 'B', 'd' => 'Easy'],
+                ['q' => 'Jika 3x − 7 = 14, maka nilai 2x + 1 adalah ...', 'o' => ['13', '14', '15', '16'], 'c' => 'C', 'd' => 'Easy'],
+                ['q' => 'Sebagian dokter adalah penulis. Semua penulis suka membaca. Kesimpulan yang tepat adalah ...', 'o' => ['Semua dokter suka membaca', 'Sebagian penulis adalah dokter yang tidak suka membaca', 'Semua yang suka membaca adalah dokter', 'Sebagian dokter suka membaca'], 'c' => 'D', 'd' => 'Hard'],
+                ['q' => 'Sebuah mobil menempuh 240 km dalam 3 jam. Dengan kecepatan sama, jarak yang ditempuh dalam 5 jam adalah ...', 'o' => ['400 km', '380 km', '420 km', '360 km'], 'c' => 'A', 'd' => 'Easy'],
+                ['q' => 'Antonim kata "temporer" adalah ...', 'o' => ['sementara', 'permanen', 'darurat', 'singkat'], 'c' => 'B', 'd' => 'Easy'],
             ],
-            'General Knowledge' => [
-                'Easy' => [
-                    ['q'=>'Planet terdekat ke Matahari?','o'=>['Venus','Merkurius','Bumi','Mars'],'c'=>'B'],
-                    ['q'=>'Bahasa resmi PBB?','o'=>['Latin','Arab','Ibrani','Sanskerta'],'c'=>'B'],
-                    ['q'=>'Simbol kimia emas?','o'=>['Ag','Au','Fe','Pb'],'c'=>'B'],
-                    ['q'=>'Ibukota Inggris?','o'=>['London','Paris','Berlin','Dublin'],'c'=>'A'],
-                    ['q'=>'Benua dengan jumlah negara terbanyak?','o'=>['Afrika','Asia','Eropa','Amerika'],'c'=>'A'],
-                ],
-                'Medium' => [
-                    ['q'=>'Penemu telepon?','o'=>['Edison','Bell','Tesla','Marconi'],'c'=>'B'],
-                    ['q'=>'Lukisan Mona Lisa oleh?','o'=>['Michelangelo','Da Vinci','Raphael','Van Gogh'],'c'=>'B'],
-                    ['q'=>'Gunung Fuji ada di?','o'=>['Korea','Jepang','Tiongkok','Taiwan'],'c'=>'B'],
-                    ['q'=>'Bahasa paling banyak penutur asli?','o'=>['Inggris','Mandarin','Spanyol','Hindi'],'c'=>'B'],
-                    ['q'=>'Kota dengan penduduk terbanyak?','o'=>['Tokyo','Delhi','Shanghai','São Paulo'],'c'=>'A'],
-                ],
-                'Hard' => [
-                    ['q'=>'Hadiah Nobel didirikan oleh?','o'=>['Einstein','Nobel','Curie','Planck'],'c'=>'B'],
-                    ['q'=>'Kepler merumuskan hukum?','o'=>['Gerak planet','Gravitasi','Elektromagnetik','Termodinamika'],'c'=>'A'],
-                    ['q'=>'Sastrawan “War and Peace”?','o'=>['Tolstoy','Dostoevsky','Pushkin','Gorky'],'c'=>'A'],
-                    ['q'=>'Ibukota Ethiopia?','o'=>['Addis Ababa','Asmara','Nairobi','Kampala'],'c'=>'A'],
-                    ['q'=>'Jumlah negara ASEAN saat ini?','o'=>['8','10','11','12'],'c'=>'C'],
-                ],
+            'sbmptn' => [
+                ['q' => 'Nilai x yang memenuhi persamaan x² − 5x + 6 = 0 adalah ...', 'o' => ['x = 2 atau x = 3', 'x = −2 atau x = −3', 'x = 1 atau x = 6', 'x = −1 atau x = −6'], 'c' => 'A', 'd' => 'Medium'],
+                ['q' => 'Turunan pertama dari f(x) = 3x² + 4x − 5 adalah ...', 'o' => ['3x + 4', '6x + 4', '6x − 5', '3x² + 4'], 'c' => 'B', 'd' => 'Medium'],
+                ['q' => 'Gagasan utama sebuah paragraf biasanya terdapat pada ...', 'o' => ['kalimat penjelas', 'kata penghubung', 'kalimat utama', 'catatan kaki'], 'c' => 'C', 'd' => 'Easy'],
+                ['q' => 'Jika log 2 = 0,301 dan log 3 = 0,477, maka log 6 = ...', 'o' => ['0,602', '0,699', '0,301', '0,778'], 'c' => 'D', 'd' => 'Medium'],
+                ['q' => 'Himpunan penyelesaian dari 2x − 4 < 6 adalah ...', 'o' => ['x < 5', 'x > 5', 'x < 1', 'x > 1'], 'c' => 'A', 'd' => 'Easy'],
+                ['q' => 'Peluang munculnya mata dadu berjumlah 7 pada pelemparan dua dadu adalah ...', 'o' => ['1/12', '1/6', '1/9', '1/4'], 'c' => 'B', 'd' => 'Medium'],
+                ['q' => 'Deret geometri: 3, 6, 12, 24, ... Suku ke-7 adalah ...', 'o' => ['96', '128', '192', '384'], 'c' => 'C', 'd' => 'Medium'],
+                ['q' => 'Fungsi f(x) = 2x + 3 dan g(x) = x². Nilai (g∘f)(1) adalah ...', 'o' => ['5', '11', '13', '25'], 'c' => 'D', 'd' => 'Hard'],
+                ['q' => 'Kalimat berikut yang menggunakan ejaan baku adalah ...', 'o' => ['Kualitas pendidikan harus ditingkatkan.', 'Kwalitas pendidikan harus ditingkatkan.', 'Kualitas pendidikan harus di tingkatkan.', 'Kwalitas pendidikan harus di tingkatkan.'], 'c' => 'A', 'd' => 'Easy'],
+                ['q' => 'Integral ∫(4x + 2) dx adalah ...', 'o' => ['4x² + 2x + C', '2x² + 2x + C', 'x² + 2x + C', '4x² + x + C'], 'c' => 'B', 'd' => 'Hard'],
             ],
         ];
 
-        $orderCats = ['Mathematics','Physics','Chemistry','Geography','History','General Knowledge'];
-        $orderDiffs = ['Easy','Medium','Hard'];
-        $questions = [];
-        foreach ($orderCats as $cat) {
-            foreach ($orderDiffs as $dif) {
-                foreach ($banks[$cat][$dif] as $t) {
-                    $options = [
-                        ['key'=>'A','label'=>$t['o'][0]],
-                        ['key'=>'B','label'=>$t['o'][1]],
-                        ['key'=>'C','label'=>$t['o'][2]],
-                        ['key'=>'D','label'=>$t['o'][3]],
-                    ];
-                    $questions[] = [
-                        'question' => $t['q'],
-                        'category' => $cat,
-                        'difficulty' => $dif,
-                        'options' => $options,
-                        'correct' => $t['c'],
-                    ];
-                }
-            }
-        }
-        if (count($questions) < 100) {
-            $need = 100 - count($questions);
-            for ($i = 1; $i <= $need; $i++) {
-                $a = ($i % 9) + 2;
-                $b = (($i * 3) % 9) + 2;
-                $dif = $orderDiffs[$i % count($orderDiffs)];
-                $sum = $a + $b;
-                $options = [
-                    ['key'=>'A','label'=> (string)($sum - 1)],
-                    ['key'=>'B','label'=> (string)$sum],
-                    ['key'=>'C','label'=> (string)($sum + 1)],
-                    ['key'=>'D','label'=> (string)($sum + 2)],
-                ];
-                $questions[] = [
-                    'question' => "{$a} + {$b} = ?",
-                    'category' => 'Mathematics',
-                    'difficulty' => $dif,
-                    'options' => $options,
-                    'correct' => 'B',
-                ];
-            }
-        }
+        $tracks = ExamTrack::whereIn('slug', array_keys($banks))->get()->keyBy('slug');
 
-        foreach ($questions as $q) {
-            Question::create($q + ['created_by' => optional($admin)->id]);
+        foreach ($banks as $slug => $items) {
+            $track = $tracks->get($slug);
+            if (! $track) {
+                continue;
+            }
+
+            foreach ($items as $item) {
+                Question::create([
+                    'question' => $item['q'],
+                    'category' => $track->name,
+                    'exam_track_id' => $track->id,
+                    'difficulty' => $item['d'],
+                    'type' => 'multiple_choice',
+                    'options' => [
+                        ['key' => 'A', 'label' => $item['o'][0]],
+                        ['key' => 'B', 'label' => $item['o'][1]],
+                        ['key' => 'C', 'label' => $item['o'][2]],
+                        ['key' => 'D', 'label' => $item['o'][3]],
+                    ],
+                    'correct' => $item['c'],
+                    'created_by' => optional($admin)->id,
+                ]);
+            }
         }
     }
 }

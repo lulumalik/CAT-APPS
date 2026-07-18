@@ -94,8 +94,8 @@
                   <div class="teacher-cv-section">
                     <h5 class="teacher-cv-heading">Profil</h5>
                     <p class="teacher-cv-paragraph">
-                      {{ selectedTeacher.name }} merupakan pengajar {{ selectedTeacher.role }} di Pratistha Cendekia
-                      Prestasi dan berperan dalam pembinaan peserta secara terarah.
+                      {{ selectedTeacher.name }} merupakan pengajar {{ selectedTeacher.role }} di CATLab
+                      dan berperan dalam pembinaan peserta secara terarah.
                     </p>
                   </div>
 

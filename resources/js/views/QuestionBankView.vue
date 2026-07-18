@@ -16,7 +16,7 @@
 
     <!-- Skeleton Loader -->
     <div v-if="loading" class="mt-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div v-for="n in 4" :key="n" class="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm animate-pulse">
           <div class="h-8 w-16 bg-gray-100 rounded mb-2 mx-auto"></div>
           <div class="h-4 w-24 bg-gray-100 rounded mx-auto"></div>
@@ -42,7 +42,7 @@
             </div>
           </div>
           <div class="h-6 w-3/4 bg-gray-100 rounded mb-4"></div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-2 gap-3 md:gap-4">
             <div class="h-12 bg-gray-100 rounded-xl"></div>
             <div class="h-12 bg-gray-100 rounded-xl"></div>
             <div class="h-12 bg-gray-100 rounded-xl"></div>
@@ -53,7 +53,7 @@
     </div>
 
     <div v-else>
-      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 text-center group hover:border-[#9DB359]/30 transition-colors">
           <div class="text-4xl font-bold text-[#1A1A1A] mb-1 group-hover:text-[#9DB359] transition-colors">{{ total }}</div>
           <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ t('questionBank.totalQuestions') }}</div>
@@ -78,9 +78,11 @@
             <input v-model="search" type="text" :placeholder="t('questionBank.searchPlaceholder')" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </div>
-          <select v-model="filterCategory" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors appearance-none">
-            <option value="">{{ t('questionBank.allCategories') }}</option>
-            <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+          <select v-model="filterTrackId" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors appearance-none">
+            <option value="">Semua track ujian</option>
+            <optgroup v-for="cat in examCategories" :key="cat.id" :label="cat.name">
+              <option v-for="tr in cat.tracks" :key="tr.id" :value="String(tr.id)">{{ tr.name }}</option>
+            </optgroup>
           </select>
           <select v-model="filterDifficulty" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors appearance-none">
             <option value="">{{ t('questionBank.allDifficulties') }}</option>
@@ -100,11 +102,11 @@
                 {{ ownFiltered.length }}
               </span>
             </div>
-            <div class="space-y-6">
+            <div class="grid grid-cols-1 gap-4">
               <article
                 v-for="q in ownFiltered"
                 :key="q.id"
-                class="rounded-[2rem] shadow-sm border-2 border-[#9DB359]/40 bg-gradient-to-br from-[#9DB359]/10 via-white to-white p-8 hover:shadow-md transition-shadow group"
+                class="rounded-[2rem] shadow-sm border-2 border-[#9DB359]/40 bg-gradient-to-br from-[#9DB359]/10 via-white to-white p-5 md:p-8 hover:shadow-md transition-shadow group"
               >
                 <QuestionCardBody
                   :question="q"
@@ -124,11 +126,11 @@
                 {{ globalFiltered.length }}
               </span>
             </div>
-            <div class="space-y-6">
+            <div class="grid grid-cols-1 gap-4">
               <article
                 v-for="q in globalFiltered"
                 :key="q.id"
-                class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group"
+                class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-5 md:p-8 hover:shadow-md transition-shadow group"
               >
                 <QuestionCardBody
                   :question="q"
@@ -146,11 +148,11 @@
         </template>
 
         <template v-else>
-          <div class="space-y-6">
+          <div class="grid grid-cols-1 gap-4">
             <article
               v-for="q in filtered"
               :key="q.id"
-              class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-shadow group"
+              class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-5 md:p-8 hover:shadow-md transition-shadow group"
             >
               <QuestionCardBody
                 :question="q"
@@ -185,26 +187,22 @@ const { t } = useI18n()
 const store = useAppStore()
 
 const questions = ref([])
+const examCategories = ref([])
 const loading = ref(false)
 const search = ref('')
-const filterCategory = ref('')
+const filterTrackId = ref('')
 const filterDifficulty = ref('')
 const showModal = ref(false)
 const editingItem = ref(null)
-
-const categories = computed(() => {
-  if (!questions.value || !Array.isArray(questions.value)) return []
-  return [...new Set(questions.value.map(q => q.category))]
-})
 
 const isMentor = computed(() => store.role === 'mentor')
 
 const matchesFilters = (q) => {
   const s = search.value.toLowerCase()
   const matchSearch = q.question.toLowerCase().includes(s)
-  const matchCat = !filterCategory.value || q.category === filterCategory.value
+  const matchTrack = !filterTrackId.value || String(q.exam_track_id) === String(filterTrackId.value)
   const matchDiff = !filterDifficulty.value || q.difficulty === filterDifficulty.value
-  return matchSearch && matchCat && matchDiff
+  return matchSearch && matchTrack && matchDiff
 }
 
 const isOwnQuestion = (q) => Number(q?.created_by) === Number(store.user?.id)
@@ -241,8 +239,12 @@ const sortQuestionsForDisplay = (items) => {
 const loadQuestions = async () => {
   loading.value = true
   try {
-    const { data } = await window.axios.get('/api/questions')
-    questions.value = sortQuestionsForDisplay((data.items || []).map(normalizeQuestion))
+    const [qRes, catRes] = await Promise.all([
+      window.axios.get('/api/questions'),
+      window.axios.get('/api/exam-categories'),
+    ])
+    questions.value = sortQuestionsForDisplay((qRes.data.items || []).map(normalizeQuestion))
+    examCategories.value = catRes.data.items || catRes.data || []
   } catch (e) {
     toast.error('Error', t('questionBank.toastLoadFailed'))
   } finally {

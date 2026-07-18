@@ -27,12 +27,14 @@
           </div>
         </div>
 
-        <div :class="isExam ? 'grid grid-cols-1 gap-6' : 'grid grid-cols-2 gap-6'">
-          <div v-if="!isExam">
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.categoryLabel') }}</label>
-            <select v-model="form.category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
-              <option value="">{{ t('modals.testCreate.categoryPlaceholder') }}</option>
-              <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Track Ujian</label>
+            <select v-model.number="form.exam_track_id" required class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+              <option :value="null" disabled>Pilih track ujian</option>
+              <optgroup v-for="cat in examCategories" :key="cat.id" :label="cat.name">
+                <option v-for="tr in cat.tracks" :key="tr.id" :value="tr.id">{{ tr.name }}</option>
+              </optgroup>
             </select>
           </div>
           <div>
@@ -119,7 +121,7 @@
 </template>
 
 <script setup>
-import { reactive, computed, ref, watch } from 'vue'
+import { reactive, computed, ref, watch, onMounted } from 'vue'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
@@ -132,6 +134,24 @@ const emit = defineEmits(['close','submit'])
 
 const { t } = useI18n()
 const i18nKey = computed(() => (props.isExam ? 'modals.examCreate' : 'modals.testCreate'))
+const examCategories = ref([])
+
+onMounted(async () => {
+  try {
+    const { data } = await window.axios.get('/api/exam-categories')
+    examCategories.value = data.items || data || []
+  } catch (_) {
+    examCategories.value = []
+  }
+})
+
+const resolveTrackName = (trackId) => {
+  for (const cat of examCategories.value) {
+    const track = (cat.tracks || []).find((tr) => Number(tr.id) === Number(trackId))
+    if (track) return track.name
+  }
+  return ''
+}
 
 const toJakartaDatetimeInputValue = (value) => {
   if (!value) return ''
@@ -196,11 +216,12 @@ const addMinutesToString = (datetimeStr, minutes) => {
 
 const base = () => {
   const now = toJakartaDatetimeInputValue(new Date())
-  return ({ 
-  name: '', 
-  description: '', 
-  category: '', 
-  duration: 30, 
+  return ({
+  name: '',
+  description: '',
+  category: '',
+  exam_track_id: null,
+  duration: 30,
   scheduleAt: now,
   startTime: now,
   endTime: toJakartaDatetimeInputValue(new Date(Date.now() + 3600000)),
@@ -305,6 +326,7 @@ watch(() => props.initial, (val) => {
   next.endTime = toJakartaDatetimeInputValue(val.endTime ?? val.end_time)
   next.isActive = val.isActive ?? val.is_active ?? false
   next.isFreeTryout = val.isFreeTryout ?? val.is_free_tryout ?? false
+  next.exam_track_id = val.exam_track_id ?? null
   next.questionIds = Array.isArray(val.questionIds ?? val.question_ids) ? (val.questionIds ?? val.question_ids) : (next.questionIds ?? [])
   Object.assign(form, next)
 
@@ -316,10 +338,12 @@ watch(() => props.initial, (val) => {
 }, { immediate: true })
 
 const submit = () => {
+  const trackName = resolveTrackName(form.exam_track_id)
   emit('submit', {
     ...JSON.parse(JSON.stringify(form)),
     scheduleAt: form.startTime,
-    category: props.isExam ? 'Gabungan' : form.category,
+    category: trackName || form.category,
+    exam_track_id: form.exam_track_id,
     isFreeTryout: props.isExam ? false : form.isFreeTryout,
   })
 }

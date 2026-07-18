@@ -25,7 +25,7 @@
         </template>
       </PageHeroHeader>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 mb-8">
         <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
           <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Total submisi</p>
           <p class="text-3xl font-bold text-[#1A1A1A] mt-1">{{ submissions.length }}</p>

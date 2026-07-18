@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Pratistha Cendekia Prestasi'),
+    'name' => env('APP_NAME', 'CATLab'),
 
     /*
     |--------------------------------------------------------------------------
@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'mail_salutation' => env('MAIL_SALUTATION', 'Admin Pratistha Cendekia Prestasi'),
+    'mail_salutation' => env('MAIL_SALUTATION', 'Admin CATLab'),
 
     /*
     |--------------------------------------------------------------------------

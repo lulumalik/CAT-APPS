@@ -29,10 +29,6 @@ class DashboardController extends Controller
             return response()->json($this->mentorOverview($user->id));
         }
 
-        if ($user->role === 'parent') {
-            return response()->json($this->parentOverview($user->id));
-        }
-
         return response()->json($this->studentOverview($user->id));
     }
 
@@ -81,71 +77,6 @@ class DashboardController extends Controller
     public function studentOverviewData(int $userId): array
     {
         return $this->studentOverview($userId);
-    }
-
-    private function parentOverview(int $parentId): array
-    {
-        if (! Schema::hasTable('student_guardians')) {
-            return ['role' => 'parent', 'children' => [], 'recent_reports' => []];
-        }
-
-        $links = \App\Models\StudentGuardian::query()
-            ->where('guardian_user_id', $parentId)
-            ->where('invite_status', \App\Models\StudentGuardian::STATUS_ACCEPTED)
-            ->with('student:id,name,username,program_category')
-            ->get()
-            ->filter(fn ($l) => $l->student);
-
-        $studentIds = $links->pluck('student_user_id')->all();
-
-        $reportsByStudent = collect();
-        $recentReports = collect();
-        if (Schema::hasTable('student_reports') && ! empty($studentIds)) {
-            $reports = \App\Models\StudentReport::query()
-                ->whereIn('student_user_id', $studentIds)
-                ->with(['student:id,name', 'creator:id,name'])
-                ->orderByDesc('report_date')
-                ->orderByDesc('id')
-                ->limit(60)
-                ->get();
-
-            $reportsByStudent = $reports->groupBy('student_user_id');
-            $recentReports = $reports->take(15)->map(fn ($r) => [
-                'id' => $r->id,
-                'type' => $r->type,
-                'title' => $r->title,
-                'student' => $r->student?->name,
-                'report_date' => $r->report_date?->toDateString(),
-                'created_by' => $r->creator?->name,
-            ])->values();
-        }
-
-        $children = $links->map(function ($link) use ($reportsByStudent) {
-            $student = $link->student;
-            $latest = $reportsByStudent->get($student->id)?->first();
-
-            return [
-                'link_id' => $link->id,
-                'relationship' => $link->relationshipLabel(),
-                'student' => [
-                    'id' => $student->id,
-                    'name' => $student->name,
-                    'username' => $student->username,
-                    'program_category' => $student->program_category,
-                ],
-                'latest_report' => $latest ? [
-                    'title' => $latest->title,
-                    'type' => $latest->type,
-                    'report_date' => $latest->report_date?->toDateString(),
-                ] : null,
-            ];
-        })->values();
-
-        return [
-            'role' => 'parent',
-            'children' => $children,
-            'recent_reports' => $recentReports,
-        ];
     }
 
     private function adminOverview(): array

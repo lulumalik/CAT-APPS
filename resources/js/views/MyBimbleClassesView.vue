@@ -29,7 +29,7 @@
         Kelas masih terkunci
       </h2>
       <p class="text-sm mt-2">
-        Selesaikan pendaftaran hingga tahap fisik selesai disetujui admin untuk membuka akses kelas.
+        Selesaikan pendaftaran hingga disetujui untuk membuka akses kelas.
       </p>
       <router-link to="/registration" class="inline-flex mt-5 rounded-full bg-[#1A1A1A] px-5 py-2.5 text-sm font-semibold text-white">
         Buka halaman pendaftaran
@@ -47,7 +47,7 @@
       {{ t('bimble.myClassesEmpty') }}
     </div>
 
-    <div v-else-if="!isLocked && !isExamOnly" class="grid gap-6 md:grid-cols-2">
+    <div v-else-if="!isLocked && !isExamOnly" class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
       <router-link
         v-for="(c, idx) in classes"
         :key="c.id"

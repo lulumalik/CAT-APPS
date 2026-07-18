@@ -100,7 +100,6 @@
                       :class="{
                         'bg-purple-50 text-purple-700 border border-purple-100': user.role === 'admin',
                         'bg-blue-50 text-blue-700 border border-blue-100': user.role === 'mentor',
-                        'bg-amber-50 text-amber-700 border border-amber-100': user.role === 'parent',
                         'bg-green-50 text-green-700 border border-green-100': user.role === 'user'
                       }">
                   {{ roleLabel(user.role) }}
@@ -303,7 +302,6 @@ const roleOptions = computed(() => [
   { value: 'admin', label: t('users.roleAdmin') },
   { value: 'user', label: t('users.roleUser') },
   { value: 'mentor', label: t('users.roleMentor') },
-  { value: 'parent', label: t('users.roleParent') },
 ])
 
 const roleFilterLabel = computed(() => {
@@ -327,7 +325,6 @@ const roleLabel = (role) => {
     admin: t('users.roleAdmin'),
     user: t('users.roleUser'),
     mentor: t('users.roleMentor'),
-    parent: t('users.roleParent'),
   }
   return map[role] || role
 }

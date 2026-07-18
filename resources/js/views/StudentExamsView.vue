@@ -2,7 +2,7 @@
   <main class="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-10">
     <PageHeroHeader
       title="Ujian"
-      subtitle="Daftar ujian yang bisa dikerjakan (gabungan lintas mata pelajaran)."
+      subtitle="Daftar ujian yang bisa dikerjakan. Kamu bisa mengulang selama jadwal masih terbuka; setiap percobaan tetap tercatat."
       theme="blue"
       :icon="ClipboardList"
       :secondary-icon="Pencil"
@@ -24,7 +24,7 @@
           Lakukan pembayaran lalu hubungi admin melalui halaman profil. Ujian akan terbuka setelah admin mengonfirmasi pembayaran.
         </template>
         <template v-else>
-          Selesaikan pendaftaran hingga tahap fisik selesai disetujui admin untuk membuka akses ujian.
+          Selesaikan pendaftaran hingga disetujui untuk membuka akses ujian.
         </template>
       </p>
       <router-link
@@ -35,7 +35,6 @@
       </router-link>
     </section>
 
-    <!-- Section title -->
     <div v-if="!isLocked" class="flex items-center gap-2.5 mb-5">
       <ClipboardList class="h-5 w-5 text-blue-500" stroke-width="2" />
       <h2 class="text-lg font-bold text-[#1E3A8A]">Daftar Ujian</h2>
@@ -50,18 +49,16 @@
       Belum ada ujian yang tersedia.
     </div>
 
-    <div v-else-if="!isLocked" class="space-y-4">
+    <div v-else-if="!isLocked" class="grid grid-cols-1 gap-4">
       <article
         v-for="test in items"
         :key="test.id"
         class="rounded-2xl border border-gray-100 bg-white p-5 md:p-6 shadow-md shadow-blue-900/5 flex flex-wrap items-center gap-4 md:gap-5"
       >
-        <!-- Icon -->
         <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0">
           <FileText class="h-7 w-7 text-blue-500" stroke-width="1.75" />
         </div>
 
-        <!-- Info -->
         <div class="min-w-0 flex-1">
           <h3 class="text-lg md:text-xl font-bold text-[#1E3A8A] leading-snug">{{ test.name }}</h3>
           <div class="flex flex-wrap items-center gap-2 mt-2.5">
@@ -73,12 +70,17 @@
               <Clock class="h-3.5 w-3.5" />
               {{ test.duration }} menit
             </span>
+            <span
+              v-if="test.attempts_count > 0"
+              class="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700"
+            >
+              {{ test.attempts_count }} percobaan · skor terakhir {{ test.latest_score ?? 0 }}
+            </span>
           </div>
           <p v-if="scheduleLabel(test)" class="text-xs text-gray-400 mt-2">{{ scheduleLabel(test) }}</p>
         </div>
 
-        <!-- Action -->
-        <div class="w-full sm:w-auto shrink-0 flex justify-end sm:justify-center">
+        <div class="w-full sm:w-auto shrink-0 flex flex-wrap justify-end sm:justify-center gap-2">
           <div
             v-if="examState(test) === 'upcoming'"
             class="rounded-xl border border-blue-100 bg-blue-50 px-5 py-3 text-center min-w-[200px]"
@@ -87,29 +89,40 @@
             <p class="text-xl font-bold font-mono text-[#1E3A8A] mt-1">{{ countdownFor(test) }}</p>
           </div>
 
-          <span
-            v-else-if="examState(test) === 'submitted'"
-            class="inline-flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-100 px-5 py-3 text-sm font-semibold text-emerald-700"
-          >
-            <CheckCircle2 class="h-4 w-4" />
-            Sudah dikerjakan
-          </span>
+          <template v-else-if="examState(test) === 'ongoing'">
+            <router-link
+              v-if="test.has_submitted && test.latest_submission_id"
+              :to="{ name: 'exam-review', params: { id: test.id, submissionId: test.latest_submission_id } }"
+              class="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 px-5 py-3 text-sm font-semibold text-emerald-800 transition-colors"
+            >
+              <Search class="h-4 w-4" />
+              Tinjau
+            </router-link>
+            <router-link
+              :to="{ name: 'quick-exam', params: { id: test.id } }"
+              class="inline-flex items-center gap-2 rounded-xl bg-blue-500 hover:bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition-colors"
+            >
+              {{ test.has_submitted ? 'Ulangi' : 'Mulai Ujian' }}
+              <ArrowRight class="h-4 w-4" />
+            </router-link>
+          </template>
 
-          <span
-            v-else-if="examState(test) === 'ended'"
-            class="inline-flex items-center rounded-xl bg-gray-50 border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-500"
-          >
-            Ujian berakhir
-          </span>
-
-          <router-link
-            v-else-if="examState(test) === 'ongoing'"
-            :to="{ name: 'quick-exam', params: { id: test.id } }"
-            class="inline-flex items-center gap-2 rounded-xl bg-blue-500 hover:bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-blue-500/25 transition-colors"
-          >
-            Mulai Ujian
-            <ArrowRight class="h-4 w-4" />
-          </router-link>
+          <template v-else-if="examState(test) === 'ended'">
+            <router-link
+              v-if="test.has_submitted && test.latest_submission_id"
+              :to="{ name: 'exam-review', params: { id: test.id, submissionId: test.latest_submission_id } }"
+              class="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 px-5 py-3 text-sm font-semibold text-emerald-800 transition-colors"
+            >
+              <Search class="h-4 w-4" />
+              Tinjau hasil
+            </router-link>
+            <span
+              v-else
+              class="inline-flex items-center rounded-xl bg-gray-50 border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-500"
+            >
+              Ujian berakhir
+            </span>
+          </template>
 
           <span
             v-else
@@ -127,7 +140,7 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import axios from 'axios'
 import { storeToRefs } from 'pinia'
-import { ArrowRight, CheckCircle2, ClipboardList, Clock, FileText, LockKeyhole, Pencil, Users } from 'lucide-vue-next'
+import { ArrowRight, ClipboardList, Clock, FileText, LockKeyhole, Pencil, Search, Users } from 'lucide-vue-next'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useAppStore } from '@/stores/app'
 import { registrationCompleted, usesSimplifiedOnboarding } from '@/utils/userMeta'
@@ -143,8 +156,6 @@ const now = ref(Date.now())
 let tickTimer = null
 
 function examState(test) {
-  if (test?.has_submitted) return 'submitted'
-
   const start = test?.start_time ? new Date(test.start_time).getTime() : null
   const end = test?.end_time ? new Date(test.end_time).getTime() : null
   const current = now.value

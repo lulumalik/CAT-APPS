@@ -70,7 +70,6 @@ class RegistrationProgressStatusNotification extends Notification
             'administration' => 'Administrasi',
             'psychology' => 'Psikologi',
             'health' => 'Kesehatan',
-            'physical' => 'Fisik',
             'completed' => 'Selesai',
             default => ucfirst($step),
         };

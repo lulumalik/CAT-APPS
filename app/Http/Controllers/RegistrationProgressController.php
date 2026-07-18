@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\RegistrationProgress;
 use App\Models\User;
-use App\Models\UserNotification;
 use App\Notifications\RegistrationProgressStatusNotification;
 use App\Services\RegistrationFileStorage;
 use Illuminate\Http\Request;
@@ -42,17 +41,6 @@ class RegistrationProgressController extends Controller
                 'error' => $e->getMessage(),
             ]);
         }
-    }
-
-    private function nextStepAfterApproval(string $step): ?string
-    {
-        return match ($step) {
-            'administration' => 'psychology',
-            'psychology' => 'health',
-            'health' => 'physical',
-            'physical' => 'completed',
-            default => null,
-        };
     }
 
     /** @var array<string, string> input name => administration_data path key */
@@ -421,7 +409,7 @@ class RegistrationProgressController extends Controller
         }
 
         $data = $request->validate([
-            'step' => 'required|in:administration,psychology,health,physical',
+            'step' => 'required|in:administration,psychology,health',
         ]);
 
         $progress = RegistrationProgress::firstOrCreate(
@@ -438,9 +426,9 @@ class RegistrationProgressController extends Controller
 
         $step = $data['step'];
 
-        if (in_array($step, ['psychology', 'health', 'physical'], true)) {
+        if (in_array($step, ['psychology', 'health'], true)) {
             return response()->json([
-                'message' => 'Tahap psikologi, kesehatan, dan fisik diuji secara offline. Anda tidak perlu mengunggah data di sini; staf akan memperbarui status verifikasi.',
+                'message' => 'Tahap psikologi dan kesehatan diuji secara offline. Anda tidak perlu mengunggah data di sini; staf akan memperbarui status verifikasi.',
             ], 422);
         }
 
@@ -486,210 +474,6 @@ class RegistrationProgressController extends Controller
         );
 
         return response()->json($this->serializeRegistrationProgress($progress->fresh()));
-    }
-
-    public function adminIndex(Request $request)
-    {
-        if (! Schema::hasTable('registration_progress')) {
-            return response()->json([
-                'data' => [],
-                'current_page' => 1,
-                'last_page' => 1,
-                'total' => 0,
-            ]);
-        }
-
-        $q = RegistrationProgress::with('user:id,name,email,program_category');
-
-        if ($request->filled('search')) {
-            $s = $request->string('search')->toString();
-            $q->whereHas('user', function ($uq) use ($s) {
-                $uq->where('name', 'like', "%{$s}%")->orWhere('email', 'like', "%{$s}%");
-            });
-        }
-
-        if ($request->filled('step')) {
-            $q->where('current_step', $request->string('step')->toString());
-        }
-
-        $paginator = $q->orderByDesc('updated_at')->paginate(30);
-        $paginator->getCollection()->transform(
-            fn (RegistrationProgress $p) => $this->serializeRegistrationProgress($p)
-        );
-
-        return response()->json($paginator);
-    }
-
-    public function adminShow(Request $request, User $user)
-    {
-        if (! Schema::hasTable('registration_progress')) {
-            return response()->json([
-                'message' => 'Struktur pendaftaran belum aktif. Jalankan migrasi database terbaru.',
-            ], 503);
-        }
-
-        $progress = RegistrationProgress::with('user:id,name,email,program_category,in_quarantine')
-            ->where('user_id', $user->id)
-            ->firstOrFail();
-
-        return response()->json($this->serializeRegistrationProgress($progress));
-    }
-
-    public function adminUpdate(Request $request, User $user)
-    {
-        if (! Schema::hasTable('registration_progress')) {
-            return response()->json([
-                'message' => 'Struktur pendaftaran belum aktif. Jalankan migrasi database terbaru.',
-            ], 503);
-        }
-
-        $data = $request->validate([
-            'step' => 'required|in:administration,psychology,health,physical',
-            'status' => 'required|in:approved,revision_requested',
-            'admin_note' => 'nullable|string|max:5000',
-        ]);
-
-        $progress = RegistrationProgress::where('user_id', $user->id)->firstOrFail();
-
-        $step = $data['step'];
-        $statusCol = "{$step}_status";
-        $noteCol = "{$step}_admin_note";
-
-        $progress->{$noteCol} = $data['admin_note'] ?? null;
-
-        if ($data['status'] === 'revision_requested') {
-            $progress->{$statusCol} = 'revision_requested';
-            $progress->save();
-
-            UserNotification::create([
-                'user_id' => $user->id,
-                'type' => 'registration_revision',
-                'title' => 'Perlu perbaikan tahap onboarding',
-                'message' => sprintf(
-                    'Tahap %s perlu diperbaiki. Silakan cek catatan admin.',
-                    $step
-                ),
-                'payload' => [
-                    'step' => $step,
-                ],
-            ]);
-            $this->sendRegistrationEmailStatus(
-                $user,
-                'revision_requested',
-                $step,
-                $data['admin_note'] ?? null
-            );
-
-            return response()->json($this->serializeRegistrationProgress(
-                $progress->fresh()->load('user:id,name,email,program_category')
-            ));
-        }
-
-        $progress->{$statusCol} = 'approved';
-
-        if ($step === 'administration') {
-            $progress->current_step = 'psychology';
-        } elseif ($step === 'psychology') {
-            $progress->current_step = 'health';
-        } elseif ($step === 'health') {
-            $progress->current_step = 'physical';
-        } else {
-            $progress->current_step = 'completed';
-            $progress->fully_completed = true;
-        }
-
-        $progress->save();
-        $this->sendRegistrationEmailStatus(
-            $user,
-            $progress->fully_completed ? 'completed' : 'approved',
-            $step,
-            $data['admin_note'] ?? null,
-            $progress->fully_completed ? null : $this->nextStepAfterApproval($step)
-        );
-
-        UserNotification::create([
-            'user_id' => $user->id,
-            'type' => $progress->fully_completed ? 'registration_completed' : 'registration_approved',
-            'title' => $progress->fully_completed
-                ? 'Pendaftaran selesai'
-                : 'Tahap pendaftaran disetujui',
-            'message' => $progress->fully_completed
-                ? 'Semua tahap pendaftaran sudah disetujui. Fitur kelas sudah terbuka.'
-                : sprintf('Tahap %s disetujui admin. Buka halaman pendaftaran untuk melihat status verifikasi tahap berikutnya.', $step),
-            'payload' => [
-                'step' => $step,
-                'fully_completed' => (bool) $progress->fully_completed,
-            ],
-        ]);
-
-        return response()->json($this->serializeRegistrationProgress(
-            $progress->fresh()->load('user:id,name,email,program_category')
-        ));
-    }
-
-    public function adminConfirmPayment(Request $request, User $user)
-    {
-        if (! Schema::hasTable('registration_progress')) {
-            return response()->json([
-                'message' => 'Struktur pendaftaran belum aktif. Jalankan migrasi database terbaru.',
-            ], 503);
-        }
-
-        if (! User::usesSimplifiedOnboarding($user->program_category)) {
-            return response()->json([
-                'message' => 'Konfirmasi pembayaran hanya berlaku untuk program Kelas Online dan Kelas Ujian.',
-            ], 422);
-        }
-
-        $data = $request->validate([
-            'payment_confirmed' => 'required|boolean',
-        ]);
-
-        $progress = RegistrationProgress::firstOrCreate(
-            ['user_id' => $user->id],
-            [
-                'current_step' => 'administration',
-                'administration_status' => 'not_started',
-                'psychology_status' => 'not_started',
-                'health_status' => 'not_started',
-                'physical_status' => 'not_started',
-                'fully_completed' => false,
-                'payment_confirmed' => false,
-            ]
-        );
-
-        $progress->payment_confirmed = (bool) $data['payment_confirmed'];
-        $progress->payment_confirmed_at = $data['payment_confirmed'] ? now() : null;
-        $progress->fully_completed = $data['payment_confirmed'] && $user->hasVerifiedEmail();
-        $progress->current_step = $progress->fully_completed ? 'completed' : 'administration';
-        $progress->save();
-
-        if (Schema::hasColumn('users', 'app_expires_at')) {
-            if ($data['payment_confirmed']) {
-                $user->app_expires_at = User::defaultAppExpiresAt($user->program_category);
-            } else {
-                $user->app_expires_at = null;
-            }
-            $user->save();
-        }
-
-        if (Schema::hasTable('user_notifications')) {
-            UserNotification::create([
-                'user_id' => $user->id,
-                'type' => $data['payment_confirmed'] ? 'payment_confirmed' : 'payment_pending',
-                'title' => $data['payment_confirmed'] ? 'Pembayaran dikonfirmasi' : 'Status pembayaran diperbarui',
-                'message' => $data['payment_confirmed']
-                    ? 'Admin telah mengonfirmasi pembayaran Anda. Fitur program sekarang aktif.'
-                    : 'Status pembayaran Anda ditandai belum dikonfirmasi. Hubungi admin jika sudah transfer.',
-                'payload' => [
-                    'payment_confirmed' => (bool) $data['payment_confirmed'],
-                ],
-            ]);
-        }
-
-        return response()->json($this->serializeRegistrationProgress(
-            $progress->fresh()->load('user:id,name,email,program_category')
-        ));
     }
 
     public function adminStorageDiagnostic(Request $request, RegistrationFileStorage $files)

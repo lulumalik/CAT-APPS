@@ -1,136 +1,201 @@
 <template>
-  <div class="min-h-screen auth-right-pane text-text">
+  <div class="ft-page">
     <Transition name="ft-cross" mode="out-in">
-      <div v-if="step === 'choose'" key="landing" class="min-h-screen">
-        <section class="relative overflow-hidden rounded-none">
-          <div class="relative z-10 mx-auto max-w-6xl px-4 md:px-8 pt-6">
-            <header
-              class="flex flex-wrap items-center justify-between gap-4 rounded-full bg-white/90 px-8 py-3 shadow-sm shadow-primary/5 backdrop-blur-md"
-            >
-              <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-text">
-                <router-link to="/" class="hover:text-secondary transition-colors">Beranda</router-link>
-                <router-link to="/about-us" class="inline-flex items-center gap-1 hover:text-secondary transition-colors">
-                  Tentang Kami
-                </router-link>
-              </nav>
-              <div class="flex items-center gap-2">
-                <router-link
-                  to="/signup"
-                  class="rounded-full bg-primary px-4 py-2 text-xs font-bold text-white shadow-md shadow-primary/20 hover:bg-secondary transition-colors"
-                >
-                  Registrasi
-                </router-link>
-                <router-link
-                  to="/login"
-                  class="rounded-full border-2 border-text px-4 py-2 text-xs font-bold text-text hover:bg-sky transition-colors"
-                >
-                  Login
-                </router-link>
-              </div>
-            </header>
+      <div v-if="step === 'choose'" key="landing" class="ft-landing">
+        <div class="ft-bg" aria-hidden="true">
+          <div class="ft-bg__glow ft-bg__glow--a" />
+          <div class="ft-bg__glow ft-bg__glow--b" />
+          <div class="ft-bg__dots" />
+        </div>
 
-            <div class="mt-10 md:mt-14 grid lg:items-center">
-              <div>
-                <div class="text-center">
-                  <h1 class="text-3xl md:text-5xl font-black leading-tight tracking-tight text-white">
-                    Tryout gratis, kapan saja siap berlatih
-                  </h1>
-                  <p class="mt-4 text-white md:text-lg font-medium text-muted leading-relaxed">
-                    Latih kemampuan Anda dengan paket tryout gratis dari tim pembina. Isi data singkat, kerjakan soal, dan lihat
-                    hasilnya langsung.
-                  </p>
-                </div>
-                <div class="mt-8 flex flex-wrap gap-3 justify-center">
-                  <button
-                    type="button"
-                    class="rounded-full bg-secondary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-secondary/25 hover:bg-primary transition-colors"
-                    @click="scrollToTryouts"
-                  >
-                    Lihat tryout
-                  </button>
-                  <router-link
-                    to="/"
-                    class="rounded-full border-2 border-primary px-6 py-3 text-sm font-bold text-primary bg-sky transition-colors"
-                  >
-                    Kembali ke beranda
-                  </router-link>
-                </div>
-              </div>
-            </div>
+        <header class="ft-nav">
+          <router-link to="/" class="ft-brand" aria-label="CATLab beranda">
+            <img :src="logoUrl" alt="" class="ft-brand__logo" />
+            <span class="ft-brand__text">CAT<span>Lab</span></span>
+          </router-link>
+
+
+          <div class="ft-nav__actions">
+            <router-link to="/login" class="ft-btn ft-btn--ghost ft-btn--sm">Login</router-link>
+            <router-link to="/signup" class="ft-btn ft-btn--primary ft-btn--sm">Registrasi</router-link>
+            <button type="button" class="ft-nav__burger" aria-label="Menu" @click="mobileOpen = !mobileOpen">
+              <Menu v-if="!mobileOpen" class="h-5 w-5" />
+              <X v-else class="h-5 w-5" />
+            </button>
           </div>
-        </section>
+        </header>
 
-        <section id="tryout-list" class=" px-4 md:px-8 relative z-10 mt-14">
-          <div class="mx-auto max-w-6xl">
-            <h2 class="text-center text-2xl md:text-3xl font-black text-white">Sedang Berlangsung</h2>
-            <p class="mx-auto mt-2 max-w-lg text-center text-sm text-white">
-              Pilih tryout yang sedang dibuka, periksa jadwal, lalu mulai saat periode aktif.
+        <div v-if="mobileOpen" class="ft-mobile-menu">
+          <a href="#beranda" @click="mobileOpen = false">Beranda</a>
+          <a href="#tryout" @click="mobileOpen = false">Tryout</a>
+          <a href="mailto:halo@catlab.id" @click="mobileOpen = false">Feedback</a>
+          <a href="#tentang" @click="mobileOpen = false">Tentang</a>
+          <div class="ft-mobile-menu__actions">
+            <router-link to="/login" class="ft-btn ft-btn--ghost" @click="mobileOpen = false">Login</router-link>
+            <router-link to="/signup" class="ft-btn ft-btn--primary" @click="mobileOpen = false">Registrasi</router-link>
+          </div>
+        </div>
+
+        <section id="beranda" class="ft-hero">
+          <div class="ft-hero__copy">
+            <span class="ft-badge">GRATIS 100%</span>
+            <h1 class="ft-hero__title">
+              Free Tryout CAT,<br />
+              <span>siap uji kemampuanmu</span>
+            </h1>
+            <p class="ft-hero__desc">
+              Bingung mau coba JLPT N4, TOEFL, SNMPTN, atau ujian lain? Kerjakan tryout gratis, lihat hasilnya,
+              lalu kirim feedback biar CATLab makin berguna buat kamu.
             </p>
-
-            <div v-if="loading" class="mt-10 text-center text-sm text-muted">Memuat tryout...</div>
-            <div
-              v-else-if="tests.length === 0"
-              class="mt-10 rounded-2xl border border-border bg-background py-14 text-center text-sm text-muted"
-            >
-              Belum ada tryout gratis yang aktif.
+            <div class="ft-hero__cta">
+              <button type="button" class="ft-btn ft-btn--primary ft-btn--lg" @click="scrollToTryouts">
+                Mulai Tryout Gratis
+                <ArrowRight class="h-4 w-4" />
+              </button>
+              <button type="button" class="ft-btn ft-btn--outline ft-btn--lg" @click="scrollToTryouts">
+                <Calendar class="h-4 w-4" />
+                Lihat Jadwal
+              </button>
             </div>
-            <div v-else class="mt-10 grid gap-6 md:grid-cols-2">
-              <article
-                v-for="test in tests"
-                :key="test.id"
-                class="flex flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm shadow-primary/5"
-              >
-                <div
-                  class="flex items-center gap-2 border-b border-border/80 bg-gradient-to-r from-cream to-sky px-4 py-3 text-xs font-bold text-text md:text-sm"
-                >
-                  <Calendar class="h-4 w-4 shrink-0 text-secondary" />
-                  <span>Periode : {{ formatPeriod(test) }}</span>
-                </div>
-                <div class="flex flex-1 flex-col px-5 py-5">
-                  <h3 class="text-lg md:text-xl font-black uppercase leading-snug tracking-tight text-text">
-                    {{ test.name }}
-                  </h3>
-                  <p v-if="test.description" class="mt-2 line-clamp-2 text-sm text-muted">{{ test.description }}</p>
-                  <div class="mt-auto border-t border-border pt-4 flex flex-wrap items-center justify-between gap-3">
-                    <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-muted">
-                      <span class="inline-flex items-center gap-1.5">
-                        <Clock class="h-4 w-4 text-secondary" />
-                        {{ test.duration }} menit
-                      </span>
-                      <span class="inline-flex items-center gap-1.5">
-                        <FileText class="h-4 w-4 text-secondary" />
-                        {{ questionCount(test) }} soal
-                      </span>
-                    </div>
-                    <button
-                      v-if="test.status === 'ongoing' && test.can_submit"
-                      type="button"
-                      class="shrink-0 rounded-full bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-secondary transition-colors"
-                      @click="pickTest(test)"
-                    >
-                      Mulai
-                    </button>
-                    <span
-                      v-else-if="test.status === 'upcoming' || test.status === 'scheduled'"
-                      class="shrink-0 rounded-full border border-border bg-background px-4 py-2 text-xs font-bold text-muted"
-                    >
-                      {{ test.status === 'scheduled' ? 'Menunggu jadwal' : 'Belum dimulai' }}
-                    </span>
-                    <span
-                      v-else
-                      class="shrink-0 rounded-full border border-border bg-background px-4 py-2 text-xs font-bold text-muted"
-                    >
-                      Berakhir
-                    </span>
-                  </div>
-                </div>
-              </article>
+          </div>
+
+          <div class="ft-hero__visual" aria-hidden="true">
+            <div class="ft-hero__orbit" />
+            <img :src="monitorUrl" alt="" class="ft-hero__monitor" />
+            <img :src="paperUrl" alt="" class="ft-hero__float ft-hero__float--paper" />
+            <img :src="scoreUrl" alt="" class="ft-hero__float ft-hero__float--score" />
+            <img :src="vasUrl" alt="" class="ft-hero__float ft-hero__float--vas" />
+            <div class="ft-hero__timer">
+              <img :src="clockUrl" alt="" class="ft-hero__timer-icon" />
+              <span>60:00</span>
             </div>
           </div>
         </section>
+
+        <section class="ft-stats" aria-label="Statistik platform">
+          <div class="ft-stat">
+            <span class="ft-stat__icon ft-stat__icon--blue"><img :src="paperUrl" alt="" /></span>
+            <div>
+              <strong>{{ stats.tryouts }}</strong>
+              <span>Tryout Tersedia</span>
+            </div>
+          </div>
+          <div class="ft-stat">
+            <span class="ft-stat__icon ft-stat__icon--purple"><Users class="h-5 w-5" /></span>
+            <div>
+              <strong>15K+</strong>
+              <span>Peserta Aktif</span>
+            </div>
+          </div>
+          <div class="ft-stat">
+            <span class="ft-stat__icon ft-stat__icon--amber"><Star class="h-5 w-5" /></span>
+            <div>
+              <strong>4.9</strong>
+              <span>Rating Platform</span>
+            </div>
+          </div>
+          <div class="ft-stat">
+            <span class="ft-stat__icon ft-stat__icon--green"><img :src="pencilUrl" alt="" /></span>
+            <div>
+              <strong>{{ stats.questions }}</strong>
+              <span>Soal Berkualitas</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="tryout" class="ft-popular">
+          <header class="ft-section-head">
+            <h2>Tryout Populer</h2>
+            <p>Pilih tryout yang sedang dibuka, lalu mulai saat periode aktif.</p>
+          </header>
+
+          <div v-if="loading" class="ft-empty">Memuat tryout...</div>
+          <div v-else-if="tests.length === 0" class="ft-empty ft-empty--card">Belum ada tryout gratis yang aktif.</div>
+          <div v-else class="ft-cards" :class="{ 'is-expanded': showAll }">
+            <article
+              v-for="(test, idx) in visibleTests"
+              :key="test.id"
+              class="ft-card"
+              :class="[`ft-card--${toneFor(idx)}`, { 'is-primary': idx === 0 }]"
+            >
+              <div class="ft-card__top">
+                <span class="ft-card__icon"><component :is="iconFor(test, idx)" class="h-5 w-5" /></span>
+                <span class="ft-card__tag">Gratis</span>
+              </div>
+              <h3>{{ test.name }}</h3>
+              <p v-if="test.description" class="ft-card__desc">{{ test.description }}</p>
+              <div class="ft-card__meta">
+                <span><FileText class="h-3.5 w-3.5" /> {{ questionCount(test) }} Soal</span>
+                <span><Clock class="h-3.5 w-3.5" /> {{ test.duration }} Menit</span>
+              </div>
+              <p class="ft-card__period"><Calendar class="h-3.5 w-3.5" /> {{ formatPeriod(test) }}</p>
+              <button
+                v-if="test.status === 'ongoing' && test.can_submit"
+                type="button"
+                class="ft-card__cta"
+                @click="pickTest(test)"
+              >
+                Mulai Tryout <ArrowRight class="h-4 w-4" />
+              </button>
+              <span v-else-if="test.status === 'upcoming' || test.status === 'scheduled'" class="ft-card__status">
+                {{ test.status === 'scheduled' ? 'Menunggu jadwal' : 'Belum dimulai' }}
+              </span>
+              <span v-else class="ft-card__status">Berakhir</span>
+            </article>
+          </div>
+
+          <div v-if="tests.length > 1 && !showAll" class="ft-chips">
+            <button
+              v-for="(test, idx) in tests.slice(1, 5)"
+              :key="`chip-${test.id}`"
+              type="button"
+              class="ft-chip"
+              :class="`ft-chip--${toneFor(idx + 1)}`"
+              :title="test.name"
+              @click="pickTest(test)"
+            >
+              <component :is="iconFor(test, idx + 1)" class="h-4 w-4" />
+            </button>
+          </div>
+
+          <div v-if="tests.length > 1" class="ft-popular__more">
+            <button type="button" class="ft-btn ft-btn--outline" @click="showAll = !showAll">
+              {{ showAll ? 'Tutup' : 'Lihat Semua Tryout' }}
+              <ChevronDown class="h-4 w-4" :class="{ 'ft-rotate': showAll }" />
+            </button>
+          </div>
+        </section>
+
+        <section id="tentang" class="ft-features">
+          <div class="ft-feature">
+            <span class="ft-feature__icon"><Shield class="h-5 w-5" /></span>
+            <strong>100% Gratis</strong>
+            <p>Tanpa biaya tersembunyi</p>
+          </div>
+          <div class="ft-feature">
+            <span class="ft-feature__icon"><BarChart3 class="h-5 w-5" /></span>
+            <strong>Hasil Instan</strong>
+            <p>Skor langsung setelah submit</p>
+          </div>
+          <div class="ft-feature">
+            <span class="ft-feature__icon"><Target class="h-5 w-5" /></span>
+            <strong>Evaluasi Akurat</strong>
+            <p>Soal sesuai standar ujian</p>
+          </div>
+          <div class="ft-feature">
+            <span class="ft-feature__icon"><Heart class="h-5 w-5" /></span>
+            <strong>Untuk Semua</strong>
+            <p>JLPT, TOEFL, SNMPTN, dll.</p>
+          </div>
+        </section>
+
+        <footer class="ft-footer">
+          <span>© {{ year }} CATLab</span>
+          <a href="mailto:halo@catlab.id">halo@catlab.id</a>
+        </footer>
       </div>
 
-      <div v-else-if="step === 'test'" key="test" class="relative z-10">
+      <div v-else-if="step === 'test'" key="test" class="ft-runner">
         <TestRunnerPanel
           v-if="selectedTest && questions.length"
           :test-data="selectedTest"
@@ -140,114 +205,58 @@
         />
       </div>
 
-      <div v-else key="session" class="relative min-h-screen overflow-hidden bg-background">
-        <img
-          :src="bookUrl"
-          alt=""
-          class="pointer-events-none absolute z-0 h-full w-full object-cover object-center"
-        />
-        <div class="pointer-events-none absolute inset-0 z-[1] programs-themed-bg" />
-
-        <main class="relative z-20 mx-auto max-w-6xl px-4 py-8 md:px-8">
+      <div v-else key="session" class="ft-session">
+        <div class="ft-bg" aria-hidden="true">
+          <div class="ft-bg__glow ft-bg__glow--a" />
+          <div class="ft-bg__dots" />
+        </div>
+        <main class="ft-session__main">
           <Transition name="ft-cross" mode="out-in">
-            <section v-if="step === 'form'" key="form" class="rounded-3xl bg-white border border-border p-6 shadow-sm">
-              <div class="flex items-center justify-between gap-3">
-                <h2 class="text-xl font-bold text-text">Form Peserta Tryout</h2>
-                <button type="button" class="text-sm font-semibold text-secondary hover:text-primary" @click="backToChoose">
-                  Kembali
-                </button>
+            <section v-if="step === 'form'" key="form" class="ft-panel">
+              <div class="ft-panel__head">
+                <div>
+                  <h2>Form Peserta Tryout</h2>
+                  <p>Tryout: {{ selectedTest?.name }}</p>
+                </div>
+                <button type="button" class="ft-link" @click="backToChoose">Kembali</button>
               </div>
-              <p class="text-sm text-muted mt-1 mb-5">Tryout: {{ selectedTest?.name }}</p>
-
-              <form class="grid md:grid-cols-2 gap-4" @submit.prevent="startTryout">
-                <label class="text-sm font-medium text-text">
-                  Nama Lengkap
-                  <input v-model="form.full_name" required class="mt-1 w-full rounded-lg border border-border px-3 py-2 bg-background" />
-                </label>
-                <label class="text-sm font-medium text-text">
+              <form class="ft-form" @submit.prevent="startTryout">
+                <label>Nama Lengkap<input v-model="form.full_name" required /></label>
+                <label>
                   Jenis Kelamin
-                  <select v-model="form.gender" required class="mt-1 w-full rounded-lg border border-border px-3 py-2 bg-background">
+                  <select v-model="form.gender" required>
                     <option value="">Pilih</option>
                     <option value="L">Laki-laki</option>
                     <option value="P">Perempuan</option>
                   </select>
                 </label>
-                <label class="text-sm font-medium text-text">
-                  Alamat Lengkap
-                  <textarea v-model="form.address" required class="mt-1 w-full rounded-lg border border-border px-3 py-2 bg-background">
-                  </textarea>
-                </label>
-                <label class="text-sm font-medium text-text">
-                  Tanggal Lahir
-                  <input v-model="form.birth_date" required type="date" class="mt-1 w-full rounded-lg border border-border px-3 py-2 bg-background" />
-                </label>
-                <label class="text-sm font-medium text-text md:col-span-2">
+                <label class="ft-form--span2">Alamat Lengkap<textarea v-model="form.address" required rows="2" /></label>
+                <label>Tanggal Lahir<input v-model="form.birth_date" required type="date" /></label>
+                <label>
                   Nomor Telepon / Whatsapp
-                  <div
-                    class="mt-1 flex w-full items-center overflow-hidden rounded-lg border border-border bg-background transition-colors focus-within:border-secondary"
-                  >
-                    <span class="shrink-0 border-r border-border px-3 py-2 text-sm text-muted select-none">+62</span>
-                    <input
-                      v-model="form.phone"
-                      required
-                      type="tel"
-                      inputmode="numeric"
-                      autocomplete="tel-national"
-                      placeholder="812345678"
-                      class="w-full min-w-0 border-0 bg-transparent px-3 py-2 focus:outline-none focus:ring-0"
-                    />
+                  <div class="ft-phone">
+                    <span>+62</span>
+                    <input v-model="form.phone" required type="tel" inputmode="numeric" placeholder="812345678" />
                   </div>
-                  <span v-if="form.phone && !isValidPhoneLocal(form.phone)" class="mt-1 block text-xs text-red-500">
-                    Nomor tidak valid. Contoh: 812345678
-                  </span>
+                  <small v-if="form.phone && !isValidPhoneLocal(form.phone)">Nomor tidak valid. Contoh: 812345678</small>
                 </label>
-                <label class="text-sm font-medium text-text md:col-span-2">
-                  Alamat Email
-                  <input
-                    v-model="form.email"
-                    required
-                    type="email"
-                    placeholder="contoh@email.com"
-                    class="mt-1 w-full rounded-lg border border-border px-3 py-2 bg-background"
-                  />
-                </label>
-                <div class="md:col-span-2 pt-2">
-                  <button
-                    type="submit"
-                    class="px-5 py-2.5 rounded-full bg-secondary text-white font-semibold hover:bg-primary transition-colors"
-                  >
-                    Mulai Tryout
-                  </button>
+                <label class="ft-form--span2">Alamat Email<input v-model="form.email" required type="email" placeholder="contoh@email.com" /></label>
+                <div class="ft-form--span2">
+                  <button type="submit" class="ft-btn ft-btn--primary">Mulai Tryout</button>
                 </div>
               </form>
             </section>
 
-            <section v-else-if="step === 'result'" key="result" class="flex min-h-[50vh] items-center justify-center px-2">
-              <div
-                ref="scorePanelRef"
-                class="w-full max-w-md rounded-3xl border border-border bg-white p-8 text-center shadow-2xl shadow-primary/15"
-              >
-                <h2 class="text-2xl font-bold text-text">Hasil Tryout</h2>
-                <p class="mt-2 text-sm text-muted">Selamat! Anda telah menyelesaikan tryout ini dengan sukses.</p>
-                <div
-                  ref="scoreSparkleTargetRef"
-                  class="mt-6 inline-flex min-w-[12rem] flex-col items-center justify-center gap-1 rounded-2xl bg-sky px-6 py-5 border-2 border-secondary/30"
-                >
-                  <span class="text-xs font-bold uppercase tracking-wider text-primary">Skor</span>
-                  <span class="text-4xl font-black tabular-nums text-secondary md:text-5xl">
-                    {{ result.score }} <span class="text-lg font-bold text-muted">/</span> {{ result.total }}
-                  </span>
+            <section v-else-if="step === 'result'" key="result" class="ft-result">
+              <div ref="scorePanelRef" class="ft-panel ft-panel--result">
+                <h2>Hasil Tryout</h2>
+                <p>Selamat! Anda telah menyelesaikan tryout ini dengan sukses.</p>
+                <div ref="scoreSparkleTargetRef" class="ft-score">
+                  <span>Skor</span>
+                  <strong>{{ result.score }} <em>/</em> {{ result.total }}</strong>
                 </div>
-                <p class="mt-2 text-sm text-muted mt-8">Hasil tryout akan dikirim ke email Anda. terima kasih telah berpartisipasi.</p>
-                <div class="mt-8">
-                  <button
-                    type="button"
-                    class="px-6 py-3 rounded-full bg-secondary text-white font-semibold hover:bg-primary transition-colors"
-                    @click="resetFlow"
-                  >
-                    Kembali ke beranda
-                  </button>
-                </div>
+                <p class="ft-result__note">Hasil tryout akan dikirim ke email Anda. Terima kasih telah berpartisipasi.</p>
+                <button type="button" class="ft-btn ft-btn--primary" @click="resetFlow">Kembali ke beranda</button>
               </div>
             </section>
           </Transition>
@@ -258,15 +267,24 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from 'vue'
-import { Calendar, Clock, FileText } from 'lucide-vue-next'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import {
+  ArrowRight, BarChart3, BookOpen, Building2, Calendar, ChevronDown, Clock, FileText,
+  GraduationCap, Headphones, Heart, Languages, Menu, Shield, Star, Target, Users, X,
+} from 'lucide-vue-next'
 import { confetti, sparkles, variation } from 'party-js'
 import { useToast } from '@/composables/useNotification'
 import TestRunnerPanel from '@/components/TestRunnerPanel.vue'
-
-const bookUrl = new URL('../../assets/book.jpg', import.meta.url).href
+import './free-tryout.css'
 
 const toast = useToast()
+const logoUrl = new URL('../../assets/favicon_io/android-chrome-192x192.png', import.meta.url).href
+const monitorUrl = new URL('../../assets/properties/monitor.png', import.meta.url).href
+const paperUrl = new URL('../../assets/properties/paper.png', import.meta.url).href
+const scoreUrl = new URL('../../assets/properties/score.png', import.meta.url).href
+const clockUrl = new URL('../../assets/properties/clockl.png', import.meta.url).href
+const pencilUrl = new URL('../../assets/properties/pencil.png', import.meta.url).href
+const vasUrl = new URL('../../assets/properties/vas.png', import.meta.url).href
 
 const tests = ref([])
 const selectedTest = ref(null)
@@ -275,104 +293,82 @@ const step = ref('choose')
 const loading = ref(false)
 const submitting = ref(false)
 const result = ref({ score: 0, total: 0 })
-
+const showAll = ref(false)
+const mobileOpen = ref(false)
+const activeNav = ref('beranda')
+const year = new Date().getFullYear()
 const scoreSparkleTargetRef = ref(null)
 const scorePanelRef = ref(null)
+const form = ref({ full_name: '', gender: '', city: '', birth_date: '', phone: '', email: '', address: '' })
 
-const form = ref({
-  full_name: '',
-  gender: '',
-  city: '',
-  birth_date: '',
-  phone: '',
-  email: '',
+const tones = ['red', 'purple', 'blue', 'orange']
+const categoryIcons = [Languages, Headphones, GraduationCap, Building2, BookOpen]
+const visibleTests = computed(() => (showAll.value ? tests.value : tests.value.slice(0, 4)))
+const stats = computed(() => {
+  const tryoutCount = tests.value.length
+  const questionSum = tests.value.reduce((sum, t) => sum + questionCount(t), 0)
+  return {
+    tryouts: tryoutCount > 0 ? `${tryoutCount}+` : '120+',
+    questions: questionSum > 0 ? `${questionSum}+` : '8000+',
+  }
 })
 
+function toneFor(idx) { return tones[idx % tones.length] }
+function iconFor(test, idx) {
+  const name = String(test?.name || test?.category || '').toLowerCase()
+  if (name.includes('jlpt') || name.includes('jft') || name.includes('jepang')) return Languages
+  if (name.includes('toefl') || name.includes('ielts') || name.includes('inggris')) return Headphones
+  if (name.includes('snmptn') || name.includes('sbmptn') || name.includes('ptn')) return GraduationCap
+  if (name.includes('cpns') || name.includes('polri') || name.includes('tni')) return Building2
+  return categoryIcons[idx % categoryIcons.length]
+}
 function normalizePhoneLocal(rawPhone) {
   const digitsOnly = String(rawPhone || '').replace(/\D/g, '')
   if (digitsOnly.startsWith('62')) return digitsOnly.slice(2)
   if (digitsOnly.startsWith('0')) return digitsOnly.slice(1)
   return digitsOnly
 }
-
-function isValidPhoneLocal(localPhone) {
-  return /^8\d{8,11}$/.test(String(localPhone || ''))
-}
-
+function isValidPhoneLocal(localPhone) { return /^8\d{8,11}$/.test(String(localPhone || '')) }
 function formatPhoneForBackend(localPhone) {
   const normalized = normalizePhoneLocal(localPhone)
   return normalized ? `62${normalized}` : ''
 }
-
 function runScoreCelebration() {
   const target = scoreSparkleTargetRef.value
   const panel = scorePanelRef.value
   if (!target) return
-
-  sparkles(target, {
-    count: variation.range(22, 40),
-    speed: variation.range(120, 220),
-    size: variation.range(0.9, 1.9),
-  })
-
-  if (panel) {
-    confetti(panel, {
-      count: variation.range(28, 48),
-      spread: variation.range(38, 52),
-    })
-  }
+  sparkles(target, { count: variation.range(22, 40), speed: variation.range(120, 220), size: variation.range(0.9, 1.9) })
+  if (panel) confetti(panel, { count: variation.range(28, 48), spread: variation.range(38, 52) })
 }
-
-watch(
-  () => step.value,
-  async (s) => {
-    if (s !== 'result') return
-    await nextTick()
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        runScoreCelebration()
-      })
-    })
-  },
-)
-
-watch(
-  () => form.value.phone,
-  (value) => {
-    const normalized = normalizePhoneLocal(value)
-    if (value !== normalized) form.value.phone = normalized
-  },
-)
-
+watch(() => step.value, async (s) => {
+  if (s !== 'result') return
+  await nextTick()
+  requestAnimationFrame(() => requestAnimationFrame(() => runScoreCelebration()))
+})
+watch(() => form.value.phone, (value) => {
+  const normalized = normalizePhoneLocal(value)
+  if (value !== normalized) form.value.phone = normalized
+})
 function formatPeriod(test) {
   const s = test?.start_time
   const e = test?.end_time
   if (!s || !e) return '—'
   const opts = { day: '2-digit', month: '2-digit', year: 'numeric' }
   try {
-    const a = new Date(s).toLocaleDateString('id-ID', opts)
-    const b = new Date(e).toLocaleDateString('id-ID', opts)
-    return `${a} - ${b}`
-  } catch {
-    return '—'
-  }
+    return `${new Date(s).toLocaleDateString('id-ID', opts)} - ${new Date(e).toLocaleDateString('id-ID', opts)}`
+  } catch { return '—' }
 }
-
 function questionCount(test) {
   const ids = test?.question_ids
   return Array.isArray(ids) ? ids.length : 0
 }
-
 function scrollToTryouts() {
-  const el = document.getElementById('tryout-list')
-  el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  document.getElementById('tryout')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
-
 function backToChoose() {
   selectedTest.value = null
   step.value = 'choose'
 }
-
 const loadTests = async () => {
   loading.value = true
   try {
@@ -384,17 +380,16 @@ const loadTests = async () => {
     loading.value = false
   }
 }
-
 const pickTest = async (test) => {
   try {
     const { data } = await window.axios.get(`/api/free-tryout/tests/${test.id}`)
     selectedTest.value = data
     step.value = 'form'
+    mobileOpen.value = false
   } catch (error) {
     toast.error('Error', error?.response?.data?.message || 'Tryout tidak tersedia')
   }
 }
-
 const startTryout = async () => {
   if (!selectedTest.value) return
   if (!isValidPhoneLocal(form.value.phone)) {
@@ -413,7 +408,6 @@ const startTryout = async () => {
     toast.error('Error', error?.response?.data?.message || 'Gagal memulai tryout')
   }
 }
-
 async function handleTryoutSubmit({ answers }) {
   if (!selectedTest.value || submitting.value) return
   if (!isValidPhoneLocal(form.value.phone)) {
@@ -431,10 +425,7 @@ async function handleTryoutSubmit({ answers }) {
       answers,
     }
     const { data } = await window.axios.post(`/api/free-tryout/tests/${selectedTest.value.id}/submit`, payload)
-    result.value = {
-      score: Number(data?.score || 0),
-      total: Number(data?.total || questions.value.length),
-    }
+    result.value = { score: Number(data?.score || 0), total: Number(data?.total || questions.value.length) }
     step.value = 'result'
   } catch (error) {
     toast.error('Error', error?.response?.data?.message || 'Gagal mengirim tryout')
@@ -442,33 +433,24 @@ async function handleTryoutSubmit({ answers }) {
     submitting.value = false
   }
 }
-
 const resetFlow = () => {
   step.value = 'choose'
   selectedTest.value = null
   questions.value = []
 }
-
-onMounted(loadTests)
+function onScrollSpy() {
+  const sections = ['beranda', 'tryout', 'tentang']
+  let current = 'beranda'
+  for (const id of sections) {
+    const el = document.getElementById(id)
+    if (el && el.getBoundingClientRect().top <= 120) current = id
+  }
+  activeNav.value = current
+}
+onMounted(() => {
+  loadTests()
+  window.addEventListener('scroll', onScrollSpy, { passive: true })
+})
+onUnmounted(() => window.removeEventListener('scroll', onScrollSpy))
 </script>
 
-<style scoped>
-.ft-cross-enter-active,
-.ft-cross-leave-active {
-  transition: opacity 0.45s ease;
-}
-.ft-cross-enter-from,
-.ft-cross-leave-to {
-  opacity: 0;
-}
-
-.ft-fade-enter-active,
-.ft-fade-leave-active {
-  transition: opacity 0.28s ease;
-}
-.ft-fade-enter-from,
-.ft-fade-leave-to {
-  opacity: 0;
-}
-
-</style>

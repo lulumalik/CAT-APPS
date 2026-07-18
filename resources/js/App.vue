@@ -1,12 +1,30 @@
 <template>
   <div
-    :class="{ 'container-default': !isHomePage && !isFreeTryoutPage && !isTestRunnerPage }"
-    class="bg-background rounded-3xl min-h-screen border-2 border-border font-sans text-text"
+    :class="[
+      { 'container-default': !isHomePage && !isFreeTryoutPage && !isTestRunnerPage && !isLoginPage && !isSignupPage && !isAdminMobileShell },
+      isHomePage || isLoginPage || isSignupPage
+        ? 'min-h-screen font-sans text-text'
+        : isAdminMobileShell
+          ? 'admin-mobile-shell min-h-screen font-sans text-text md:bg-background md:rounded-3xl md:border-2 md:border-border'
+          : 'bg-background rounded-3xl min-h-screen border-2 border-border font-sans text-text',
+    ]"
   >
     <StickyHeader v-if="showSidebarNav" />
-    <div :class="showSidebarNav ? 'pt-20 md:pt-0 md:pl-72' : ''" style="overflow-x: hidden !important;">
+    <div
+      :class="[
+        showSidebarNav ? 'md:pt-0 md:pl-72' : '',
+        showSidebarNav && isAdmin
+          ? 'admin-mobile-shell__content pb-[5.75rem] md:pb-0'
+          : showSidebarNav
+            ? 'pt-20'
+            : '',
+      ]"
+      style="overflow-x: hidden !important;"
+    >
       <router-view />
     </div>
+
+    <AdminBottomNav v-if="showAdminBottomNav" />
     
     <!-- Global Modal -->
     <Modal
@@ -42,6 +60,7 @@ import { computed, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import StickyHeader from '@/components/StickyHeader.vue'
+import AdminBottomNav from '@/components/AdminBottomNav.vue'
 import Modal from '@/components/Modal.vue'
 import Toast from '@/components/Toast.vue'
 import { useAppStore } from '@/stores/app'
@@ -50,7 +69,7 @@ import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 
 const store = useAppStore()
-const { isAuthenticated } = storeToRefs(store)
+const { isAuthenticated, role } = storeToRefs(store)
 const route = useRoute()
 const { modalState } = useModal()
 const { toasts, removeToast } = useToast()
@@ -62,7 +81,7 @@ const isSignupPage = computed(() => route.name === 'signup')
 const isHomePage = computed(() => route.name === 'home-demo')
 const isFreeTryoutPage = computed(() => route.name === 'free-tryout')
 const isClassRoomPage = computed(() => route.name === 'bimble-class-room')
-const isRankingPage = computed(() => route.name === 'rankings')
+const isAdmin = computed(() => role.value === 'admin')
 const showSidebarNav = computed(
   () =>
     isAuthenticated.value &&
@@ -73,6 +92,9 @@ const showSidebarNav = computed(
     !isClassRoomPage.value &&
     !isFreeTryoutPage.value,
 )
+const showAdminBottomNav = computed(() => showSidebarNav.value && isAdmin.value)
+const isAdminMobileShell = computed(() => showAdminBottomNav.value)
+
 
 onMounted(async () => {
   await store.fetchUser()
@@ -84,7 +106,6 @@ const updateDocumentMeta = () => {
 
   const routeTitleKeyByName = {
     'home-demo': 'seo.title',
-    rankings: 'nav.rankings',
     login: 'nav.login',
     signup: 'auth.signup.title',
     dashboard: 'nav.dashboard',

@@ -39,10 +39,12 @@
 
         <div class="grid grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.question.categoryLabel') }}</label>
-            <select v-model="form.category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
-              <option value="">{{ t('modals.testCreate.categoryPlaceholder') }}</option>
-              <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Track Ujian</label>
+            <select v-model.number="form.exam_track_id" required class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+              <option :value="null" disabled>Pilih track ujian</option>
+              <optgroup v-for="cat in examCategories" :key="cat.id" :label="cat.name">
+                <option v-for="tr in cat.tracks" :key="tr.id" :value="tr.id">{{ tr.name }}</option>
+              </optgroup>
             </select>
           </div>
           <div>
@@ -83,7 +85,7 @@
 </template>
 
 <script setup>
-import { reactive, watch, ref, computed } from 'vue'
+import { reactive, watch, ref, computed, onMounted } from 'vue'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({ initial: { type: Object, default: null } })
@@ -91,40 +93,51 @@ const emit = defineEmits(['close','submit'])
 const isEdit = computed(() => !!props.initial)
 const { t } = useI18n()
 
-const categories = [
-  'Kewarganegaraan',
-  'Math',
-  'English',
-  'Interpersonal Skill',
-  // 'Geography',
-  // 'Science',
-  // 'History',
-  // 'IT',
-]
-const base = () => ({ 
-  question: '', 
-  category: '', 
-  difficulty: 'Medium', 
+const examCategories = ref([])
+
+const base = () => ({
+  question: '',
+  category: '',
+  exam_track_id: null,
+  difficulty: 'Medium',
   type: 'multiple_choice',
   image: null,
   image_url: null,
   options: [
     { key: 'A', label: '' }, { key: 'B', label: '' }, { key: 'C', label: '' }, { key: 'D', label: '' }
-  ], 
-  correct: 'A' 
+  ],
+  correct: 'A',
 })
 const form = reactive(base())
 const previewUrl = ref(null)
 
+const resolveCategoryLabel = () => {
+  for (const cat of examCategories.value) {
+    const track = (cat.tracks || []).find((tr) => Number(tr.id) === Number(form.exam_track_id))
+    if (track) return track.name
+  }
+  return form.category || ''
+}
+
+onMounted(async () => {
+  try {
+    const { data } = await window.axios.get('/api/exam-categories')
+    examCategories.value = data.items || data || []
+  } catch (_) {
+    examCategories.value = []
+  }
+})
+
 watch(() => props.initial, (val) => {
   if (val) {
       const data = JSON.parse(JSON.stringify(val))
-      Object.assign(form, data)
+      Object.assign(form, base(), data)
       if (data.image) {
           form.image_url = data.image
           form.image = null
       }
       if (!form.type) form.type = 'multiple_choice'
+      form.exam_track_id = data.exam_track_id ?? null
   } else {
       Object.assign(form, base())
   }
@@ -142,6 +155,7 @@ const handleFileChange = (e) => {
 const submit = () => {
     const { image, ...rest } = form
     const payload = JSON.parse(JSON.stringify(rest))
+    payload.category = resolveCategoryLabel()
     if (image instanceof File) {
         payload.image = image
     }

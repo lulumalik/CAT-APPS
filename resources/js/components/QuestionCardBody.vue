@@ -39,7 +39,7 @@
       <div class="flex-grow">
         <h2 class="text-xl font-medium text-[#1A1A1A] leading-relaxed">{{ question.question }}</h2>
 
-        <div v-if="question.type === 'multiple_choice'" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div v-if="question.type === 'multiple_choice'" class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div
             v-for="opt in question.options"
             :key="opt.key"

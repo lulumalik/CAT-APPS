@@ -7,54 +7,12 @@ use App\Models\StudentGuardian;
 use App\Models\StudentReport;
 use App\Models\TestDefinition;
 use App\Models\User;
-use App\Models\UserNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AutoStudentReportTest extends TestCase
 {
     use RefreshDatabase;
-
-    public function test_weekly_jasmani_narrative_summarizes_range_and_trend(): void
-    {
-        $student = User::factory()->create(['role' => 'user']);
-        $monday = now()->startOfWeek();
-
-        $reports = [
-            [$monday->copy()->addDay(), 20, 101],
-            [$monday->copy()->addDays(3), 20, 102],
-            [$monday->copy()->addDays(5), 10, 103],
-        ];
-
-        foreach ($reports as [$date, $score, $entryId]) {
-            StudentReport::create([
-                'student_user_id' => $student->id,
-                'type' => StudentReport::TYPE_DAILY,
-                'report_date' => $date->toDateString(),
-                'title' => 'Update jasmani: Sprint',
-                'categories' => [
-                    'jasmani' => sprintf('Sprint — %d detik', $score),
-                ],
-                'metrics' => [
-                    'auto_source' => 'jasmani_manual',
-                    'manual_entry_id' => $entryId,
-                    'subcategory_id' => 'sprint',
-                    'subcategory_label' => 'Sprint',
-                    'score' => $score,
-                    'unit' => 'detik',
-                ],
-            ]);
-        }
-
-        $weekly = app(\App\Services\WeeklyStudentReportService::class)->syncForDate($student, $monday);
-
-        $this->assertNotNull($weekly);
-        $this->assertArrayHasKey('jasmani', $weekly->categories);
-        $this->assertStringContainsString('Sprint: waktu terbaik 10 detik', $weekly->categories['jasmani']);
-        $this->assertStringContainsString('waktu terlama 20 detik', $weekly->categories['jasmani']);
-        $this->assertStringContainsString('progress positif', $weekly->categories['jasmani']);
-        $this->assertStringNotContainsString('•', $weekly->categories['jasmani']);
-    }
 
     public function test_weekly_summary_is_created_when_daily_report_exists(): void
     {

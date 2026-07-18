@@ -34,7 +34,9 @@
 
         <div class="relative max-w-7xl mx-auto flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between xl:gap-10">
           <div class="flex gap-4 items-start flex-1 min-w-0 xl:max-w-[58%]">
-            <img src="../../assets/logo.png" alt="CAT Apps" class="w-16 h-16 md:w-20 md:h-20 object-contain shrink-0" />
+            <span class="inline-flex h-16 w-16 md:h-20 md:w-20 shrink-0 items-center justify-center rounded-2xl bg-white/15">
+              <GraduationCap class="h-8 w-8 md:h-10 md:w-10 text-white" />
+            </span>
             <div class="min-w-0 flex-1">
               <p class="inline-flex rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold tracking-wide text-white/90 mb-2">
                 {{ t('bimble.classLabel') }}

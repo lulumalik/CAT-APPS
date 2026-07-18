@@ -9,6 +9,7 @@ class ExamSubmission extends Model
     protected $fillable = [
         'user_id',
         'exam_definition_id',
+        'attempt_number',
         'answers',
         'score',
         'submitted_at',
@@ -16,6 +17,7 @@ class ExamSubmission extends Model
 
     protected $casts = [
         'answers' => 'array',
+        'attempt_number' => 'integer',
         'submitted_at' => 'datetime',
     ];
 

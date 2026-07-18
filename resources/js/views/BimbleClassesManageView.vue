@@ -26,7 +26,7 @@
       Belum ada kelas. Buat kelas baru untuk memulai.
     </div>
 
-    <div v-else class="grid gap-6 md:grid-cols-2">
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
       <article
         v-for="(c, idx) in classes"
         :key="c.id"

@@ -13,16 +13,18 @@ use App\Http\Controllers\ClassActivityController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CertificateController;
-use App\Http\Controllers\RankingController;
-use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\RegistrationFormPdfController;
 use App\Http\Controllers\StudentDashboardPdfController;
 use App\Http\Controllers\StudentReportController;
 use App\Http\Controllers\ExamDefinitionController;
+use App\Http\Controllers\ExamCategoryController;
 use App\Http\Controllers\BatchController;
 
 Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()]));
+
+// Katalog kategori & track ujian (publik — dipakai signup / pilih minat)
+Route::get('/exam-categories', [ExamCategoryController::class, 'publicIndex']);
 
 // Public material routes
 Route::get('/materials/public', [MaterialController::class, 'publicIndex']);
@@ -60,12 +62,10 @@ Route::get('/free-tryout/tests/{test}', [TestDefinitionController::class, 'freeT
 Route::post('/free-tryout/tests/{test}/submit', [TestDefinitionController::class, 'freeTryoutSubmit'])
     ->middleware('throttle:10,1');
 
-// Public guardian invitation (accept link sent by the team via WhatsApp)
-Route::get('/guardian-invite/{token}', [GuardianController::class, 'showInvite']);
-Route::post('/guardian-invite/{token}/accept', [GuardianController::class, 'accept'])
-    ->middleware('throttle:10,1');
-
 // Test operations (requires authentication via session)
+// Pilih minat ujian (tidak dibatasi app_not_expired agar user baru bisa memilih)
+Route::post('/my-interest', [AuthController::class, 'setInterest'])->middleware('auth');
+
 Route::middleware(['auth', 'app.not_expired'])->group(function () {
     Route::get('/incoming-tests', [TestDefinitionController::class, 'incoming']);
     Route::get('/available-tests', [TestDefinitionController::class, 'available']);
@@ -99,12 +99,12 @@ Route::middleware(['auth', 'app.not_expired'])->group(function () {
     Route::get('/available-exams', [ExamDefinitionController::class, 'available']);
     Route::get('/exams/{exam}', [ExamDefinitionController::class, 'show']);
     Route::post('/exams/{exam}/submit', [ExamDefinitionController::class, 'submit']);
+    Route::get('/exams/{exam}/my-submissions', [ExamDefinitionController::class, 'mySubmissions']);
+    Route::get('/exams/{exam}/my-submissions/{submission}', [ExamDefinitionController::class, 'mySubmissionReview']);
     Route::get('/my-tests', [TestDefinitionController::class, 'myTests']);
     Route::get('/certificates/{certificateIssue}/download', [CertificateController::class, 'download']);
 
-    // Private progress / results / reports — visible only to the student, their
-    // linked parent, or staff (authorization handled inside the controller).
-    Route::get('/parent/children', [ProgressController::class, 'children']);
+    // Private progress / results / reports — student or staff.
     Route::get('/students/{student}/progress', [ProgressController::class, 'studentProgress']);
     Route::get('/students/{student}/results', [ProgressController::class, 'studentResults']);
     Route::get('/students/{student}/reports', [ProgressController::class, 'studentReports']);
@@ -116,14 +116,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/users/import', [UserController::class, 'import']);
     Route::apiResource('users', UserController::class);
 
-    Route::get('/admin/registration-progress', [RegistrationProgressController::class, 'adminIndex']);
-    Route::get('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminShow']);
     Route::get('/admin/storage-diagnostic', [RegistrationProgressController::class, 'adminStorageDiagnostic']);
-    Route::patch('/admin/registration-progress/{user}', [RegistrationProgressController::class, 'adminUpdate']);
-    Route::patch('/admin/registration-progress/{user}/payment', [RegistrationProgressController::class, 'adminConfirmPayment']);
-    Route::get('/admin/registration-progress/{user}/berkas-pdf', [RegistrationFormPdfController::class, 'adminDownloadTemplate']);
-    Route::get('/admin/registration-progress/{user}/forms/pdf', [RegistrationFormPdfController::class, 'adminDownloadAll']);
-    Route::get('/admin/registration-progress/{user}/forms/{slug}/pdf', [RegistrationFormPdfController::class, 'adminDownloadPage']);
 
     Route::post('/admin/announcements', [AnnouncementController::class, 'store']);
     Route::put('/admin/announcements/{announcement}', [AnnouncementController::class, 'update']);
@@ -134,29 +127,22 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/certificates/issue', [CertificateController::class, 'issue']);
     Route::get('/admin/certificates/issues', [CertificateController::class, 'listIssues']);
 
-    // Guardian (parent) invitations — admin only
-    Route::get('/guardians/eligible-students', [GuardianController::class, 'eligibleStudents']);
-    Route::get('/guardians', [GuardianController::class, 'index']);
-    Route::post('/guardians', [GuardianController::class, 'store']);
-    Route::patch('/guardians/{guardian}/sent', [GuardianController::class, 'markSent']);
-    Route::delete('/guardians/{guardian}', [GuardianController::class, 'destroy']);
-
     Route::post('/batches', [BatchController::class, 'store']);
     Route::put('/batches/{batch}', [BatchController::class, 'update']);
     Route::delete('/batches/{batch}', [BatchController::class, 'destroy']);
     Route::delete('/batches/{batch}/students/{user}', [BatchController::class, 'detachStudent']);
+
+    // Manajemen kategori & track ujian
+    Route::get('/admin/exam-categories', [ExamCategoryController::class, 'adminIndex']);
+    Route::post('/admin/exam-categories', [ExamCategoryController::class, 'storeCategory']);
+    Route::put('/admin/exam-categories/{category}', [ExamCategoryController::class, 'updateCategory']);
+    Route::delete('/admin/exam-categories/{category}', [ExamCategoryController::class, 'destroyCategory']);
+    Route::post('/admin/exam-tracks', [ExamCategoryController::class, 'storeTrack']);
+    Route::put('/admin/exam-tracks/{track}', [ExamCategoryController::class, 'updateTrack']);
+    Route::delete('/admin/exam-tracks/{track}', [ExamCategoryController::class, 'destroyTrack']);
 });
 
 Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
-    // Internal leaderboard (staff only — scores are private and not exposed publicly)
-    Route::get('/rankings/categories', [RankingController::class, 'categories']);
-    Route::get('/rankings/filters', [RankingController::class, 'filters']);
-    Route::get('/rankings', [RankingController::class, 'index']);
-    Route::get('/rankings/manual', [RankingController::class, 'manualList']);
-    Route::post('/rankings/manual', [RankingController::class, 'manualStore']);
-    Route::put('/rankings/manual/{entry}', [RankingController::class, 'manualUpdate']);
-    Route::delete('/rankings/manual/{entry}', [RankingController::class, 'manualDestroy']);
-
     // Student reports (daily + weekly summary)
     Route::get('/student-reports', [StudentReportController::class, 'index']);
     Route::post('/student-reports', [StudentReportController::class, 'store']);

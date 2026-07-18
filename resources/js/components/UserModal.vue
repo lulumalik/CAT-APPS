@@ -36,7 +36,6 @@
             <option value="user">{{ t('modals.user.roleUser') }}</option>
             <option value="mentor">{{ t('modals.user.roleMentor') }}</option>
             <option value="admin">{{ t('modals.user.roleAdmin') }}</option>
-            <option value="parent">Orang Tua</option>
           </select>
         </div>
 
@@ -50,7 +49,7 @@
           <p class="text-xs text-gray-500 mt-1">{{ t('modals.user.appExpiresHint') }}</p>
         </div>
 
-        <div v-if="form.role !== 'mentor' && form.role !== 'parent'">
+        <div v-if="form.role !== 'mentor'">
           <label class="block text-sm font-medium text-gray-700 mb-2">Program Siswa</label>
           <select v-model="form.program_category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
             <option v-for="p in ONLINE_PROGRAMS" :key="p.value" :value="p.value">
@@ -127,7 +126,7 @@ watch(
 watch(
   () => form.role,
   (role) => {
-    if (role === 'mentor' || role === 'parent') {
+    if (role === 'mentor') {
       form.program_category = 'regular'
     }
     if (role !== 'user') {

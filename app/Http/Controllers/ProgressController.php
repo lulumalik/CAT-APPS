@@ -4,11 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BimbleClass;
 use App\Models\ExamSubmission;
-use App\Models\ManualRankingEntry;
-use App\Models\RegistrationProgress;
-use App\Models\StudentGuardian;
 use App\Models\StudentReport;
-use App\Models\TestDefinition;
 use App\Models\TestSubmission;
 use App\Models\User;
 use App\Services\WeeklyStudentReportService;
@@ -17,41 +13,6 @@ use Illuminate\Support\Facades\Schema;
 
 class ProgressController extends Controller
 {
-    /**
-     * Children linked to the authenticated parent.
-     */
-    public function children(Request $request)
-    {
-        $parent = $request->user();
-
-        if (! Schema::hasTable('student_guardians')) {
-            return response()->json(['items' => []]);
-        }
-
-        $links = StudentGuardian::query()
-            ->where('guardian_user_id', $parent->id)
-            ->where('invite_status', StudentGuardian::STATUS_ACCEPTED)
-            ->with('student:id,name,username,email,program_category')
-            ->get();
-
-        $items = $links->filter(fn ($l) => $l->student)->map(function ($link) {
-            $student = $link->student;
-
-            return [
-                'link_id' => $link->id,
-                'relationship' => $link->relationshipLabel(),
-                'student' => [
-                    'id' => $student->id,
-                    'name' => $student->name,
-                    'username' => $student->username,
-                    'program_category' => $student->program_category,
-                ],
-            ];
-        })->values();
-
-        return response()->json(['items' => $items]);
-    }
-
     public function studentProgress(Request $request, User $student)
     {
         $this->authorizeAccess($request, $student);
@@ -74,7 +35,6 @@ class ProgressController extends Controller
         return response()->json([
             'student' => ['id' => $student->id, 'name' => $student->name],
             'academic' => $this->academicSubjects($student),
-            'physical' => $this->physicalBars($student),
         ]);
     }
 
@@ -142,7 +102,7 @@ class ProgressController extends Controller
     }
 
     /**
-     * Shared authorization: the student themself, a linked accepted parent, or staff.
+     * Shared authorization: the student themself or staff.
      */
     private function authorizeAccess(Request $request, User $student): void
     {
@@ -154,16 +114,6 @@ class ProgressController extends Controller
 
         if (in_array($user->role, ['admin', 'mentor'], true)) {
             return;
-        }
-
-        if ($user->role === 'parent' && Schema::hasTable('student_guardians')) {
-            $linked = StudentGuardian::where('guardian_user_id', $user->id)
-                ->where('student_user_id', $student->id)
-                ->where('invite_status', StudentGuardian::STATUS_ACCEPTED)
-                ->exists();
-            if ($linked) {
-                return;
-            }
         }
 
         abort(403, 'Tidak punya akses ke data peserta ini.');
@@ -180,25 +130,17 @@ class ProgressController extends Controller
             'academic_subjects' => $this->academicSubjects($student),
             'academic_subject_timeline' => $this->academicSubjectTimeline($student),
             'quiz_subject_results' => $this->quizSubjectResults($student),
-            'physical' => $this->physicalBars($student),
-            'physical_timeline' => $this->physicalTimeline($student),
             'materials' => $this->materialsPerClass($student),
         ];
     }
 
     /**
-     * Per-subject academic scores over time (percentage), one series per subject.
+     * Per-category academic scores over time (percentage), one series per category.
      *
      * @return list<array<string, mixed>>
      */
     private function academicSubjectTimeline(User $student): array
     {
-        $akademik = collect(config('rankings.groups', []))->firstWhere('id', 'akademik');
-        $subcategories = $akademik['subcategories'] ?? [];
-        if ($subcategories === []) {
-            return [];
-        }
-
         $query = $this->quizSubmissionsQuery($student);
         if ($query === null) {
             return [];
@@ -209,35 +151,34 @@ class ProgressController extends Controller
             ->orderBy('id')
             ->get();
 
-        $series = [];
-        foreach ($subcategories as $sub) {
-            $categories = $sub['test_categories'] ?? [];
-            $points = [];
-            foreach ($submissions as $submission) {
-                $test = $submission->testDefinition;
-                $cat = $test?->category;
-                if (! $cat || ! in_array($cat, $categories, true)) {
-                    continue;
-                }
-                $total = count($test?->question_ids ?? []);
-                if ($total < 1) {
-                    continue;
-                }
-                $scaled = $this->scaleScoreToHundred((float) $submission->score, $total);
-                if ($scaled === null) {
-                    continue;
-                }
-                $points[] = [
-                    'date' => optional($submission->submitted_at ?? $submission->created_at)->toDateString(),
-                    'value' => $scaled,
-                    'quiz_name' => $test->name,
-                    'label' => $test->name,
-                ];
+        $byCategory = [];
+        foreach ($submissions as $submission) {
+            $test = $submission->testDefinition;
+            $cat = $test?->category;
+            if (! $cat) {
+                continue;
             }
+            $total = count($test?->question_ids ?? []);
+            if ($total < 1) {
+                continue;
+            }
+            $scaled = $this->scaleScoreToHundred((float) $submission->score, $total);
+            if ($scaled === null) {
+                continue;
+            }
+            $byCategory[$cat][] = [
+                'date' => optional($submission->submitted_at ?? $submission->created_at)->toDateString(),
+                'value' => $scaled,
+                'quiz_name' => $test->name,
+                'label' => $test->name,
+            ];
+        }
 
+        $series = [];
+        foreach ($byCategory as $category => $points) {
             $series[] = [
-                'id' => $sub['id'],
-                'label' => $sub['label'],
+                'id' => $category,
+                'label' => $this->resolveAcademicSubjectLabel($category),
                 'points' => $this->sortTimelinePoints($points),
             ];
         }
@@ -282,55 +223,6 @@ class ProgressController extends Controller
         }
 
         return $results;
-    }
-
-    /**
-     * Per-subcategory jasmani scores over time, one series per component.
-     *
-     * @return list<array<string, mixed>>
-     */
-    private function physicalTimeline(User $student): array
-    {
-        if (! Schema::hasTable('manual_ranking_entries')) {
-            return [];
-        }
-
-        $jasmani = collect(config('rankings.groups', []))->firstWhere('id', 'jasmani');
-        $subcategories = $jasmani['subcategories'] ?? [];
-        if ($subcategories === []) {
-            return [];
-        }
-
-        $entries = ManualRankingEntry::query()
-            ->where('group_id', 'jasmani')
-            ->where('user_id', $student->id)
-            ->orderBy('score_date')
-            ->orderBy('id')
-            ->get();
-
-        $series = [];
-        foreach ($subcategories as $sub) {
-            $points = [];
-            foreach ($entries as $entry) {
-                if ($entry->subcategory_id !== $sub['id']) {
-                    continue;
-                }
-                $points[] = [
-                    'date' => optional($entry->score_date ?? $entry->created_at)->toDateString(),
-                    'value' => (float) $entry->score,
-                ];
-            }
-
-            $series[] = [
-                'id' => $sub['id'],
-                'label' => $sub['label'],
-                'unit' => $sub['unit'] ?? null,
-                'sort' => $sub['sort'] ?? 'desc',
-                'points' => $this->sortTimelinePoints($points),
-            ];
-        }
-
-        return $series;
     }
 
     /**
@@ -387,81 +279,42 @@ class ProgressController extends Controller
     }
 
     /**
-     * Best percentage per academic subject (from rankings config).
+     * Best percentage per academic category (from testDefinition.category).
      *
      * @return list<array<string, mixed>>
      */
     private function academicSubjects(User $student): array
     {
-        $akademik = collect(config('rankings.groups', []))->firstWhere('id', 'akademik');
-        $subcategories = $akademik['subcategories'] ?? [];
-        if ($subcategories === []) {
-            return [];
-        }
-
         $query = $this->quizSubmissionsQuery($student);
         if ($query === null) {
             return [];
         }
 
-        $submissions = $query->get();
-
-        $rows = [];
-        foreach ($subcategories as $sub) {
-            $categories = $sub['test_categories'] ?? [];
-            $best = null;
-            foreach ($submissions as $submission) {
-                $cat = $submission->testDefinition?->category;
-                if (! $cat || ! in_array($cat, $categories, true)) {
-                    continue;
-                }
-                $total = count($submission->testDefinition?->question_ids ?? []);
-                if ($total < 1) {
-                    continue;
-                }
-                $scaled = $this->scaleScoreToHundred((float) $submission->score, $total);
-                if ($scaled === null) {
-                    continue;
-                }
-                $best = $best === null ? $scaled : max($best, $scaled);
+        $bestByCategory = [];
+        foreach ($query->get() as $submission) {
+            $cat = $submission->testDefinition?->category;
+            if (! $cat) {
+                continue;
             }
-
-            $rows[] = [
-                'id' => $sub['id'],
-                'label' => $sub['label'],
-                'value' => $best,
-            ];
+            $total = count($submission->testDefinition?->question_ids ?? []);
+            if ($total < 1) {
+                continue;
+            }
+            $scaled = $this->scaleScoreToHundred((float) $submission->score, $total);
+            if ($scaled === null) {
+                continue;
+            }
+            $bestByCategory[$cat] = isset($bestByCategory[$cat])
+                ? max($bestByCategory[$cat], $scaled)
+                : $scaled;
         }
-
-        return $rows;
-    }
-
-    /**
-     * Physical (jasmani) results as labelled bars.
-     *
-     * @return list<array<string, mixed>>
-     */
-    private function physicalBars(User $student): array
-    {
-        if (! Schema::hasTable('registration_progress')) {
-            return [];
-        }
-
-        $progress = RegistrationProgress::where('user_id', $student->id)->first();
-        $data = $progress?->physical_data ?? [];
-
-        $jasmani = collect(config('rankings.groups', []))->firstWhere('id', 'jasmani');
-        $subcategories = $jasmani['subcategories'] ?? [];
 
         $rows = [];
-        foreach ($subcategories as $sub) {
-            $value = $this->extractNumericScore($data[$sub['id']] ?? null);
+        foreach ($bestByCategory as $category => $best) {
             $rows[] = [
-                'id' => $sub['id'],
-                'label' => $sub['label'],
-                'unit' => $sub['unit'] ?? null,
-                'value' => $value,
-                'sort' => $sub['sort'] ?? 'desc',
+                'id' => $category,
+                'label' => $this->resolveAcademicSubjectLabel($category),
+                'value' => $best,
             ];
         }
 
@@ -542,36 +395,7 @@ class ProgressController extends Controller
             return 'Akademik';
         }
 
-        foreach (config('rankings.groups', []) as $group) {
-            if (($group['id'] ?? '') !== 'akademik') {
-                continue;
-            }
-
-            foreach ($group['subcategories'] ?? [] as $sub) {
-                if (in_array($category, $sub['test_categories'] ?? [], true)) {
-                    return (string) $sub['label'];
-                }
-            }
-        }
-
         return $category;
-    }
-
-    private function extractNumericScore(mixed $raw): ?float
-    {
-        if (is_numeric($raw)) {
-            return (float) $raw;
-        }
-
-        if (is_array($raw)) {
-            foreach (['value', 'score', 'result', 'nilai'] as $key) {
-                if (isset($raw[$key]) && is_numeric($raw[$key])) {
-                    return (float) $raw[$key];
-                }
-            }
-        }
-
-        return null;
     }
 
     private function serializeReport(StudentReport $report): array

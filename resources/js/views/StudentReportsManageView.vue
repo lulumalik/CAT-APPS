@@ -61,7 +61,15 @@
       <section class="lg:col-span-7 bg-white rounded-[2rem] border border-gray-100 shadow-lg shadow-black/5 p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="font-bold text-lg">Laporan Tersimpan</h2>
-          <button type="button" class="text-sm text-gray-500 hover:text-[#1A1A1A]" @click="loadReports">Muat ulang</button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-[#1A1A1A] hover:bg-gray-100 transition-colors"
+            title="Muat ulang"
+            aria-label="Muat ulang"
+            @click="loadReports"
+          >
+            <RefreshCw class="h-4 w-4" />
+          </button>
         </div>
         <p v-if="!form.student_user_id" class="text-sm text-gray-400 py-8 text-center">Pilih peserta untuk melihat laporannya.</p>
         <div v-else-if="!reports.length" class="text-sm text-gray-400 py-8 text-center">Belum ada laporan.</div>
@@ -96,7 +104,7 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { LineChart, Trash2 } from 'lucide-vue-next'
+import { LineChart, RefreshCw, Trash2 } from 'lucide-vue-next'
 import axios from 'axios'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useToast, useModal } from '@/composables/useNotification'
@@ -106,7 +114,6 @@ const { confirm } = useModal()
 
 const categoryKeys = [
   { key: 'akademik', label: 'Catatan Akademik' },
-  { key: 'jasmani', label: 'Catatan Jasmani' },
 ]
 
 const studentSearch = ref('')

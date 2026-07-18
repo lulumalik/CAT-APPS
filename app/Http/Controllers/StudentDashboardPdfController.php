@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\StudentGuardian;
 use App\Models\User;
 use App\Services\StudentDashboardReportService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -23,31 +22,17 @@ class StudentDashboardPdfController extends Controller
             return response()->json(['message' => 'Akun ini bukan peserta.'], 422);
         }
 
-        $this->authorizeParentOrStaff($request, $student);
+        $this->authorizeStaff($request);
 
         return $this->streamPdf($student, $this->resolveReportDateRange($request));
     }
 
-    private function authorizeParentOrStaff(Request $request, User $student): void
+    private function authorizeStaff(Request $request): void
     {
         $user = $request->user();
 
-        if ($user->id === $student->id) {
-            abort(403, 'Hanya orang tua yang dapat mengunduh laporan perkembangan.');
-        }
-
         if (in_array($user->role, ['admin', 'mentor'], true)) {
             return;
-        }
-
-        if ($user->role === 'parent' && Schema::hasTable('student_guardians')) {
-            $linked = StudentGuardian::where('guardian_user_id', $user->id)
-                ->where('student_user_id', $student->id)
-                ->where('invite_status', StudentGuardian::STATUS_ACCEPTED)
-                ->exists();
-            if ($linked) {
-                return;
-            }
         }
 
         abort(403, 'Tidak punya akses ke laporan peserta ini.');

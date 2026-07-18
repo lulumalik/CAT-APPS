@@ -1,18 +1,17 @@
 export const PROGRAM_ADMIN_CONTACT = {
-  name: 'Admin Pratistha Cendekia Prestasi',
+  name: 'Admin CATLab',
   whatsapp: '628138964488',
   whatsappDisplay: '+62 813-8964-4888',
   emails: [
-    'administrator@pratisthaindonesia.com',
-    'admin.pratistha@gmail.com',
+    'halo@catlab.id',
   ],
   bank: {
     name: 'Bank BRI',
     accountNumber: '1107-01-000931-56-9',
-    accountHolder: 'PT. Pratistha Training Center Indonesia',
+    accountHolder: 'CATLab',
   },
   paymentNote:
-    'Setelah mendaftar, hubungi admin via WhatsApp untuk konfirmasi biaya program dan instruksi transfer pembayaran.',
+    'Setelah mendaftar, hubungi admin via WhatsApp untuk konfirmasi program dan instruksi lanjutan.',
 }
 
 export function programAdminWhatsAppUrl(message = '') {

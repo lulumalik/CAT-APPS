@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\ExamDefinition;
 use App\Models\Question;
-use App\Models\TestDefinition;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -14,12 +14,11 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Seed aplikasi CATLab (taksonomi ujian + soal demo).
+     * User admin dipertahankan seperti sebelumnya.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
@@ -27,25 +26,20 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'username' => 'admin',
+                'email_verified_at' => now(),
+                'program_category' => User::PROGRAM_REGULAR,
             ]
         );
 
-        User::updateOrCreate(
-            ['email' => 'user@example.com'],
-            [
-                'name' => 'User',
-                'password' => Hash::make('password'),
-                'role' => 'user',
-                'username' => 'user',
-            ]
-        );
+        $this->call([ExamCategorySeeder::class]);
 
+        // Isi soal & paket ujian hanya jika masih kosong (aman dijalankan ulang).
         if (Question::count() === 0) {
             $this->call([QuestionSeeder::class]);
         }
 
-        if (TestDefinition::count() === 0) {
-            $this->call([TestDefinitionSeeder::class]);
+        if (ExamDefinition::count() === 0) {
+            $this->call([ExamDefinitionSeeder::class]);
         }
     }
 }

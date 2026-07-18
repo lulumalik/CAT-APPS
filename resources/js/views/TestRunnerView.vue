@@ -33,7 +33,8 @@ const fetchTest = async () => {
   try {
     const { data } = await window.axios.get(detailApi.value)
 
-    if (data.has_submitted) {
+    // Quiz tetap sekali submit; ujian boleh diulang selama jadwal terbuka.
+    if (!isExam.value && data.has_submitted) {
       toast.error('Error', 'You have already submitted this test')
       router.push('/dashboard')
       return
@@ -44,7 +45,7 @@ const fetchTest = async () => {
         ? `${isExam.value ? 'Ujian' : 'Test'} belum dimulai sesuai jadwal`
         : `${isExam.value ? 'Ujian' : 'Test'} sudah berakhir atau tidak tersedia`
       toast.error('Error', message)
-      router.push('/dashboard')
+      router.push(isExam.value ? '/ujian' : '/dashboard')
       return
     }
 
@@ -53,7 +54,7 @@ const fetchTest = async () => {
   } catch (error) {
     const message = error?.response?.data?.message || `Failed to start ${isExam.value ? 'exam' : 'test'} or data not found`
     toast.error('Error', message)
-    router.push('/dashboard')
+    router.push(isExam.value ? '/ujian' : '/dashboard')
   }
 }
 
@@ -62,9 +63,18 @@ const handleSubmit = async ({ answers }) => {
   isSubmitting.value = true
 
   try {
-    await window.axios.post(submitApi.value, { answers })
+    const { data } = await window.axios.post(submitApi.value, { answers })
     toast.success(t('testRunner.toastSubmittedTitle'), t('testRunner.toastSubmittedMessage'))
-    router.push(isExam.value ? '/ujian' : '/dashboard')
+
+    if (isExam.value && data?.submission?.id) {
+      router.push({
+        name: 'exam-review',
+        params: { id: testId, submissionId: data.submission.id },
+      })
+      return
+    }
+
+    router.push('/dashboard')
   } catch {
     toast.error('Error', `Failed to submit ${isExam.value ? 'exam' : 'test'}`)
     isSubmitting.value = false

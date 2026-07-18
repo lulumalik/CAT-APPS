@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\RegistrationProgress;
 use App\Models\StudentReport;
 use App\Models\TestSubmission;
 use App\Models\User;
@@ -128,11 +127,6 @@ class WeeklyStudentReportService
     {
         $narratives = [];
 
-        $jasmani = $this->buildJasmaniNarrative($dailies);
-        if ($jasmani !== '') {
-            $narratives['jasmani'] = $jasmani;
-        }
-
         $akademik = $this->buildAkademikNarrative($dailies);
         if ($akademik !== '') {
             $narratives['akademik'] = $akademik;
@@ -145,51 +139,6 @@ class WeeklyStudentReportService
         }
 
         return $narratives;
-    }
-
-    /**
-     * @param  Collection<int, StudentReport>  $dailies
-     */
-    private function buildJasmaniNarrative(Collection $dailies): string
-    {
-        $pointsBySub = $this->collectJasmaniPoints($dailies);
-        if ($pointsBySub === []) {
-            return '';
-        }
-
-        $paragraphs = [];
-        foreach ($this->jasmaniSubcategories() as $sub) {
-            $subId = (string) ($sub['id'] ?? '');
-            if ($subId === '' || ! isset($pointsBySub[$subId])) {
-                continue;
-            }
-
-            $paragraph = $this->buildMeasurementNarrative(
-                (string) ($sub['label'] ?? $subId),
-                $pointsBySub[$subId],
-                (string) ($sub['unit'] ?? ''),
-                (string) ($sub['sort'] ?? 'desc'),
-            );
-
-            if ($paragraph !== '') {
-                $paragraphs[] = $paragraph;
-            }
-        }
-
-        foreach ($pointsBySub as $subId => $entries) {
-            if (collect($this->jasmaniSubcategories())->contains(fn ($sub) => ($sub['id'] ?? '') === $subId)) {
-                continue;
-            }
-
-            $label = $entries[0]['label'] ?? $subId;
-            $unit = $entries[0]['unit'] ?? '';
-            $paragraph = $this->buildMeasurementNarrative($label, $entries, $unit, 'desc');
-            if ($paragraph !== '') {
-                $paragraphs[] = $paragraph;
-            }
-        }
-
-        return implode("\n\n", $paragraphs);
     }
 
     /**
@@ -216,68 +165,6 @@ class WeeklyStudentReportService
         }
 
         return implode("\n\n", $paragraphs);
-    }
-
-    /**
-     * @param  Collection<int, StudentReport>  $dailies
-     * @return array<string, list<array{date:string,value:float,label?:string,unit?:string|null}>>
-     */
-    private function collectJasmaniPoints(Collection $dailies): array
-    {
-        $bySub = [];
-
-        foreach ($dailies->sortBy(fn (StudentReport $daily) => [$daily->report_date?->toDateString(), $daily->id]) as $daily) {
-            $metrics = $daily->metrics ?? [];
-            $date = Carbon::parse($daily->report_date)->timezone($this->timezone())->toDateString();
-
-            if (($metrics['auto_source'] ?? '') === 'jasmani_manual') {
-                $subId = (string) ($metrics['subcategory_id'] ?? '');
-                $score = $metrics['score'] ?? null;
-                if ($subId === '' || ! is_numeric($score)) {
-                    continue;
-                }
-
-                $dedupeKey = (string) ($metrics['manual_entry_id'] ?? "{$date}:{$score}");
-                $bySub[$subId]['entries'][$dedupeKey] = [
-                    'date' => $date,
-                    'value' => (float) $score,
-                    'label' => (string) ($metrics['subcategory_label'] ?? $subId),
-                    'unit' => $metrics['unit'] ?? null,
-                ];
-
-                continue;
-            }
-
-            $note = trim((string) (($daily->categories ?? [])['jasmani'] ?? ''));
-            if ($note === '') {
-                continue;
-            }
-
-            $parsed = $this->parseCategoryMeasurement($note);
-            if (! $parsed) {
-                continue;
-            }
-
-            $subId = $this->resolveJasmaniSubId($parsed['label']) ?? strtolower(str_replace(' ', '_', $parsed['label']));
-            $dedupeKey = "{$date}:{$parsed['value']}";
-            $bySub[$subId]['entries'][$dedupeKey] = [
-                'date' => $date,
-                'value' => $parsed['value'],
-                'label' => $parsed['label'],
-                'unit' => $parsed['unit'],
-            ];
-        }
-
-        $normalized = [];
-        foreach ($bySub as $subId => $group) {
-            $entries = array_values($group['entries'] ?? []);
-            if ($entries === []) {
-                continue;
-            }
-            $normalized[$subId] = $entries;
-        }
-
-        return $normalized;
     }
 
     /**
@@ -436,7 +323,7 @@ class WeeklyStudentReportService
 
         foreach ($dailies as $daily) {
             foreach (($daily->categories ?? []) as $key => $note) {
-                if (in_array($key, ['jasmani', 'akademik'], true)) {
+                if ($key === 'akademik') {
                     continue;
                 }
 
@@ -452,46 +339,6 @@ class WeeklyStudentReportService
         }
 
         return $notes;
-    }
-
-    /**
-     * @return list<array<string, mixed>>
-     */
-    private function jasmaniSubcategories(): array
-    {
-        $jasmani = collect(config('rankings.groups', []))->firstWhere('id', 'jasmani');
-
-        return $jasmani['subcategories'] ?? [];
-    }
-
-    private function resolveJasmaniSubId(string $label): ?string
-    {
-        foreach ($this->jasmaniSubcategories() as $sub) {
-            if (strcasecmp((string) ($sub['label'] ?? ''), $label) === 0) {
-                return (string) ($sub['id'] ?? null);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @return array{label:string,value:float,unit:?string}|null
-     */
-    private function parseCategoryMeasurement(string $note): ?array
-    {
-        if (! preg_match('/^(.+?)\s*[—–-]\s*([\d.,]+)\s*(.*)$/u', trim($note), $matches)) {
-            return null;
-        }
-
-        $value = (float) str_replace(',', '.', $matches[2]);
-        $unit = trim($matches[3]) ?: null;
-
-        return [
-            'label' => trim($matches[1]),
-            'value' => $value,
-            'unit' => $unit,
-        ];
     }
 
     /**
@@ -570,18 +417,9 @@ class WeeklyStudentReportService
             }
         }
 
-        $jasmaniFilled = 0;
-        if (Schema::hasTable('registration_progress')) {
-            $progress = RegistrationProgress::where('user_id', $student->id)->first();
-            $jasmaniFilled = collect($progress?->physical_data ?? [])
-                ->filter(fn ($v) => is_numeric($v) || (is_array($v) && isset($v['value'])))
-                ->count();
-        }
-
         return [
             'daily_count' => $dailyCount,
             'tes_rata' => $tesAvg,
-            'jasmani_terisi' => $jasmaniFilled,
         ];
     }
 

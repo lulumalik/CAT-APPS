@@ -14,6 +14,5 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         // Free tryout is a public anonymous flow.
         'api/free-tryout/*',
-        'api/guardian-invite/*',
     ];
 }
