@@ -9,8 +9,8 @@ RUN npm run build
 
 FROM php:8.2-apache
 
-# Install dependency system
-RUN apt-get update && apt-get install -y \
+# Install dependency system (curl + wget required for Coolify healthchecks)
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     libzip-dev \
@@ -18,8 +18,10 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     curl \
+    wget \
     libsqlite3-dev \
-    libpq-dev
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql pdo_sqlite zip mbstring xml
@@ -81,6 +83,10 @@ EXPOSE 80
 
 # Coolify: add Persistent Storage → Destination /var/www/html/storage (see docs/deploy/COOLIFY.md)
 VOLUME ["/var/www/html/storage"]
+
+# Coolify healthcheck uses wget/curl against the container port. Apache listens on 80 (not 3000).
+HEALTHCHECK --interval=10s --timeout=5s --start-period=20s --retries=5 \
+  CMD wget -qO- http://127.0.0.1:80/ >/dev/null || curl -fsS http://127.0.0.1:80/ >/dev/null || exit 1
 
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
