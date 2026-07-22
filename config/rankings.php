@@ -15,7 +15,7 @@ return [
     */
     'class_subject_guide' => [
         'jasmani' => 'Gunakan materi kelas untuk panduan latihan. Nilai peringkat diinput manual di halaman ini atau lewat progres pendaftaran — bukan bank soal.',
-        'akademik' => 'Nilai akademik dihasilkan otomatis setelah peserta menyelesaikan tes online. Lampirkan tes ke kelas di Manajemen Tes — tidak perlu input manual.',
+        'akademik' => 'Nilai akademik otomatis dari tes online. Untuk quiz/kelas offline, gunakan Input manual — pilih kelas, nama quiz/kelas, peserta, nilai, dan catatan.',
         // 'psikologi' => 'Materi + tes khusus bila ada; bisa juga input manual untuk tes offline.',
     ],
     'groups' => [
@@ -37,6 +37,7 @@ return [
             'id' => 'akademik',
             'label' => 'Akademik',
             'scoring_mode' => 'test',
+            'allows_manual' => true,
             'source' => 'academic',
             'subcategories' => [
                 ['id' => 'kewarganegaraan', 'label' => 'Kewarganegaraan', 'test_categories' => ['Kewarganegaraan', 'Citizenship', 'Law', 'Hukum']],

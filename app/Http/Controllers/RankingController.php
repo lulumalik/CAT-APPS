@@ -182,15 +182,16 @@ class RankingController extends Controller
     {
         $this->assertGroupAllowsManualEntry($entry->group_id);
 
+        $isAkademik = $entry->group_id === 'akademik';
         $validated = $request->validate([
-            'score' => 'required|numeric|min:1|max:100',
+            'score' => $isAkademik ? 'required|numeric|min:1|max:100' : 'required|numeric|min:0.01',
             'unit' => 'nullable|string|max:32',
             'notes' => 'nullable|string|max:2000',
             'score_date' => 'required|date',
         ]);
 
         $sub = $this->resolveSubcategory($entry->group_id, $entry->subcategory_id);
-        $unit = $validated['unit'] ?? $sub['unit'] ?? null;
+        $unit = $validated['unit'] ?? $sub['unit'] ?? ($isAkademik ? '%' : null);
 
         $attrs = [
             'score' => $validated['score'],
@@ -204,6 +205,7 @@ class RankingController extends Controller
             'scope' => $entry->scope,
             'group_id' => $entry->group_id,
             'subcategory_id' => $entry->subcategory_id,
+            'assessment_name' => $entry->assessment_name,
             'bimble_class_id' => $entry->bimble_class_id,
             'cohort' => $entry->cohort,
             'user_id' => $entry->user_id,
@@ -221,18 +223,7 @@ class RankingController extends Controller
 
         $entry->load('user:id,name,email');
 
-        if ($entry->group_id === 'jasmani' && $entry->user) {
-            app(AutoStudentReportService::class)->fromJasmaniScore(
-                $entry->user,
-                $sub,
-                (float) $entry->score,
-                $request->user()->id,
-                $entry->notes,
-                null,
-                $entry->bimble_class_id,
-                $entry->score_date?->toDateString(),
-            );
-        }
+        $this->autoReportFromManualEntry($entry, $sub);
 
         return response()->json($this->serializeManualEntry($entry));
     }
@@ -270,13 +261,21 @@ class RankingController extends Controller
     private function validateManualPayload(Request $request): array
     {
         $validated = $this->validateRankingContext($request);
-        $validated = array_merge($validated, $request->validate([
+        $isAkademik = ($validated['group_id'] ?? '') === 'akademik';
+
+        $rules = [
             'user_id' => 'required|integer|exists:users,id',
-            'score' => 'required|numeric|min:1|max:100',
+            'score' => $isAkademik ? 'required|numeric|min:1|max:100' : 'required|numeric|min:0.01',
             'unit' => 'nullable|string|max:32',
             'notes' => 'nullable|string|max:2000',
             'score_date' => 'required|date',
-        ]));
+        ];
+
+        if ($isAkademik) {
+            $rules['assessment_name'] = 'required|string|max:200';
+        }
+
+        $validated = array_merge($validated, $request->validate($rules));
 
         $validated['score_date'] = $validated['score_date'] ?? now()->toDateString();
 
@@ -284,6 +283,7 @@ class RankingController extends Controller
             'scope' => $validated['scope'],
             'group_id' => $validated['group_id'],
             'subcategory_id' => $validated['subcategory_id'],
+            'assessment_name' => $validated['assessment_name'] ?? null,
             'bimble_class_id' => $validated['scope'] === 'class' ? ($validated['class_id'] ?? null) : null,
             'cohort' => $validated['scope'] === 'cohort' ? ($validated['cohort'] ?? null) : null,
             'user_id' => $validated['user_id'],
@@ -292,7 +292,9 @@ class RankingController extends Controller
 
         if (ManualRankingEntry::where('context_key', $key)->exists()) {
             throw ValidationException::withMessages([
-                'user_id' => ['Nilai manual peserta ini pada tanggal tersebut sudah ada. Gunakan ubah atau pilih tanggal lain.'],
+                'user_id' => [$isAkademik
+                    ? 'Nilai manual untuk quiz/kelas ini pada tanggal tersebut sudah ada. Gunakan ubah atau pilih tanggal/nama quiz lain.'
+                    : 'Nilai manual peserta ini pada tanggal tersebut sudah ada. Gunakan ubah atau pilih tanggal lain.'],
             ]);
         }
 
@@ -308,11 +310,12 @@ class RankingController extends Controller
             'scope' => $validated['scope'],
             'group_id' => $validated['group_id'],
             'subcategory_id' => $validated['subcategory_id'],
+            'assessment_name' => $validated['assessment_name'] ?? null,
             'bimble_class_id' => $classId,
             'cohort' => $cohort,
             'user_id' => $validated['user_id'],
             'score' => $validated['score'],
-            'unit' => $validated['unit'] ?? $sub['unit'] ?? null,
+            'unit' => $validated['unit'] ?? $sub['unit'] ?? (($validated['group_id'] ?? '') === 'akademik' ? '%' : null),
             'notes' => $validated['notes'] ?? null,
             'score_date' => $validated['score_date'] ?? null,
         ];
@@ -370,9 +373,20 @@ class RankingController extends Controller
 
     private function assertGroupAllowsManualEntry(string $groupId): void
     {
-        if ($groupId !== 'jasmani') {
+        $group = $this->findGroup($groupId);
+        if (! $group) {
             throw ValidationException::withMessages([
-                'group_id' => ['Input manual hanya tersedia untuk kategori Jasmani. Nilai Akademik dihasilkan otomatis dari tes online.'],
+                'group_id' => ['Kategori tidak ditemukan.'],
+            ]);
+        }
+
+        $allowsManual = ($group['id'] ?? '') === 'jasmani'
+            || ($group['allows_manual'] ?? false)
+            || ($group['scoring_mode'] ?? '') === 'manual';
+
+        if (! $allowsManual) {
+            throw ValidationException::withMessages([
+                'group_id' => ['Input manual tidak tersedia untuk kategori ini.'],
             ]);
         }
     }
@@ -504,11 +518,12 @@ class RankingController extends Controller
                 'user_id' => $entry->user_id,
                 'name' => $entry->user->name,
                 'score' => $value,
-                'display' => $this->formatScoreDisplay($value, $entry->unit ?? $unit, null),
+                'display' => $this->formatScoreDisplay($value, $entry->unit ?? $unit, $groupKey === 'akademik' ? '%' : null),
                 'unit' => $entry->unit ?? $unit,
                 'source' => 'manual',
                 'manual_id' => $entry->id,
                 'notes' => $entry->notes,
+                'assessment_name' => $entry->assessment_name,
                 'score_date' => $entry->score_date?->toDateString(),
             ];
         }
@@ -730,6 +745,7 @@ class RankingController extends Controller
             'scope' => $entry->scope,
             'group_id' => $entry->group_id,
             'subcategory_id' => $entry->subcategory_id,
+            'assessment_name' => $entry->assessment_name,
             'bimble_class_id' => $entry->bimble_class_id,
             'cohort' => $entry->cohort,
             'user_id' => $entry->user_id,
@@ -748,20 +764,40 @@ class RankingController extends Controller
 
     private function autoReportFromManualEntry(ManualRankingEntry $entry, array $sub): void
     {
-        if ($entry->group_id !== 'jasmani' || ! $entry->user) {
+        if (! $entry->user) {
             return;
         }
 
-        app(AutoStudentReportService::class)->fromJasmaniScore(
-            $entry->user,
-            $sub,
-            (float) $entry->score,
-            $entry->created_by,
-            $entry->notes,
-            $entry->id,
-            $entry->bimble_class_id,
-            $entry->score_date?->toDateString(),
-        );
+        $service = app(AutoStudentReportService::class);
+
+        if ($entry->group_id === 'jasmani') {
+            $service->fromJasmaniScore(
+                $entry->user,
+                $sub,
+                (float) $entry->score,
+                $entry->created_by,
+                $entry->notes,
+                $entry->id,
+                $entry->bimble_class_id,
+                $entry->score_date?->toDateString(),
+            );
+
+            return;
+        }
+
+        if ($entry->group_id === 'akademik' && filled($entry->assessment_name)) {
+            $service->fromManualAcademicScore(
+                $entry->user,
+                $sub,
+                (string) $entry->assessment_name,
+                (float) $entry->score,
+                $entry->created_by,
+                $entry->notes,
+                $entry->id,
+                $entry->bimble_class_id,
+                $entry->score_date?->toDateString(),
+            );
+        }
     }
 
     /**

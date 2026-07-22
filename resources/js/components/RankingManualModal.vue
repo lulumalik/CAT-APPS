@@ -8,6 +8,26 @@
       <p class="text-sm text-gray-500 mt-1">{{ contextLabel }}</p>
 
       <form class="mt-6 space-y-4" @submit.prevent="submit">
+        <div v-if="!isEdit && isAkademik">
+          <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.manualAssessment') }}</label>
+          <input
+            v-model="form.assessment_name"
+            type="text"
+            list="assessment-name-options"
+            required
+            class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
+            :placeholder="t('rankings.manualAssessmentPlaceholder')"
+          />
+          <datalist id="assessment-name-options">
+            <option v-for="name in assessmentOptions" :key="name" :value="name" />
+          </datalist>
+          <p class="text-xs text-gray-400 mt-1">{{ t('rankings.manualAssessmentHint') }}</p>
+        </div>
+        <div v-else-if="isEdit && isAkademik && initial?.assessment_name">
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('rankings.manualAssessment') }}</label>
+          <p class="text-sm font-medium text-[#1A1A1A]">{{ initial.assessment_name }}</p>
+        </div>
+
         <div v-if="!isEdit">
           <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('rankings.manualParticipant') }}</label>
           <input
@@ -43,13 +63,13 @@
           <input
             v-model.number="form.score"
             type="number"
-            min="1"
-            max="100"
-            step="1"
+            :min="isAkademik ? 1 : 0.01"
+            :max="isAkademik ? 100 : undefined"
+            :step="isAkademik ? 1 : 'any'"
             required
             class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 text-sm focus:bg-white focus:border-gray-200 focus:ring-0"
           />
-          <p class="text-xs text-gray-400 mt-1">{{ t('rankings.manualScoreHint') }}</p>
+          <p class="text-xs text-gray-400 mt-1">{{ isAkademik ? t('rankings.manualScoreHintAkademik') : t('rankings.manualScoreHint') }}</p>
         </div>
 
         <div>
@@ -82,7 +102,7 @@
           <button
             type="submit"
             class="px-5 py-2.5 rounded-full bg-[#1A1A1A] text-white text-sm font-medium disabled:opacity-50"
-            :disabled="saving || (!isEdit && !form.user_id)"
+            :disabled="saving || (!isEdit && !form.user_id) || (!isEdit && isAkademik && !form.assessment_name.trim())"
           >
             {{ saving ? '…' : (isEdit ? t('common.save') : t('rankings.manualAddSubmit')) }}
           </button>
@@ -102,6 +122,8 @@ const props = defineProps({
   context: { type: Object, required: true },
   contextLabel: { type: String, default: '' },
   unitPlaceholder: { type: String, default: '' },
+  isAkademik: { type: Boolean, default: false },
+  assessmentOptions: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['close', 'saved'])
@@ -119,6 +141,7 @@ let searchTimer = null
 
 const form = reactive({
   user_id: null,
+  assessment_name: '',
   score: '',
   unit: '',
   notes: '',
@@ -130,6 +153,7 @@ watch(
   (val) => {
     if (val) {
       form.user_id = val.user_id
+      form.assessment_name = val.assessment_name || ''
       form.score = val.score
       form.unit = val.unit || ''
       form.notes = val.notes || ''
@@ -137,6 +161,7 @@ watch(
       selectedStudentName.value = val.user?.name || ''
     } else {
       form.user_id = null
+      form.assessment_name = ''
       form.score = ''
       form.unit = props.unitPlaceholder || ''
       form.notes = ''
@@ -174,6 +199,7 @@ function searchStudents() {
 }
 
 function resolveUnit() {
+  if (props.isAkademik) return '%'
   return form.unit || props.unitPlaceholder || undefined
 }
 
@@ -199,6 +225,9 @@ async function submit() {
         score: form.score,
         unit: resolveUnit(),
         notes: form.notes || null,
+      }
+      if (props.isAkademik) {
+        payload.assessment_name = form.assessment_name.trim()
       }
       if (props.context.scope === 'class') payload.class_id = props.context.class_id
       if (props.context.scope === 'cohort') payload.cohort = props.context.cohort

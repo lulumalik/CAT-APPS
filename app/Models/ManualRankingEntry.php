@@ -11,6 +11,7 @@ class ManualRankingEntry extends Model
         'scope',
         'group_id',
         'subcategory_id',
+        'assessment_name',
         'bimble_class_id',
         'cohort',
         'user_id',
@@ -52,7 +53,7 @@ class ManualRankingEntry extends Model
             $scoreDate = $scoreDate->format('Y-m-d');
         }
 
-        return implode('|', [
+        $parts = [
             $data['scope'] ?? '',
             $data['group_id'] ?? '',
             $data['subcategory_id'] ?? '',
@@ -60,6 +61,12 @@ class ManualRankingEntry extends Model
             (string) ($data['cohort'] ?? ''),
             (string) ($data['user_id'] ?? ''),
             (string) $scoreDate,
-        ]);
+        ];
+
+        if (filled($data['assessment_name'] ?? null)) {
+            $parts[] = (string) $data['assessment_name'];
+        }
+
+        return implode('|', $parts);
     }
 }

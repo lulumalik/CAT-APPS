@@ -178,6 +178,7 @@
                   </td>
                   <td class="px-6 py-4">
                     <div class="font-medium text-[#1A1A1A]">{{ row.name }}</div>
+                    <p v-if="row.assessment_name" class="text-xs text-gray-500 mt-0.5">{{ row.assessment_name }}</p>
                     <span
                       v-if="row.source === 'manual'"
                       class="inline-block mt-0.5 text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold"
@@ -239,6 +240,8 @@
       :context="rankingContext"
       :context-label="manualContextLabel"
       :unit-placeholder="activeSub?.unit || ''"
+      :is-akademik="isAkademikGroup"
+      :assessment-options="assessmentOptions"
       @close="closeManualModal"
       @saved="onManualSaved"
     />
@@ -282,13 +285,19 @@ const selectedScoreDate = ref('')
 const showManualModal = ref(false)
 const editingManual = ref(null)
 const manualEntriesCache = ref([])
+const assessmentOptions = ref([])
 
 const activeGroup = computed(() => groups.value.find((g) => g.id === selectedGroupId.value))
 const activeSub = computed(() => activeGroup.value?.subcategories?.find((s) => s.id === selectedSubId.value))
 const activeGroupLabel = computed(() => activeGroup.value?.label || '')
 const activeSubLabel = computed(() => activeSub.value?.label || '')
 const isJasmaniGroup = computed(() => selectedGroupId.value === 'jasmani')
-const allowsManualInput = computed(() => isJasmaniGroup.value)
+const isAkademikGroup = computed(() => selectedGroupId.value === 'akademik')
+const allowsManualInput = computed(() => {
+  const group = activeGroup.value
+  if (!group) return false
+  return group.id === 'jasmani' || group.allows_manual === true
+})
 
 const selectedClassMeta = computed(() =>
   classes.value.find((c) => String(c.id) === String(selectedClassId.value)),
@@ -407,6 +416,24 @@ async function loadFilters() {
   }
 }
 
+async function loadAssessmentOptions() {
+  if (!selectedClassId.value || !isAkademikGroup.value) {
+    assessmentOptions.value = []
+    return
+  }
+  try {
+    const { data } = await axios.get(`/api/bimble-classes/${selectedClassId.value}`)
+    const className = data?.name
+    const tests = (data?.test_definitions || data?.testDefinitions || [])
+      .map((t) => t.name)
+      .filter(Boolean)
+    const options = className ? [className, ...tests] : tests
+    assessmentOptions.value = [...new Set(options)]
+  } catch {
+    assessmentOptions.value = selectedClassMeta.value?.name ? [selectedClassMeta.value.name] : []
+  }
+}
+
 async function loadEntries() {
   if (!canLoad.value) return
   loadingEntries.value = true
@@ -455,11 +482,13 @@ async function loadEntries() {
 }
 
 function openManualAdd() {
+  if (isAkademikGroup.value) loadAssessmentOptions()
   editingManual.value = null
   showManualModal.value = true
 }
 
 function openManualAddForUser(row) {
+  if (isAkademikGroup.value) loadAssessmentOptions()
   editingManual.value = {
     user_id: row.user_id,
     user: { id: row.user_id, name: row.name },
@@ -471,6 +500,7 @@ function openManualAddForUser(row) {
 }
 
 function openManualEdit(row) {
+  if (isAkademikGroup.value) loadAssessmentOptions()
   const cached = manualEntriesCache.value.find((m) => m.id === row.manual_id)
   editingManual.value = cached || {
     id: row.manual_id,
@@ -479,6 +509,7 @@ function openManualEdit(row) {
     score: row.score,
     unit: row.unit,
     notes: row.notes,
+    assessment_name: row.assessment_name,
     score_date: row.score_date,
   }
   showManualModal.value = true
@@ -518,6 +549,11 @@ watch([selectedGroupId, selectedSubId, selectedClassId], () => {
   if (isJasmaniGroup.value) {
     selectedScoreDate.value = ''
     availableDates.value = []
+  }
+  if (isAkademikGroup.value && selectedClassId.value) {
+    loadAssessmentOptions()
+  } else {
+    assessmentOptions.value = []
   }
   if (canLoad.value) loadEntries()
 })

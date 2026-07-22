@@ -204,6 +204,68 @@ class AutoStudentReportService
         return $report;
     }
 
+    public function fromManualAcademicScore(
+        User $student,
+        array $subcategory,
+        string $assessmentName,
+        float $score,
+        ?int $createdBy = null,
+        ?string $notes = null,
+        ?int $manualEntryId = null,
+        ?int $bimbleClassId = null,
+        ?string $scoreDate = null,
+    ): ?StudentReport {
+        if (! Schema::hasTable('student_reports')) {
+            return null;
+        }
+
+        $label = (string) ($subcategory['label'] ?? 'Akademik');
+        $scaled = (int) round($score);
+
+        if ($manualEntryId !== null && $this->reportExistsForManualEntry($student->id, $manualEntryId)) {
+            return null;
+        }
+
+        $summaryParts = [sprintf('Ananda mengerjakan %s (%s) dengan nilai %d.', $assessmentName, $label, $scaled)];
+        if ($notes !== null && trim($notes) !== '') {
+            $summaryParts[] = 'Catatan: '.trim($notes);
+        }
+
+        $report = StudentReport::create([
+            'student_user_id' => $student->id,
+            'bimble_class_id' => $bimbleClassId,
+            'created_by' => $createdBy,
+            'type' => StudentReport::TYPE_DAILY,
+            'report_date' => $scoreDate ?: now()->toDateString(),
+            'title' => sprintf('Hasil quiz/kelas: %s', $assessmentName),
+            'summary' => implode(' ', $summaryParts),
+            'categories' => [
+                'akademik' => sprintf('%s — %s: %d', $label, $assessmentName, $scaled),
+            ],
+            'metrics' => [
+                'auto_source' => 'akademik_manual',
+                'manual_entry_id' => $manualEntryId,
+                'subcategory_id' => $subcategory['id'] ?? null,
+                'subcategory_label' => $label,
+                'assessment_name' => $assessmentName,
+                'scaled_score' => $scaled,
+                'score' => $scaled,
+                'notes' => $notes,
+            ],
+        ]);
+
+        $this->notify($report, 'Update nilai quiz/kelas');
+
+        app(WeeklyStudentReportService::class)->syncForDate(
+            $student,
+            $report->report_date,
+            $createdBy,
+            true,
+        );
+
+        return $report;
+    }
+
     public function notify(StudentReport $report, string $title): void
     {
         if (! Schema::hasTable('user_notifications')) {

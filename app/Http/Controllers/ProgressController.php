@@ -200,14 +200,7 @@ class ProgressController extends Controller
         }
 
         $query = $this->quizSubmissionsQuery($student);
-        if ($query === null) {
-            return [];
-        }
-
-        $submissions = (clone $query)
-            ->orderBy('submitted_at')
-            ->orderBy('id')
-            ->get();
+        $submissions = $query ? $query->get() : collect();
 
         $series = [];
         foreach ($subcategories as $sub) {
@@ -235,6 +228,19 @@ class ProgressController extends Controller
                 ];
             }
 
+            foreach ($this->manualAcademicEntries($student) as $entry) {
+                if ($entry['subcategory_id'] !== $sub['id']) {
+                    continue;
+                }
+                $points[] = [
+                    'date' => $entry['date'],
+                    'value' => $entry['score'],
+                    'quiz_name' => $entry['assessment_name'],
+                    'label' => $entry['assessment_name'],
+                    'source' => 'manual',
+                ];
+            }
+
             $series[] = [
                 'id' => $sub['id'],
                 'label' => $sub['label'],
@@ -253,33 +259,47 @@ class ProgressController extends Controller
     private function quizSubjectResults(User $student): array
     {
         $query = $this->quizSubmissionsQuery($student);
-        if ($query === null) {
-            return [];
-        }
 
         $results = [];
-        foreach ((clone $query)->orderByDesc('submitted_at')->orderByDesc('id')->get() as $submission) {
-            $test = $submission->testDefinition;
-            if (! $test) {
-                continue;
-            }
-            $total = count($test->question_ids ?? []);
-            if ($total < 1) {
-                continue;
-            }
-            $scaled = $this->scaleScoreToHundred((float) $submission->score, $total);
-            if ($scaled === null) {
-                continue;
-            }
+        if ($query) {
+            foreach ((clone $query)->orderByDesc('submitted_at')->orderByDesc('id')->get() as $submission) {
+                $test = $submission->testDefinition;
+                if (! $test) {
+                    continue;
+                }
+                $total = count($test->question_ids ?? []);
+                if ($total < 1) {
+                    continue;
+                }
+                $scaled = $this->scaleScoreToHundred((float) $submission->score, $total);
+                if ($scaled === null) {
+                    continue;
+                }
 
+                $results[] = [
+                    'subject' => $test->category,
+                    'subject_label' => $this->resolveAcademicSubjectLabel($test->category),
+                    'quiz_name' => $test->name,
+                    'score' => $scaled,
+                    'date' => optional($submission->submitted_at ?? $submission->created_at)->toDateString(),
+                    'source' => 'auto',
+                ];
+            }
+        }
+
+        foreach ($this->manualAcademicEntries($student) as $entry) {
             $results[] = [
-                'subject' => $test->category,
-                'subject_label' => $this->resolveAcademicSubjectLabel($test->category),
-                'quiz_name' => $test->name,
-                'score' => $scaled,
-                'date' => optional($submission->submitted_at ?? $submission->created_at)->toDateString(),
+                'subject' => $entry['subcategory_id'],
+                'subject_label' => $entry['subject_label'],
+                'quiz_name' => $entry['assessment_name'],
+                'score' => $entry['score'],
+                'date' => $entry['date'],
+                'source' => 'manual',
+                'notes' => $entry['notes'],
             ];
         }
+
+        usort($results, fn (array $a, array $b) => strcmp((string) ($b['date'] ?? ''), (string) ($a['date'] ?? '')));
 
         return $results;
     }
@@ -400,11 +420,7 @@ class ProgressController extends Controller
         }
 
         $query = $this->quizSubmissionsQuery($student);
-        if ($query === null) {
-            return [];
-        }
-
-        $submissions = $query->get();
+        $submissions = $query ? $query->get() : collect();
 
         $rows = [];
         foreach ($subcategories as $sub) {
@@ -424,6 +440,13 @@ class ProgressController extends Controller
                     continue;
                 }
                 $best = $best === null ? $scaled : max($best, $scaled);
+            }
+
+            foreach ($this->manualAcademicEntries($student) as $entry) {
+                if ($entry['subcategory_id'] !== $sub['id']) {
+                    continue;
+                }
+                $best = $best === null ? $entry['score'] : max($best, $entry['score']);
             }
 
             $rows[] = [
@@ -534,6 +557,52 @@ class ProgressController extends Controller
                 }
             })
             ->with('testDefinition:id,name,category,question_ids');
+    }
+
+    /**
+     * @return list<array{subcategory_id: string, subject_label: string, assessment_name: string, score: int, date: ?string, notes: ?string}>
+     */
+    private function manualAcademicEntries(User $student): array
+    {
+        if (! Schema::hasTable('manual_ranking_entries')) {
+            return [];
+        }
+
+        return ManualRankingEntry::query()
+            ->where('group_id', 'akademik')
+            ->where('user_id', $student->id)
+            ->orderByDesc('score_date')
+            ->orderByDesc('id')
+            ->get()
+            ->map(function (ManualRankingEntry $entry) {
+                if (! filled($entry->assessment_name)) {
+                    return null;
+                }
+
+                return [
+                    'subcategory_id' => (string) $entry->subcategory_id,
+                    'subject_label' => $this->resolveAcademicSubcategoryLabel((string) $entry->subcategory_id),
+                    'assessment_name' => (string) $entry->assessment_name,
+                    'score' => (int) round((float) $entry->score),
+                    'date' => $entry->score_date?->toDateString(),
+                    'notes' => $entry->notes,
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function resolveAcademicSubcategoryLabel(string $subcategoryId): string
+    {
+        $akademik = collect(config('rankings.groups', []))->firstWhere('id', 'akademik');
+        foreach ($akademik['subcategories'] ?? [] as $sub) {
+            if (($sub['id'] ?? '') === $subcategoryId) {
+                return (string) ($sub['label'] ?? $subcategoryId);
+            }
+        }
+
+        return $subcategoryId;
     }
 
     private function resolveAcademicSubjectLabel(?string $category): string

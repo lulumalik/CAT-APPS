@@ -719,15 +719,16 @@ const nanaUrl = new URL('../../assets/bpk_nana.png', import.meta.url).href
 const tubagusUrl = new URL('../../assets/bpk_tubagus.jpg', import.meta.url).href
 const awangUrl = new URL('../../assets/bpk_awang.jpg', import.meta.url).href
 const haitiUrl = new URL('../../assets/bpk_haiti.jpg', import.meta.url).href
-const gilangUrl = new URL('../../assets/anggota/gilang.jpeg', import.meta.url).href
+const gilangUrl = new URL('../../assets/anggota/gilang.jpg', import.meta.url).href
 const wahyuUrl = new URL('../../assets/anggota/wahyu.jpeg', import.meta.url).href
 const rinaUrl = new URL('../../assets/anggota/rina.jpeg', import.meta.url).href
 const natashaUrl = new URL('../../assets/anggota/natasha.jpeg', import.meta.url).href
 const tutikUrl = new URL('../../assets/anggota/tutik.jpeg', import.meta.url).href
 const natashateacherUrl = new URL('../../assets/pengajar/natashateacher.jpg', import.meta.url).href
-const djatmikoUrl = new URL('../../assets/pengajar/Iketutadipurnama.jpg', import.meta.url).href
+const djatmikoUrl = new URL('../../assets/pengajar/Djatmiko.jpg', import.meta.url).href
 const iketaUrl = new URL('../../assets/pengajar/Iketutadipurnama.jpg', import.meta.url).href
 const yunusSufianUrl = new URL('../../assets/pengajar/YunusSufian.png', import.meta.url).href
+const yusiHariyumantiUrl = new URL('../../assets/pengajar/YusiHariyumanti.jpg', import.meta.url).href
 const defaultTeacherUrl = new URL('../../assets/anggota/default.png', import.meta.url).href
 const cvTemplateUrl = new URL('../../assets/cv.png', import.meta.url).href
 const selayangCard = new URL('../../assets/selayangcard.png', import.meta.url).href
@@ -1090,7 +1091,7 @@ const teachers = [
     id: 'djatmiko',
     name: 'Djatmiko, M.Pd',
     role: 'Pengajar Matematika',
-    image: defaultTeacherUrl,
+    image: djatmikoUrl,
     birthPlaceDate: 'Bandung, 31 Mei 1968',
     education: ['S2 Pendidikan Matematika IKIP Siliwangi'],
     teaching: ['Mengajar di SMAN 23 Bandung'],
@@ -1139,6 +1140,41 @@ const teachers = [
       'Pelatih Komunitas RIOT BANDUNG 2022 - sekarang',
       'Pelatih Komunitas TEMAN SPORTY 2022 - 2024',
       'Pelatih BINJAS PADJAJARANBDG 2024 - sekarang',
+    ],
+  },
+  {
+    id: 'yusi-hariyumanti',
+    name: 'Yusi Hariyumanti HS, M.Psi, Psikolog',
+    role: 'Pengajar Psikologi',
+    image: yusiHariyumantiUrl,
+    birthPlaceDate: 'Bandung, 14 November 1972',
+    education: ['S2 Magister Psikologi'],
+    teaching: [
+      'Psikolog untuk Instansi dan Lembaga Pendidikan',
+      'Konsultan Lembaga Pendidikan',
+      'Motivator, therapist, dan konselor',
+      'Penulis Ruang Psikologi Majalah Tribrata News Polda Jabar',
+      'Founder dan konsultan Ruang Konsultasi Kehati Bandung',
+    ],
+  },
+  {
+    id: 'p-suwardjo',
+    name: 'P. Suwardjo, S.Pd.',
+    role: 'Pengajar Bahasa Indonesia',
+    image: defaultTeacherUrl,
+    birthPlaceDate: '-',
+    education: [
+      'D2 Bahasa Indonesia, FPBS, IKIP Jakarta',
+      'S1 Psikologi Pendidikan dan Bimbingan, FIP, IKIP Bandung (1984)',
+      'S1 Bahasa dan Sastra Indonesia, FPBS, UPI Bandung (2000)',
+    ],
+    teaching: [
+      'Guru SMP Negeri 4 Bandung (1983–2006)',
+      'Guru SMA Sumatra 40 Bandung (1986–1995)',
+      'Guru Bahasa Indonesia di Rutan Cibaduyut',
+      'Guru SMA Negeri 23 Bandung (2006–2022)',
+      'Pengarang buku Bahasa Indonesia SMP kelas 7–9',
+      'Pengarang buku pegangan guru & lembar kerja siswa SMP kelas 7–9',
     ],
   },
 ]
