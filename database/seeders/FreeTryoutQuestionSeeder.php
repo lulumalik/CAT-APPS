@@ -36,6 +36,8 @@ class FreeTryoutQuestionSeeder extends Seeder
             $count++;
         }
 
-        $this->command->info("Berhasil mengimpor {$count} soal dari free_tryout.pdf ke bank soal!");
+        if (isset($this->command)) {
+            $this->command->info("Berhasil mengimpor {$count} soal dari free_tryout.pdf ke bank soal!");
+        }
     }
 }
