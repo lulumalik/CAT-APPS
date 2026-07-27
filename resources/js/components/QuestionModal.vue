@@ -17,16 +17,21 @@
       <form class="space-y-6" @submit.prevent="submit">
         <div class="grid grid-cols-2 gap-6">
             <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Batch / Paket Tryout</label>
+                <input v-model="form.batch" placeholder="Contoh: Tryout 1, Tryout 2" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all"/>
+            </div>
+            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.question.typeLabel') }}</label>
                 <select v-model="form.type" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
                     <option value="multiple_choice">{{ t('modals.question.typeMultipleChoice') }}</option>
                     <option value="essay">{{ t('modals.question.typeEssay') }}</option>
                 </select>
             </div>
-            <div>
-                 <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.question.imageLabel') }}</label>
-                 <input type="file" @change="handleFileChange" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#1A1A1A] file:text-white hover:file:bg-black transition-all"/>
-            </div>
+        </div>
+
+        <div>
+           <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.question.imageLabel') }}</label>
+           <input type="file" @change="handleFileChange" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#1A1A1A] file:text-white hover:file:bg-black transition-all"/>
         </div>
 
         <div>
@@ -114,9 +119,10 @@ const categories = [
   'Deret Angka',
   'Penalaran Logis',
   'Aljabar & Aritmatika',
-  'Pemahaman Bacaan',
+  'Pemahaman Bahasa',
 ]
 const base = () => ({ 
+  batch: 'Tryout 1',
   question: '', 
   category: '', 
   difficulty: 'Medium', 
@@ -141,6 +147,7 @@ watch(() => props.initial, (val) => {
           form.image = null
       }
       if (!form.type) form.type = 'multiple_choice'
+      if (!form.batch) form.batch = 'Tryout 1'
   } else {
       Object.assign(form, base())
   }

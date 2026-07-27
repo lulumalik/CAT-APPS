@@ -172,6 +172,8 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::get('/students/search', [UserController::class, 'searchableStudents']);
 
     Route::get('/questions', [QuestionController::class, 'index']);
+    Route::get('/questions/template/download', [QuestionController::class, 'downloadTemplate']);
+    Route::post('/questions/import', [QuestionController::class, 'import']);
     Route::post('/questions', [QuestionController::class, 'store']);
     Route::delete('/questions/all', [QuestionController::class, 'destroyAll']);
     Route::delete('/questions', [QuestionController::class, 'destroyAll']);

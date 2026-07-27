@@ -29,29 +29,54 @@
           </div>
         </div>
 
-        <div class="mt-4 flex gap-2">
-          <button
-            type="button"
-            class="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
-            :class="activeTab === 'browse' ? 'bg-[#1A1A1A] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-            @click="activeTab = 'browse'"
-          >
-            {{ t('modals.testAssign.tabBrowse') }}
-          </button>
-          <button
-            type="button"
-            class="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
-            :class="activeTab === 'selected' ? 'bg-[#9DB359] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-            @click="activeTab = 'selected'"
-          >
-            {{ t('modals.testAssign.tabSelected', { count: selected.length }) }}
-          </button>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+              :class="activeTab === 'browse' ? 'bg-[#1A1A1A] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+              @click="activeTab = 'browse'"
+            >
+              {{ t('modals.testAssign.tabBrowse') }}
+            </button>
+            <button
+              type="button"
+              class="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+              :class="activeTab === 'selected' ? 'bg-[#9DB359] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+              @click="activeTab = 'selected'"
+            >
+              {{ t('modals.testAssign.tabSelected', { count: selected.length }) }}
+            </button>
+          </div>
+          <div v-if="activeTab === 'browse' && filtered.length > 0" class="flex items-center gap-2">
+            <button
+              type="button"
+              class="px-3 py-1.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 transition-colors"
+              @click="selectAllFiltered"
+            >
+              + Pilih Semua ({{ filtered.length }} Soal)
+            </button>
+            <button
+              type="button"
+              class="px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              @click="deselectAllFiltered"
+            >
+              Hapus Pilihan Filter
+            </button>
+          </div>
         </div>
       </div>
 
       <div class="flex-1 min-h-0 overflow-y-auto px-6 py-4 custom-scrollbar">
         <template v-if="activeTab === 'browse'">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Batch / Paket Tryout</label>
+              <select v-model="batch" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-2.5 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+                <option value="">-- Semua Batch --</option>
+                <option v-for="b in batchOptions" :key="b" :value="b">{{ b }}</option>
+              </select>
+            </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testAssign.categoryLabel') }}</label>
               <select v-model="category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-2.5 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
@@ -68,9 +93,6 @@
                 <option value="Hard">Hard</option>
               </select>
             </div>
-            <div class="flex items-end pb-2">
-              <div class="text-sm text-gray-500 font-medium">{{ t('modals.testAssign.showing', { count: filtered.length }) }}</div>
-            </div>
           </div>
 
           <div class="rounded-2xl border border-gray-100 bg-gray-50/50 p-4">
@@ -82,6 +104,7 @@
                 <div class="flex-1">
                   <div class="font-medium text-gray-900 group-hover:text-[#9DB359] transition-colors">{{ q.question }}</div>
                   <div class="flex items-center gap-2 mt-1">
+                    <span v-if="q.batch" class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-200">{{ q.batch }}</span>
                     <span class="px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">{{ q.category }}</span>
                     <span class="px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">{{ q.difficulty }}</span>
                   </div>
@@ -105,6 +128,7 @@
                 <div class="flex-1">
                   <div class="font-medium text-gray-900">{{ q.question }}</div>
                   <div class="flex items-center gap-2 mt-1">
+                    <span v-if="q.batch" class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-200">{{ q.batch }}</span>
                     <span class="px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">{{ q.category }}</span>
                     <span class="px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">{{ q.difficulty }}</span>
                   </div>
@@ -151,6 +175,7 @@ const { t } = useI18n()
 
 const selected = ref([])
 const active = ref(true)
+const batch = ref('')
 const category = ref('')
 const difficulty = ref('')
 const activeTab = ref('browse')
@@ -164,6 +189,11 @@ const uniqueQuestions = computed(() => {
     items.push(q)
   }
   return items
+})
+
+const batchOptions = computed(() => {
+  const set = new Set(uniqueQuestions.value.map(q => q.batch || 'Tryout 1').filter(Boolean))
+  return Array.from(set).sort()
 })
 
 const categoryOptions = computed(() => {
@@ -180,11 +210,22 @@ const filtered = computed(() => {
   const allow = allowAll ? null : mapCategories(category.value)
 
   return uniqueQuestions.value.filter(q => {
+    if (batch.value && (q.batch || 'Tryout 1') !== batch.value) return false
     if (!allowAll && allow && !allow.includes(q.category)) return false
     if (difficulty.value && q.difficulty !== difficulty.value) return false
     return true
   })
 })
+
+const selectAllFiltered = () => {
+  const filteredIds = filtered.value.map(q => q.id)
+  selected.value = Array.from(new Set([...selected.value, ...filteredIds]))
+}
+
+const deselectAllFiltered = () => {
+  const filteredIdsSet = new Set(filtered.value.map(q => q.id))
+  selected.value = selected.value.filter(id => !filteredIdsSet.has(id))
+}
 
 function mapCategories(cat) {
   const m = {
@@ -201,6 +242,7 @@ watch(() => props.test, (t) => {
   const ids = Array.isArray(t?.questionIds) ? t.questionIds : (Array.isArray(t?.question_ids) ? t.question_ids : [])
   selected.value = Array.from(new Set(ids))
   active.value = ids.length === 0 ? true : !!(t?.isActive ?? t?.is_active ?? true)
+  batch.value = ''
   category.value = ''
   difficulty.value = ''
   activeTab.value = 'browse'
@@ -221,3 +263,6 @@ const submit = () => {
   })
 }
 </script>
+
+<style scoped>
+</style>

@@ -27,7 +27,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Komunike = ....",
@@ -53,7 +54,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Kompilasi = ....",
@@ -83,7 +85,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Lepas = ....",
@@ -113,7 +116,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Kaidah = ....",
@@ -143,7 +147,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Subversif = ....",
@@ -173,7 +178,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Provokasi = ....",
@@ -203,7 +209,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Ekspedisi = ....",
@@ -233,7 +240,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Iterasi = ....",
@@ -263,7 +271,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Forte = ....",
@@ -293,7 +302,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Dupleks >< ....",
@@ -323,7 +333,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Estetis >< ....",
@@ -353,7 +364,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Praktis >< ....",
@@ -383,7 +395,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Revolusi >< ....",
@@ -413,7 +426,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Kapabel >< ....",
@@ -443,7 +457,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Remisi >< ....",
@@ -465,7 +480,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Berdikari >< ....",
@@ -495,7 +511,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Makar >< ....",
@@ -525,7 +542,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Hampa >< ....",
@@ -555,7 +573,8 @@
       }
     ],
     "correct": "E",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Awam >< ....",
@@ -585,7 +604,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Televisi : listrik = ....",
@@ -615,7 +635,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Nyamuk : darah = ....",
@@ -645,7 +666,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Statis : dinamis = ....",
@@ -675,7 +697,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Air laut : asin = ....",
@@ -705,7 +728,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Perahu : nahkoda = ....",
@@ -735,7 +759,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Kulkas : mesin cuci = ....",
@@ -765,7 +790,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Kain : katun = ....",
@@ -795,7 +821,8 @@
       }
     ],
     "correct": "E",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Diskon : rabat = ....",
@@ -825,7 +852,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Kertas : pensil = ....",
@@ -855,7 +883,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Bunga : buah = ....",
@@ -885,7 +914,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "HP yang harganya paling mahal adalah ....",
@@ -915,7 +945,8 @@
       }
     ],
     "correct": "E",
-    "article_quiz_title": "Bacaan untuk nomor 31 – 33"
+    "article_quiz_title": "Bacaan untuk nomor 31 – 33",
+    "batch": "Tryout 1"
   },
   {
     "question": "HP yang dibeli Bagas adalah ....",
@@ -945,7 +976,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": "Bacaan untuk nomor 31 – 33"
+    "article_quiz_title": "Bacaan untuk nomor 31 – 33",
+    "batch": "Tryout 1"
   },
   {
     "question": "Urutan harga HP yang disukai bagas dari yang paling mahal adalah ....",
@@ -975,7 +1007,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": "Bacaan untuk nomor 31 – 33"
+    "article_quiz_title": "Bacaan untuk nomor 31 – 33",
+    "batch": "Tryout 1"
   },
   {
     "question": "Ayam pak Toni yang memilki harga jual paling murah adalah ....",
@@ -1005,7 +1038,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": "Bacaan untuk nomor 34 – 37"
+    "article_quiz_title": "Bacaan untuk nomor 34 – 37",
+    "batch": "Tryout 1"
   },
   {
     "question": "Urutan nama ayam pak Toni dari yang paling murah adalah ....",
@@ -1035,7 +1069,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": "Bacaan untuk nomor 34 – 37"
+    "article_quiz_title": "Bacaan untuk nomor 34 – 37",
+    "batch": "Tryout 1"
   },
   {
     "question": "Jika Ibu Sinta ingin membeli ayam pak Toni yang paling murah ke dua, maka ayam yang ia beli adalah ....",
@@ -1065,7 +1100,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": "Bacaan untuk nomor 34 – 37"
+    "article_quiz_title": "Bacaan untuk nomor 34 – 37",
+    "batch": "Tryout 1"
   },
   {
     "question": "Ayam pak Toni yang paling berat dan mahal adalah ....",
@@ -1095,7 +1131,8 @@
       }
     ],
     "correct": "E",
-    "article_quiz_title": "Bacaan untuk nomor 34 – 37"
+    "article_quiz_title": "Bacaan untuk nomor 34 – 37",
+    "batch": "Tryout 1"
   },
   {
     "question": "Jika Riskia berada pada urutan kedua yang mampu menurunkan berat badan paling banyak, maka yang berada pada urutan pertama adalah ....",
@@ -1125,7 +1162,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": "Bacaan untuk nomor 38 – 40"
+    "article_quiz_title": "Bacaan untuk nomor 38 – 40",
+    "batch": "Tryout 1"
   },
   {
     "question": "Yang mampu menurunkan berat badan paling sedikit adalah ....",
@@ -1155,7 +1193,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": "Bacaan untuk nomor 38 – 40"
+    "article_quiz_title": "Bacaan untuk nomor 38 – 40",
+    "batch": "Tryout 1"
   },
   {
     "question": "Sasya mampu menurunkan berat badan terbanyak ke ....",
@@ -1185,7 +1224,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": "Bacaan untuk nomor 38 – 40"
+    "article_quiz_title": "Bacaan untuk nomor 38 – 40",
+    "batch": "Tryout 1"
   },
   {
     "question": "6, 9, 14, 21, 30, 41, ...., ...., 86",
@@ -1215,7 +1255,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "23, 26, 25, 24, 29, 22, 35, 20, ....",
@@ -1245,7 +1286,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "102, 34, 56, 68, 28, 136, ...",
@@ -1275,7 +1317,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "3, 6, 13, 28, 59, ....",
@@ -1305,7 +1348,8 @@
       }
     ],
     "correct": "E",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "1, 3, 4, 7, 11, 18, 29, ...., 76",
@@ -1335,7 +1379,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "37, 35, 35, 38, 33, 41, ....",
@@ -1365,7 +1410,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "13, 6, 18, 12, 30, 24, 54, ...., ....,",
@@ -1395,7 +1441,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "6, 4, 10, 10, 20, ...., 36, 22, ....",
@@ -1425,7 +1472,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "24, 25, 26, 28, 28, 31, 30, ....",
@@ -1455,7 +1503,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "53, 26, 57, 28, 61, 30 , ....",
@@ -1485,7 +1534,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Semua anggota TNI memiliki tubuh yang sehat dan kuat. Anggi adalah anggota TNI. Simpulan yang tepat adalah ....",
@@ -1511,7 +1561,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Jika ada pemadaman listrik, ibu tidak dapat membuat kue untuk dijual. Jika ibu tidak membuat kue, ia merasa sedih. Ibu merasa senang. Simpulan yang tepat adalah ....",
@@ -1541,7 +1592,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Semua karyawan diperusahaan A pandai berbahasa Inggris. Andika karyawan di perusahaan A. Andika pandai menyanyi dan bermain musik. Simpulan yang tepat adalah ....",
@@ -1571,7 +1623,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Pak Hasan memiliki kebun seluas 1 hektar. Semua bagian kebun tersebut ditanami pohon jeruk. Pak Hasan sedang memanen jeruk, di antara pohonjeruk yang sedang ia panen terdapat pohon cabai. Simpulan yang tepat adalah ....",
@@ -1601,7 +1654,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Semua makanan yang dikemas dengan cara menarik disukai anak-anak. Ibu Mita menjual kue klepon. Kue klepon yang ia jual berwarna cerah dan berbentuk karakter kartun. Simpulan yang tepat adalah ....",
@@ -1631,7 +1685,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Jika hari hujan, Anita belajar merajut dengan nenek. Nenek sedang menonton televisi dengan ibu dan adik. Simpulan yang tepat adalah ....",
@@ -1661,7 +1716,8 @@
       }
     ],
     "correct": "E",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Semua pasien di rumah sakit Pelita Harapan mengenakan baju berwarna hijau muda. Samsul berada di rumah sakit Pelita Harapan. Ia mengenakan baju berwarna hijau muda. Simpulan yang tepat adalah ....",
@@ -1691,7 +1747,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Semua HP android memerlukan paket data. Sasa senang bermain game online. Sasa bermain game online dengan HP android. Simpulan yang tepat adalah ....",
@@ -1721,7 +1778,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Jika musim kemarau tiba, semua pohon di kebun pak Roni menggugurkan daunnya. Pohon-pohon di kebun pak Roni menggugurkan daunnya. Simpulan yang tepat adalah ....",
@@ -1751,7 +1809,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Semua warga negara indonesia yang sudah memiliki KTP memiliki hak pilih dalam pemilu. Beberapa pelajar SMA dapat bekontribusi dalam memilih presiden pada pemilu tahun 2019.",
@@ -1781,7 +1840,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Hasil pengurangan (6a² + 8) dari (3a + 4)² adalah ....",
@@ -1811,7 +1871,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Bentuk sederhana dari 2(a²)⁻³ (a⁻⁴)⁻² adalah ....",
@@ -1841,7 +1902,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Nilai p yang memenuhi persamaan (3 - p) / (p - 9) = 1 adalah ....",
@@ -1871,7 +1933,8 @@
       }
     ],
     "correct": "E",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Jumlah semua akar-akar persamaan 24x² - 10x³ = 4x⁴ adalah ....",
@@ -1901,7 +1964,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Jika (x⁻³ / y²)⁻⁵ = (1/729)⁻² untuk x, y bilangan bulat positif, maka nilai (xy - x + 2y) adalah ....",
@@ -1931,7 +1995,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Bentuk sederhana dari ((56a⁴ b⁻² c²) / (2b² × 49c⁵)) × (32b⁻² / 14a⁻² c³)^-2 adalah ....",
@@ -1961,7 +2026,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Jika p = 2, q = -3, dan r = 6, maka nilai dari (p⁷ q¹⁴ r / r⁵) × (p²³ q² r)⁻³ adalah ....",
@@ -1991,7 +2057,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Diketahui ∛729 = a²b. Nilai dari 4a²b adalah ....",
@@ -2021,7 +2088,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Hasil dari (2a - 4b - 5ab) + (ab - 4a + 2b) - (11a - 3b + 6ab) adalah ....",
@@ -2051,7 +2119,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Jika a adalah bilangan riil yang memenuhi persamaan 25ᵃ + 5ᵃ = 6, maka nilai a adalah ....",
@@ -2081,7 +2150,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": null
+    "article_quiz_title": null,
+    "batch": "Tryout 1"
   },
   {
     "question": "Kata bergaris bawah di atas akan lebih lugas jika digantikan dengan ....",
@@ -2107,7 +2177,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": "Bacaan untuk nomor 81 dan 82"
+    "article_quiz_title": "Bacaan untuk nomor 81 dan 82",
+    "batch": "Tryout 1"
   },
   {
     "question": "Kalimat pertama pada paragraf di atas merupakan contoh kalimat ....",
@@ -2137,7 +2208,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": "Bacaan untuk nomor 81 dan 82"
+    "article_quiz_title": "Bacaan untuk nomor 81 dan 82",
+    "batch": "Tryout 1"
   },
   {
     "question": "Ide pokok paragraf di atas adalah ....",
@@ -2167,7 +2239,8 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": "Bacaan Wortel & Vitamin A"
+    "article_quiz_title": "Bacaan Wortel & Vitamin A",
+    "batch": "Tryout 1"
   },
   {
     "question": "Peminat mobile legends meliputi ....",
@@ -2197,7 +2270,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": "Bacaan Mobile Legends"
+    "article_quiz_title": "Bacaan Mobile Legends",
+    "batch": "Tryout 1"
   },
   {
     "question": "Ide pokok dari paragraf di atas adalah ....",
@@ -2227,7 +2301,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": "Bacaan Tugas Pokok TNI AD"
+    "article_quiz_title": "Bacaan Tugas Pokok TNI AD",
+    "batch": "Tryout 1"
   },
   {
     "question": "Paragraf di atas menceritakan tentang ....",
@@ -2257,7 +2332,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": "Bacaan untuk nomor 86 dan 88"
+    "article_quiz_title": "Bacaan untuk nomor 86 dan 88",
+    "batch": "Tryout 1"
   },
   {
     "question": "Kalimat yang mengandung majas adalah ....",
@@ -2287,7 +2363,8 @@
       }
     ],
     "correct": "B",
-    "article_quiz_title": "Bacaan untuk nomor 86 dan 88"
+    "article_quiz_title": "Bacaan untuk nomor 86 dan 88",
+    "batch": "Tryout 1"
   },
   {
     "question": "Kata dijatuhkan pada kalimat (6) dapat diganti dengan ....",
@@ -2317,7 +2394,8 @@
       }
     ],
     "correct": "C",
-    "article_quiz_title": "Bacaan untuk nomor 86 dan 88"
+    "article_quiz_title": "Bacaan untuk nomor 86 dan 88",
+    "batch": "Tryout 1"
   },
   {
     "question": "Bacaan di atas menjelaskan tentang ....",
@@ -2347,7 +2425,8 @@
       }
     ],
     "correct": "A",
-    "article_quiz_title": "Bacaan Fungsi Operasional Brimob"
+    "article_quiz_title": "Bacaan Fungsi Operasional Brimob",
+    "batch": "Tryout 1"
   },
   {
     "question": "Ide pokok paragraf di atas terdapat pada kalimat ....",
@@ -2377,6 +2456,7 @@
       }
     ],
     "correct": "D",
-    "article_quiz_title": "Bacaan Pecalang Polisi Adat Bali"
+    "article_quiz_title": "Bacaan Pecalang Polisi Adat Bali",
+    "batch": "Tryout 1"
   }
 ]

@@ -8,6 +8,7 @@
         >
           {{ t('questionBank.myQuestionBadge') }}
         </span>
+        <span v-if="question.batch" class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">{{ question.batch }}</span>
         <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 capitalize">{{ question.category }}</span>
         <span class="px-3 py-1 rounded-full text-xs font-medium border" :class="diffBadge(question.difficulty)">{{ question.difficulty }}</span>
         <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100 capitalize">{{ question.type }}</span>

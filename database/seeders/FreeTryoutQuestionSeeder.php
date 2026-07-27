@@ -59,6 +59,7 @@ class FreeTryoutQuestionSeeder extends Seeder
                 'correct' => $item['correct'],
                 'image' => $item['image'] ?? null,
                 'article_quiz_id' => $articleId,
+                'batch' => $item['batch'] ?? 'Tryout 1',
                 'created_by' => optional($admin)->id,
             ]);
             $count++;

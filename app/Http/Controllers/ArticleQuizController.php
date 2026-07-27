@@ -10,7 +10,7 @@ class ArticleQuizController extends Controller
 {
     public function index(Request $request)
     {
-        $articles = ArticleQuiz::with(['questions:id,question,category,difficulty,type,article_quiz_id'])
+        $articles = ArticleQuiz::with(['questions:id,question,category,difficulty,type,batch,article_quiz_id'])
             ->orderByDesc('id')
             ->get();
 
@@ -38,12 +38,12 @@ class ArticleQuizController extends Controller
             Question::whereIn('id', $data['question_ids'])->update(['article_quiz_id' => $article->id]);
         }
 
-        return response()->json($article->load('questions:id,question,category,difficulty,type,article_quiz_id'), 201);
+        return response()->json($article->load('questions:id,question,category,difficulty,type,batch,article_quiz_id'), 201);
     }
 
     public function show(ArticleQuiz $articleQuiz)
     {
-        return response()->json($articleQuiz->load('questions:id,question,category,difficulty,type,article_quiz_id'));
+        return response()->json($articleQuiz->load('questions:id,question,category,difficulty,type,batch,article_quiz_id'));
     }
 
     public function update(Request $request, ArticleQuiz $articleQuiz)
@@ -68,7 +68,7 @@ class ArticleQuizController extends Controller
             }
         }
 
-        return response()->json($articleQuiz->load('questions:id,question,category,difficulty,type,article_quiz_id'));
+        return response()->json($articleQuiz->load('questions:id,question,category,difficulty,type,batch,article_quiz_id'));
     }
 
     public function destroy(ArticleQuiz $articleQuiz)
@@ -95,6 +95,6 @@ class ArticleQuizController extends Controller
             Question::whereIn('id', $data['question_ids'])->update(['article_quiz_id' => $articleQuiz->id]);
         }
 
-        return response()->json($articleQuiz->load('questions:id,question,category,difficulty,type,article_quiz_id'));
+        return response()->json($articleQuiz->load('questions:id,question,category,difficulty,type,batch,article_quiz_id'));
     }
 }

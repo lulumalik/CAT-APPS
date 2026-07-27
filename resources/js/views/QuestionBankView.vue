@@ -7,18 +7,34 @@
       :icon="LibraryBig"
     >
       <template #actions>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 flex-wrap">
           <template v-if="activeTab === 'questions'">
             <button
+              type="button"
+              class="px-5 py-2.5 rounded-full bg-white/20 text-white hover:bg-white/30 backdrop-blur-md transition-all border border-white/30 text-sm font-medium flex items-center gap-2"
+              @click="downloadTemplate"
+            >
+              <Download class="h-4 w-4" />
+              Template Excel
+            </button>
+            <button
+              type="button"
+              class="px-5 py-2.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-lg shadow-black/10 text-sm font-medium flex items-center gap-2"
+              @click="showImportModal = true"
+            >
+              <Upload class="h-4 w-4" />
+              Upload Excel/CSV
+            </button>
+            <button
               v-if="total > 0"
-              class="px-6 py-2.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors shadow-lg shadow-black/10 flex items-center gap-2"
+              class="px-5 py-2.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors shadow-lg shadow-black/10 text-sm font-medium flex items-center gap-2"
               @click="removeAll"
             >
-              <Trash2 class="h-[18px] w-[18px]" />
+              <Trash2 class="h-4 w-4" />
               {{ t('questionBank.deleteAllQuestions') }}
             </button>
-            <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openAdd">
-              <Plus class="h-[18px] w-[18px]" />
+            <button class="px-5 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 text-sm font-medium flex items-center gap-2" @click="openAdd">
+              <Plus class="h-4 w-4" />
               {{ t('questionBank.addQuestion') }}
             </button>
           </template>
@@ -91,12 +107,17 @@
         </div>
       </div>
 
+      <!-- Filters Bar -->
       <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6 mt-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="relative">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="relative md:col-span-1">
             <input v-model="search" type="text" :placeholder="t('questionBank.searchPlaceholder')" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           </div>
+          <select v-model="filterBatch" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors appearance-none">
+            <option value="">-- Semua Batch / Paket --</option>
+            <option v-for="b in availableBatches" :key="b" :value="b">{{ b }}</option>
+          </select>
           <select v-model="filterCategory" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors appearance-none">
             <option value="">{{ t('questionBank.allCategories') }}</option>
             <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
@@ -185,22 +206,46 @@
 
     <!-- TAB 2: ARTICLE QUIZ -->
     <div v-else class="mt-8 space-y-6">
-      <div v-if="articleQuizzes.length === 0" class="bg-white rounded-[2rem] p-12 text-center border border-gray-100 shadow-sm text-gray-500">
-        Belum ada Article Quiz (Artikel Bacaan). Klik tombol "Tambah Article Quiz" untuk membuat artikel baru.
+      <!-- Article Quiz Filters Bar -->
+      <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="relative md:col-span-2">
+            <input v-model="articleSearch" type="text" placeholder="Cari judul artikel atau isi bacaan..." class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 pl-10 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+          <select v-model="articleBatchFilter" class="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 focus:border-[#9DB359] focus:ring-[#9DB359] transition-colors appearance-none">
+            <option value="">-- Semua Batch --</option>
+            <option v-for="b in availableBatches" :key="b" :value="b">{{ b }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div v-if="filteredArticles.length === 0" class="bg-white rounded-[2rem] p-12 text-center border border-gray-100 shadow-sm text-gray-500">
+        Belum ada Article Quiz (Artikel Bacaan) yang sesuai pencarian. Klik "Tambah Article Quiz" untuk membuat artikel baru.
       </div>
       <div v-else class="grid grid-cols-1 gap-6">
         <article
-          v-for="art in articleQuizzes"
+          v-for="art in filteredArticles"
           :key="art.id"
           class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8 hover:shadow-md transition-all space-y-4"
         >
           <div class="flex items-start justify-between gap-4">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+              <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold shrink-0">
                 <BookOpen class="w-5 h-5" />
               </div>
               <div>
-                <h3 class="text-xl font-bold text-[#1A1A1A]">{{ art.title }}</h3>
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <h3 class="text-xl font-bold text-[#1A1A1A]">{{ art.title }}</h3>
+                  <!-- Batch Badges for Article Quiz -->
+                  <span
+                    v-for="b in getArticleBatches(art)"
+                    :key="b"
+                    class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200"
+                  >
+                    {{ b }}
+                  </span>
+                </div>
                 <span class="text-xs text-gray-500">{{ art.questions ? art.questions.length : 0 }} soal di-assign</span>
               </div>
             </div>
@@ -245,6 +290,7 @@
                 class="inline-flex items-center gap-2 px-3 py-1 rounded-xl text-xs bg-gray-100 border border-gray-200 text-gray-700"
               >
                 <span class="font-bold">#{{ q.id }}</span>
+                <span v-if="q.batch" class="px-2 py-0.5 rounded-full text-[10px] bg-purple-100 text-purple-700 font-semibold">{{ q.batch }}</span>
                 <span class="truncate max-w-xs">{{ q.question }}</span>
               </div>
             </div>
@@ -261,6 +307,47 @@
       @close="closeModal"
       @submit="onSubmit"
     />
+
+    <!-- Import Excel/CSV Modal -->
+    <div v-if="showImportModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity" @click="showImportModal = false"></div>
+      <div class="relative w-full max-w-xl rounded-[2rem] bg-white p-8 shadow-2xl border border-gray-100 transform transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Upload Soal (Excel/CSV)</h2>
+            <p class="text-gray-500 text-sm mt-0.5">Unggah file CSV/Excel berisi daftar soal & article quiz massal.</p>
+          </div>
+          <button class="p-2 rounded-full hover:bg-gray-100 text-gray-400" @click="showImportModal = false">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <form class="space-y-5" @submit.prevent="submitImport">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Batch / Kategori Default (Jika kosong pada file)</label>
+            <input v-model="importDefaultBatch" type="text" placeholder="Tryout 1" class="w-full rounded-xl border-gray-200 bg-gray-50 px-4 py-2.5 text-sm" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Pilih File Excel / CSV (.csv, .xlsx)</label>
+            <input type="file" ref="importFileInput" accept=".csv, .txt, .xlsx, .xls" required class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#1A1A1A] file:text-white hover:file:bg-black transition-all" />
+          </div>
+
+          <div class="bg-blue-50/80 border border-blue-100 rounded-xl p-4 text-xs text-blue-900 leading-relaxed">
+            💡 <strong>Tips Import:</strong> Gunakan tombol <strong>"Template Excel"</strong> untuk mengunduh format kolom yang benar (termasuk kolom <code>batch</code>, <code>article_title</code>, dan <code>article_content</code>).
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-3">
+            <button type="button" class="px-5 py-2.5 rounded-full text-gray-600 hover:bg-gray-100 text-sm font-medium" @click="showImportModal = false">Batal</button>
+            <button type="submit" :disabled="importing" class="px-6 py-2.5 rounded-full bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-all flex items-center gap-2">
+              <Upload v-if="!importing" class="w-4 h-4" />
+              <span v-if="importing">Mengimpor...</span>
+              <span v-else>Mulai Upload</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <!-- Article Quiz Add/Edit Modal -->
     <div v-if="showArticleModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -328,6 +415,7 @@
             <label :for="'assign-q-'+q.id" class="flex-1 cursor-pointer select-none text-sm">
               <div class="flex items-center gap-2 mb-1">
                 <span class="font-bold text-gray-900">#{{ q.id }}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] bg-purple-100 text-purple-700 font-medium">{{ q.batch || 'Tryout 1' }}</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] bg-gray-200 text-gray-600">{{ q.category }}</span>
               </div>
               <p class="text-gray-800">{{ q.question }}</p>
@@ -349,7 +437,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { LibraryBig, Plus, Trash2, BookOpen, Link2, Pencil } from 'lucide-vue-next'
+import { LibraryBig, Plus, Trash2, BookOpen, Link2, Pencil, Download, Upload } from 'lucide-vue-next'
 import QuestionModal from '@/components/QuestionModal.vue'
 import QuestionCardBody from '@/components/QuestionCardBody.vue'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
@@ -365,12 +453,17 @@ const store = useAppStore()
 const activeTab = ref('questions')
 const questions = ref([])
 const articleQuizzes = ref([])
+const availableBatches = ref([])
 const loading = ref(false)
 const search = ref('')
+const filterBatch = ref('')
 const filterCategory = ref('')
 const filterDifficulty = ref('')
 const showModal = ref(false)
 const editingItem = ref(null)
+
+const articleSearch = ref('')
+const articleBatchFilter = ref('')
 
 const showArticleModal = ref(false)
 const editingArticle = ref(null)
@@ -379,6 +472,11 @@ const articleForm = ref({ title: '', content: '' })
 const showAssignModal = ref(false)
 const assigningArticle = ref(null)
 const assignSelectedIds = ref([])
+
+const showImportModal = ref(false)
+const importDefaultBatch = ref('Tryout 1')
+const importFileInput = ref(null)
+const importing = ref(false)
 
 const categories = computed(() => {
   if (!questions.value || !Array.isArray(questions.value)) return []
@@ -390,10 +488,32 @@ const isMentor = computed(() => store.role === 'mentor')
 const matchesFilters = (q) => {
   const s = search.value.toLowerCase()
   const matchSearch = q.question.toLowerCase().includes(s)
+  const matchBatch = !filterBatch.value || q.batch === filterBatch.value
   const matchCat = !filterCategory.value || q.category === filterCategory.value
   const matchDiff = !filterDifficulty.value || q.difficulty === filterDifficulty.value
-  return matchSearch && matchCat && matchDiff
+  return matchSearch && matchBatch && matchCat && matchDiff
 }
+
+const getArticleBatches = (art) => {
+  if (!art || !art.questions || !Array.isArray(art.questions) || art.questions.length === 0) {
+    return ['Tryout 1']
+  }
+  const batches = art.questions.map(q => q.batch || 'Tryout 1').filter(Boolean)
+  return [...new Set(batches)]
+}
+
+const filteredArticles = computed(() => {
+  if (!articleQuizzes.value || !Array.isArray(articleQuizzes.value)) return []
+  const s = articleSearch.value.toLowerCase().trim()
+  const b = articleBatchFilter.value
+
+  return articleQuizzes.value.filter(art => {
+    const matchSearch = !s || art.title.toLowerCase().includes(s) || art.content.toLowerCase().includes(s)
+    const batches = getArticleBatches(art)
+    const matchBatch = !b || batches.includes(b)
+    return matchSearch && matchBatch
+  })
+})
 
 const isOwnQuestion = (q) => Number(q?.created_by) === Number(store.user?.id)
 
@@ -433,12 +553,48 @@ const loadQuestions = async () => {
       window.axios.get('/api/questions'),
       window.axios.get('/api/article-quizzes')
     ])
-    questions.value = sortQuestionsForDisplay((resQ.data.items || []).map(normalizeQuestion))
+    const items = (resQ.data.items || []).map(normalizeQuestion)
+    questions.value = sortQuestionsForDisplay(items)
     articleQuizzes.value = resA.data || []
+    
+    // Extract unique batches
+    const rawBatches = resQ.data.batches || items.map(q => q.batch).filter(Boolean)
+    availableBatches.value = [...new Set(rawBatches)]
   } catch (e) {
     toast.error('Error', t('questionBank.toastLoadFailed'))
   } finally {
     loading.value = false
+  }
+}
+
+const downloadTemplate = () => {
+  window.open('/api/questions/template/download', '_blank')
+}
+
+const submitImport = async () => {
+  const file = importFileInput.value?.files?.[0]
+  if (!file) {
+    toast.error('Error', 'Pilih file CSV / Excel terlebih dahulu.')
+    return
+  }
+
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('default_batch', importDefaultBatch.value || 'Tryout 1')
+
+  importing.value = true
+  try {
+    const { data } = await window.axios.post('/api/questions/import', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    toast.success('Sukses', data.message || 'Import berhasil!')
+    showImportModal.value = false
+    await loadQuestions()
+  } catch (e) {
+    const msg = e.response?.data?.message || 'Gagal mengimpor file.'
+    toast.error('Error', msg)
+  } finally {
+    importing.value = false
   }
 }
 
@@ -498,6 +654,7 @@ const closeModal = () => {
 
 const normalizeQuestion = (item) => ({
   ...item,
+  batch: item?.batch || 'Tryout 1',
   image_url: item?.image_url || item?.image || null,
 })
 
