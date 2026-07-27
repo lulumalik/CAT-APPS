@@ -367,7 +367,6 @@ const apiBase = computed(() => (isExamPage.value ? '/api/exams' : '/api/tests'))
 const categories = [
   'Umum',
   'Tryout',
-  'Tryout Gratis',
   'Latihan',
   'Ujian',
   'Kewarganegaraan',
