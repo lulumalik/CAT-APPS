@@ -62,8 +62,8 @@ class QuestionController extends Controller
         ];
 
         if ($request->input('type') === 'multiple_choice') {
-            $rules['options'] = 'required|array|min:2|max:5';
-            $rules['correct'] = 'required|string|in:A,B,C,D,E';
+            $rules['options'] = 'required|array|min:2|max:6';
+            $rules['correct'] = 'required|string|in:A,B,C,D,E,F';
         }
 
         $data = $request->validate($rules);
@@ -103,8 +103,8 @@ class QuestionController extends Controller
         ];
 
         if ($request->input('type') === 'multiple_choice') {
-            $rules['options'] = 'required|array|min:2|max:5';
-            $rules['correct'] = 'required|string|in:A,B,C,D,E';
+            $rules['options'] = 'required|array|min:2|max:6';
+            $rules['correct'] = 'required|string|in:A,B,C,D,E,F';
         }
 
         $data = $request->validate($rules);
@@ -179,6 +179,7 @@ class QuestionController extends Controller
             'option_c',
             'option_d',
             'option_e',
+            'option_f',
             'correct',
             'article_title',
             'article_content'
@@ -250,6 +251,7 @@ class QuestionController extends Controller
                     $row['option_c'],
                     $row['option_d'],
                     $row['option_e'],
+                    $row['option_f'] ?? '',
                     $row['correct'],
                     $row['article_title'],
                     $row['article_content'],
@@ -353,7 +355,7 @@ class QuestionController extends Controller
             }
 
             $options = [];
-            foreach (['a', 'b', 'c', 'd', 'e'] as $optKey) {
+            foreach (['a', 'b', 'c', 'd', 'e', 'f'] as $optKey) {
                 $val = $getVal('option_' . $optKey);
                 if ($val !== '') {
                     $options[] = [
@@ -369,6 +371,7 @@ class QuestionController extends Controller
                     ['key' => 'B', 'label' => 'Opsi B'],
                     ['key' => 'C', 'label' => 'Opsi C'],
                     ['key' => 'D', 'label' => 'Opsi D'],
+                    ['key' => 'E', 'label' => 'Opsi E'],
                 ];
             }
 

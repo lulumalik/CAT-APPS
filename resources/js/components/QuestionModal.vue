@@ -69,17 +69,37 @@
         </div>
 
         <div v-if="form.type === 'multiple_choice'" class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-          <label class="block text-sm font-medium text-gray-900 mb-4">{{ t('modals.question.optionsLabel') }}</label>
+          <div class="flex items-center justify-between mb-4">
+            <label class="block text-sm font-medium text-gray-900">{{ t('modals.question.optionsLabel') }} ({{ form.options.length }} Opsi)</label>
+            <button
+              v-if="form.options.length < 6"
+              type="button"
+              class="px-3 py-1.5 rounded-full bg-[#9DB359]/15 text-[#6c7c3f] hover:bg-[#9DB359]/25 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+              @click="addOption"
+            >
+              + Tambah Opsi (Maks. 6)
+            </button>
+          </div>
+
           <div class="space-y-3">
-            <div v-for="(opt,idx) in form.options" :key="opt.key" class="flex items-start gap-3 group">
+            <div v-for="(opt,idx) in form.options" :key="idx" class="flex items-start gap-3 group">
               <div class="relative flex shrink-0 items-center justify-center pt-1">
                 <input type="radio" :value="opt.key" v-model="form.correct" class="peer sr-only" :id="'opt-'+idx" />
                 <label :for="'opt-'+idx" class="flex h-8 w-8 shrink-0 aspect-square items-center justify-center rounded-full border-2 border-gray-300 cursor-pointer transition-all peer-checked:border-[#9DB359] peer-checked:bg-[#9DB359]">
                   <span class="text-white text-xs font-bold opacity-0 peer-checked:opacity-100">{{ opt.key }}</span>
                 </label>
               </div>
-              <div class="flex-1">
+              <div class="flex-1 flex items-center gap-2">
                 <input v-model="opt.label" :placeholder="t('modals.question.optionPlaceholder', { n: idx + 1 })" class="w-full rounded-xl border-transparent bg-white px-4 py-2 focus:border-gray-200 focus:ring-0 transition-all shadow-sm group-hover:shadow-md" />
+                <button
+                  v-if="form.options.length > 2"
+                  type="button"
+                  class="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
+                  title="Hapus Opsi"
+                  @click="removeOption(idx)"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
               </div>
             </div>
           </div>
@@ -107,6 +127,8 @@ const emit = defineEmits(['close','submit'])
 const isEdit = computed(() => !!props.initial)
 const { t } = useI18n()
 
+const keysList = ['A', 'B', 'C', 'D', 'E', 'F']
+
 const categories = [
   'Kewarganegaraan',
   'Math',
@@ -121,6 +143,7 @@ const categories = [
   'Aljabar & Aritmatika',
   'Pemahaman Bahasa',
 ]
+
 const base = () => ({ 
   batch: 'Tryout 1',
   question: '', 
@@ -131,12 +154,42 @@ const base = () => ({
   image_url: null,
   article_quiz_id: null,
   options: [
-    { key: 'A', label: '' }, { key: 'B', label: '' }, { key: 'C', label: '' }, { key: 'D', label: '' }
+    { key: 'A', label: '' },
+    { key: 'B', label: '' },
+    { key: 'C', label: '' },
+    { key: 'D', label: '' },
+    { key: 'E', label: '' }
   ], 
   correct: 'A' 
 })
 const form = reactive(base())
 const previewUrl = ref(null)
+
+const reindexOptions = () => {
+  form.options.forEach((opt, idx) => {
+    opt.key = keysList[idx] || String.fromCharCode(65 + idx)
+  })
+  // If current correct key is no longer available in options, reset to first option key
+  const validKeys = form.options.map(o => o.key)
+  if (!validKeys.includes(form.correct)) {
+    form.correct = validKeys[0] || 'A'
+  }
+}
+
+const addOption = () => {
+  if (form.options.length < 6) {
+    const nextKey = keysList[form.options.length] || 'A'
+    form.options.push({ key: nextKey, label: '' })
+    reindexOptions()
+  }
+}
+
+const removeOption = (index) => {
+  if (form.options.length > 2) {
+    form.options.splice(index, 1)
+    reindexOptions()
+  }
+}
 
 watch(() => props.initial, (val) => {
   if (val) {
@@ -148,6 +201,16 @@ watch(() => props.initial, (val) => {
       }
       if (!form.type) form.type = 'multiple_choice'
       if (!form.batch) form.batch = 'Tryout 1'
+      if (!form.options || form.options.length === 0) {
+        form.options = [
+          { key: 'A', label: '' },
+          { key: 'B', label: '' },
+          { key: 'C', label: '' },
+          { key: 'D', label: '' },
+          { key: 'E', label: '' }
+        ]
+      }
+      reindexOptions()
   } else {
       Object.assign(form, base())
   }
