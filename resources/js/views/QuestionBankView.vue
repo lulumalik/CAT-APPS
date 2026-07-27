@@ -8,39 +8,40 @@
     >
       <template #actions>
         <div class="flex items-center gap-3 flex-wrap">
+          <button
+            type="button"
+            class="px-5 py-2.5 rounded-full bg-white text-[#1A1A1A] hover:bg-gray-100 transition-all shadow-md text-sm font-semibold flex items-center gap-2"
+            @click="downloadTemplate"
+          >
+            <Download class="h-4 w-4 text-[#9DB359]" />
+            Template Excel
+          </button>
+          <button
+            type="button"
+            class="px-5 py-2.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-lg text-sm font-semibold flex items-center gap-2"
+            @click="showImportModal = true"
+          >
+            <Upload class="h-4 w-4" />
+            Upload Excel/CSV
+          </button>
+
           <template v-if="activeTab === 'questions'">
             <button
-              type="button"
-              class="px-5 py-2.5 rounded-full bg-white/20 text-white hover:bg-white/30 backdrop-blur-md transition-all border border-white/30 text-sm font-medium flex items-center gap-2"
-              @click="downloadTemplate"
-            >
-              <Download class="h-4 w-4" />
-              Template Excel
-            </button>
-            <button
-              type="button"
-              class="px-5 py-2.5 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shadow-lg shadow-black/10 text-sm font-medium flex items-center gap-2"
-              @click="showImportModal = true"
-            >
-              <Upload class="h-4 w-4" />
-              Upload Excel/CSV
-            </button>
-            <button
               v-if="total > 0"
-              class="px-5 py-2.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors shadow-lg shadow-black/10 text-sm font-medium flex items-center gap-2"
+              class="px-5 py-2.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors shadow-lg text-sm font-medium flex items-center gap-2"
               @click="removeAll"
             >
               <Trash2 class="h-4 w-4" />
               {{ t('questionBank.deleteAllQuestions') }}
             </button>
-            <button class="px-5 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 text-sm font-medium flex items-center gap-2" @click="openAdd">
+            <button class="px-5 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg text-sm font-medium flex items-center gap-2" @click="openAdd">
               <Plus class="h-4 w-4" />
               {{ t('questionBank.addQuestion') }}
             </button>
           </template>
           <template v-else>
-            <button class="px-6 py-2.5 rounded-full bg-[#9DB359] text-white hover:bg-[#8ca34b] transition-colors shadow-lg shadow-[#9DB359]/20 flex items-center gap-2 font-medium" @click="openAddArticle">
-              <Plus class="h-[18px] w-[18px]" />
+            <button class="px-5 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg text-sm font-medium flex items-center gap-2" @click="openAddArticle">
+              <Plus class="h-4 w-4" />
               Tambah Article Quiz
             </button>
           </template>
