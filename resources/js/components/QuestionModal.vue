@@ -55,6 +55,14 @@
           </div>
         </div>
 
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Artikel Bacaan (Article Quiz)</label>
+          <select v-model="form.article_quiz_id" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
+            <option :value="null">-- Tanpa Artikel Bacaan --</option>
+            <option v-for="art in articleQuizzes" :key="art.id" :value="art.id">{{ art.title }}</option>
+          </select>
+        </div>
+
         <div v-if="form.type === 'multiple_choice'" class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
           <label class="block text-sm font-medium text-gray-900 mb-4">{{ t('modals.question.optionsLabel') }}</label>
           <div class="space-y-3">
@@ -86,7 +94,10 @@
 import { reactive, watch, ref, computed } from 'vue'
 import { useI18n } from '@/composables/useI18n'
 
-const props = defineProps({ initial: { type: Object, default: null } })
+const props = defineProps({
+  initial: { type: Object, default: null },
+  articleQuizzes: { type: Array, default: () => [] }
+})
 const emit = defineEmits(['close','submit'])
 const isEdit = computed(() => !!props.initial)
 const { t } = useI18n()
@@ -96,10 +107,14 @@ const categories = [
   'Math',
   'English',
   'Interpersonal Skill',
-  // 'Geography',
-  // 'Science',
-  // 'History',
-  // 'IT',
+  'Sinonim',
+  'Antonim',
+  'Analogi',
+  'Penalaran Analitis',
+  'Deret Angka',
+  'Penalaran Logis',
+  'Aljabar & Aritmatika',
+  'Pemahaman Bacaan',
 ]
 const base = () => ({ 
   question: '', 
@@ -108,6 +123,7 @@ const base = () => ({
   type: 'multiple_choice',
   image: null,
   image_url: null,
+  article_quiz_id: null,
   options: [
     { key: 'A', label: '' }, { key: 'B', label: '' }, { key: 'C', label: '' }, { key: 'D', label: '' }
   ], 

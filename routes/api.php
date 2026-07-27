@@ -21,6 +21,7 @@ use App\Http\Controllers\StudentDashboardPdfController;
 use App\Http\Controllers\StudentReportController;
 use App\Http\Controllers\ExamDefinitionController;
 use App\Http\Controllers\BatchController;
+use App\Http\Controllers\ArticleQuizController;
 
 Route::get('/csrf-token', fn () => response()->json(['token' => csrf_token()]));
 
@@ -176,6 +177,9 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
     Route::delete('/questions', [QuestionController::class, 'destroyAll']);
     Route::put('/questions/{question}', [QuestionController::class, 'update']);
     Route::delete('/questions/{question}', [QuestionController::class, 'destroy']);
+
+    Route::apiResource('article-quizzes', ArticleQuizController::class);
+    Route::post('/article-quizzes/{articleQuiz}/assign-questions', [ArticleQuizController::class, 'assignQuestions']);
 
     Route::get('/tests', [TestDefinitionController::class, 'index']);
     Route::post('/tests', [TestDefinitionController::class, 'store']);

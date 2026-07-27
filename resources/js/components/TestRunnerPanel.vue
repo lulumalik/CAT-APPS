@@ -64,6 +64,13 @@
 
             <div class="mb-4 md:mb-6 shrink-0">
               <h2 class="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">{{ t('testRunner.question', { n: index + 1 }) }}</h2>
+              <div v-if="current.article_quiz || current.articleQuiz" class="mb-5 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 md:p-5 shadow-sm text-sm">
+                <div class="flex items-center gap-2 mb-2 font-bold text-amber-900 text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-700 shrink-0"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+                  <span>{{ (current.article_quiz || current.articleQuiz).title }}</span>
+                </div>
+                <p class="text-amber-950/90 whitespace-pre-line leading-relaxed text-sm md:text-base">{{ (current.article_quiz || current.articleQuiz).content }}</p>
+              </div>
               <div v-if="current.image" class="mb-6">
                 <img :src="current.image" class="max-h-80 object-contain rounded-2xl border border-gray-200 shadow-sm" />
               </div>

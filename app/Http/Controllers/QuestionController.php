@@ -11,7 +11,7 @@ class QuestionController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $q = Question::query();
+        $q = Question::with('articleQuiz');
 
         if ($search = $request->string('search')->toString()) {
             $q->where('question', 'like', "%$search%");
@@ -51,6 +51,7 @@ class QuestionController extends Controller
             'difficulty' => 'required|string',
             'type' => 'required|in:multiple_choice,essay',
             'image' => 'nullable|image|max:2048',
+            'article_quiz_id' => 'nullable|exists:article_quizzes,id',
         ];
 
         if ($request->input('type') === 'multiple_choice') {
@@ -76,7 +77,7 @@ class QuestionController extends Controller
         $data['created_by'] = optional($request->user())->id;
         $item = Question::create($data);
 
-        return response()->json($item, 201);
+        return response()->json($item->load('articleQuiz'), 201);
     }
 
     public function update(Request $request, Question $question)
@@ -89,6 +90,7 @@ class QuestionController extends Controller
             'difficulty' => 'required|string',
             'type' => 'required|in:multiple_choice,essay',
             'image' => 'nullable|image|max:2048',
+            'article_quiz_id' => 'nullable|exists:article_quizzes,id',
         ];
 
         if ($request->input('type') === 'multiple_choice') {
@@ -113,7 +115,7 @@ class QuestionController extends Controller
 
         $question->update($data);
 
-        return response()->json($question);
+        return response()->json($question->load('articleQuiz'));
     }
 
     public function destroy(Request $request, Question $question)

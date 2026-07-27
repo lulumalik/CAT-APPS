@@ -43,7 +43,7 @@ class ShuffledQuestionOrder
             $ids = self::shuffleIds($ids, $shuffleSeed, $definitionId);
         }
 
-        $byId = Question::whereIn('id', $ids)->get()->keyBy('id');
+        $byId = Question::with('articleQuiz')->whereIn('id', $ids)->get()->keyBy('id');
 
         return collect($ids)
             ->map(fn ($id) => $byId->get($id))

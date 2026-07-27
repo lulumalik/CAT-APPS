@@ -26,7 +26,8 @@
         "label": "Ada"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Komunike = ....",
@@ -51,7 +52,8 @@
         "label": "Pembiasaan"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Kompilasi = ....",
@@ -80,7 +82,8 @@
         "label": "Sepakat"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "Lepas = ....",
@@ -109,7 +112,8 @@
         "label": "Pecah"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Kaidah = ....",
@@ -138,7 +142,8 @@
         "label": "Pedoman KECERDASAN POLRI-1"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Subversif = ....",
@@ -167,7 +172,8 @@
         "label": "Bersekutu"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Provokasi = ....",
@@ -196,7 +202,8 @@
         "label": "Sanjungan"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "Ekspedisi = ....",
@@ -225,7 +232,8 @@
         "label": "Perjalanan"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "Iterasi = ....",
@@ -254,7 +262,8 @@
         "label": "Morfologi"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Forte = ....",
@@ -283,7 +292,8 @@
         "label": "Lunglai Petunjuk     untuk     nomor tentukan lawan (antonim) dari berikut:"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Dupleks >< ....",
@@ -312,7 +322,8 @@
         "label": "Setara"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Estetis >< ....",
@@ -341,7 +352,8 @@
         "label": "Kaku"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "Praktis >< ....",
@@ -370,7 +382,8 @@
         "label": "Statis"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "Revolusi >< ....",
@@ -399,7 +412,8 @@
         "label": "Rehabilitasi"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Kapabel >< ....",
@@ -428,10 +442,11 @@
         "label": "Pasif"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
-    "question": "Remisi >< .... 11   –   20:       A. Pengurangan kata                B. Penurunan",
+    "question": "Remisi >< ....",
     "category": "Antonim",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -449,7 +464,8 @@
         "label": "Pertumbuhan"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "Berdikari >< ....",
@@ -478,7 +494,8 @@
         "label": "Elegan"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Makar >< ....",
@@ -507,7 +524,8 @@
         "label": "Pasti"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Hampa >< ....",
@@ -536,7 +554,8 @@
         "label": "Berisi"
       }
     ],
-    "correct": "E"
+    "correct": "E",
+    "article_quiz_title": null
   },
   {
     "question": "Awam >< ....",
@@ -565,7 +584,8 @@
         "label": "Berada Petunjuk       untuk     nomor         21   –   30: tentukan       padanan          dari    hubungan makna kata berikut:"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "Televisi : listrik = ....",
@@ -594,7 +614,8 @@
         "label": "Sepeda : ontel"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Nyamuk : darah = ....",
@@ -623,7 +644,8 @@
         "label": "Burung : telur"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "Statis : dinamis = ....",
@@ -652,7 +674,8 @@
         "label": "Batu : pasir"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "Air laut : asin = ....",
@@ -681,7 +704,8 @@
         "label": "Air : mendidih"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Perahu : nahkoda = ....",
@@ -710,7 +734,8 @@
         "label": "Pasar : pedagang"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "Kulkas : mesin cuci = ....",
@@ -739,7 +764,8 @@
         "label": "Katak : gurameh"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "Kain : katun = ....",
@@ -768,7 +794,8 @@
         "label": "Buku : novel"
       }
     ],
-    "correct": "E"
+    "correct": "E",
+    "article_quiz_title": null
   },
   {
     "question": "Diskon : rabat = ....",
@@ -797,7 +824,8 @@
         "label": "Bersih : kotor"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Kertas : pensil = ....",
@@ -826,7 +854,8 @@
         "label": "Kaki : tangan"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Bunga : buah = ....",
@@ -852,10 +881,11 @@
       },
       {
         "key": "E",
-        "label": "Air : laut Bacaan untuk nomor 31 – 33 Bagas berencana membeli HP di toko Abadi Sejahtera. Sebelum pergi ke toko tersebut,   ia   telah      mencari   informasi mengenai harga dan spesifikasi HP. Ia merasa tertarik dengan 5 tipe HP dari brand yang sama. Kelima tipe HP tersebut adalah A, B, C, D, dan E. Masing-masing HP memiliki spesifikasi dan harga yang berbeda, yaitu: HP A lebih mahal dari HP B dan D tetapi lebih murah dari C. HP D lebih murah dari B dan C, sedangkan HP E lebih mahal dari C Uang yang dimiliki Bagas hanya cukup untuk membeli HP yang harganya di antara 2 tipe HP lainnya."
+        "label": "Air : laut"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "HP yang harganya paling mahal adalah ....",
@@ -884,7 +914,8 @@
         "label": "E"
       }
     ],
-    "correct": "E"
+    "correct": "E",
+    "article_quiz_title": "Bacaan untuk nomor 31 – 33"
   },
   {
     "question": "HP yang dibeli Bagas adalah ....",
@@ -913,7 +944,8 @@
         "label": "E"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": "Bacaan untuk nomor 31 – 33"
   },
   {
     "question": "Urutan harga HP yang disukai bagas dari yang paling mahal adalah ....",
@@ -939,10 +971,11 @@
       },
       {
         "key": "E",
-        "label": "B, D, C, A, dan E Bacaan untuk nomor 34 – 37 Pak Toni memiliki 6 ekor ayam yang ia beri nama dengan menggunakan 6 huruf pertama pada abjad latin. Ayam-ayam tersebut akan ia jual untuk memenuhi kebutuhan sehari-hari. Harga jual ayam ditentukan oleh berat ayam tersebut. Ayam yang memiliki berat lebih besar harganya lebih mahal dari ayam yang lebih ringan. Ayam F lebih berat dari C dan E tetapi lebih ringan dari B. Pak Toni menjual ayam C dengan harga yang lebih murah dari E, tetapi lebih mahal dari A. Ayam A lebih ringan dari C tetapi lebih berat dari D"
+        "label": "B, D, C, A, dan E"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": "Bacaan untuk nomor 31 – 33"
   },
   {
     "question": "Ayam pak Toni yang memilki harga jual paling murah adalah ....",
@@ -971,7 +1004,8 @@
         "label": "F"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": "Bacaan untuk nomor 34 – 37"
   },
   {
     "question": "Urutan nama ayam pak Toni dari yang paling murah adalah ....",
@@ -1000,7 +1034,8 @@
         "label": "F, B, A, C, D, dan E"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": "Bacaan untuk nomor 34 – 37"
   },
   {
     "question": "Jika Ibu Sinta ingin membeli ayam pak Toni yang paling murah ke dua, maka ayam yang ia beli adalah ....",
@@ -1029,7 +1064,8 @@
         "label": "F"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": "Bacaan untuk nomor 34 – 37"
   },
   {
     "question": "Ayam pak Toni yang paling berat dan mahal adalah ....",
@@ -1055,10 +1091,11 @@
       },
       {
         "key": "E",
-        "label": "B Bacaan untuk nomor 38 – 40 Almira, Sasya, Mila, Riskia, Hanna, dan Tania bergabung dalam sanggar senam Sehat. Mereka berharap dapat menurunkan berat badan dan memiliki berat ideal setelah bergabung dalam sanggar tersebut. Setelah 3 minggu melakukan senam rutin, diketahui bahwa: Mila mampu menurunkan berat badan 2 kali lipat dari Almira Sasya mampu menurunkan berat badan lebih banyak dari Hanna dan Tania, namun lebih sedikit dari Mila dan Riskia Berat badan Hanna berkurang lebih sedikit dari Almira Almira menurunkan berat badan lebih sedikit dari Tania dan Mila"
+        "label": "B"
       }
     ],
-    "correct": "E"
+    "correct": "E",
+    "article_quiz_title": "Bacaan untuk nomor 34 – 37"
   },
   {
     "question": "Jika Riskia berada pada urutan kedua yang mampu menurunkan berat badan paling banyak, maka yang berada pada urutan pertama adalah ....",
@@ -1087,7 +1124,8 @@
         "label": "Tania"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": "Bacaan untuk nomor 38 – 40"
   },
   {
     "question": "Yang mampu menurunkan berat badan paling sedikit adalah ....",
@@ -1116,7 +1154,8 @@
         "label": "Tania"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": "Bacaan untuk nomor 38 – 40"
   },
   {
     "question": "Sasya mampu menurunkan berat badan terbanyak ke ....",
@@ -1145,7 +1184,8 @@
         "label": "6"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": "Bacaan untuk nomor 38 – 40"
   },
   {
     "question": "6, 9, 14, 21, 30, 41, ...., ...., 86",
@@ -1174,7 +1214,8 @@
         "label": "55 dan 70"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "23, 26, 25, 24, 29, 22, 35, 20, ....",
@@ -1203,7 +1244,8 @@
         "label": "44"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "102, 34, 56, 68, 28, 136, ...",
@@ -1232,7 +1274,8 @@
         "label": "108"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "3, 6, 13, 28, 59, ....",
@@ -1261,7 +1304,8 @@
         "label": "122"
       }
     ],
-    "correct": "E"
+    "correct": "E",
+    "article_quiz_title": null
   },
   {
     "question": "1, 3, 4, 7, 11, 18, 29, ...., 76",
@@ -1290,7 +1334,8 @@
         "label": "51"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "37, 35, 35, 38, 33, 41, ....",
@@ -1319,7 +1364,8 @@
         "label": "39"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "13, 6, 18, 12, 30, 24, 54, ...., ....,",
@@ -1348,7 +1394,8 @@
         "label": "60 dan 114"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "6, 4, 10, 10, 20, ...., 36, 22, ....",
@@ -1377,7 +1424,8 @@
         "label": "30 dan 58"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "24, 25, 26, 28, 28, 31, 30, ....",
@@ -1406,7 +1454,8 @@
         "label": "36"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "53, 26, 57, 28, 61, 30 , ....",
@@ -1435,7 +1484,8 @@
         "label": "67"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "Semua anggota TNI memiliki tubuh yang sehat dan kuat. Anggi adalah anggota TNI. Simpulan yang tepat adalah ....",
@@ -1460,7 +1510,8 @@
         "label": "Anggi memiliki tubuh yang sehat atau kuat 96       E. Anggi adalah anggota TNI yang baik"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "Jika ada pemadaman listrik, ibu tidak dapat membuat kue untuk dijual. Jika ibu tidak membuat kue, ia merasa sedih. Ibu merasa senang. Simpulan yang tepat adalah ....",
@@ -1489,10 +1540,11 @@
         "label": "Ibu mendapatkan uang belanja tambahan dari ayah"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
-    "question": "Semua      karyawan      diperusahaan      A pandai      berbahasa     Inggris.      Andika karyawan di perusahaan A. Andika pandai menyanyi dan bermain musik. Simpulan yang tepat adalah ....",
+    "question": "Semua karyawan diperusahaan A pandai berbahasa Inggris. Andika karyawan di perusahaan A. Andika pandai menyanyi dan bermain musik. Simpulan yang tepat adalah ....",
     "category": "Logika Silogisme",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -1518,7 +1570,8 @@
         "label": "Andika          mewarisi     bakat    kedua orang tuanya dalam bidang seni"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "Pak Hasan memiliki kebun seluas 1 hektar. Semua bagian kebun tersebut ditanami pohon jeruk. Pak Hasan sedang memanen jeruk, di antara pohonjeruk yang sedang ia panen terdapat pohon cabai. Simpulan yang tepat adalah ....",
@@ -1547,7 +1600,8 @@
         "label": "Sebagian      kebun      pak   Hasan ditanami pohon cabai."
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": null
   },
   {
     "question": "Semua makanan yang dikemas dengan cara menarik disukai anak-anak. Ibu Mita menjual kue klepon. Kue klepon yang ia jual berwarna cerah dan berbentuk karakter kartun. Simpulan yang tepat adalah ....",
@@ -1576,10 +1630,11 @@
         "label": "Warna cerah dan karakter kartun dapat menarik perhatian anak-anak."
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
-    "question": "Jika hari hujan, Anita belajar merajut dengan      nenek.       Nenek    sedang menonton televisi dengan ibu dan adik. Simpulan yang tepat adalah ....",
+    "question": "Jika hari hujan, Anita belajar merajut dengan nenek. Nenek sedang menonton televisi dengan ibu dan adik. Simpulan yang tepat adalah ....",
     "category": "Logika Silogisme",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -1605,7 +1660,8 @@
         "label": "Hari ini cerah"
       }
     ],
-    "correct": "E"
+    "correct": "E",
+    "article_quiz_title": null
   },
   {
     "question": "Semua pasien di rumah sakit Pelita Harapan mengenakan baju berwarna hijau muda. Samsul berada di rumah sakit Pelita Harapan. Ia mengenakan baju berwarna hijau muda. Simpulan yang tepat adalah ....",
@@ -1634,7 +1690,8 @@
         "label": "Samsul sedang menemani ayak cek up rutin"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Semua HP android memerlukan paket data. Sasa senang bermain game online. Sasa bermain game online dengan HP android. Simpulan yang tepat adalah ....",
@@ -1663,10 +1720,11 @@
         "label": "Sasa lebih suka bermain game offline daripada online"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
-    "question": "Jika musim kemarau tiba, semua pohon di kebun pak Roni menggugurkan daunnya. Pohon-pohon di kebun pak Roni      menggugurkan          daunnya. Simpulan yang tepat adalah ....",
+    "question": "Jika musim kemarau tiba, semua pohon di kebun pak Roni menggugurkan daunnya. Pohon-pohon di kebun pak Roni menggugurkan daunnya. Simpulan yang tepat adalah ....",
     "category": "Logika Silogisme",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -1692,10 +1750,11 @@
         "label": "Jika musim penghujan, pohon di kebun pak Roni berdaun lebat dan berwarna hijau."
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
-    "question": "Semua warga negara indonesia yang sudah memiliki KTP memiliki hak pilih dalam pemilu. Beberapa pelajar SMA     dapat    bekontribusi     dalam memilih presiden pada pemilu tahun 2019.",
+    "question": "Semua warga negara indonesia yang sudah memiliki KTP memiliki hak pilih dalam pemilu. Beberapa pelajar SMA dapat bekontribusi dalam memilih presiden pada pemilu tahun 2019.",
     "category": "Logika Silogisme",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -1721,307 +1780,8 @@
         "label": "Semua pelajar SMA adalah warga negara Indonesia"
       }
     ],
-    "correct": "D"
-  },
-  {
-    "question": "Perhatikan gambar berikut, tentukan pola gambar yang sesuai:",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "Gambar A"
-      },
-      {
-        "key": "B",
-        "label": "Gambar B"
-      },
-      {
-        "key": "C",
-        "label": "Gambar C"
-      },
-      {
-        "key": "D",
-        "label": "Gambar D"
-      },
-      {
-        "key": "E",
-        "label": "Gambar E"
-      }
-    ],
-    "correct": "A",
-    "image": "/storage/questions/image1.png"
-  },
-  {
-    "question": "Perhatikan gambar berikut, tentukan pola gambar yang sesuai:",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "Gambar A"
-      },
-      {
-        "key": "B",
-        "label": "Gambar B"
-      },
-      {
-        "key": "C",
-        "label": "Gambar C"
-      },
-      {
-        "key": "D",
-        "label": "Gambar D"
-      },
-      {
-        "key": "E",
-        "label": "Gambar E"
-      }
-    ],
-    "correct": "C",
-    "image": "/storage/questions/image2.png"
-  },
-  {
-    "question": "Perhatikan gambar berikut, tentukan pola gambar yang sesuai:",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "Gambar A"
-      },
-      {
-        "key": "B",
-        "label": "Gambar B"
-      },
-      {
-        "key": "C",
-        "label": "Gambar C"
-      },
-      {
-        "key": "D",
-        "label": "Gambar D"
-      },
-      {
-        "key": "E",
-        "label": "Gambar E"
-      }
-    ],
-    "correct": "B",
-    "image": "/storage/questions/image3.png"
-  },
-  {
-    "question": "Jumlah segitiga yang terdapat pada gambar berikut adalah ....",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "4"
-      },
-      {
-        "key": "B",
-        "label": "5"
-      },
-      {
-        "key": "C",
-        "label": "6"
-      },
-      {
-        "key": "D",
-        "label": "7"
-      },
-      {
-        "key": "E",
-        "label": "8"
-      }
-    ],
-    "correct": "E",
-    "image": "/storage/questions/image4.png"
-  },
-  {
-    "question": "Pada gambar di atas terdapat berapa jenis bangun datar?",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "2 jenis"
-      },
-      {
-        "key": "B",
-        "label": "3 jenis"
-      },
-      {
-        "key": "C",
-        "label": "4 jenis"
-      },
-      {
-        "key": "D",
-        "label": "5 jenis"
-      },
-      {
-        "key": "E",
-        "label": "6 jenis"
-      }
-    ],
-    "correct": "B",
-    "image": "/storage/questions/image5.png"
-  },
-  {
-    "question": "Bangun datar yang tidak terdapat pada gambar berikut adalah ....",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "Segitiga"
-      },
-      {
-        "key": "B",
-        "label": "Persegi"
-      },
-      {
-        "key": "C",
-        "label": "Lingkaran"
-      },
-      {
-        "key": "D",
-        "label": "Trapesium"
-      },
-      {
-        "key": "E",
-        "label": "Jajar Genjang"
-      }
-    ],
-    "correct": "C",
-    "image": "/storage/questions/image6.png"
-  },
-  {
-    "question": "Perhatikan jaring-jaring atau pola bangun berikut, tentukan bentuk yang sesuai:",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "Gambar A"
-      },
-      {
-        "key": "B",
-        "label": "Gambar B"
-      },
-      {
-        "key": "C",
-        "label": "Gambar C"
-      },
-      {
-        "key": "D",
-        "label": "Gambar D"
-      },
-      {
-        "key": "E",
-        "label": "Gambar E"
-      }
-    ],
     "correct": "D",
-    "image": "/storage/questions/image7.png"
-  },
-  {
-    "question": "Perhatikan gambar berikut, tentukan gambar pengganti tanda tanya:",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "Gambar A"
-      },
-      {
-        "key": "B",
-        "label": "Gambar B"
-      },
-      {
-        "key": "C",
-        "label": "Gambar C"
-      },
-      {
-        "key": "D",
-        "label": "Gambar D"
-      },
-      {
-        "key": "E",
-        "label": "Gambar E"
-      }
-    ],
-    "correct": "B",
-    "image": "/storage/questions/image8.png"
-  },
-  {
-    "question": "Perhatikan gambar berikut, tentukan rotasi atau kelanjutan pola yang tepat:",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "Gambar A"
-      },
-      {
-        "key": "B",
-        "label": "Gambar B"
-      },
-      {
-        "key": "C",
-        "label": "Gambar C"
-      },
-      {
-        "key": "D",
-        "label": "Gambar D"
-      },
-      {
-        "key": "E",
-        "label": "Gambar E"
-      }
-    ],
-    "correct": "C",
-    "image": "/storage/questions/image9.png"
-  },
-  {
-    "question": "Jika garis putus-putus merupakan cermin, maka gambar yang tepat untuk menggantikan tanda tanya berikut adalah ....",
-    "category": "Penalaran Spasial",
-    "difficulty": "Medium",
-    "type": "multiple_choice",
-    "options": [
-      {
-        "key": "A",
-        "label": "Gambar A"
-      },
-      {
-        "key": "B",
-        "label": "Gambar B"
-      },
-      {
-        "key": "C",
-        "label": "Gambar C"
-      },
-      {
-        "key": "D",
-        "label": "Gambar D"
-      },
-      {
-        "key": "E",
-        "label": "Gambar E"
-      }
-    ],
-    "correct": "D",
-    "image": "/storage/questions/image10.png"
+    "article_quiz_title": null
   },
   {
     "question": "Hasil pengurangan (6a² + 8) dari (3a + 4)² adalah ....",
@@ -2050,7 +1810,8 @@
         "label": "-3a² - 24a - 8"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "Bentuk sederhana dari 2(a²)⁻³ (a⁻⁴)⁻² adalah ....",
@@ -2079,7 +1840,8 @@
         "label": "2a⁶"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": null
   },
   {
     "question": "Nilai p yang memenuhi persamaan (3 - p) / (p - 9) = 1 adalah ....",
@@ -2108,7 +1870,8 @@
         "label": "16"
       }
     ],
-    "correct": "E"
+    "correct": "E",
+    "article_quiz_title": null
   },
   {
     "question": "Jumlah semua akar-akar persamaan 24x² - 10x³ = 4x⁴ adalah ....",
@@ -2137,7 +1900,8 @@
         "label": "11"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Jika (x⁻³ / y²)⁻⁵ = (1/729)⁻² untuk x, y bilangan bulat positif, maka nilai (xy - x + 2y) adalah ....",
@@ -2166,7 +1930,8 @@
         "label": "5"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Bentuk sederhana dari ((56a⁴ b⁻² c²) / (2b² × 49c⁵)) × (32b⁻² / 14a⁻² c³)^-2 adalah ....",
@@ -2195,7 +1960,8 @@
         "label": "7a⁵ b² c¹⁰"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Jika p = 2, q = -3, dan r = 6, maka nilai dari (p⁷ q¹⁴ r / r⁵) × (p²³ q² r)⁻³ adalah ....",
@@ -2224,7 +1990,8 @@
         "label": "96"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Diketahui ∛729 = a²b. Nilai dari 4a²b adalah ....",
@@ -2253,7 +2020,8 @@
         "label": "96"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": null
   },
   {
     "question": "Hasil dari (2a - 4b - 5ab) + (ab - 4a + 2b) - (11a - 3b + 6ab) adalah ....",
@@ -2282,7 +2050,8 @@
         "label": "13a + 5b - 10ab"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Jika a adalah bilangan riil yang memenuhi persamaan 25ᵃ + 5ᵃ = 6, maka nilai a adalah ....",
@@ -2311,7 +2080,8 @@
         "label": "⁵log 3 dan ²log 5"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": null
   },
   {
     "question": "Kata bergaris bawah di atas akan lebih lugas jika digantikan dengan ....",
@@ -2336,7 +2106,8 @@
         "label": "Berkata, karena, sehingga"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": "Bacaan untuk nomor 81 dan 82"
   },
   {
     "question": "Kalimat pertama pada paragraf di atas merupakan contoh kalimat ....",
@@ -2365,10 +2136,11 @@
         "label": "Majemuk"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": "Bacaan untuk nomor 81 dan 82"
   },
   {
-    "question": "Bagi anda yang sering mengkonsumsi pil – pil vitamin A, mungkin sebaiknya anda harus segera beralih pada sayuran berwarna orange. Ya, wortel memiliki banyak sekali kandungan vitamin A- nya. Bahkan di antara nutrisi yang lainnya, vitamin A memiliki nilai yang paling tinggi. Tidak hanya vitamin A, wortel juga mengandung berbagai nutrisi lainnya yang dibutuhkan oleh tubuh     kita.     Jadi,      jika      anda mengkonsumsi        wortel       khususnya wortel    mentah,     selain     memenuhi kebutuhan vitamin A, anda juga bisa memperoleh manfaat nutrisi lainnya. (www.manfaat.co.id) Ide pokok paragraf di atas adalah ....",
+    "question": "Ide pokok paragraf di atas adalah ....",
     "category": "Pemahaman Bahasa",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -2394,10 +2166,11 @@
         "label": "Wortel kaya akan nutrisi"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": "Bacaan Wortel & Vitamin A"
   },
   {
-    "question": "MOBILE Legends adalah salah satu game andalan dari MOBA yang sangat populer    dan      diminati          berbagai kalangan. Mulai dari remaja hingga dewasa, game ini sangat digandrungi terutama di Asia. Sebanyak 10 juta akun diketahui telah mengunduh game ini di Google Play Store maupun Apple App Store.(www.id.wikipedia.org) Peminat mobile legends meliputi ....",
+    "question": "Peminat mobile legends meliputi ....",
     "category": "Pemahaman Bahasa",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -2423,10 +2196,11 @@
         "label": "Semua kalangan tanpa batasan umur"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": "Bacaan Mobile Legends"
   },
   {
-    "question": "Sebagai bagian dari TNI, tugas pokok TNI       AD      adalah        menegakkan kedaulatan negara, mempertahankan keutuhan wilayah Negara Kesatuan Republik Indonesia yang berdasarkan Pancasila dan Undang Undang Dasar Negara Republik Indonesia Tahun 1945, serta melindungi segenap bangsa dan seluruh tumpah darah Indonesia dari ancaman dan gangguan terhadap keutuhan               bangsa          dan negara.(www.tniad.mil.id) Ide pokok dari paragraf di atas adalah ....",
+    "question": "Ide pokok dari paragraf di atas adalah ....",
     "category": "Pemahaman Bahasa",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -2449,10 +2223,11 @@
       },
       {
         "key": "E",
-        "label": "Kewenangan TNI Bacaan untuk nomor 86 dan 88 (1)Drama Setya     Novanto berakhir      pada Selasa 24 April 2018. (2) Ia yang duduk kursi            pesakitan beberapa       kali memejamkan         mata       ketika    hakim Pengadilan           Tipikor           Jakarta membacakan putusannya. (3) Namun, ia tak sedang tertidur. (4) Sesekali, pria 62 tahun itu mengarahkan pandangan ke majelis hakim. (5) Nasibnya akan segera ditentukan oleh lima orang di hadapannya itu. (6)Tak lama kemudian, vonis 15 tahun penjara dijatuhkan pada terpidana kasus dugaan       korupsi      e-KTP       itu.      (7) \"Menjatuhkan pidana 15 tahun penjara dan denda Rp 500 juta,\" ujar Hakim Ketua Yanto.(www.liputan6.com)"
+        "label": "Kewenangan TNI"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": "Bacaan Tugas Pokok TNI AD"
   },
   {
     "question": "Paragraf di atas menceritakan tentang ....",
@@ -2481,10 +2256,11 @@
         "label": "Tindak lanjut kasus Setya Novanto"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": "Bacaan untuk nomor 86 dan 88"
   },
   {
-    "question": "Kalimat      yang    mengandung          majas adalah ....",
+    "question": "Kalimat yang mengandung majas adalah ....",
     "category": "Pemahaman Bahasa",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -2510,7 +2286,8 @@
         "label": "(7)"
       }
     ],
-    "correct": "B"
+    "correct": "B",
+    "article_quiz_title": "Bacaan untuk nomor 86 dan 88"
   },
   {
     "question": "Kata dijatuhkan pada kalimat (6) dapat diganti dengan ....",
@@ -2539,10 +2316,11 @@
         "label": "Diterima"
       }
     ],
-    "correct": "C"
+    "correct": "C",
+    "article_quiz_title": "Bacaan untuk nomor 86 dan 88"
   },
   {
-    "question": "Brimob       dalam    fungsi    operasional kepolisian merupakan salah satu unsur pelaksana utama polriyang bertugas membina           kemampuan            dan mengerahkan kekuatan. Brimob Polri dalam       menanggulangi         gangguan keamanan dalam negeri berintentitas tinggi, utamanya kerusuhan massa, kejahatan terorganisir senjata api atau bahan peledak, penanganan senjata kimia, biologi dan radioaktif, serta pelaksanaan      kegiatan    SAR      guna mewujudkan       tertib     hukum     serta ketentraman      masyarakat       diseluruh wilayah     yuridis    Negara     Kesatuan Republik Indonesia dan tugas-tugas lain          yang               dibebankan kepadanya. (http://patriasespati.blogsp ot.co.id) Bacaan di atas menjelaskan tentang ....",
+    "question": "Bacaan di atas menjelaskan tentang ....",
     "category": "Pemahaman Bahasa",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -2568,10 +2346,11 @@
         "label": "Kedudukan           brimob        dalam kepolisian"
       }
     ],
-    "correct": "A"
+    "correct": "A",
+    "article_quiz_title": "Bacaan Fungsi Operasional Brimob"
   },
   {
-    "question": "(1) Sebagian dari kita mungkin masih asing dengan istilah pecalang. (2) Namun, tidak demikian dengan warga Bali. (3) Bali merupakan daerah yang tingkat kunjungannya sangat tinggi, itu berarti akan banyak sekali orang asing yang memasuki wilayah tersebut. (4) Pecalang sendiri bisa dikatakan polisi adat Bali. (5) Seperti halnya polisi atau satpam,     pecalang      juga     bertugas menjaga ketertiban, keamanan dan juga     kerap   mengawasi   kelancaran acara adat. (www.boombastis.com) Ide pokok paragraf di atas terdapat pada kalimat ....",
+    "question": "Ide pokok paragraf di atas terdapat pada kalimat ....",
     "category": "Pemahaman Bahasa",
     "difficulty": "Medium",
     "type": "multiple_choice",
@@ -2597,6 +2376,7 @@
         "label": "(5)"
       }
     ],
-    "correct": "D"
+    "correct": "D",
+    "article_quiz_title": "Bacaan Pecalang Polisi Adat Bali"
   }
 ]
