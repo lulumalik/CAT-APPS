@@ -1,0 +1,2447 @@
+[
+  {
+    "question": "[Sinonim] Lucut = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Lenyap"
+      },
+      {
+        "key": "B",
+        "label": "Telanjang"
+      },
+      {
+        "key": "C",
+        "label": "Hapus"
+      },
+      {
+        "key": "D",
+        "label": "Bersih"
+      },
+      {
+        "key": "E",
+        "label": "Ada"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Sinonim] Komunike = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Hubungan"
+      },
+      {
+        "key": "B",
+        "label": "Pengumuman"
+      },
+      {
+        "key": "C",
+        "label": "Peringatan"
+      },
+      {
+        "key": "D",
+        "label": "Pembiasaan"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Sinonim] Kompilasi = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Perpaduan"
+      },
+      {
+        "key": "B",
+        "label": "Duet"
+      },
+      {
+        "key": "C",
+        "label": "Kerja sama"
+      },
+      {
+        "key": "D",
+        "label": "Himpunan"
+      },
+      {
+        "key": "E",
+        "label": "Sepakat"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Sinonim] Lepas = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Cerai"
+      },
+      {
+        "key": "B",
+        "label": "Hancur"
+      },
+      {
+        "key": "C",
+        "label": "Luntur"
+      },
+      {
+        "key": "D",
+        "label": "Lenyap"
+      },
+      {
+        "key": "E",
+        "label": "Pecah"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Sinonim] Kaidah = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Aturan"
+      },
+      {
+        "key": "B",
+        "label": "Tata cara"
+      },
+      {
+        "key": "C",
+        "label": "Pola"
+      },
+      {
+        "key": "D",
+        "label": "Langkah"
+      },
+      {
+        "key": "E",
+        "label": "Pedoman KECERDASAN POLRI-1"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Sinonim] Subversif = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Mentaati"
+      },
+      {
+        "key": "B",
+        "label": "Menyimpang"
+      },
+      {
+        "key": "C",
+        "label": "Memberontak"
+      },
+      {
+        "key": "D",
+        "label": "Melawan"
+      },
+      {
+        "key": "E",
+        "label": "Bersekutu"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Sinonim] Provokasi = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Permintaan"
+      },
+      {
+        "key": "B",
+        "label": "Pujian"
+      },
+      {
+        "key": "C",
+        "label": "Hasutan"
+      },
+      {
+        "key": "D",
+        "label": "Rayuan"
+      },
+      {
+        "key": "E",
+        "label": "Sanjungan"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Sinonim] Ekspedisi = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Eksploitasi"
+      },
+      {
+        "key": "B",
+        "label": "Penjajahan"
+      },
+      {
+        "key": "C",
+        "label": "Penjelajahan"
+      },
+      {
+        "key": "D",
+        "label": "Pengiriman"
+      },
+      {
+        "key": "E",
+        "label": "Perjalanan"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Sinonim] Iterasi = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Repetisi"
+      },
+      {
+        "key": "B",
+        "label": "Tunggal"
+      },
+      {
+        "key": "C",
+        "label": "Sekali"
+      },
+      {
+        "key": "D",
+        "label": "Monologi"
+      },
+      {
+        "key": "E",
+        "label": "Morfologi"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Sinonim] Forte = ....",
+    "category": "Sinonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Lemah"
+      },
+      {
+        "key": "B",
+        "label": "Kuat"
+      },
+      {
+        "key": "C",
+        "label": "Semangat"
+      },
+      {
+        "key": "D",
+        "label": "Layu"
+      },
+      {
+        "key": "E",
+        "label": "Lunglai Petunjuk     untuk     nomor tentukan lawan (antonim) dari berikut:"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Antonim] Dupleks >< ....",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Rangkap"
+      },
+      {
+        "key": "B",
+        "label": "Tunggal"
+      },
+      {
+        "key": "C",
+        "label": "Kompleks"
+      },
+      {
+        "key": "D",
+        "label": "Simpel"
+      },
+      {
+        "key": "E",
+        "label": "Setara"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Antonim] Estetis >< ....",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Artistik"
+      },
+      {
+        "key": "B",
+        "label": "Indah"
+      },
+      {
+        "key": "C",
+        "label": "Buruk"
+      },
+      {
+        "key": "D",
+        "label": "Rupawa"
+      },
+      {
+        "key": "E",
+        "label": "Kaku"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Antonim] Praktis >< ....",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Mudah"
+      },
+      {
+        "key": "B",
+        "label": "Simpel"
+      },
+      {
+        "key": "C",
+        "label": "Kinestetis"
+      },
+      {
+        "key": "D",
+        "label": "Teoritis"
+      },
+      {
+        "key": "E",
+        "label": "Statis"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Antonim] Revolusi >< ....",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Rotasi"
+      },
+      {
+        "key": "B",
+        "label": "Evolusi"
+      },
+      {
+        "key": "C",
+        "label": "Polusi"
+      },
+      {
+        "key": "D",
+        "label": "Mengelilingi"
+      },
+      {
+        "key": "E",
+        "label": "Rehabilitasi"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Antonim] Kapabel >< ....",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Bodoh"
+      },
+      {
+        "key": "B",
+        "label": "Cerdik"
+      },
+      {
+        "key": "C",
+        "label": "Cendekia"
+      },
+      {
+        "key": "D",
+        "label": "Aktif"
+      },
+      {
+        "key": "E",
+        "label": "Pasif"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Antonim] Remisi >< .... 11   –   20:       A. Pengurangan kata                B. Penurunan",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "C",
+        "label": "Penambahan"
+      },
+      {
+        "key": "D",
+        "label": "Perbaikan"
+      },
+      {
+        "key": "E",
+        "label": "Pertumbuhan"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Antonim] Berdikari >< ....",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Mandiri"
+      },
+      {
+        "key": "B",
+        "label": "Bergantung"
+      },
+      {
+        "key": "C",
+        "label": "Independen"
+      },
+      {
+        "key": "D",
+        "label": "Kerja sama"
+      },
+      {
+        "key": "E",
+        "label": "Elegan"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Antonim] Makar >< ....",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Jujur"
+      },
+      {
+        "key": "B",
+        "label": "Tipu muslihat"
+      },
+      {
+        "key": "C",
+        "label": "Labil"
+      },
+      {
+        "key": "D",
+        "label": "Tertutup"
+      },
+      {
+        "key": "E",
+        "label": "Pasti"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Antonim] Hampa >< ....",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Angkasa"
+      },
+      {
+        "key": "B",
+        "label": "Kering"
+      },
+      {
+        "key": "C",
+        "label": "Gersang"
+      },
+      {
+        "key": "D",
+        "label": "Kosong"
+      },
+      {
+        "key": "E",
+        "label": "Berisi"
+      }
+    ],
+    "correct": "E"
+  },
+  {
+    "question": "[Antonim] Awam >< ....",
+    "category": "Antonim",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Amatir"
+      },
+      {
+        "key": "B",
+        "label": "Spesialis"
+      },
+      {
+        "key": "C",
+        "label": "Pakar"
+      },
+      {
+        "key": "D",
+        "label": "Lugu"
+      },
+      {
+        "key": "E",
+        "label": "Berada Petunjuk       untuk     nomor         21   –   30: tentukan       padanan          dari    hubungan makna kata berikut:"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Analogi Kata] Televisi : listrik = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Mobil : bensin"
+      },
+      {
+        "key": "B",
+        "label": "Kuda : kaki"
+      },
+      {
+        "key": "C",
+        "label": "Baju : detergen"
+      },
+      {
+        "key": "D",
+        "label": "Aki : batre"
+      },
+      {
+        "key": "E",
+        "label": "Sepeda : ontel"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Analogi Kata] Nyamuk : darah = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Kambing : susu"
+      },
+      {
+        "key": "B",
+        "label": "Kain : sutra"
+      },
+      {
+        "key": "C",
+        "label": "Sapi : keju"
+      },
+      {
+        "key": "D",
+        "label": "Lebah : madu"
+      },
+      {
+        "key": "E",
+        "label": "Burung : telur"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Analogi Kata] Statis : dinamis = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Sedih : sendu"
+      },
+      {
+        "key": "B",
+        "label": "Paham : pasti"
+      },
+      {
+        "key": "C",
+        "label": "Suka : duka"
+      },
+      {
+        "key": "D",
+        "label": "Senang : bahagia"
+      },
+      {
+        "key": "E",
+        "label": "Batu : pasir"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Analogi Kata] Air laut : asin = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Garam : asin"
+      },
+      {
+        "key": "B",
+        "label": "Mawar : wangi"
+      },
+      {
+        "key": "C",
+        "label": "Bangkai : busuk"
+      },
+      {
+        "key": "D",
+        "label": "Es : dingin"
+      },
+      {
+        "key": "E",
+        "label": "Air : mendidih"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Analogi Kata] Perahu : nahkoda = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Dokar : kuda"
+      },
+      {
+        "key": "B",
+        "label": "Mobil : mesin"
+      },
+      {
+        "key": "C",
+        "label": "Burung : sayap"
+      },
+      {
+        "key": "D",
+        "label": "Pesawat : pilot"
+      },
+      {
+        "key": "E",
+        "label": "Pasar : pedagang"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Analogi Kata] Kulkas : mesin cuci = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Kayu : api"
+      },
+      {
+        "key": "B",
+        "label": "Air : sungai"
+      },
+      {
+        "key": "C",
+        "label": "Sawah : padi"
+      },
+      {
+        "key": "D",
+        "label": "Merpati : elang"
+      },
+      {
+        "key": "E",
+        "label": "Katak : gurameh"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Analogi Kata] Kain : katun = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Bunga : taman"
+      },
+      {
+        "key": "B",
+        "label": "Sayap : terbang"
+      },
+      {
+        "key": "C",
+        "label": "Sepatu : kaki"
+      },
+      {
+        "key": "D",
+        "label": "Bulan : bintang"
+      },
+      {
+        "key": "E",
+        "label": "Buku : novel"
+      }
+    ],
+    "correct": "E"
+  },
+  {
+    "question": "[Analogi Kata] Diskon : rabat = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Statis : tetap"
+      },
+      {
+        "key": "B",
+        "label": "Statis : dinamis"
+      },
+      {
+        "key": "C",
+        "label": "Laba : rugi"
+      },
+      {
+        "key": "D",
+        "label": "Neto : tara"
+      },
+      {
+        "key": "E",
+        "label": "Bersih : kotor"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Analogi Kata] Kertas : pensil = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Sepatu : olahraga"
+      },
+      {
+        "key": "B",
+        "label": "Sepatu : kaos kaki"
+      },
+      {
+        "key": "C",
+        "label": "Biji : buah"
+      },
+      {
+        "key": "D",
+        "label": "Jalan : mobil"
+      },
+      {
+        "key": "E",
+        "label": "Kaki : tangan"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Analogi Kata] Bunga : buah = ....",
+    "category": "Analogi Kata",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Telur : itik"
+      },
+      {
+        "key": "B",
+        "label": "Buah : biji"
+      },
+      {
+        "key": "C",
+        "label": "Kayu : batang"
+      },
+      {
+        "key": "D",
+        "label": "Batu : tanah"
+      },
+      {
+        "key": "E",
+        "label": "Air : laut Bacaan untuk nomor 31 – 33 Bagas berencana membeli HP di toko Abadi Sejahtera. Sebelum pergi ke toko tersebut,   ia   telah      mencari   informasi mengenai harga dan spesifikasi HP. Ia merasa tertarik dengan 5 tipe HP dari brand yang sama. Kelima tipe HP tersebut adalah A, B, C, D, dan E. Masing-masing HP memiliki spesifikasi dan harga yang berbeda, yaitu: HP A lebih mahal dari HP B dan D tetapi lebih murah dari C. HP D lebih murah dari B dan C, sedangkan HP E lebih mahal dari C Uang yang dimiliki Bagas hanya cukup untuk membeli HP yang harganya di antara 2 tipe HP lainnya."
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Penalaran Analitis] HP yang harganya paling mahal adalah ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "A"
+      },
+      {
+        "key": "B",
+        "label": "B"
+      },
+      {
+        "key": "C",
+        "label": "C"
+      },
+      {
+        "key": "D",
+        "label": "D"
+      },
+      {
+        "key": "E",
+        "label": "E"
+      }
+    ],
+    "correct": "E"
+  },
+  {
+    "question": "[Penalaran Analitis] HP yang dibeli Bagas adalah ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "A"
+      },
+      {
+        "key": "B",
+        "label": "B"
+      },
+      {
+        "key": "C",
+        "label": "C"
+      },
+      {
+        "key": "D",
+        "label": "D"
+      },
+      {
+        "key": "E",
+        "label": "E"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Penalaran Analitis] Urutan harga HP yang disukai bagas dari yang paling mahal adalah ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "A, B, C, D, dan E"
+      },
+      {
+        "key": "B",
+        "label": "E, C, A, B, dan D"
+      },
+      {
+        "key": "C",
+        "label": "E, C, A, D, dan B"
+      },
+      {
+        "key": "D",
+        "label": "E, A, C, D, dan B"
+      },
+      {
+        "key": "E",
+        "label": "B, D, C, A, dan E Bacaan untuk nomor 34 – 37 Pak Toni memiliki 6 ekor ayam yang ia beri nama dengan menggunakan 6 huruf pertama pada abjad latin. Ayam-ayam tersebut akan ia jual untuk memenuhi kebutuhan sehari-hari. Harga jual ayam ditentukan oleh berat ayam tersebut. Ayam yang memiliki berat lebih besar harganya lebih mahal dari ayam yang lebih ringan. Ayam F lebih berat dari C dan E tetapi lebih ringan dari B. Pak Toni menjual ayam C dengan harga yang lebih murah dari E, tetapi lebih mahal dari A. Ayam A lebih ringan dari C tetapi lebih berat dari D"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Penalaran Analitis] Ayam pak Toni yang memilki harga jual paling murah adalah ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "B"
+      },
+      {
+        "key": "B",
+        "label": "C"
+      },
+      {
+        "key": "C",
+        "label": "D"
+      },
+      {
+        "key": "D",
+        "label": "E"
+      },
+      {
+        "key": "E",
+        "label": "F"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Penalaran Analitis] Urutan nama ayam pak Toni dari yang paling murah adalah ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "D, C, A, E, F, dan B"
+      },
+      {
+        "key": "B",
+        "label": "D, A, C, E, F, dan B"
+      },
+      {
+        "key": "C",
+        "label": "C, D, A, E, F, dan B"
+      },
+      {
+        "key": "D",
+        "label": "C, A, D, F, B, dan E"
+      },
+      {
+        "key": "E",
+        "label": "F, B, A, C, D, dan E"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Penalaran Analitis] Jika Ibu Sinta ingin membeli ayam pak Toni yang paling murah ke dua, maka ayam yang ia beli adalah ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "A"
+      },
+      {
+        "key": "B",
+        "label": "B"
+      },
+      {
+        "key": "C",
+        "label": "C"
+      },
+      {
+        "key": "D",
+        "label": "D"
+      },
+      {
+        "key": "E",
+        "label": "F"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Penalaran Analitis] Ayam pak Toni yang paling berat dan mahal adalah ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "F"
+      },
+      {
+        "key": "B",
+        "label": "E"
+      },
+      {
+        "key": "C",
+        "label": "D"
+      },
+      {
+        "key": "D",
+        "label": "C"
+      },
+      {
+        "key": "E",
+        "label": "B Bacaan untuk nomor 38 – 40 Almira, Sasya, Mila, Riskia, Hanna, dan Tania bergabung dalam sanggar senam Sehat. Mereka berharap dapat menurunkan berat badan dan memiliki berat ideal setelah bergabung dalam sanggar tersebut. Setelah 3 minggu melakukan senam rutin, diketahui bahwa: Mila mampu menurunkan berat badan 2 kali lipat dari Almira Sasya mampu menurunkan berat badan lebih banyak dari Hanna dan Tania, namun lebih sedikit dari Mila dan Riskia Berat badan Hanna berkurang lebih sedikit dari Almira Almira menurunkan berat badan lebih sedikit dari Tania dan Mila"
+      }
+    ],
+    "correct": "E"
+  },
+  {
+    "question": "[Penalaran Analitis] Jika Riskia berada pada urutan kedua yang mampu menurunkan berat badan paling banyak, maka yang berada pada urutan pertama adalah ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Almira"
+      },
+      {
+        "key": "B",
+        "label": "Sasya"
+      },
+      {
+        "key": "C",
+        "label": "Mila"
+      },
+      {
+        "key": "D",
+        "label": "Hanna"
+      },
+      {
+        "key": "E",
+        "label": "Tania"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Penalaran Analitis] Yang mampu menurunkan berat badan paling sedikit adalah ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Almira"
+      },
+      {
+        "key": "B",
+        "label": "Sasya"
+      },
+      {
+        "key": "C",
+        "label": "Mila"
+      },
+      {
+        "key": "D",
+        "label": "Hanna"
+      },
+      {
+        "key": "E",
+        "label": "Tania"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Penalaran Analitis] Sasya mampu menurunkan berat badan terbanyak ke ....",
+    "category": "Penalaran Analitis",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "1"
+      },
+      {
+        "key": "B",
+        "label": "3"
+      },
+      {
+        "key": "C",
+        "label": "4"
+      },
+      {
+        "key": "D",
+        "label": "5"
+      },
+      {
+        "key": "E",
+        "label": "6"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Deret Angka] 6, 9, 14, 21, 30, 41, ...., ...., 86",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "52 dan 64"
+      },
+      {
+        "key": "B",
+        "label": "53 dan 70"
+      },
+      {
+        "key": "C",
+        "label": "53 dan 69"
+      },
+      {
+        "key": "D",
+        "label": "54 dan 69"
+      },
+      {
+        "key": "E",
+        "label": "55 dan 70"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Deret Angka] 23, 26, 25, 24, 29, 22, 35, 20, ....",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "33"
+      },
+      {
+        "key": "B",
+        "label": "39"
+      },
+      {
+        "key": "C",
+        "label": "41"
+      },
+      {
+        "key": "D",
+        "label": "43"
+      },
+      {
+        "key": "E",
+        "label": "44"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Deret Angka] 102, 34, 56, 68, 28, 136, ...",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "14"
+      },
+      {
+        "key": "B",
+        "label": "16"
+      },
+      {
+        "key": "C",
+        "label": "54"
+      },
+      {
+        "key": "D",
+        "label": "96"
+      },
+      {
+        "key": "E",
+        "label": "108"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Deret Angka] 3, 6, 13, 28, 59, ....",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "108"
+      },
+      {
+        "key": "B",
+        "label": "112"
+      },
+      {
+        "key": "C",
+        "label": "118"
+      },
+      {
+        "key": "D",
+        "label": "120"
+      },
+      {
+        "key": "E",
+        "label": "122"
+      }
+    ],
+    "correct": "E"
+  },
+  {
+    "question": "[Deret Angka] 1, 3, 4, 7, 11, 18, 29, ...., 76",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "40"
+      },
+      {
+        "key": "B",
+        "label": "43"
+      },
+      {
+        "key": "C",
+        "label": "47"
+      },
+      {
+        "key": "D",
+        "label": "49"
+      },
+      {
+        "key": "E",
+        "label": "51"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Deret Angka] 37, 35, 35, 38, 33, 41, ....",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "31"
+      },
+      {
+        "key": "B",
+        "label": "33"
+      },
+      {
+        "key": "C",
+        "label": "35"
+      },
+      {
+        "key": "D",
+        "label": "37"
+      },
+      {
+        "key": "E",
+        "label": "39"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Deret Angka] 13, 6, 18, 12, 30, 24, 54, ...., ....,",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "36 dan 88"
+      },
+      {
+        "key": "B",
+        "label": "42 dan 96"
+      },
+      {
+        "key": "C",
+        "label": "48 dan 88"
+      },
+      {
+        "key": "D",
+        "label": "48 dan 102"
+      },
+      {
+        "key": "E",
+        "label": "60 dan 114"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Deret Angka] 6, 4, 10, 10, 20, ...., 36, 22, ....",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "16 dan 42"
+      },
+      {
+        "key": "B",
+        "label": "16 dan 58"
+      },
+      {
+        "key": "C",
+        "label": "18 dan 42"
+      },
+      {
+        "key": "D",
+        "label": "26 dan 42"
+      },
+      {
+        "key": "E",
+        "label": "30 dan 58"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Deret Angka] 24, 25, 26, 28, 28, 31, 30, ....",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "32"
+      },
+      {
+        "key": "B",
+        "label": "33"
+      },
+      {
+        "key": "C",
+        "label": "34"
+      },
+      {
+        "key": "D",
+        "label": "35"
+      },
+      {
+        "key": "E",
+        "label": "36"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Deret Angka] 53, 26, 57, 28, 61, 30 , ....",
+    "category": "Deret Angka",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "32"
+      },
+      {
+        "key": "B",
+        "label": "34"
+      },
+      {
+        "key": "C",
+        "label": "63"
+      },
+      {
+        "key": "D",
+        "label": "65"
+      },
+      {
+        "key": "E",
+        "label": "67"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Logika Silogisme] Semua anggota TNI memiliki tubuh yang sehat dan kuat. Anggi adalah anggota TNI. Simpulan yang tepat adalah ....",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Anggi memiliki tubuh yang sehat"
+      },
+      {
+        "key": "B",
+        "label": "Anggi memiliki tubuh yang kuat"
+      },
+      {
+        "key": "C",
+        "label": "Anggi memiliki tubuh yang sehat dan kuat"
+      },
+      {
+        "key": "D",
+        "label": "Anggi memiliki tubuh yang sehat atau kuat 96       E. Anggi adalah anggota TNI yang baik"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Logika Silogisme] Jika ada pemadaman listrik, ibu tidak dapat membuat kue untuk dijual. Jika ibu tidak membuat kue, ia merasa sedih. Ibu merasa senang. Simpulan yang tepat adalah ....",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Tidak terjadi pemadaaman listrik"
+      },
+      {
+        "key": "B",
+        "label": "Ada pemadaman listrik"
+      },
+      {
+        "key": "C",
+        "label": "Ibu dapat membuat kue"
+      },
+      {
+        "key": "D",
+        "label": "Ibu tidak dapat membuat kue"
+      },
+      {
+        "key": "E",
+        "label": "Ibu mendapatkan uang belanja tambahan dari ayah"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Logika Silogisme] Semua      karyawan      diperusahaan      A pandai      berbahasa     Inggris.      Andika karyawan di perusahaan A. Andika pandai menyanyi dan bermain musik. Simpulan yang tepat adalah ....",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Andika tidak pandai berbahasa Inggris"
+      },
+      {
+        "key": "B",
+        "label": "Andika             adalah         karyawan perusahaan A yang tidak pandai berbahasa Ingggis"
+      },
+      {
+        "key": "C",
+        "label": "Andika pandai menyanyi, bermain musik, dan berbahasa Inggris"
+      },
+      {
+        "key": "D",
+        "label": "Andika memiliki bakat seni yang baik"
+      },
+      {
+        "key": "E",
+        "label": "Andika          mewarisi     bakat    kedua orang tuanya dalam bidang seni"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Logika Silogisme] Pak Hasan memiliki kebun seluas 1 hektar. Semua bagian kebun tersebut ditanami pohon jeruk. Pak Hasan sedang memanen jeruk, di antara pohonjeruk yang sedang ia panen terdapat pohon cabai. Simpulan yang tepat adalah ....",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Pak Hasan memanen jeruk di kebun miliknya."
+      },
+      {
+        "key": "B",
+        "label": "Pak Hasan memanen jeruk dan cabai       dalam          waktu      yang bersamaan."
+      },
+      {
+        "key": "C",
+        "label": "Pak      Hasan      mendapatkan        uang tambahan dengan menanam pohon cabai     di     antara     pohon    jeruk miliknya."
+      },
+      {
+        "key": "D",
+        "label": "Pak Hasan memanen jeruk di kebun orang lain."
+      },
+      {
+        "key": "E",
+        "label": "Sebagian      kebun      pak   Hasan ditanami pohon cabai."
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Logika Silogisme] Semua makanan yang dikemas dengan cara menarik disukai anak-anak. Ibu Mita menjual kue klepon. Kue klepon yang ia jual berwarna cerah dan berbentuk karakter kartun. Simpulan yang tepat adalah ....",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Anak-anak menyukai warna cerah dan karakter kartun"
+      },
+      {
+        "key": "B",
+        "label": "Anak-anak menyukai klepon ibu Mita"
+      },
+      {
+        "key": "C",
+        "label": "Ibu Mita menjual kue klepon dalam kemasan yang menarik"
+      },
+      {
+        "key": "D",
+        "label": "Ibu Mita berharap kue klepon miliknya akan disukai anak-anak"
+      },
+      {
+        "key": "E",
+        "label": "Warna cerah dan karakter kartun dapat menarik perhatian anak-anak."
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Logika Silogisme] Jika hari hujan, Anita belajar merajut dengan      nenek.       Nenek    sedang menonton televisi dengan ibu dan adik. Simpulan yang tepat adalah ....",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Anita tidak belajar merajut dengan nenek"
+      },
+      {
+        "key": "B",
+        "label": "Nenek tidak mau mengajari Anita merajut"
+      },
+      {
+        "key": "C",
+        "label": "Nenek lebih suka menonton televisi daripada mengajari Anita merajut"
+      },
+      {
+        "key": "D",
+        "label": "Hari ini hujan"
+      },
+      {
+        "key": "E",
+        "label": "Hari ini cerah"
+      }
+    ],
+    "correct": "E"
+  },
+  {
+    "question": "[Logika Silogisme] Semua pasien di rumah sakit Pelita Harapan mengenakan baju berwarna hijau muda. Samsul berada di rumah sakit Pelita Harapan. Ia mengenakan baju berwarna hijau muda. Simpulan yang tepat adalah ....",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Samsul adalah pasien di rumah sakit pelita harapan"
+      },
+      {
+        "key": "B",
+        "label": "Samsul           sedang    menjenguk temannya yang sakit"
+      },
+      {
+        "key": "C",
+        "label": "Samsul bukan pasien di rumah sakit Pelita Harapan"
+      },
+      {
+        "key": "D",
+        "label": "Samsul mengenakan baju berwarna hijau mudan dan celana coklat"
+      },
+      {
+        "key": "E",
+        "label": "Samsul sedang menemani ayak cek up rutin"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Logika Silogisme] Semua HP android memerlukan paket data. Sasa senang bermain game online. Sasa bermain game online dengan HP android. Simpulan yang tepat adalah ....",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Sasa menggunakan wifi          untuk bermain game online"
+      },
+      {
+        "key": "B",
+        "label": "Sasa memerlukan paket data untuk bermain game online di HPnya"
+      },
+      {
+        "key": "C",
+        "label": "Sasa tidak memerlukan paket data untuk bermain game online di Hpnya"
+      },
+      {
+        "key": "D",
+        "label": "Sasa tidak memiliki paket data untuk bermain game"
+      },
+      {
+        "key": "E",
+        "label": "Sasa lebih suka bermain game offline daripada online"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Logika Silogisme] Jika musim kemarau tiba, semua pohon di kebun pak Roni menggugurkan daunnya. Pohon-pohon di kebun pak Roni      menggugurkan          daunnya. Simpulan yang tepat adalah ....",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Musim kemarau sudah tiba"
+      },
+      {
+        "key": "B",
+        "label": "Musim kemarau belum tiba"
+      },
+      {
+        "key": "C",
+        "label": "Sebagian pohon di kebun pak Roni tidak menggugurkan daunnya di musim kemarau"
+      },
+      {
+        "key": "D",
+        "label": "Pohon di kebun pak Roni berdaun kuning pada musim kemarau"
+      },
+      {
+        "key": "E",
+        "label": "Jika musim penghujan, pohon di kebun pak Roni berdaun lebat dan berwarna hijau."
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Logika Silogisme] Semua warga negara indonesia yang sudah memiliki KTP memiliki hak pilih dalam pemilu. Beberapa pelajar SMA     dapat    bekontribusi     dalam memilih presiden pada pemilu tahun 2019.",
+    "category": "Logika Silogisme",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Beberapa     pelajar   SMA      tidak memiliki hak pilih"
+      },
+      {
+        "key": "B",
+        "label": "Ada pelajar SMA yang sudah memiliki hak pilih"
+      },
+      {
+        "key": "C",
+        "label": "Ada pelajar SMA yang belum memiliki KTP"
+      },
+      {
+        "key": "D",
+        "label": "Beberapa     pelajar   SMA     sudah memiliki KTP"
+      },
+      {
+        "key": "E",
+        "label": "Semua pelajar SMA adalah warga negara Indonesia"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Penalaran Spasial] Gambar untuk nomor",
+    "category": "Penalaran Spasial",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [],
+    "correct": "A",
+    "image": "/storage/questions/image1.png"
+  },
+  {
+    "question": "Soal Nomor 62",
+    "category": "Penalaran Spasial",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [],
+    "correct": "C",
+    "image": "/storage/questions/image2.png"
+  },
+  {
+    "question": "Soal Nomor 63",
+    "category": "Penalaran Spasial",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "C",
+        "label": "4"
+      },
+      {
+        "key": "D",
+        "label": "5"
+      },
+      {
+        "key": "E",
+        "label": "6 64 -66 a yang terdapat pada adalah .... atas terdapat .... jenis"
+      }
+    ],
+    "correct": "B",
+    "image": "/storage/questions/image3.png"
+  },
+  {
+    "question": "[Penalaran Spasial] Jumlah segitig gambar di atas",
+    "category": "Penalaran Spasial",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "8"
+      },
+      {
+        "key": "B",
+        "label": "11"
+      },
+      {
+        "key": "C",
+        "label": "13"
+      },
+      {
+        "key": "D",
+        "label": "15"
+      },
+      {
+        "key": "E",
+        "label": "17"
+      }
+    ],
+    "correct": "E",
+    "image": "/storage/questions/image4.png"
+  },
+  {
+    "question": "[Penalaran Spasial] Pada gambar di C      segi empat",
+    "category": "Penalaran Spasial",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "2"
+      },
+      {
+        "key": "B",
+        "label": "3"
+      }
+    ],
+    "correct": "B",
+    "image": "/storage/questions/image5.png"
+  },
+  {
+    "question": "[Penalaran Spasial] Bangun datar yang tidak gambar di atas adalah",
+    "category": "Penalaran Spasial",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Segitiga siku-siku"
+      },
+      {
+        "key": "B",
+        "label": "Segitiga sama kaki"
+      },
+      {
+        "key": "C",
+        "label": "Persegi"
+      },
+      {
+        "key": "D",
+        "label": "Persegipanjang"
+      },
+      {
+        "key": "E",
+        "label": "Belah ketupat"
+      }
+    ],
+    "correct": "C",
+    "image": "/storage/questions/image6.png"
+  },
+  {
+    "question": "Soal Nomor 67",
+    "category": "Penalaran Spasial",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [],
+    "correct": "D",
+    "image": "/storage/questions/image7.png"
+  },
+  {
+    "question": "[Penalaran Spasial] terdapat pada ....",
+    "category": "Penalaran Spasial",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [],
+    "correct": "B",
+    "image": "/storage/questions/image8.png"
+  },
+  {
+    "question": "Soal Nomor 69",
+    "category": "Penalaran Spasial",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [],
+    "correct": "C",
+    "image": "/storage/questions/image9.png"
+  },
+  {
+    "question": "[Matematika Dasar] Jika     garis   putus-putus   merupakan cermin, maka gambar yang tepat untuk menggantikan tanda tanya        berikut adalah ....",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [],
+    "correct": "D"
+  },
+  {
+    "question": "[Matematika Dasar] Hasil pengurangan ( 3a + 4 ) adalah .... 2",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "9a2 + 24a + 16"
+      },
+      {
+        "key": "B",
+        "label": "3a2 + 24a + 24 2"
+      },
+      {
+        "key": "C",
+        "label": "3a + 24a + 8"
+      },
+      {
+        "key": "D",
+        "label": "– 3a2 + 24a – 8"
+      },
+      {
+        "key": "E",
+        "label": "– 3a2 – 24a – 8"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Matematika Dasar] Bentuk sederhana dari adalah .... 1 6",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "a 2 -6"
+      },
+      {
+        "key": "B",
+        "label": "2a"
+      },
+      {
+        "key": "C",
+        "label": "2a6"
+      },
+      {
+        "key": "D",
+        "label": "64a6 6   6"
+      },
+      {
+        "key": "E",
+        "label": "2 a"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Matematika Dasar] Nilai p yang memenuhi persamaan 3− p = 1 adalah .... p−9",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "– 16"
+      },
+      {
+        "key": "B",
+        "label": "– 4"
+      },
+      {
+        "key": "C",
+        "label": "4"
+      },
+      {
+        "key": "D",
+        "label": "9"
+      },
+      {
+        "key": "E",
+        "label": "16"
+      }
+    ],
+    "correct": "E"
+  },
+  {
+    "question": "[Matematika Dasar] Jumlah semua akar-akar persamaan 24x 2 −10x3 = 4x 4 adalah .... 11",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "− 2 5"
+      },
+      {
+        "key": "B",
+        "label": "– 2 5 ( 2 3a 2 − 4   )   dari"
+      },
+      {
+        "key": "C",
+        "label": " 2 11"
+      },
+      {
+        "key": "D",
+        "label": " 2"
+      },
+      {
+        "key": "E",
+        "label": "11 (( x ) ) 3               y 2 −5      1  −2"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Matematika Dasar] Jika                            =            untuk   x  729  bilangan bulatpositif, maka nilai (xy – x + 2y) adalah .... −4                1  2  a    ( )  −3 2               A. – 5                               B. – 3 2",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "C",
+        "label": "− 5"
+      },
+      {
+        "key": "D",
+        "label": "4"
+      },
+      {
+        "key": "E",
+        "label": "5 (56a b c )   32b  = .... 4                −2 −2 2                    5"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Matematika Dasar]       ( 2b  49c )  14a c  2      4 6 −2           3",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "196a2b22c10"
+      },
+      {
+        "key": "B",
+        "label": "196b22c10"
+      },
+      {
+        "key": "C",
+        "label": "49 a2b22c10"
+      },
+      {
+        "key": "D",
+        "label": "14 a3b12c-10"
+      },
+      {
+        "key": "E",
+        "label": "7 a5b2c10"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Matematika Dasar] Jika p = 2, q = – 3, d p7 q14 r  2 nilai dari           p r5  32",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "− 3 3"
+      },
+      {
+        "key": "B",
+        "label": "− 32"
+      },
+      {
+        "key": "C",
+        "label": "8"
+      },
+      {
+        "key": "D",
+        "label": "72"
+      },
+      {
+        "key": "E",
+        "label": "96"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Matematika Dasar] Diketahui     3 729 4a2b adalah ....",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "3"
+      },
+      {
+        "key": "B",
+        "label": "9"
+      },
+      {
+        "key": "C",
+        "label": "12"
+      },
+      {
+        "key": "D",
+        "label": "48"
+      },
+      {
+        "key": "E",
+        "label": "96"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Matematika Dasar] Hasil ( 2a − 4b − 5ab ) ( +  ab adalah ....",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "– 13a + b – 10ab"
+      },
+      {
+        "key": "B",
+        "label": "8a – 5b – 10ab"
+      },
+      {
+        "key": "C",
+        "label": "13a + b – 10ab"
+      },
+      {
+        "key": "D",
+        "label": "13a – b + 10ab"
+      },
+      {
+        "key": "E",
+        "label": "13a + 5b – 10ab"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Matematika Dasar] Jika a adalah bilangan memenuhi persamaa 25a maka nilai a adalah ..",
+    "category": "Matematika Dasar",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "5log 2"
+      },
+      {
+        "key": "B",
+        "label": "3log 5"
+      },
+      {
+        "key": "C",
+        "label": "2log 5"
+      },
+      {
+        "key": "D",
+        "label": "5log 2 dan 5log 3"
+      },
+      {
+        "key": "E",
+        "label": "5log 3 dan 2log 5 an r = 6, maka −3                   Bacaan untuk nomor 81 dan 82 3 2  qr         adalah .... Pengamat Politik Universitas Indonesia  Cecep Hidayat menuturkan, Rizieq Shihab tentu     menyadari         bahwa     ia    bukanlah sekadar sosok biasa. Basis massa yang luas bikin     elit    politik    harus     pintar-pintar membangun            komunikasi            dengannya. Makanya, Rizieq tidak sekadar mewakili entitas         tunggal,     namun          mewakili sekelompok orang yang punya loyalitas = a 2b . Nilai dari tinggi.(www.cnnindonesia.com)"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Pemahaman Bahasa] Kata bergaris bawah di atas akan lebih lugas jika digantikan dengan ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Menyatakan, membuat, maka"
+      },
+      {
+        "key": "B",
+        "label": "Mengatakan, membuat, oleh karena itu"
+      },
+      {
+        "key": "C",
+        "label": "Mengatakan,                   mengakibatkan, dari karena − 4a + 2b ) ( − 11a − 3b + 6ab ) D. Menyatakan,         mengakibatkan, karena"
+      },
+      {
+        "key": "E",
+        "label": "Berkata, karena, sehingga"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Pemahaman Bahasa] Kalimat pertama pada paragraf di atas merupakan contoh kalimat ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Langsung"
+      },
+      {
+        "key": "B",
+        "label": "Tidak langsung riil yang"
+      },
+      {
+        "key": "C",
+        "label": "Sebab akibat + 5a = 6,"
+      },
+      {
+        "key": "D",
+        "label": "Tunggal .."
+      },
+      {
+        "key": "E",
+        "label": "Majemuk"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Pemahaman Bahasa] Bagi anda yang sering mengkonsumsi pil – pil vitamin A, mungkin sebaiknya anda harus segera beralih pada sayuran berwarna orange. Ya, wortel memiliki banyak sekali kandungan vitamin A- nya. Bahkan di antara nutrisi yang lainnya, vitamin A memiliki nilai yang paling tinggi. Tidak hanya vitamin A, wortel juga mengandung berbagai nutrisi lainnya yang dibutuhkan oleh tubuh     kita.     Jadi,      jika      anda mengkonsumsi        wortel       khususnya wortel    mentah,     selain     memenuhi kebutuhan vitamin A, anda juga bisa memperoleh manfaat nutrisi lainnya. (www.manfaat.co.id) Ide pokok paragraf di atas adalah ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Manfaat wortel bagi tubuh"
+      },
+      {
+        "key": "B",
+        "label": "Manfaat wortel mentah bagi tubuh"
+      },
+      {
+        "key": "C",
+        "label": "Wortel dapat memenuhi kebutuhan vitamin bagi tubuh"
+      },
+      {
+        "key": "D",
+        "label": "Kandungan vitamin A pada wortel"
+      },
+      {
+        "key": "E",
+        "label": "Wortel kaya akan nutrisi"
+      }
+    ],
+    "correct": "D"
+  },
+  {
+    "question": "[Pemahaman Bahasa] MOBILE Legends adalah salah satu game andalan dari MOBA yang sangat populer    dan      diminati          berbagai kalangan. Mulai dari remaja hingga dewasa, game ini sangat digandrungi terutama di Asia. Sebanyak 10 juta akun diketahui telah mengunduh game ini di Google Play Store maupun Apple App Store.(www.id.wikipedia.org) Peminat mobile legends meliputi ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Anak-anak"
+      },
+      {
+        "key": "B",
+        "label": "Remaja"
+      },
+      {
+        "key": "C",
+        "label": "Remaja dan dewasa"
+      },
+      {
+        "key": "D",
+        "label": "Dewasa"
+      },
+      {
+        "key": "E",
+        "label": "Semua kalangan tanpa batasan umur"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Pemahaman Bahasa] Sebagai bagian dari TNI, tugas pokok TNI       AD      adalah        menegakkan kedaulatan negara, mempertahankan keutuhan wilayah Negara Kesatuan Republik Indonesia yang berdasarkan Pancasila dan Undang Undang Dasar Negara Republik Indonesia Tahun 1945, serta melindungi segenap bangsa dan seluruh tumpah darah Indonesia dari ancaman dan gangguan terhadap keutuhan               bangsa          dan negara.(www.tniad.mil.id) Ide pokok dari paragraf di atas adalah ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Tugas pokok TNI"
+      },
+      {
+        "key": "B",
+        "label": "Tugas pokok TNI AD"
+      },
+      {
+        "key": "C",
+        "label": "Peranan TNI"
+      },
+      {
+        "key": "D",
+        "label": "Fungsi TNI"
+      },
+      {
+        "key": "E",
+        "label": "Kewenangan TNI Bacaan untuk nomor 86 dan 88 (1)Drama Setya     Novanto berakhir      pada Selasa 24 April 2018. (2) Ia yang duduk kursi            pesakitan beberapa       kali memejamkan         mata       ketika    hakim Pengadilan           Tipikor           Jakarta membacakan putusannya. (3) Namun, ia tak sedang tertidur. (4) Sesekali, pria 62 tahun itu mengarahkan pandangan ke majelis hakim. (5) Nasibnya akan segera ditentukan oleh lima orang di hadapannya itu. (6)Tak lama kemudian, vonis 15 tahun penjara dijatuhkan pada terpidana kasus dugaan       korupsi      e-KTP       itu.      (7) \"Menjatuhkan pidana 15 tahun penjara dan denda Rp 500 juta,\" ujar Hakim Ketua Yanto.(www.liputan6.com)"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Pemahaman Bahasa] Paragraf di atas menceritakan tentang ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Perjalanan hidup Setya Novanto"
+      },
+      {
+        "key": "B",
+        "label": "Keputusan          hakim     pada      sidang kasus Setya Novanto"
+      },
+      {
+        "key": "C",
+        "label": "Akhir karir Setya Novanto"
+      },
+      {
+        "key": "D",
+        "label": "Drama tentang Setya Novanto"
+      },
+      {
+        "key": "E",
+        "label": "Tindak lanjut kasus Setya Novanto"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Pemahaman Bahasa] Kalimat      yang    mengandung          majas adalah ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "(1)"
+      },
+      {
+        "key": "B",
+        "label": "(2)"
+      },
+      {
+        "key": "C",
+        "label": "(4)"
+      },
+      {
+        "key": "D",
+        "label": "(5)"
+      },
+      {
+        "key": "E",
+        "label": "(7)"
+      }
+    ],
+    "correct": "B"
+  },
+  {
+    "question": "[Pemahaman Bahasa] Kata dijatuhkan pada kalimat (6) dapat diganti dengan ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Ditangguhkan"
+      },
+      {
+        "key": "B",
+        "label": "disampaikan"
+      },
+      {
+        "key": "C",
+        "label": "Diberikan"
+      },
+      {
+        "key": "D",
+        "label": "Dibebankan"
+      },
+      {
+        "key": "E",
+        "label": "Diterima"
+      }
+    ],
+    "correct": "C"
+  },
+  {
+    "question": "[Pemahaman Bahasa] Brimob       dalam    fungsi    operasional kepolisian merupakan salah satu unsur pelaksana utama polriyang bertugas membina           kemampuan            dan mengerahkan kekuatan. Brimob Polri dalam       menanggulangi         gangguan keamanan dalam negeri berintentitas tinggi, utamanya kerusuhan massa, kejahatan terorganisir senjata api atau bahan peledak, penanganan senjata kimia, biologi dan radioaktif, serta pelaksanaan      kegiatan    SAR      guna mewujudkan       tertib     hukum     serta ketentraman      masyarakat       diseluruh wilayah     yuridis    Negara     Kesatuan Republik Indonesia dan tugas-tugas lain          yang               dibebankan kepadanya. (http://patriasespati.blogsp ot.co.id) Bacaan di atas menjelaskan tentang ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "Tugas brimob"
+      },
+      {
+        "key": "B",
+        "label": "Fungsi brimob"
+      },
+      {
+        "key": "C",
+        "label": "Wewenang brimob"
+      },
+      {
+        "key": "D",
+        "label": "Manfaat brimob"
+      },
+      {
+        "key": "E",
+        "label": "Kedudukan           brimob        dalam kepolisian"
+      }
+    ],
+    "correct": "A"
+  },
+  {
+    "question": "[Pemahaman Bahasa] (1) Sebagian dari kita mungkin masih asing dengan istilah pecalang. (2) Namun, tidak demikian dengan warga Bali. (3) Bali merupakan daerah yang tingkat kunjungannya sangat tinggi, itu berarti akan banyak sekali orang asing yang memasuki wilayah tersebut. (4) Pecalang sendiri bisa dikatakan polisi adat Bali. (5) Seperti halnya polisi atau satpam,     pecalang      juga     bertugas menjaga ketertiban, keamanan dan juga     kerap   mengawasi   kelancaran acara adat. (www.boombastis.com) Ide pokok paragraf di atas terdapat pada kalimat ....",
+    "category": "Pemahaman Bahasa",
+    "difficulty": "Medium",
+    "type": "multiple_choice",
+    "options": [
+      {
+        "key": "A",
+        "label": "(1)"
+      },
+      {
+        "key": "B",
+        "label": "(2)"
+      },
+      {
+        "key": "C",
+        "label": "(3)"
+      },
+      {
+        "key": "D",
+        "label": "(4)"
+      },
+      {
+        "key": "E",
+        "label": "(5)"
+      }
+    ],
+    "correct": "D"
+  }
+]
