@@ -130,6 +130,7 @@ const { t } = useI18n()
 const keysList = ['A', 'B', 'C', 'D', 'E', 'F']
 
 const categories = [
+  'Umum',
   'Kewarganegaraan',
   'Math',
   'English',

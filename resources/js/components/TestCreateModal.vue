@@ -32,7 +32,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.testCreate.categoryLabel') }}</label>
             <select v-model="form.category" class="w-full rounded-xl border-gray-100 bg-gray-50 px-4 py-3 focus:bg-white focus:border-gray-200 focus:ring-0 transition-all">
               <option value="">{{ t('modals.testCreate.categoryPlaceholder') }}</option>
-              <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+              <option v-for="c in availableCategories" :key="c" :value="c">{{ c }}</option>
             </select>
           </div>
           <div>
@@ -121,6 +121,32 @@
 <script setup>
 import { reactive, computed, ref, watch } from 'vue'
 import { useI18n } from '@/composables/useI18n'
+
+const defaultCategories = [
+  'Umum',
+  'Tryout',
+  'Latihan',
+  'Ujian',
+  'Kewarganegaraan',
+  'Math',
+  'English',
+  'Interpersonal Skill',
+  'Sinonim',
+  'Antonim',
+  'Analogi',
+  'Penalaran Analitis',
+  'Deret Angka',
+  'Penalaran Logis',
+  'Aljabar & Aritmatika',
+  'Pemahaman Bahasa',
+]
+
+const availableCategories = computed(() => {
+  if (props.categories && props.categories.length > 0) {
+    return Array.from(new Set([...props.categories, ...defaultCategories]))
+  }
+  return defaultCategories
+})
 
 const props = defineProps({
   initial: { type: Object, default: null },

@@ -365,15 +365,23 @@ const createButtonLabel = computed(() => (isExamPage.value ? t('exams.createTest
 const apiBase = computed(() => (isExamPage.value ? '/api/exams' : '/api/tests'))
 
 const categories = [
+  'Umum',
+  'Tryout',
+  'Tryout Gratis',
+  'Latihan',
+  'Ujian',
   'Kewarganegaraan',
   'Math',
   'English',
   'Interpersonal Skill',
-  // 'Science',
-  // 'IT',
-  // 'Geography',
-  // 'History',
-  // 'General Knowledge',
+  'Sinonim',
+  'Antonim',
+  'Analogi',
+  'Penalaran Analitis',
+  'Deret Angka',
+  'Penalaran Logis',
+  'Aljabar & Aritmatika',
+  'Pemahaman Bahasa',
 ]
 
 const filtered = computed(() => {
