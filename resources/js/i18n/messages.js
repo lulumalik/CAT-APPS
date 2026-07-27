@@ -395,6 +395,11 @@ export const messages = {
       globalQuestionsSection: 'Soal global',
       myQuestionBadge: 'Soal Anda',
       noResultsFound: 'Tidak ada soal yang cocok dengan filter.',
+      deleteAllQuestions: 'Hapus Semua Soal',
+      deleteAllConfirmTitle: 'Hapus Semua Bank Soal',
+      deleteAllConfirmMessage: 'Apakah Anda yakin ingin menghapus semua bank soal? Tindakan ini tidak dapat dibatalkan.',
+      toastAllDeleted: 'Semua bank soal berhasil dihapus',
+      toastDeleteAllFailed: 'Gagal menghapus semua bank soal',
     },
     users: {
       title: 'Manajemen Pengguna',
@@ -1147,6 +1152,11 @@ export const messages = {
       globalQuestionsSection: 'Global questions',
       myQuestionBadge: 'Your question',
       noResultsFound: 'No questions match your filters.',
+      deleteAllQuestions: 'Delete All Questions',
+      deleteAllConfirmTitle: 'Delete All Question Bank',
+      deleteAllConfirmMessage: 'Are you sure you want to delete all questions in the bank? This action cannot be undone.',
+      toastAllDeleted: 'All questions deleted successfully',
+      toastDeleteAllFailed: 'Failed to delete all questions',
     },
     users: {
       title: 'User Management',

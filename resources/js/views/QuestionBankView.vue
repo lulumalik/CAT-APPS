@@ -7,10 +7,20 @@
       :icon="LibraryBig"
     >
       <template #actions>
-        <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openAdd">
-          <Plus class="h-[18px] w-[18px]" />
-          {{ t('questionBank.addQuestion') }}
-        </button>
+        <div class="flex items-center gap-3">
+          <button
+            v-if="total > 0"
+            class="px-6 py-2.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors shadow-lg shadow-black/10 flex items-center gap-2"
+            @click="removeAll"
+          >
+            <Trash2 class="h-[18px] w-[18px]" />
+            {{ t('questionBank.deleteAllQuestions') }}
+          </button>
+          <button class="px-6 py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors shadow-lg shadow-black/10 flex items-center gap-2" @click="openAdd">
+            <Plus class="h-[18px] w-[18px]" />
+            {{ t('questionBank.addQuestion') }}
+          </button>
+        </div>
       </template>
     </PageHeroHeader>
 
@@ -170,7 +180,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { LibraryBig, Plus } from 'lucide-vue-next'
+import { LibraryBig, Plus, Trash2 } from 'lucide-vue-next'
 import QuestionModal from '@/components/QuestionModal.vue'
 import QuestionCardBody from '@/components/QuestionCardBody.vue'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
@@ -275,6 +285,25 @@ const remove = async (question) => {
       toast.success('Success', t('questionBank.toastDeleted'))
     } catch (e) {
       toast.error('Error', t('questionBank.toastDeleteFailed'))
+    }
+  }
+}
+
+const removeAll = async () => {
+  const confirmed = await confirm({
+    title: t('questionBank.deleteAllConfirmTitle'),
+    message: t('questionBank.deleteAllConfirmMessage'),
+    confirmText: t('common.delete'),
+    type: 'danger'
+  })
+
+  if (confirmed) {
+    try {
+      await window.axios.delete('/api/questions/all')
+      await loadQuestions()
+      toast.success('Success', t('questionBank.toastAllDeleted'))
+    } catch (e) {
+      toast.error('Error', t('questionBank.toastDeleteAllFailed'))
     }
   }
 }

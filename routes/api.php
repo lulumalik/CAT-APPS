@@ -172,6 +172,8 @@ Route::middleware(['auth', 'role:admin,mentor'])->group(function () {
 
     Route::get('/questions', [QuestionController::class, 'index']);
     Route::post('/questions', [QuestionController::class, 'store']);
+    Route::delete('/questions/all', [QuestionController::class, 'destroyAll']);
+    Route::delete('/questions', [QuestionController::class, 'destroyAll']);
     Route::put('/questions/{question}', [QuestionController::class, 'update']);
     Route::delete('/questions/{question}', [QuestionController::class, 'destroy']);
 

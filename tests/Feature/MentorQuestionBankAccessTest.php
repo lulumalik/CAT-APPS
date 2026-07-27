@@ -202,4 +202,65 @@ class MentorQuestionBankAccessTest extends TestCase
             'correct' => 'B',
         ])->assertOk()->assertJsonPath('question', 'Soal mentor diperbarui');
     }
+
+    public function test_admin_can_delete_all_questions(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        Question::create([
+            'question' => 'Soal 1',
+            'category' => 'Math',
+            'difficulty' => 'Easy',
+            'type' => 'multiple_choice',
+            'options' => ['A', 'B', 'C', 'D'],
+            'correct' => 'A',
+            'created_by' => $admin->id,
+        ]);
+
+        Question::create([
+            'question' => 'Soal 2',
+            'category' => 'Math',
+            'difficulty' => 'Easy',
+            'type' => 'multiple_choice',
+            'options' => ['A', 'B', 'C', 'D'],
+            'correct' => 'A',
+            'created_by' => $admin->id,
+        ]);
+
+        $response = $this->actingAs($admin)->deleteJson('/api/questions/all');
+        $response->assertOk()->assertJsonPath('deleted_count', 2);
+        $this->assertDatabaseCount('questions', 0);
+    }
+
+    public function test_mentor_can_only_delete_all_own_questions(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $mentor = User::factory()->create(['role' => 'mentor']);
+
+        $adminQuestion = Question::create([
+            'question' => 'Soal Admin',
+            'category' => 'Math',
+            'difficulty' => 'Easy',
+            'type' => 'multiple_choice',
+            'options' => ['A', 'B', 'C', 'D'],
+            'correct' => 'A',
+            'created_by' => $admin->id,
+        ]);
+
+        $mentorQuestion = Question::create([
+            'question' => 'Soal Mentor',
+            'category' => 'Math',
+            'difficulty' => 'Easy',
+            'type' => 'multiple_choice',
+            'options' => ['A', 'B', 'C', 'D'],
+            'correct' => 'A',
+            'created_by' => $mentor->id,
+        ]);
+
+        $response = $this->actingAs($mentor)->deleteJson('/api/questions/all');
+        $response->assertOk()->assertJsonPath('deleted_count', 1);
+
+        $this->assertDatabaseHas('questions', ['id' => $adminQuestion->id]);
+        $this->assertDatabaseMissing('questions', ['id' => $mentorQuestion->id]);
+    }
 }

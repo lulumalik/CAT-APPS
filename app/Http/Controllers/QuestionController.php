@@ -124,6 +124,24 @@ class QuestionController extends Controller
         return response()->noContent();
     }
 
+    public function destroyAll(Request $request)
+    {
+        $user = $request->user();
+        $query = Question::query();
+
+        if ($user && $user->role === 'mentor') {
+            $query->where('created_by', $user->id);
+        }
+
+        $deletedCount = $query->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bank soal berhasil dihapus.',
+            'deleted_count' => $deletedCount,
+        ]);
+    }
+
     private function authorizeOwnedByMentor(Request $request, Question $question): void
     {
         $user = $request->user();
