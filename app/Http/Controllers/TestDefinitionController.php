@@ -196,13 +196,13 @@ class TestDefinitionController extends Controller
 
     public function freeTryoutList()
     {
-        $item = TestDefinition::query()
+        $items = TestDefinition::query()
             ->where('is_free_tryout', true)
             ->where('is_active', true)
             ->orderBy('start_time')
-            ->first();
+            ->get();
 
-        return response()->json($item ? [$item->serializeForPublicList()] : []);
+        return response()->json($items->map(fn ($item) => $item->serializeForPublicList()));
     }
 
     public function freeTryoutShow(Request $request, TestDefinition $test)

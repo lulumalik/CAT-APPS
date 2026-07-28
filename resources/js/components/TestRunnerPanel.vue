@@ -1,60 +1,60 @@
 <template>
-  <main class="h-screen bg-[#F9F9F7] py-4 md:py-6 font-sans text-[#1A1A1A] anti-cheat-mode overflow-hidden">
-    <div class="mx-auto max-w-7xl px-4 md:px-8 h-full flex flex-col min-h-0">
+  <main class="min-h-screen lg:h-screen bg-[#F9F9F7] py-3 md:py-6 font-sans text-[#1A1A1A] anti-cheat-mode overflow-y-auto lg:overflow-hidden">
+    <div class="mx-auto max-w-7xl px-3 sm:px-4 md:px-8 h-full flex flex-col min-h-0">
       <div
         v-if="limitReached"
-        class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 font-medium"
+        class="mb-3 md:mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs md:text-sm text-red-900 font-medium shrink-0"
       >
         Kamu sudah terlalu banyak hal yang melanggar aturan anti-cheat. Tetap di halaman ujian dan lanjutkan mengerjakan soal.
       </div>
       <div
         v-else-if="antiCheatMessage"
-        class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+        class="mb-3 md:mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs md:text-sm text-amber-900 shrink-0"
       >
         {{ antiCheatMessage }} ({{ violations }}/{{ maxViolations }})
       </div>
 
-      <div class="flex items-center justify-between mb-4 md:mb-6 shrink-0">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-3 md:mb-5 shrink-0">
         <div>
-          <h1 class="text-2xl font-bold text-[#1A1A1A]">{{ testData?.name || t('testRunner.defaultTitle') }}</h1>
-          <p class="text-gray-500 mt-1 flex items-center gap-2">
+          <h1 class="text-xl md:text-2xl font-bold text-[#1A1A1A]">{{ testData?.name || t('testRunner.defaultTitle') }}</h1>
+          <p class="text-xs md:text-sm text-gray-500 mt-0.5 flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full bg-[#9DB359]"></span>
             {{ testData?.description || testData?.category || t('testRunner.defaultSubtitle') }}
           </p>
         </div>
-        <div class="flex items-center gap-4">
-          <div class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800">
+        <div class="flex items-center gap-2 md:gap-4">
+          <div class="rounded-full border border-amber-200 bg-amber-50 px-2.5 md:px-3 py-1 md:py-1.5 text-xs font-semibold text-amber-800">
             Anti-cheat: {{ violations }}/{{ maxViolations }}
           </div>
-          <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
-            <div class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
+          <div class="flex items-center gap-2 md:gap-3 bg-white px-3 md:px-4 py-1.5 md:py-2 rounded-full shadow-sm border border-gray-100">
+            <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             </div>
-            <span class="font-bold text-xl text-[#1A1A1A] font-mono">{{ mm }}:{{ ss }}</span>
+            <span class="font-bold text-lg md:text-xl text-[#1A1A1A] font-mono">{{ mm }}:{{ ss }}</span>
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 gap-4 md:gap-6 flex-1 min-h-0" :class="isExam ? '' : 'lg:grid-cols-4'">
-        <div class="space-y-4 min-h-0 flex flex-col" :class="isExam ? '' : 'lg:col-span-3'">
-          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-4 md:p-5 shrink-0">
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('testRunner.progress') }}</span>
-              <span class="text-sm font-bold text-[#1A1A1A]">{{ answeredCount }} <span class="text-gray-400 font-normal">/</span> {{ questions.length }} <span class="text-gray-400 font-normal">{{ t('testRunner.answered') }}</span></span>
+      <div class="grid grid-cols-1 gap-4 md:gap-6 flex-1 min-h-0 pb-4 lg:pb-0" :class="isExam ? '' : 'lg:grid-cols-4'">
+        <div class="space-y-3 md:space-y-4 min-h-0 flex flex-col flex-1" :class="isExam ? '' : 'lg:col-span-3'">
+          <div class="bg-white rounded-2xl md:rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-3.5 md:p-5 shrink-0">
+            <div class="flex items-center justify-between mb-2 md:mb-3">
+              <span class="text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wide">{{ t('testRunner.progress') }}</span>
+              <span class="text-xs md:text-sm font-bold text-[#1A1A1A]">{{ answeredCount }} <span class="text-gray-400 font-normal">/</span> {{ questions.length }} <span class="text-gray-400 font-normal">{{ t('testRunner.answered') }}</span></span>
             </div>
-            <div class="h-3 rounded-full bg-gray-100 overflow-hidden">
+            <div class="h-2.5 md:h-3 rounded-full bg-gray-100 overflow-hidden">
               <div class="h-full rounded-full bg-[#9DB359] transition-all duration-500 ease-out" :style="{ width: progressPct + '%' }"></div>
             </div>
           </div>
 
-          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-4 md:p-6 flex flex-col min-h-0 flex-1">
-            <div class="flex items-center justify-between mb-4 md:mb-6 shrink-0">
-              <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200 uppercase tracking-wide">
+          <div class="bg-white rounded-2xl md:rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-4 md:p-6 flex flex-col min-h-0 flex-1">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 shrink-0">
+              <span class="px-3 md:px-4 py-1 md:py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200 uppercase tracking-wide">
                 {{ current.category }}
               </span>
               <button
                 @click="toggleFlag(index)"
-                class="px-4 py-1.5 rounded-full border transition-all cursor-pointer flex items-center justify-center gap-2 text-sm font-medium"
+                class="px-3 md:px-4 py-1 md:py-1.5 rounded-full border transition-all cursor-pointer flex items-center justify-center gap-1.5 md:gap-2 text-xs md:text-sm font-medium"
                 :class="flags[index] ? 'border-yellow-200 bg-yellow-50 text-yellow-700' : 'border-gray-200 text-gray-500 hover:border-yellow-300 hover:text-yellow-600'"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="flags[index] ? 'currentColor' : 'none'"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
@@ -62,136 +62,143 @@
               </button>
             </div>
 
-            <div class="mb-4 md:mb-6 shrink-0">
-              <h2 class="text-sm font-medium text-gray-400 mb-2 uppercase tracking-wide">{{ t('testRunner.question', { n: index + 1 }) }}</h2>
-              <div v-if="current.article_quiz || current.articleQuiz" class="mb-5 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 md:p-5 shadow-sm text-sm">
-                <div class="flex items-center gap-2 mb-2 font-bold text-amber-900 text-sm">
+            <div class="flex-1 overflow-y-auto min-h-0 pr-1 md:pr-2 space-y-4 md:space-y-5 custom-scrollbar">
+              <h2 class="text-xs md:text-sm font-semibold text-gray-400 uppercase tracking-wide">
+                {{ t('testRunner.question', { n: index + 1 }) }}
+              </h2>
+
+              <div v-if="current.article_quiz || current.articleQuiz" class="rounded-2xl border border-amber-200/80 bg-amber-50/80 p-3.5 md:p-5 shadow-sm text-sm">
+                <div class="flex items-center gap-2 mb-2 font-bold text-amber-900 text-sm md:text-base">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-700 shrink-0"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
                   <span>{{ (current.article_quiz || current.articleQuiz).title }}</span>
                 </div>
-                <p class="text-amber-950/90 whitespace-pre-line leading-relaxed text-sm md:text-base">{{ (current.article_quiz || current.articleQuiz).content }}</p>
+                <p class="text-amber-950/90 whitespace-pre-line leading-relaxed text-sm md:text-base max-h-56 overflow-y-auto pr-2 custom-scrollbar">{{ (current.article_quiz || current.articleQuiz).content }}</p>
               </div>
-              <div v-if="current.image" class="mb-6">
-                <img :src="current.image" class="max-h-80 object-contain rounded-2xl border border-gray-200 shadow-sm" />
-              </div>
-              <p class="text-xl md:text-2xl font-medium leading-relaxed text-[#1A1A1A]">{{ current.question }}</p>
-            </div>
 
-            <div v-if="current.type === 'multiple_choice' || !current.type" class="space-y-3 overflow-y-auto pr-1 min-h-0">
-              <div
-                v-for="opt in current.options"
-                :key="opt.key"
-                @click="canSubmit && !submitting && selectOption(opt.key)"
-                class="group rounded-xl border-2 px-4 md:px-6 py-4 flex items-center gap-4 transition-all relative overflow-hidden"
-                :class="[
-                  selected(index) === opt.key
-                    ? 'border-[#9DB359] bg-[#9DB359]/5'
-                    : 'border-gray-100 bg-white hover:border-[#9DB359]/50 hover:bg-gray-50',
-                  canSubmit && !submitting ? 'cursor-pointer' : 'cursor-not-allowed opacity-60',
-                ]"
-              >
+              <div v-if="current.image" class="flex justify-center max-w-full overflow-hidden rounded-2xl border border-gray-200/80 bg-gray-50/50 p-2 md:p-3">
+                <img :src="current.image" class="max-h-48 sm:max-h-60 md:max-h-72 w-auto max-w-full object-contain rounded-xl shadow-sm" alt="Soal Gambar" />
+              </div>
+
+              <p class="text-base sm:text-lg md:text-xl font-medium leading-relaxed text-[#1A1A1A]">
+                {{ current.question }}
+              </p>
+
+              <div v-if="current.type === 'multiple_choice' || !current.type" class="space-y-2.5 md:space-y-3 pt-2">
                 <div
-                  class="w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-sm flex-shrink-0 transition-colors"
-                  :class="selected(index) === opt.key
-                    ? 'border-[#9DB359] bg-[#9DB359] text-white'
-                    : 'border-gray-200 text-gray-400 group-hover:border-[#9DB359]/50 group-hover:text-gray-600'"
+                  v-for="opt in current.options"
+                  :key="opt.key"
+                  @click="canSubmit && !submitting && selectOption(opt.key)"
+                  class="group rounded-xl border-2 px-3.5 md:px-5 py-3 md:py-3.5 flex items-center gap-3 md:gap-4 transition-all relative overflow-hidden"
+                  :class="[
+                    selected(index) === opt.key
+                      ? 'border-[#9DB359] bg-[#9DB359]/5 shadow-sm'
+                      : 'border-gray-100 bg-white hover:border-[#9DB359]/50 hover:bg-gray-50/80',
+                    canSubmit && !submitting ? 'cursor-pointer' : 'cursor-not-allowed opacity-60',
+                  ]"
                 >
-                  {{ opt.key }}
+                  <div
+                    class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 flex items-center justify-center font-bold text-xs md:text-sm flex-shrink-0 transition-colors"
+                    :class="selected(index) === opt.key
+                      ? 'border-[#9DB359] bg-[#9DB359] text-white'
+                      : 'border-gray-200 text-gray-400 group-hover:border-[#9DB359]/50 group-hover:text-gray-600'"
+                  >
+                    {{ opt.key }}
+                  </div>
+                  <span class="text-sm md:text-base lg:text-lg text-[#1A1A1A] leading-normal" :class="{ 'font-medium': selected(index) === opt.key }">{{ opt.label }}</span>
+                  <div v-if="selected(index) === opt.key" class="ml-auto text-[#9DB359] shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
                 </div>
-                <span class="text-base md:text-lg text-[#1A1A1A]" :class="{ 'font-medium': selected(index) === opt.key }">{{ opt.label }}</span>
-                <div v-if="selected(index) === opt.key" class="absolute right-6 top-1/2 -translate-y-1/2 text-[#9DB359]">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
+              </div>
+
+              <div v-else-if="current.type === 'essay'" class="pt-2">
+                <textarea
+                  v-model="answers[current.id]"
+                  rows="6"
+                  :placeholder="t('testRunner.answerPlaceholder')"
+                  class="w-full rounded-xl border border-gray-200 p-3.5 md:p-5 focus:border-[#9DB359] focus:ring-1 focus:ring-[#9DB359] outline-none text-sm md:text-base resize-none shadow-sm transition-colors"
+                  :disabled="!canSubmit || submitting"
+                ></textarea>
               </div>
             </div>
 
-            <div v-else-if="current.type === 'essay'" class="space-y-3 min-h-0">
-              <textarea
-                v-model="answers[current.id]"
-                rows="8"
-                :placeholder="t('testRunner.answerPlaceholder')"
-                class="w-full rounded-xl border border-gray-200 p-5 focus:border-[#9DB359] focus:ring-1 focus:ring-[#9DB359] outline-none text-lg resize-none shadow-sm transition-colors"
-                :disabled="!canSubmit || submitting"
-              ></textarea>
-            </div>
-
-            <div class="mt-4 md:mt-6 flex flex-wrap items-center justify-between gap-3 pt-4 md:pt-6 border-t border-gray-50 shrink-0">
-              <div v-if="isExam" class="text-sm font-medium text-gray-500">
+            <div class="mt-3 md:mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 md:pt-4 border-t border-gray-100 shrink-0">
+              <div v-if="isExam" class="text-xs md:text-sm font-medium text-gray-500">
                 Soal {{ index + 1 }} / {{ questions.length }}
               </div>
               <div v-else class="hidden sm:block"></div>
               <button
-                class="px-5 md:px-8 py-2.5 md:py-3 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors font-medium text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
+                class="px-4 md:px-7 py-2 md:py-2.5 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors font-medium text-xs md:text-sm text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1.5 md:gap-2"
                 @click="prev"
                 :disabled="index === 0"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                 {{ t('testRunner.previous') }}
               </button>
 
               <button
                 v-if="index < questions.length - 1"
-                class="px-5 md:px-8 py-2.5 md:py-3 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors font-medium cursor-pointer shadow-lg shadow-black/10 flex items-center gap-2"
+                class="px-4 md:px-7 py-2 md:py-2.5 rounded-full bg-[#1A1A1A] text-white hover:bg-gray-800 transition-colors font-medium text-xs md:text-sm cursor-pointer shadow-lg shadow-black/10 flex items-center gap-1.5 md:gap-2"
                 @click="next"
               >
                 {{ t('testRunner.next') }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 19"></polyline></svg>
               </button>
 
               <button
                 v-else
-                class="px-5 md:px-8 py-2.5 md:py-3 rounded-full bg-[#9DB359] text-white hover:bg-[#8ca34b] transition-colors font-bold cursor-pointer shadow-lg shadow-[#9DB359]/20 flex items-center gap-2"
+                class="px-4 md:px-7 py-2 md:py-2.5 rounded-full bg-[#9DB359] text-white hover:bg-[#8ca34b] transition-colors font-bold text-xs md:text-sm cursor-pointer shadow-lg shadow-[#9DB359]/20 flex items-center gap-1.5 md:gap-2"
                 @click="finishTest"
                 :disabled="!canSubmit || submitting"
               >
                 {{ submitting ? '...' : t('testRunner.submit') }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </button>
             </div>
           </div>
         </div>
 
         <aside v-if="!isExam" class="lg:col-span-1 min-h-0">
-          <div class="bg-white rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-5 sticky top-4">
-            <h3 class="font-bold text-[#1A1A1A] mb-4 flex items-center gap-2">
-              <span class="w-1.5 h-6 rounded-full bg-[#9DB359]"></span>
+          <div class="bg-white rounded-2xl md:rounded-[2rem] shadow-xl shadow-black/5 border border-gray-100 p-4 md:p-5 lg:sticky lg:top-4 max-h-none lg:max-h-[85vh] overflow-y-auto custom-scrollbar">
+            <h3 class="font-bold text-[#1A1A1A] mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
+              <span class="w-1.5 h-5 md:h-6 rounded-full bg-[#9DB359]"></span>
               {{ t('testRunner.questionNavigator') }}
             </h3>
 
-            <div class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-4 gap-3">
+            <div class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-4 gap-2 md:gap-2.5">
               <button
                 v-for="(q, i) in questions"
                 :key="q.id ?? i"
                 @click="jumpTo(i)"
-                class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all border-2 cursor-pointer relative"
+                class="w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center text-xs md:text-sm font-bold transition-all border-2 cursor-pointer relative"
                 :class="[
                   index === i
-                    ? 'border-[#1A1A1A] bg-[#1A1A1A] text-white scale-110 shadow-lg'
+                    ? 'border-[#1A1A1A] bg-[#1A1A1A] text-white scale-105 shadow-lg'
                     : answers[q.id]
                       ? 'border-[#9DB359] bg-[#9DB359]/10 text-[#9DB359]'
                       : 'border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-300',
                 ]"
               >
                 {{ i + 1 }}
-                <span v-if="flags[i]" class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white"></span>
+                <span v-if="flags[i]" class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-yellow-400 rounded-full border-2 border-white"></span>
               </button>
             </div>
 
-            <div class="mt-8 pt-6 border-t border-gray-50 space-y-3">
-              <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
-                <span class="w-3 h-3 rounded-full bg-[#1A1A1A]"></span>
+            <div class="mt-5 md:mt-6 pt-4 border-t border-gray-100 space-y-2">
+              <div class="flex items-center gap-2.5 text-xs font-medium text-gray-500">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#1A1A1A]"></span>
                 {{ t('testRunner.legendCurrent') }}
               </div>
-              <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
-                <span class="w-3 h-3 rounded-full bg-[#9DB359]/10 border border-[#9DB359]"></span>
+              <div class="flex items-center gap-2.5 text-xs font-medium text-gray-500">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#9DB359]/10 border border-[#9DB359]"></span>
                 {{ t('testRunner.legendAnswered') }}
               </div>
-              <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
-                <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+              <div class="flex items-center gap-2.5 text-xs font-medium text-gray-500">
+                <span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
                 {{ t('testRunner.legendFlagged') }}
               </div>
-              <div class="flex items-center gap-3 text-xs font-medium text-gray-500">
-                <span class="w-3 h-3 rounded-full bg-gray-50 border border-gray-200"></span>
+              <div class="flex items-center gap-2.5 text-xs font-medium text-gray-500">
+                <span class="w-2.5 h-2.5 rounded-full bg-gray-50 border border-gray-200"></span>
                 {{ t('testRunner.legendUnanswered') }}
               </div>
             </div>
@@ -391,5 +398,23 @@ onUnmounted(() => {
 .anti-cheat-mode textarea {
   user-select: text;
   -webkit-user-select: text;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }
 </style>

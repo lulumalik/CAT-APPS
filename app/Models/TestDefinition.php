@@ -161,7 +161,7 @@ class TestDefinition extends Model
      */
     public function serializeForPublicList(): array
     {
-        return $this->only([
+        return array_merge($this->only([
             'id',
             'name',
             'description',
@@ -172,6 +172,10 @@ class TestDefinition extends Model
             'end_time',
             'is_active',
             'is_free_tryout',
+            'question_ids',
+        ]), [
+            'status' => $this->status,
+            'can_submit' => $this->can_submit,
         ]);
     }
 
