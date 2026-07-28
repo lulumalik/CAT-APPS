@@ -288,11 +288,15 @@
               <div
                 v-for="q in art.questions"
                 :key="q.id"
-                class="inline-flex items-center gap-2 px-3 py-1 rounded-xl text-xs bg-gray-100 border border-gray-200 text-gray-700"
+                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs bg-gray-100 border border-gray-200 text-gray-700"
               >
                 <span class="font-bold">#{{ q.id }}</span>
                 <span v-if="q.batch" class="px-2 py-0.5 rounded-full text-[10px] bg-purple-100 text-purple-700 font-semibold">{{ q.batch }}</span>
-                <span class="truncate max-w-xs">{{ q.question || '[Soal Gambar]' }}</span>
+                <span v-if="q.question" class="truncate max-w-xs">{{ q.question }}</span>
+                <div v-if="q.image || q.image_url" class="inline-flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity" @click.stop.prevent="zoomImageUrl = q.image || q.image_url" title="Klik untuk memperbesar">
+                  <img :src="q.image || q.image_url" class="h-6 w-6 object-cover rounded border border-gray-300" alt="Soal Gambar" />
+                  <Maximize2 class="w-3 h-3 text-gray-500" />
+                </div>
               </div>
             </div>
           </div>
@@ -419,7 +423,16 @@
                 <span class="px-2 py-0.5 rounded-full text-[10px] bg-purple-100 text-purple-700 font-medium">{{ q.batch || 'Tryout 1' }}</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] bg-gray-200 text-gray-600">{{ q.category }}</span>
               </div>
-              <p class="text-gray-800">{{ q.question }}</p>
+              <p v-if="q.question" class="text-gray-800">{{ q.question }}</p>
+              <div v-if="q.image || q.image_url" class="mt-1.5 inline-block">
+                <div
+                  class="inline-flex items-center gap-1.5 p-1 rounded-lg border border-gray-200 bg-white hover:border-[#9DB359] transition-colors"
+                  @click.stop.prevent="zoomImageUrl = q.image || q.image_url"
+                >
+                  <img :src="q.image || q.image_url" class="h-12 w-auto max-w-[120px] object-cover rounded" alt="Soal Gambar" />
+                  <span class="text-xs text-gray-500 font-medium pr-1">Perbesar</span>
+                </div>
+              </div>
             </label>
           </div>
         </div>
@@ -433,18 +446,23 @@
         </div>
       </div>
     </div>
+
+    <ImageZoomModal :image-url="zoomImageUrl" @close="zoomImageUrl = ''" />
   </main>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { LibraryBig, Plus, Trash2, BookOpen, Link2, Pencil, Download, Upload } from 'lucide-vue-next'
+import { LibraryBig, Plus, Trash2, BookOpen, Link2, Pencil, Download, Upload, Maximize2 } from 'lucide-vue-next'
 import QuestionModal from '@/components/QuestionModal.vue'
 import QuestionCardBody from '@/components/QuestionCardBody.vue'
+import ImageZoomModal from '@/components/ImageZoomModal.vue'
 import PageHeroHeader from '@/components/PageHeroHeader.vue'
 import { useModal, useToast } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 import { useAppStore } from '@/stores/app'
+
+const zoomImageUrl = ref('')
 
 const { confirm } = useModal()
 const toast = useToast()

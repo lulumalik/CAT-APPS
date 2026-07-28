@@ -102,7 +102,29 @@
                   <input type="checkbox" :value="q.id" v-model="selected" class="w-5 h-5 rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359] transition-all" />
                 </div>
                 <div class="flex-1">
-                  <div class="font-medium text-gray-900 group-hover:text-[#9DB359] transition-colors">{{ q.question || '[Soal Gambar]' }}</div>
+                  <div v-if="q.question" class="font-medium text-gray-900 group-hover:text-[#9DB359] transition-colors mb-1.5">{{ q.question }}</div>
+                  
+                  <div v-if="q.image || q.image_url" class="my-1.5 inline-block">
+                    <div
+                      class="relative group/img inline-flex items-center gap-2 p-1.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-[#9DB359] transition-all cursor-pointer"
+                      @click.stop.prevent="zoomImageUrl = q.image || q.image_url"
+                      title="Klik untuk memperbesar gambar"
+                    >
+                      <img
+                        :src="q.image || q.image_url"
+                        alt="Soal Gambar"
+                        class="h-16 w-auto max-w-[180px] object-cover rounded-lg shadow-sm group-hover/img:scale-105 transition-transform"
+                      />
+                      <div class="flex items-center gap-1 text-xs font-semibold text-gray-600 group-hover/img:text-[#9DB359] pr-2">
+                        <Maximize2 class="w-3.5 h-3.5" />
+                        <span>Perbesar</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else-if="!q.question" class="font-medium text-gray-400 italic">
+                    [Soal Tanpa Teks]
+                  </div>
+
                   <div class="flex items-center gap-2 mt-1">
                     <span v-if="q.batch" class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-200">{{ q.batch }}</span>
                     <span class="px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">{{ q.category }}</span>
@@ -126,7 +148,29 @@
                   <input type="checkbox" :value="q.id" v-model="selected" class="w-5 h-5 rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359] transition-all" />
                 </div>
                 <div class="flex-1">
-                  <div class="font-medium text-gray-900">{{ q.question || '[Soal Gambar]' }}</div>
+                  <div v-if="q.question" class="font-medium text-gray-900 mb-1.5">{{ q.question }}</div>
+                  
+                  <div v-if="q.image || q.image_url" class="my-1.5 inline-block">
+                    <div
+                      class="relative group/img inline-flex items-center gap-2 p-1.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-[#9DB359] transition-all cursor-pointer"
+                      @click.stop.prevent="zoomImageUrl = q.image || q.image_url"
+                      title="Klik untuk memperbesar gambar"
+                    >
+                      <img
+                        :src="q.image || q.image_url"
+                        alt="Soal Gambar"
+                        class="h-16 w-auto max-w-[180px] object-cover rounded-lg shadow-sm group-hover/img:scale-105 transition-transform"
+                      />
+                      <div class="flex items-center gap-1 text-xs font-semibold text-gray-600 group-hover/img:text-[#9DB359] pr-2">
+                        <Maximize2 class="w-3.5 h-3.5" />
+                        <span>Perbesar</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else-if="!q.question" class="font-medium text-gray-400 italic">
+                    [Soal Tanpa Teks]
+                  </div>
+
                   <div class="flex items-center gap-2 mt-1">
                     <span v-if="q.batch" class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-200">{{ q.batch }}</span>
                     <span class="px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">{{ q.category }}</span>
@@ -158,11 +202,15 @@
         </div>
       </div>
     </div>
+
+    <ImageZoomModal :image-url="zoomImageUrl" @close="zoomImageUrl = ''" />
   </div>
 </template>
 
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { Maximize2 } from 'lucide-vue-next'
+import ImageZoomModal from '@/components/ImageZoomModal.vue'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
@@ -179,6 +227,7 @@ const batch = ref('')
 const category = ref('')
 const difficulty = ref('')
 const activeTab = ref('browse')
+const zoomImageUrl = ref('')
 
 const uniqueQuestions = computed(() => {
   const seenIds = new Set()

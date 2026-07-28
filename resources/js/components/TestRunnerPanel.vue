@@ -84,8 +84,13 @@
                     <p class="text-amber-950/90 whitespace-pre-line leading-relaxed text-xs md:text-sm max-h-48 overflow-y-auto pr-2 custom-scrollbar test-runner-article-content">{{ (current.article_quiz || current.articleQuiz).content }}</p>
                   </div>
 
-                  <div v-if="current.image" class="flex justify-center max-w-full overflow-hidden rounded-2xl border border-gray-200/80 bg-gray-50/50 p-2">
-                    <img :src="current.image" class="max-h-36 sm:max-h-44 md:max-h-52 lg:max-h-60 w-auto max-w-full object-contain rounded-xl shadow-sm test-runner-img" alt="Soal Gambar" />
+                  <div v-if="current.image || current.image_url" class="flex justify-center max-w-full overflow-hidden rounded-2xl border border-gray-200/80 bg-gray-50/50 p-2">
+                    <div class="relative group/runnerimg cursor-pointer inline-block" @click="zoomImageUrl = current.image || current.image_url" title="Klik untuk memperbesar gambar">
+                      <img :src="current.image || current.image_url" class="max-h-36 sm:max-h-44 md:max-h-52 lg:max-h-60 w-auto max-w-full object-contain rounded-xl shadow-sm test-runner-img group-hover/runnerimg:scale-102 transition-transform" alt="Soal Gambar" />
+                      <div class="absolute inset-0 bg-black/20 opacity-0 group-hover/runnerimg:opacity-100 flex items-center justify-center rounded-xl transition-opacity">
+                        <Maximize2 class="w-7 h-7 text-white drop-shadow-md" />
+                      </div>
+                    </div>
                   </div>
 
                   <p v-if="current.question" class="text-sm md:text-base lg:text-lg font-medium leading-relaxed text-[#1A1A1A]">
@@ -220,14 +225,20 @@
         </aside>
       </div>
     </div>
+
+    <ImageZoomModal :image-url="zoomImageUrl" @close="zoomImageUrl = ''" />
   </main>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { Maximize2 } from 'lucide-vue-next'
+import ImageZoomModal from '@/components/ImageZoomModal.vue'
 import { useModal } from '@/composables/useNotification'
 import { useI18n } from '@/composables/useI18n'
 import { useAntiCheat } from '@/composables/useAntiCheat'
+
+const zoomImageUrl = ref('')
 
 const props = defineProps({
   testData: { type: Object, required: true },

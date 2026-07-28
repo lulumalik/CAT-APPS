@@ -428,6 +428,7 @@ async function handleTryoutSubmit({ answers }) {
       city: form.value.address,
       birth_date: form.value.birth_date,
       phone: formatPhoneForBackend(form.value.phone),
+      email: form.value.email,
       answers,
     }
     const { data } = await window.axios.post(`/api/free-tryout/tests/${selectedTest.value.id}/submit`, payload)

@@ -34,8 +34,17 @@
     </div>
 
     <div class="flex gap-6">
-      <div v-if="question.image_url" class="flex-shrink-0">
-        <img :src="question.image_url" :alt="t('questionBank.title')" class="w-32 h-32 object-cover rounded-xl border border-gray-200" />
+      <div v-if="question.image_url || question.image" class="flex-shrink-0">
+        <div
+          class="relative group/cardimg cursor-pointer overflow-hidden rounded-xl border border-gray-200"
+          @click="zoomImageUrl = question.image_url || question.image"
+          title="Klik untuk memperbesar gambar"
+        >
+          <img :src="question.image_url || question.image" :alt="t('questionBank.title')" class="w-32 h-32 object-cover group-hover/cardimg:scale-105 transition-transform" />
+          <div class="absolute inset-0 bg-black/20 opacity-0 group-hover/cardimg:opacity-100 flex items-center justify-center transition-opacity">
+            <Maximize2 class="w-6 h-6 text-white drop-shadow-md" />
+          </div>
+        </div>
       </div>
       <div class="flex-grow">
         <div v-if="articleQuiz" class="mb-5 rounded-2xl border border-amber-200 bg-amber-50/80 p-5 shadow-sm">
@@ -67,12 +76,15 @@
         </div>
       </div>
     </div>
+
+    <ImageZoomModal :image-url="zoomImageUrl" @close="zoomImageUrl = ''" />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { Pencil, Trash2, BookOpen } from 'lucide-vue-next'
+import { computed, ref } from 'vue'
+import { Pencil, Trash2, BookOpen, Maximize2 } from 'lucide-vue-next'
+import ImageZoomModal from '@/components/ImageZoomModal.vue'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
@@ -84,6 +96,7 @@ const props = defineProps({
 defineEmits(['edit', 'remove'])
 
 const { t } = useI18n()
+const zoomImageUrl = ref('')
 
 const articleQuiz = computed(() => props.question?.article_quiz || props.question?.articleQuiz || null)
 

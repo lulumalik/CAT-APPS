@@ -47,6 +47,7 @@
               <tr>
                 <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-12">#</th>
                 <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modals.submissions.tableUser') }}</th>
+                <th v-if="isFreeTryoutList" class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Info Form Input</th>
                 <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">{{ t('modals.submissions.tableSubmittedAt') }}</th>
                 <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Skor</th>
                 <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Nilai</th>
@@ -62,8 +63,14 @@
               >
                 <td class="px-5 py-4 text-sm text-gray-500">{{ idx + 1 }}</td>
                 <td class="px-5 py-4">
-                  <div class="font-medium text-gray-900">{{ sub.user?.name || '—' }}</div>
-                  <div class="text-sm text-gray-500">{{ sub.user?.email || sub.user?.username || '—' }}</div>
+                  <div class="font-medium text-gray-900">{{ sub.full_name || sub.user?.name || '—' }}</div>
+                  <div class="text-sm text-gray-500">{{ sub.email || sub.user?.email || sub.user?.username || '—' }}</div>
+                </td>
+                <td v-if="isFreeTryoutList" class="px-5 py-4 text-xs text-gray-600">
+                  <div><span class="font-bold">Gender:</span> {{ normalizeGender(sub.gender) }}</div>
+                  <div><span class="font-bold">Kota:</span> {{ sub.city || '—' }}</div>
+                  <div><span class="font-bold">Tgl Lahir:</span> {{ formatDate(sub.birth_date) }}</div>
+                  <div v-if="sub.phone"><span class="font-bold">WA:</span> <span class="font-mono">{{ sub.phone }}</span></div>
                 </td>
                 <td class="px-5 py-4 text-sm text-gray-600 whitespace-nowrap">{{ formatDateTime(sub.submitted_at) }}</td>
                 <td class="px-5 py-4 whitespace-nowrap">
@@ -89,22 +96,23 @@
                 </td>
               </tr>
               <tr v-if="!submissions.length">
-                <td colspan="6" class="px-5 py-12 text-center text-gray-500">{{ t('modals.submissions.noneFound') }}</td>
+                <td :colspan="isFreeTryoutList ? 7 : 6" class="px-5 py-12 text-center text-gray-500">{{ t('modals.submissions.noneFound') }}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
+      <!-- Detail & Answer Review Section -->
       <section
         v-if="selectedSubmission"
         ref="detailSection"
-        class="mt-8 rounded-2xl border border-[#9DB359]/30 bg-white shadow-sm overflow-hidden"
+        class="mt-8 rounded-2xl border border-[#9DB359]/30 bg-white shadow-sm overflow-hidden space-y-0"
       >
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-6 py-4 bg-[#9DB359]/5">
           <div>
             <h2 class="text-lg font-bold text-[#1A1A1A]">
-              {{ t('modals.submissions.reviewTitle', { name: selectedSubmission.user?.name || 'Peserta' }) }}
+              {{ t('modals.submissions.reviewTitle', { name: selectedSubmission.full_name || selectedSubmission.user?.name || 'Peserta' }) }}
             </h2>
             <p class="text-sm text-gray-500 mt-0.5">{{ formatDateTime(selectedSubmission.submitted_at) }}</p>
           </div>
@@ -113,7 +121,39 @@
           </button>
         </div>
 
-        <div class="p-6 space-y-4 max-h-[560px] overflow-y-auto">
+        <!-- Form Input Candidate Card (if Free Tryout or candidate metadata exists) -->
+        <div v-if="selectedSubmission.is_free_tryout || selectedSubmission.full_name || selectedSubmission.phone" class="p-6 border-b border-gray-100 bg-gray-50/50">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Hasil Form Input Peserta</h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+            <div>
+              <span class="text-xs font-bold text-gray-400 uppercase block">Nama Lengkap</span>
+              <span class="font-medium text-gray-900">{{ selectedSubmission.full_name || selectedSubmission.user?.name || '—' }}</span>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-gray-400 uppercase block">Jenis Kelamin</span>
+              <span class="font-medium text-gray-900">{{ normalizeGender(selectedSubmission.gender) }}</span>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-gray-400 uppercase block">Kota / Alamat</span>
+              <span class="font-medium text-gray-900">{{ selectedSubmission.city || '—' }}</span>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-gray-400 uppercase block">Tanggal Lahir</span>
+              <span class="font-medium text-gray-900">{{ formatDate(selectedSubmission.birth_date) }}</span>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-gray-400 uppercase block">No. WhatsApp / Telepon</span>
+              <span class="font-medium text-gray-900 font-mono">{{ selectedSubmission.phone || selectedSubmission.user?.username || '—' }}</span>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-gray-400 uppercase block">Email</span>
+              <span class="font-medium text-gray-900">{{ selectedSubmission.email || selectedSubmission.user?.email || '—' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question & Answers List -->
+        <div class="p-6 space-y-4 max-h-[560px] overflow-y-auto custom-scrollbar">
           <div
             v-for="(answer, qId) in selectedSubmission.answers || {}"
             :key="qId"
@@ -206,6 +246,10 @@ const selectedSubmission = ref(null)
 const updatingScore = ref(false)
 const detailSection = ref(null)
 
+const isFreeTryoutList = computed(() =>
+  Boolean(assessment.value?.is_free_tryout || submissions.value.some((s) => s.is_free_tryout || s.full_name))
+)
+
 const totalQuestions = computed(() => assessment.value?.total_questions || assessment.value?.question_ids?.length || 0)
 
 const averageScore = computed(() => {
@@ -230,13 +274,17 @@ async function load() {
     assessment.value = data.assessment || null
     submissions.value = Array.isArray(data.submissions) ? data.submissions : (Array.isArray(data) ? data : [])
 
-    const ids = new Set(assessment.value?.question_ids || [])
-    if (ids.size) {
-      const qRes = await axios.get('/api/questions')
-      const items = qRes.data?.items || qRes.data || []
-      questions.value = items.filter((q) => ids.has(q.id))
+    if (Array.isArray(data.questions) && data.questions.length) {
+      questions.value = data.questions
     } else {
-      questions.value = []
+      const ids = new Set(assessment.value?.question_ids || [])
+      if (ids.size) {
+        const qRes = await axios.get('/api/questions')
+        const items = qRes.data?.items || qRes.data || []
+        questions.value = items.filter((q) => ids.has(q.id))
+      } else {
+        questions.value = []
+      }
     }
   } catch (error) {
     assessment.value = null
@@ -280,6 +328,21 @@ function isCorrectAnswer(qId, answer) {
   const q = getQuestion(qId)
   if (!q || q.type === 'essay') return null
   return String(q.correct) === String(answer)
+}
+
+function normalizeGender(value) {
+  if (value === 'L' || value === 'Laki-laki') return 'Laki-laki'
+  if (value === 'P' || value === 'Perempuan') return 'Perempuan'
+  return value || '—'
+}
+
+function formatDate(value) {
+  if (!value) return '—'
+  try {
+    return new Date(value).toLocaleDateString('id-ID')
+  } catch {
+    return value
+  }
 }
 
 async function selectSubmission(sub) {

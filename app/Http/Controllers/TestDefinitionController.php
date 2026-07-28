@@ -232,6 +232,7 @@ class TestDefinitionController extends Controller
             'city' => 'required|string|max:255',
             'birth_date' => 'required|date|before:today',
             'phone' => 'required|string|max:32',
+            'email' => 'nullable|string|max:255',
             'answers' => 'present|array',
         ]);
 
@@ -251,6 +252,7 @@ class TestDefinitionController extends Controller
             'city' => $data['city'],
             'birth_date' => $data['birth_date'],
             'phone' => $data['phone'],
+            'email' => $data['email'] ?? null,
             'answers' => $data['answers'],
             'score' => $score,
             'total_questions' => $questions->count(),
@@ -402,9 +404,48 @@ class TestDefinitionController extends Controller
 
         $submissions = $test->submissions()->with('user:id,name,email,username')->orderByDesc('submitted_at')->get();
 
+        if ($test->is_free_tryout || $submissions->isEmpty()) {
+            $freeSubs = $test->freeTryoutSubmissions()
+                ->orderByDesc('submitted_at')
+                ->get()
+                ->map(function ($f) {
+                    $contact = !empty($f->email) ? $f->email : ($f->phone ? "WA: {$f->phone}" : 'Peserta Tryout');
+                    return [
+                        'id' => 'ft-' . $f->id,
+                        'user_id' => null,
+                        'test_definition_id' => $f->test_definition_id,
+                        'full_name' => $f->full_name,
+                        'gender' => $f->gender,
+                        'city' => $f->city,
+                        'birth_date' => $f->birth_date ? $f->birth_date->format('Y-m-d') : null,
+                        'phone' => $f->phone,
+                        'email' => $f->email,
+                        'answers' => $f->answers ?? [],
+                        'score' => $f->score,
+                        'submitted_at' => $f->submitted_at,
+                        'created_at' => $f->created_at,
+                        'updated_at' => $f->updated_at,
+                        'user' => [
+                            'id' => null,
+                            'name' => $f->full_name,
+                            'email' => $contact,
+                            'username' => $f->phone,
+                        ],
+                        'is_free_tryout' => true,
+                    ];
+                });
+
+            if ($submissions->isEmpty()) {
+                $submissions = $freeSubs;
+            } else {
+                $submissions = $submissions->concat($freeSubs)->sortByDesc('submitted_at')->values();
+            }
+        }
+
         return response()->json([
             'assessment' => $this->serializeAssessment($test, 'test'),
             'submissions' => $submissions,
+            'questions' => $test->questions,
         ]);
     }
 
@@ -425,17 +466,31 @@ class TestDefinitionController extends Controller
 
     public function updateSubmission(Request $request, $id)
     {
-        $submission = TestSubmission::findOrFail($id);
-        $test = $submission->testDefinition;
-        $user = $request->user();
-        
-        if ($user->role === 'mentor' && $test->created_by !== $user->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $data = $request->validate([
             'score' => 'required|integer|min:0',
         ]);
+
+        if (str_starts_with((string)$id, 'ft-')) {
+            $realId = (int)str_replace('ft-', '', $id);
+            $submission = FreeTryoutSubmission::findOrFail($realId);
+            $test = $submission->testDefinition;
+            $user = $request->user();
+
+            if ($user && $user->role === 'mentor' && $test && $test->created_by !== $user->id) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            $submission->update($data);
+            return response()->json($submission);
+        }
+
+        $submission = TestSubmission::findOrFail($id);
+        $test = $submission->testDefinition;
+        $user = $request->user();
+
+        if ($user && $user->role === 'mentor' && $test && $test->created_by !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
         $submission->update($data);
         return response()->json($submission);
@@ -448,7 +503,7 @@ class TestDefinitionController extends Controller
         }
 
         $user = $request->user();
-        if ($user->role === 'mentor' && $test->created_by !== $user->id) {
+        if ($user && $user->role === 'mentor' && $test->created_by !== $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -456,7 +511,11 @@ class TestDefinitionController extends Controller
             ->orderByDesc('submitted_at')
             ->get();
 
-        return response()->json($items);
+        return response()->json([
+            'items' => $items,
+            'questions' => $test->questions,
+            'test' => $this->serializeAssessment($test, 'test'),
+        ]);
     }
 
 }
