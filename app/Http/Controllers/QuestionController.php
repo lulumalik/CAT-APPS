@@ -52,7 +52,7 @@ class QuestionController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'question' => 'required|string',
+            'question' => 'nullable|string',
             'category' => 'required|string',
             'difficulty' => 'required|string',
             'type' => 'required|in:multiple_choice,essay',
@@ -67,6 +67,7 @@ class QuestionController extends Controller
         }
 
         $data = $request->validate($rules);
+        $data['question'] = $data['question'] ?? '';
         $data['batch'] = $data['batch'] ?: 'Tryout 1';
 
         if ($request->hasFile('image')) {
@@ -93,7 +94,7 @@ class QuestionController extends Controller
         $this->authorizeOwnedByMentor($request, $question);
 
         $rules = [
-            'question' => 'required|string',
+            'question' => 'nullable|string',
             'category' => 'required|string',
             'difficulty' => 'required|string',
             'type' => 'required|in:multiple_choice,essay',
@@ -108,6 +109,7 @@ class QuestionController extends Controller
         }
 
         $data = $request->validate($rules);
+        $data['question'] = $data['question'] ?? '';
         $data['batch'] = $data['batch'] ?: 'Tryout 1';
 
         if ($request->hasFile('image')) {

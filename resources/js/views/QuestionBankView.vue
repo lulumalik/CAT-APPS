@@ -292,7 +292,7 @@
               >
                 <span class="font-bold">#{{ q.id }}</span>
                 <span v-if="q.batch" class="px-2 py-0.5 rounded-full text-[10px] bg-purple-100 text-purple-700 font-semibold">{{ q.batch }}</span>
-                <span class="truncate max-w-xs">{{ q.question }}</span>
+                <span class="truncate max-w-xs">{{ q.question || '[Soal Gambar]' }}</span>
               </div>
             </div>
           </div>
@@ -488,7 +488,7 @@ const isMentor = computed(() => store.role === 'mentor')
 
 const matchesFilters = (q) => {
   const s = search.value.toLowerCase()
-  const matchSearch = q.question.toLowerCase().includes(s)
+  const matchSearch = (q.question || '').toLowerCase().includes(s)
   const matchBatch = !filterBatch.value || q.batch === filterBatch.value
   const matchCat = !filterCategory.value || q.category === filterCategory.value
   const matchDiff = !filterDifficulty.value || q.difficulty === filterDifficulty.value

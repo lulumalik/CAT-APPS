@@ -102,7 +102,7 @@
                   <input type="checkbox" :value="q.id" v-model="selected" class="w-5 h-5 rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359] transition-all" />
                 </div>
                 <div class="flex-1">
-                  <div class="font-medium text-gray-900 group-hover:text-[#9DB359] transition-colors">{{ q.question }}</div>
+                  <div class="font-medium text-gray-900 group-hover:text-[#9DB359] transition-colors">{{ q.question || '[Soal Gambar]' }}</div>
                   <div class="flex items-center gap-2 mt-1">
                     <span v-if="q.batch" class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-200">{{ q.batch }}</span>
                     <span class="px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">{{ q.category }}</span>
@@ -126,7 +126,7 @@
                   <input type="checkbox" :value="q.id" v-model="selected" class="w-5 h-5 rounded border-gray-300 text-[#9DB359] focus:ring-[#9DB359] transition-all" />
                 </div>
                 <div class="flex-1">
-                  <div class="font-medium text-gray-900">{{ q.question }}</div>
+                  <div class="font-medium text-gray-900">{{ q.question || '[Soal Gambar]' }}</div>
                   <div class="flex items-center gap-2 mt-1">
                     <span v-if="q.batch" class="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-200">{{ q.batch }}</span>
                     <span class="px-2 py-0.5 rounded-full bg-gray-100 text-xs font-medium text-gray-600">{{ q.category }}</span>

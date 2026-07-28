@@ -88,7 +88,7 @@
                     <img :src="current.image" class="max-h-36 sm:max-h-44 md:max-h-52 lg:max-h-60 w-auto max-w-full object-contain rounded-xl shadow-sm test-runner-img" alt="Soal Gambar" />
                   </div>
 
-                  <p class="text-sm md:text-base lg:text-lg font-medium leading-relaxed text-[#1A1A1A]">
+                  <p v-if="current.question" class="text-sm md:text-base lg:text-lg font-medium leading-relaxed text-[#1A1A1A]">
                     {{ current.question }}
                   </p>
                 </div>
