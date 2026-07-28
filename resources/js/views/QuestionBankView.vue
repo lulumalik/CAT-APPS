@@ -659,10 +659,13 @@ const normalizeQuestion = (item) => ({
   image_url: item?.image_url || item?.image || null,
 })
 
-const toQuestionFormData = (payload) => {
+const toQuestionFormData = (payload, isUpdate = false) => {
   if (!(payload.image instanceof File)) return payload
 
   const fd = new FormData()
+  if (isUpdate) {
+    fd.append('_method', 'PUT')
+  }
   Object.entries(payload).forEach(([key, value]) => {
     if (value == null || value === '') return
     if (key === 'options') {
@@ -679,22 +682,28 @@ const toQuestionFormData = (payload) => {
 
 const onSubmit = async (payload) => {
   try {
-    const body = toQuestionFormData(payload)
+    const isUpdate = !!editingItem.value
+    const body = toQuestionFormData(payload, isUpdate)
     const multipart = body instanceof FormData
     const config = multipart ? { headers: { 'Content-Type': 'multipart/form-data' } } : undefined
 
-    if (editingItem.value) {
-      const { data } = await window.axios.put(`/api/questions/${editingItem.value.id}`, body, config)
+    if (isUpdate) {
+      if (multipart) {
+        await window.axios.post(`/api/questions/${editingItem.value.id}`, body, config)
+      } else {
+        await window.axios.put(`/api/questions/${editingItem.value.id}`, body, config)
+      }
       await loadQuestions()
       toast.success('Success', t('questionBank.toastUpdated'))
     } else {
-      const { data } = await window.axios.post('/api/questions', body, config)
+      await window.axios.post('/api/questions', body, config)
       await loadQuestions()
       toast.success('Success', t('questionBank.toastCreated'))
     }
     closeModal()
   } catch (e) {
-    toast.error('Error', t('questionBank.toastSaveFailed'))
+    const msg = e.response?.data?.message || t('questionBank.toastSaveFailed')
+    toast.error('Error', msg)
   }
 }
 

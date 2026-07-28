@@ -195,7 +195,7 @@ const removeOption = (index) => {
 watch(() => props.initial, (val) => {
   if (val) {
       const data = JSON.parse(JSON.stringify(val))
-      Object.assign(form, data)
+      Object.assign(form, base(), data)
       if (data.image) {
           form.image_url = data.image
           form.image = null
