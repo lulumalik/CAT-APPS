@@ -32,6 +32,14 @@
             </div>
             <span class="font-bold text-base md:text-lg text-[#1A1A1A] font-mono">{{ mm }}:{{ ss }}</span>
           </div>
+          <button
+            type="button"
+            class="px-3 md:px-4 py-1.5 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs md:text-sm transition-colors shadow-sm cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+            @click="finishTest()"
+            :disabled="!canSubmit || submitting"
+          >
+            <span>{{ submitting ? '...' : 'Selesaikan Ujian' }}</span>
+          </button>
         </div>
       </div>
 
@@ -167,7 +175,7 @@
               <button
                 v-else
                 class="px-4 md:px-6 py-1.5 md:py-2 rounded-full bg-[#9DB359] text-white hover:bg-[#8ca34b] transition-colors font-bold text-xs md:text-sm cursor-pointer shadow-lg shadow-[#9DB359]/20 flex items-center gap-1.5"
-                @click="finishTest"
+                @click="finishTest()"
                 :disabled="!canSubmit || submitting"
               >
                 {{ submitting ? '...' : t('testRunner.submit') }}
@@ -220,6 +228,18 @@
                 <span class="w-2.5 h-2.5 rounded-full bg-gray-50 border border-gray-200"></span>
                 {{ t('testRunner.legendUnanswered') }}
               </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-gray-100">
+              <button
+                type="button"
+                class="w-full py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs md:text-sm transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                @click="finishTest()"
+                :disabled="!canSubmit || submitting"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>{{ submitting ? 'Memproses...' : 'Selesaikan Ujian' }}</span>
+              </button>
             </div>
           </div>
         </aside>

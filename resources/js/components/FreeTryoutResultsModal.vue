@@ -60,9 +60,8 @@
                 <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ formatDate(row.birth_date) }}</td>
                 <td class="px-4 py-3 text-gray-600 whitespace-nowrap font-mono text-xs">{{ row.phone }}</td>
                 <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ row.email || '—' }}</td>
-                <td class="px-4 py-3 whitespace-nowrap">
-                  <span class="font-bold text-gray-900">{{ row.score }}</span>
-                  <span class="text-xs text-gray-400"> / {{ row.total_questions || questions.length }}</span>
+                <td class="px-4 py-3 whitespace-nowrap font-bold text-gray-900">
+                  {{ getRowScore(row) }}
                 </td>
                 <td class="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">{{ formatDateTime(row.submitted_at) }}</td>
                 <td class="px-4 py-3 text-right whitespace-nowrap">
@@ -173,15 +172,22 @@ const selectedRow = ref(null)
 const loading = ref(true)
 const toast = useToast()
 
+const getRowScore = (row) => {
+  const total = Number(row.total_questions || questions.value.length || 0)
+  const raw = Number(row.score || 0)
+  if (!total) return 0
+  return Math.round((raw / total) * 100)
+}
+
 const averageScore = computed(() => {
   if (!rows.value.length) return 0
-  const avg = rows.value.reduce((sum, row) => sum + Number(row.score || 0), 0) / rows.value.length
+  const avg = rows.value.reduce((sum, row) => sum + getRowScore(row), 0) / rows.value.length
   return avg.toFixed(1)
 })
 
 const highestScore = computed(() => {
   if (!rows.value.length) return 0
-  return rows.value.reduce((max, row) => Math.max(max, Number(row.score || 0)), 0)
+  return rows.value.reduce((max, row) => Math.max(max, getRowScore(row)), 0)
 })
 
 const loadRows = async () => {

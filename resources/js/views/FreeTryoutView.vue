@@ -235,7 +235,7 @@
                 >
                   <span class="text-xs font-bold uppercase tracking-wider text-primary">Skor</span>
                   <span class="text-4xl font-black tabular-nums text-secondary md:text-5xl">
-                    {{ result.score }} <span class="text-lg font-bold text-muted">/</span> {{ result.total }}
+                    {{ calculatedScore }}
                   </span>
                 </div>
                 <p class="mt-2 text-sm text-muted mt-8">Hasil tryout akan dikirim ke email Anda. terima kasih telah berpartisipasi.</p>
@@ -258,7 +258,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { Calendar, Clock, FileText } from 'lucide-vue-next'
 import { confetti, sparkles, variation } from 'party-js'
 import { useToast } from '@/composables/useNotification'
@@ -275,6 +275,11 @@ const step = ref('choose')
 const loading = ref(false)
 const submitting = ref(false)
 const result = ref({ score: 0, total: 0 })
+
+const calculatedScore = computed(() => {
+  if (!result.value.total) return 0
+  return Math.round((result.value.score / result.value.total) * 100)
+})
 
 const scoreSparkleTargetRef = ref(null)
 const scorePanelRef = ref(null)
