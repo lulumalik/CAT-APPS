@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ isset($material) ? $material->title : 'Kursus Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}</title>
-        <meta name="google-site-verification" content="oHVVXwQv4qB7m3tjr5G0EWAbiVw22JVmC7MLqe0hcFQ" />
+        <meta name="google-site-verification" content="3BKjZP1aZxV2_eiwV5SdDcjvO2RQ9ETnp_fwFVj0AVA" />
         <meta name="description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Kursus Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
         <meta name="keywords" content="CAT, Computer Assisted Test, ujian online, tryout, bank soal, CBT, ranking, assessment, evaluasi{{ isset($material) && $material->category ? ', ' . $material->category : '' }}">
         <meta name="robots" content="index,follow">
@@ -25,7 +25,6 @@
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="{{ isset($material) ? $material->title : 'Kursus Platform - Aplikasi Computer Assisted Test (CAT) & Bank Soal' }}">
         <meta name="twitter:description" content="{{ isset($material) ? Str::limit(strip_tags($material->content), 160) : 'Kursus Platform membantu pembuatan bank soal, penjadwalan tes, ujian online berbasis waktu, penilaian otomatis, dan leaderboard peringkat peserta.' }}">
-        <meta name="google-site-verification" content="fSlJFrpkUUiF_T03wYZONezqDP06ii5bmVkNgF4z5tc" />
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
